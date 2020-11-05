@@ -9,149 +9,84 @@
 \usepackage{geometry}
 \usepackage{microtype}
 \usepackage[all]{nowidow}
-\usepackage[bsc,             % for Bachelor's Thesis titlepage
-            %project,        % for Master's Project titlepage
-            claim,iaik]{iaikthesis}
+\usepackage[bsc,claim,iaik]{iaikthesis}
 \addtokomafont{disposition}{\rmfamily}
-
-% <INSERT YOUR CUSTOM MACROS AND PACKAGES HERE>
-
-% Useful packages for complex content:
-\usepackage{amsmath,amsfonts,amssymb} % typesetting math
-%\usepackage{tikz}                    % typesetting diagrams, figures, ...
-%\usepackage{siunitx}                 % typesetting SI-units and formatted numbers
-%\usepackage{listings}                % typesetting source code
-%\usepackage{booktabs,multirow}       % utils for complex/beautiful tables
-%\usepackage{subcaption}              % placing multiple subfigures in a figure
-
-% Useful utils:
-\usepackage{blindtext}                % insert dummy text for this template
-%\usepackage{todonotes}               % add ToDo markers (\todo{...})
-%\usepackage{xspace}                  % define macros that don't eat the following space (add \xspace at the end)
-%\usepackage[section]{placeins}       % prevent figures from floating into the wrong section (\FloatBarrier)
-
-% Bibliography, referencing, and indexing
-\usepackage{csquotes}                 % typesetting \enquote{text in quotes} correctly
+\usepackage{amsmath,amsfonts,amssymb}
+\usepackage{blindtext}
+\usepackage{csquotes}
 \usepackage[backend=biber,
             style=alphabetic,
-            maxbibnames=20]{biblatex} % to generate the bibliography
-\addbibresource{thesis.bib}           % name of the bib-file
-
-\usepackage[hidelinks]{hyperref}      % clickable links (but hide color frames around links)
+            maxbibnames=20]{biblatex}
+\addbibresource{thesis.bib}
+\usepackage[hidelinks]{hyperref}
 %\usepackage{cleveref}                % named references (\Cref{chap:introduction}, ...)
-
 \usepackage[toc,acronym,style=long3col]{glossaries} % List of acronyms and symbols  (optional)
-\makenoidxglossaries
-%
-\newacronym{aes}{AES}{Advanced Encryption Standard}
-\newglossaryentry{xor}{name={\ensuremath{\oplus}}, sort=xor,
-                       description={exclusive-or (\textsc{Xor})}}
-% <INSERT YOUR GLOSSARY ENTRIES HERE (or \input{} a dedicated file) >
 
+\thesisauthor{Peter Julius Waldert}
+\thesistitle{Classification as a Service}
+\thesisdate{Month 2020}
+\supervisortitle{Supervisors}
+\supervisor{
+	Dipl.-Ing. Daniel Kales\\
+	Dipl.-Ing. Roman Walch\\
+	\smallskip
+	Institute of Applied Information Processing and Communications\\
+	Graz University of Technology
+}
+\curriculum{Information and Computer Engineering}
+
+\makenoidxglossaries
+\newacronym{aes}{AES}{Advanced Encryption Standard}
+\newglossaryentry{xor}{name={\ensuremath{\oplus}}, sort=xor, description={exclusive-or (\textsc{Xor})}}
 
 
 \begin{document}
+	\printthesistitle
+	
+	\chapter*{Abstract}
+	Abstract of your thesis (at most one page)
+	
+	\Blindtext[2]
+	
+	\paragraph{Keywords:}
+	Some keywords...
 
-%--- INSERT INFORMATION FOR TITLEPAGE ------------------------------------------
-
-% Your name + previous academic degrees:
-\thesisauthor{Firstname Lastname}
-
-% Title of your thesis:
-\thesistitle{Title and Subtitle\\of the Thesis}
-
-% Date of completion:
-\thesisdate{Month Year}
-
-% Supervisor:
-\supervisortitle{Supervisors} % or Supervisor
-\supervisor{%
-  Firstname Lastname of first supervisor\\
-  Firstname Lastname of second supervisor (if any)
-  \smallskip
-
-  Institute of Applied Information Processing and Communications\\
-  Graz University of Technology
-}
-
-% Name of your degree programme according to your curriculum
-\curriculum{CurriculumName}
-%\curriculum{Information and Computer Engineering}
-%\curriculum{Computer Science}
-%\curriculum{Software Engineering and Management}
-
-
-
-%--- FRONT MATTER --------------------------------------------------------------
-
-\printthesistitle
-
-\chapter*{Abstract}
-
-Abstract of your thesis (at most one page)
-
-\Blindtext[2]
-
-\paragraph{Keywords:}
-Some keywords...
-
-%\cleardoublepage
-%\tableofcontents  % optional
-
-
-
-%--- MAIN CONTENT --------------------------------------------------------------
-
-\chapter{Introduction}
-\label{chap:introduction}
-
-\Blindtext[3]
-% You may want to keep your chapters in separate files ('chapterfilename.tex')
-% and include them here using either
-%\input{chapterfilename.tex}   or   \include{chapterfilename}
-
-
-\chapter{Background}
-\label{chap:background}
-
-In this chapter, we provide some usage examples for
-glossaries and acronym lists with \texttt{glossaries} (Section \ref{sec:gloss}),
-bibliography and citations with \texttt{biblatex} (Section \ref{sec:bib}), and more.
-
-\section{Notation and Acronyms}
-\label{sec:gloss}
-
-Symbols and acronyms are defined in the preamble, after loading the \texttt{glossaries} package, and used as follows.
-
-In this chapter, we introduce the necessary background on the \gls{aes}.
-We denote binary exclusive-or by \gls{xor}.
-
-\section{Citations}
-\label{sec:bib}
-
-This is an example of how to specify and cite
-a book \cite{AESbook},
-a journal article \cite{bstjShannon49},
-a conference article \cite{spKocherHFGGHHLM019},
-and an informal report \cite{iacrSchneierFKR15}.
-We can also add the authors' names to the citation:
-\Gls{aes} is a block cipher defined by \textcite{AESbook}.
-
-
-\chapter{Conclusion}
-\label{chap:conclusion}
-
-\Blindtext[3]
-
-
-
-%--- INDEX and BIBLIOGRAPHY ----------------------------------------------------
-
-%% Print List of Acronyms and Symbols  (optional)
-%\printnoidxglossary[title={Notation}]
-%\printnoidxglossary[type=acronym]
-
-% Print bibliography and include it in the table of contents:
-\printbibliography[heading=bibintoc]
-
+	\tableofcontents
+	
+	\chapter{Introduction}
+	\label{chap:introduction}
+	\Blindtext[3]
+	
+	\chapter{Background}
+	\label{chap:background}
+	In this chapter, we provide some usage examples for
+	glossaries and acronym lists with \texttt{glossaries} (Section \ref{sec:gloss}),
+	bibliography and citations with \texttt{biblatex} (Section \ref{sec:bib}), and more.
+	
+	\section{Notation and Acronyms}
+	\label{sec:gloss}
+	Symbols and acronyms are defined in the preamble, after loading the \texttt{glossaries} package, and used as follows.
+	
+	In this chapter, we introduce the necessary background on the \gls{aes}.
+	We denote binary exclusive-or by \gls{xor}.
+	
+	\section{Citations}
+	\label{sec:bib}
+	This is an example of how to specify and cite
+	a book \cite{AESbook},
+	a journal article \cite{bstjShannon49},
+	a conference article \cite{spKocherHFGGHHLM019},
+	and an informal report \cite{iacrSchneierFKR15}.
+	We can also add the authors' names to the citation:
+	\Gls{aes} is a block cipher defined by \textcite{AESbook}.
+	
+	
+	\chapter{Conclusion}
+	\label{chap:conclusion}
+	\Blindtext[3]
+	
+	\printnoidxglossary[title={Notation}]  % Symbols / Notation
+	\printnoidxglossary[type=acronym]  % Acronyms
+	
+	\printbibliography[heading=bibintoc]
 \end{document}
