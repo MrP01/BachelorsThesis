@@ -17,4 +17,6 @@ _minted-*
 *.lof
 *.lot
 *.run.xml
+*.nav
+*.snm
 .idea/
