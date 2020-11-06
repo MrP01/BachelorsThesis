@@ -1,8 +1,8 @@
 # Project: Secure Classification as a Service
-**Student**:         Peter Julius Waldert \\
-**Study programme**: Information and Computer Engineering and Physics \\
-**Advisor**:         Daniel Kales, Roman Walch \\
-**Project goals**:   Classifying MNIST images on the server using homomorphic encryption. \\
+**Student**:         Peter Julius Waldert  
+**Study programme**: Information and Computer Engineering and Physics  
+**Advisor**:         Daniel Kales, Roman Walch  
+**Project goals**:   Classifying MNIST images on the server using homomorphic encryption.  
 **Project status**:  Started on 05.11.2020
 
 ## Documentation
