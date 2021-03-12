@@ -1,0 +1,100 @@
+version: "3.7"
+services:
+  classifier:
+    image: extgit.iaik.tugraz.at:8443/crypto_students/2020_bachelor_waldert/classifier
+    restart: unless-stopped
+    build:
+      context: ./classifier
+      dockerfile: classifier.Dockerfile
+    networks:
+      - fheclassifiernet
+
+  djangoapp:
+    image: extgit.iaik.tugraz.at:8443/crypto_students/2020_bachelor_waldert/djangoapp
+    restart: unless-stopped
+    build:
+      context: ./backend
+      dockerfile: backend.Dockerfile
+    environment:
+      SECRETS_FILE: "/run/secrets/fheclassifier_secrets"
+      FHECLASSIFIER_PASSWORD_FILE: "/run/secrets/fheclassifier_password"
+    secrets:
+      - fheclassifier_secrets
+      - fheclassifier_password
+    volumes:
+      - fheclassifierstatic:/var/resources/static/
+      - fheclassifiermedia:/var/resources/media/
+    networks:
+      - fheclassifiernet
+    depends_on:
+      - db_migration
+
+  webserver:
+    image: extgit.iaik.tugraz.at:8443/crypto_students/2020_bachelor_waldert/nginx
+    restart: unless-stopped
+    build:
+      context: ./backend
+      dockerfile: nginx.Dockerfile
+    ports:
+      - 80:80
+      - 443:443
+    volumes:
+      - fheclassifierstatic:/web/static/
+      - fheclassifiermedia:/web/media/
+    networks:
+      - fheclassifiernet
+    depends_on:
+      - djangoapp
+    secrets:
+      - ssl_certificate
+      - ssl_privatekey
+
+  db:
+    image: postgres
+    restart: unless-stopped
+    volumes:
+      - fheclassifierdb:/var/lib/postgresql/data
+    environment:
+      POSTGRES_DB: fheclassifierdb
+      POSTGRES_USER: fheclassifier
+      POSTGRES_PASSWORD_FILE: /run/secrets/fheclassifier_password
+    networks:
+      - fheclassifiernet
+    secrets:
+      - fheclassifier_password
+
+  db_migration:
+    image: extgit.iaik.tugraz.at:8443/crypto_students/2020_bachelor_waldert/djangoapp
+    command: /app/init.sh
+    restart: "no"
+    depends_on:
+      - db
+    environment:
+      SECRETS_FILE: "/run/secrets/fheclassifier_secrets"
+      FHECLASSIFIER_PASSWORD_FILE: "/run/secrets/fheclassifier_password"
+    secrets:
+      - fheclassifier_secrets
+      - fheclassifier_password
+    volumes:
+      - fheclassifierstatic:/var/resources/static/
+      - fheclassifiermedia:/var/resources/media/
+    networks:
+      - fheclassifiernet
+
+volumes:
+  fheclassifierdb:
+  fheclassifierstatic:
+  fheclassifiermedia:
+
+networks:
+  fheclassifiernet:
+
+secrets:
+  fheclassifier_password:
+    file: "${SECRETS_DIR}/fheclassifier-password.txt"
+  fheclassifier_secrets:
+    file: "${SECRETS_DIR}/secrets.json"
+  ssl_certificate:
+    file: "${SECRETS_DIR}/fhe-classifier.cert"
+  ssl_privatekey:
+    file: "${SECRETS_DIR}/fhe-classifier.key"
