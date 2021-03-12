@@ -1,3 +1,6 @@
+.idea/
+secrets/
+
 *.[oa]
 *~
 *.aux
@@ -19,4 +22,3 @@ _minted-*
 *.run.xml
 *.nav
 *.snm
-.idea/
