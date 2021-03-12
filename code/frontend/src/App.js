@@ -8,7 +8,7 @@ function App() {
     <div>
       <Navbar
         alignLinks="right"
-        brand={<a href="#" style={{"padding-left": "10px"}}>FHE Classifier</a>}
+        brand={<span style={{"padding-left": "10px"}}>FHE Classifier</span>}
         id="mobile-nav"
         menuIcon={<Icon>menu</Icon>}
       >
