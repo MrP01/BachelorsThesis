@@ -24,7 +24,9 @@ After your project is finished and before the repository gets archived, make sur
 - Any other interesting material (websites, papers, ...)
 
 ## Status
-Just started out
+- Translating Classifier from MatLab to C++
+- Frontend using small React App, node-seal for HE
+- Backend in Django/Python
 
 TODOs:
 - Zuerst ein einfaches Neural Network ohne homomorphic encryption trainieren (entweder in python oder C++). 
@@ -44,3 +46,4 @@ TODOs:
     für uns steht in erster Linie jedoch der Demonstrator im Vordergrund.
 - Am Ende musst du dann noch deine Arbeit in Form von einer schriftlichen Thesis niederschreiben
     und deine Ergebnisse präsentieren. 
+- Create Conan package of SEAL?
