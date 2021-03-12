@@ -9,7 +9,7 @@ services:
     networks:
       - fheclassifiernet
 
-  djangoapp:
+  backend:
     image: extgit.iaik.tugraz.at:8443/crypto_students/2020_bachelor_waldert/djangoapp
     restart: unless-stopped
     build:
@@ -27,14 +27,14 @@ services:
     networks:
       - fheclassifiernet
     depends_on:
-      - db_migration
+      - backend_initialization
 
-  webserver:
+  frontend:
     image: extgit.iaik.tugraz.at:8443/crypto_students/2020_bachelor_waldert/nginx
     restart: unless-stopped
     build:
-      context: ./backend
-      dockerfile: nginx.Dockerfile
+      context: ./frontend
+      dockerfile: frontend.Dockerfile
     ports:
       - 80:80
       - 443:443
@@ -44,7 +44,7 @@ services:
     networks:
       - fheclassifiernet
     depends_on:
-      - djangoapp
+      - backend
     secrets:
       - ssl_certificate
       - ssl_privatekey
@@ -63,7 +63,7 @@ services:
     secrets:
       - fheclassifier_password
 
-  db_migration:
+  backend_initialization:
     image: extgit.iaik.tugraz.at:8443/crypto_students/2020_bachelor_waldert/djangoapp
     command: /app/init.sh
     restart: "no"
