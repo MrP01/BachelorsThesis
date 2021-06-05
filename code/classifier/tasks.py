@@ -1,6 +1,7 @@
 import pathlib
 
 import invoke
+import json
 import mnist
 import numpy as np
 import zmq
@@ -27,4 +28,6 @@ def send_test_request(ctx, index=3):
     socket.connect("tcp://localhost:5555")
     x_train, y_train, x_test, y_test = mnist.mnist()
     socket.send_json(x_test[index].tolist())
-    print(socket.recv())
+    response = socket.recv_json()
+    print("Response:", json.dumps(response, indent=2))
+    print(f"Prediction is {'correct' if response['prediction'] == y_test[index] else 'wrong'}")

@@ -1,6 +1,7 @@
 #include "Network.h"
 
 #include <xtensor/xrandom.hpp>
+#include <xtensor/xsort.hpp>
 
 Network::Network() {}
 
@@ -17,3 +18,10 @@ Vector Network::predict(Vector input) {
   }
   return input;
 }
+
+int Network::interpret_result(Vector result) { return xt::argmax(result)(); };
+
+Vector Network::interpret_result_probabilities(Vector result) {
+  Vector y = xt::exp(result / (xt::amax(xt::abs(result)) / 8));
+  return y / xt::sum(y);
+};

@@ -20,14 +20,19 @@ zmq::message_t handle_prediction_request(zmq::message_t &request) {
     std::cerr << "parse error at byte " << ex.byte << std::endl;
     return zmq::message_t("parse_error", 12);
   }
-  std::cout << "Incoming data: " << input << std::endl;
   assert(input.shape()[0] == 28);
   assert(input.shape()[1] == 28);
+  assert(input.dimension() == 2);
   input.reshape({784});
+  std::cout << "Incoming data is valid, predicting ..." << std::endl;
   Vector result = neuralNet->predict(input);
-  zmq::message_t reply(5);
-  memcpy(reply.data(), "World", 5);
-  return reply;
+  nlohmann::json response = {
+      {"prediction", neuralNet->interpret_result(result)},
+      {"probabilites", neuralNet->interpret_result_probabilities(result)},
+  };
+  std::cout << "... replying with " << response << std::endl;
+  std::string serialized = response.dump();
+  return zmq::message_t(serialized.c_str(), serialized.length());
 }
 
 void run_server() {
@@ -55,7 +60,7 @@ double evaluate_network_on_test_data() {
     Vector x = *iter;
     x.reshape({784});
     Vector result = neuralNet->predict(x);
-    int prediction = xt::argmax(result)();
+    int prediction = neuralNet->interpret_result(result);
     // std::cout << prediction << " | " << y_test[i] << std::endl;
     if (i % 12 == 0)
       std::cout << i << " / " << N << "\r" << std::flush;
