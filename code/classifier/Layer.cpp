@@ -1,5 +1,5 @@
-#include "Layer.h"
 #include <xtensor/xmath.hpp>
+#include "Layer.h"
 
 Layer::Layer(Matrix weights, Vector biases) : weights(weights), biases(biases) {
   std::cout << "Hola from Layer" << std::endl;

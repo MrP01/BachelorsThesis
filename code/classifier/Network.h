@@ -7,5 +7,6 @@ class Network {
 
   public:
     Network();
+    void addLayer(Layer* layer);
     void addLayer(int neuronsIn, int neuronsOut);
 };
