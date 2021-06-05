@@ -47,3 +47,5 @@ TODOs:
 - Am Ende musst du dann noch deine Arbeit in Form von einer schriftlichen Thesis niederschreiben
     und deine Ergebnisse präsentieren. 
 - Create Conan package of SEAL?
+- Taylor approximate ReLU(x) = 0.54738 + 0.59579 x + 0.090189 x^2 - 0.006137 x^3
+
