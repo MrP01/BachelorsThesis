@@ -2,6 +2,7 @@ import pathlib
 
 import matplotlib.pyplot as plt
 import mnist
+import numpy as np
 import tensorflow as tf
 
 
@@ -29,8 +30,17 @@ model = tf.keras.Sequential([
     tf.keras.layers.Dense(128, activation=relu_taylor),
     tf.keras.layers.Dense(10)
 ])
+model.summary()
 model.compile(optimizer="adam",
     loss=tf.keras.losses.SparseCategoricalCrossentropy(from_logits=True),
     metrics=["accuracy"]
 )
 model.fit(x_train, y_train, epochs=10)
+model.evaluate(x_test, y_test)
+
+freeze = pathlib.Path.cwd().parent / "classifier" / "data" / "models" / "simple"
+w1, b1, w2, b2 = model.get_weights()
+np.save(freeze / "w1.npy", w1)
+np.save(freeze / "b1.npy", b1)
+np.save(freeze / "w2.npy", w2)
+np.save(freeze / "b2.npy", b2)

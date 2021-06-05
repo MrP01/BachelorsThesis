@@ -16,5 +16,5 @@ RUN chmod +x /app/manage.py /app/init.sh
 VOLUME /var/resources/static/ /var/resources/media/
 ENV DJANGO_SETTINGS_MODULE="FHEClassifier.settings.prod" \
     RESOURCE_DIR="/var/resources"
-CMD crond -f -d 5 & gunicorn -b 0.0.0.0:8000 FHEClassifier.asgi
+CMD gunicorn -b 0.0.0.0:8000 FHEClassifier.asgi
 EXPOSE 8000
