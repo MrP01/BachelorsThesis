@@ -7,6 +7,7 @@
 \usepackage[ngerman,english]{babel}
 \usepackage[utf8]{inputenc}
 \usepackage{geometry}
+\usepackage{float}
 \usepackage{microtype}
 \usepackage[all]{nowidow}
 \usepackage[bsc,claim,iaik]{iaikthesis}
@@ -27,8 +28,8 @@
 \thesisdate{Month 2020}
 \supervisortitle{Supervisors}
 \supervisor{
-	Dipl.-Ing. Daniel Kales\\
-	Dipl.-Ing. Roman Walch\\
+	Dipl.-Ing. Roman Walch \\
+	Dipl.-Ing. Daniel Kales \\
 	\smallskip
 	Institute of Applied Information Processing and Communications\\
 	Graz University of Technology
@@ -45,50 +46,12 @@
 
 \begin{document}
 	\printthesistitle
-	
-	\chapter*{Abstract}
-	Abstract of your thesis (at most one page)
-	
-	\Blindtext[2]
-	
-	\paragraph{Keywords:}
-	Some keywords...
-
+	\include{chapters/abstract}
 	\tableofcontents
-	
-	\chapter{Introduction}
-	\label{chap:introduction}
-	\Blindtext[3]
-	
-	\chapter{Background}
-	\label{chap:background}
-	In this chapter, we provide some usage examples for
-	glossaries and acronym lists with \texttt{glossaries} (Section \ref{sec:gloss}),
-	bibliography and citations with \texttt{biblatex} (Section \ref{sec:bib}), and more.
-	
-	\section{Notation and Acronyms}
-	\label{sec:gloss}
-	Symbols and acronyms are defined in the preamble, after loading the \texttt{glossaries} package, and used as follows.
-	
-	In this chapter, we introduce the necessary background on the \gls{aes}.
-	We denote binary exclusive-or by \gls{xor}.
-	
-	\section{Citations}
-	\label{sec:bib}
-	This is an example of how to specify and cite
-	a book \cite{AESbook},
-	a journal article \cite{bstjShannon49},
-	a conference article \cite{spKocherHFGGHHLM019},
-	and an informal report \cite{iacrSchneierFKR15}.
-	We can also add the authors' names to the citation:
-	\Gls{aes} is a block cipher defined by \textcite{AESbook}.
-	
-	\chapter{Conclusion}
-	\label{chap:conclusion}
-	\Blindtext[3]
-	
+	\include{chapters/introduction}
+	\include{chapters/background}
+	\include{chapters/conclusion}
 	\printnoidxglossary[title={Notation}]  % Symbols / Notation
 	\printnoidxglossary[type=acronym]  % Acronyms
-	
 	\printbibliography[heading=bibintoc]
 \end{document}
