@@ -10,7 +10,7 @@ def relu_taylor(x):
     """Taylor-approximated activation function
     ReLU(x) = 0.54738 + 0.59579 x + 0.090189 x^2 - 0.006137 x^3
     """
-    polynomial = [0.006137, 0.090189, 0.59579, 0.54738]  # highest order first
+    polynomial = [-0.006137, 0.090189, 0.59579, 0.54738]  # highest order first
     return tf.math.polyval(polynomial, x)
 
 
@@ -28,7 +28,7 @@ x_train, y_train, x_test, y_test = mnist.mnist()
 model = tf.keras.Sequential([
     tf.keras.layers.Flatten(input_shape=(28, 28)),
     tf.keras.layers.Dense(128, activation=relu_taylor),
-    tf.keras.layers.Dense(10)
+    tf.keras.layers.Dense(10, activation=relu_taylor)
 ])
 model.summary()
 model.compile(optimizer="adam",

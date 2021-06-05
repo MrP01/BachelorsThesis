@@ -9,4 +9,5 @@ class Network {
     Network();
     void addLayer(Layer* layer);
     void addLayer(int neuronsIn, int neuronsOut);
+    Vector predict(Vector input);
 };
