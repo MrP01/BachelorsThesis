@@ -2,3 +2,4 @@ Django==3.2.4
 djangorestframework==3.12.4
 gunicorn==20.1.0
 pyzmq==22.1.0
+psycopg2==2.8.6 

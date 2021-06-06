@@ -1,3 +1,4 @@
+# syntax = docker/dockerfile:experimental
 FROM conanio/gcc10
 WORKDIR /app
 USER root
@@ -15,7 +16,7 @@ RUN conan profile new default --detect --force \
 COPY requirements.txt /app/requirements.txt
 RUN pip3 install -r requirements.txt
 COPY tasks.py /app/tasks.py
-RUN inv fetch-training-data
+# RUN --mount=type=cache,target=/root/.local/share/MNIST/ inv fetch-training-data
 
 COPY conanfile.txt /app/conanfile.txt
 RUN mkdir /app/cmake-build-debug/

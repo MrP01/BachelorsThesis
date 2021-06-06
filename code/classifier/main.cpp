@@ -77,6 +77,7 @@ double evaluate_network_on_test_data() {
 
 int main() {
   std::cout << "--- MNIST Neural Network Predictor ---" << std::endl;
+
   //  neuralNet->addLayer(784, 128);
   //  neuralNet->addLayer(128, 10);
   auto w1 = xt::load_npy<float>("data/models/simple/w1.npy");

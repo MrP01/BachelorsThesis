@@ -3,12 +3,11 @@ WORKDIR /app
 
 RUN apk update
 RUN pip install --upgrade pip
-RUN apk add --virtual build-deps gcc python3-dev musl-dev
-RUN apk add postgresql-dev && pip install psycopg2
-RUN apk del build-deps
-
+RUN apk add --virtual build-deps gcc python3-dev musl-dev build-base
+RUN apk add postgresql-dev libzmq zeromq-dev
 COPY requirements.txt /app/
 RUN pip install -r requirements.txt
+RUN apk del build-deps
 
 COPY . /app/
 RUN chmod +x /app/manage.py /app/init.sh
