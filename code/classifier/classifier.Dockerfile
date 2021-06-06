@@ -15,7 +15,7 @@ RUN conan profile new default --detect --force \
 
 COPY requirements.txt /app/requirements.txt
 RUN pip3 install -r requirements.txt
-COPY tasks.py /app/tasks.py
+# COPY tasks.py /app/tasks.py
 # RUN --mount=type=cache,target=/root/.local/share/MNIST/ inv fetch-training-data
 
 COPY conanfile.txt /app/conanfile.txt
@@ -25,4 +25,4 @@ RUN cd /app/cmake-build-debug/ && conan install ..
 COPY . /app
 RUN cd /app/cmake-build-debug/ && cmake .. && cmake --build . -- -j 3
 
-CMD /app/cmake-build-debug/bin/classifier
+CMD ["/app/cmake-build-debug/bin/classifier"]

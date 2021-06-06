@@ -1,3 +1,4 @@
+#include <csignal>
 #include <iostream>
 #include <nlohmann/json.hpp>
 #include <xtensor/xaxis_iterator.hpp>
@@ -10,6 +11,7 @@
 #include "Network.h"
 
 auto neuralNet = new Network();
+bool quit = false;
 
 zmq::message_t handle_prediction_request(zmq::message_t &request) {
   xt::xarray<double> input;
@@ -40,12 +42,16 @@ void run_server() {
   zmq::socket_t socket(context, ZMQ_REP);
   socket.bind("tcp://*:5555");
 
-  while (true) {
-    zmq::message_t request;
-    auto sent = socket.recv(request);
-    std::cout << "Handling request ..." << std::endl;
-    zmq::message_t reply = handle_prediction_request(request);
-    socket.send(reply, zmq::send_flags::none);
+  while (!quit) {
+    try {
+      zmq::message_t request;
+      auto sent = socket.recv(request);
+      std::cout << "Handling request ..." << std::endl;
+      zmq::message_t reply = handle_prediction_request(request);
+      socket.send(reply, zmq::send_flags::none);
+    } catch (zmq::error_t) {
+      std::cout << "Loop aborted." << std::endl;
+    }
   }
 }
 
@@ -75,8 +81,14 @@ double evaluate_network_on_test_data() {
   return accuracy;
 }
 
+void shutdown(int signum) {
+  std::cout << "Shutdown..." << std::endl;
+  quit = true;
+}
+
 int main() {
   std::cout << "--- MNIST Neural Network Predictor ---" << std::endl;
+  signal(SIGTERM, shutdown);
 
   //  neuralNet->addLayer(784, 128);
   //  neuralNet->addLayer(128, 10);
