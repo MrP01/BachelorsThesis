@@ -4,7 +4,8 @@ WORKDIR /app
 COPY package.json .
 RUN yarn install --silent
 
-COPY . .
+COPY src src
+COPY public public
 RUN yarn run build
 
 FROM nginx:alpine
