@@ -1,0 +1,8 @@
+.canvas-container {
+    padding: 20px;
+}
+
+.canvas-container > canvas {
+    border: 1px solid grey;
+    /* transform: scale(10); */
+}
