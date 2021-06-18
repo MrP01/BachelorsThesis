@@ -25,4 +25,5 @@ RUN cd /app/cmake-build-debug/ && conan install ..
 COPY . /app
 RUN cd /app/cmake-build-debug/ && cmake .. && cmake --build . -- -j 3
 
+# TODO: make separate alpine image which only contains binary
 CMD ["/app/cmake-build-debug/bin/classifier"]
