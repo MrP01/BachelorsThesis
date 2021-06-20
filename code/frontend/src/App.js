@@ -3,6 +3,9 @@ import 'materialize-css/dist/css/materialize.css';
 import { Button, Col, Icon, Navbar, Row } from 'react-materialize';
 import { ReactPainter } from 'react-painter';
 import "./App.css";
+import SEAL from 'node-seal/throws_wasm_node_umd'
+
+const seal = await SEAL();
 
 function classify(blob) {
   console.log("Classifying given input", blob);
