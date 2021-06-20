@@ -3,6 +3,7 @@
 #include <xtensor/xaxis_iterator.hpp>
 #include <xtensor/xmath.hpp>
 
+// TODO:
 int slots = 3;
 int current_level = 1;
 int scale = 7;

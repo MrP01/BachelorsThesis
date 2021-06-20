@@ -12,9 +12,12 @@
 
 auto neuralNet = new Network();
 bool quit = false;
+seal::SEALContext sealContext;
 
 zmq::message_t handlePredictionRequest(zmq::message_t &request) {
   xt::xarray<double> input;
+  seal::RelinKeys relinKeys;
+  relinKeys.load(sealContext, request.to_string());
   try {
     nlohmann::json input_json = nlohmann::json::parse(request.to_string());
     xt::from_json(input_json, input);
@@ -55,7 +58,7 @@ void runServer() {
   }
 }
 
-double evaluate_network_on_test_data() {
+double evaluateNetworkOnTestData() {
   auto x_test = xt::load_npy<float>("data/mnist/x-test.npy");
   auto y_test = xt::load_npy<int>("data/mnist/y-test.npy");
   int N = x_test.shape()[0];
@@ -90,6 +93,12 @@ int main() {
   std::cout << "--- MNIST Neural Network Predictor ---" << std::endl;
   signal(SIGTERM, shutdown);
 
+  seal::EncryptionParameters parms(seal::scheme_type::ckks);
+  size_t poly_modulus_degree = 8192;
+  parms.set_poly_modulus_degree(poly_modulus_degree);
+  parms.set_coeff_modulus(seal::CoeffModulus::Create(poly_modulus_degree, {50, 20, 50}));
+  seal::SEALContext sealContext(parms);
+
   //  neuralNet->addLayer(784, 128);
   //  neuralNet->addLayer(128, 10);
   auto w1 = xt::load_npy<float>("data/models/simple/w1.npy");
@@ -99,7 +108,6 @@ int main() {
   neuralNet->addLayer(new Layer(w1, b1));
   neuralNet->addLayer(new Layer(w2, b2));
 
-  // evaluate_network_on_test_data(neuralNet);
   runServer();
   return 0;
 }

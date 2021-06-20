@@ -10,6 +10,7 @@ class Network {
     void addLayer(Layer* layer);
     void addLayer(int neuronsIn, int neuronsOut);
     Vector predict(Vector input);
+    Vector predictEncrypted();
     int interpretResult(Vector result);
     Vector interpretResultProbabilities(Vector result);
 };
