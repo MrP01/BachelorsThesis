@@ -13,7 +13,7 @@
 auto neuralNet = new Network();
 bool quit = false;
 
-zmq::message_t handle_prediction_request(zmq::message_t &request) {
+zmq::message_t handlePredictionRequest(zmq::message_t &request) {
   xt::xarray<double> input;
   try {
     nlohmann::json input_json = nlohmann::json::parse(request.to_string());
@@ -29,15 +29,15 @@ zmq::message_t handle_prediction_request(zmq::message_t &request) {
   std::cout << "Incoming data is valid, predicting ..." << std::endl;
   Vector result = neuralNet->predict(input);
   nlohmann::json response = {
-      {"prediction", neuralNet->interpret_result(result)},
-      {"probabilites", neuralNet->interpret_result_probabilities(result)},
+      {"prediction", neuralNet->interpretResult(result)},
+      {"probabilites", neuralNet->interpretResultProbabilities(result)},
   };
   std::cout << "... replying with " << response << std::endl;
   std::string serialized = response.dump();
   return zmq::message_t(serialized.c_str(), serialized.length());
 }
 
-void run_server() {
+void runServer() {
   zmq::context_t context(1);
   zmq::socket_t socket(context, ZMQ_REP);
   socket.bind("tcp://*:5555");
@@ -47,7 +47,7 @@ void run_server() {
       zmq::message_t request;
       auto sent = socket.recv(request);
       std::cout << "Handling request ..." << std::endl;
-      zmq::message_t reply = handle_prediction_request(request);
+      zmq::message_t reply = handlePredictionRequest(request);
       socket.send(reply, zmq::send_flags::none);
     } catch (zmq::error_t) {
       std::cout << "Loop aborted." << std::endl;
@@ -66,7 +66,7 @@ double evaluate_network_on_test_data() {
     Vector x = *iter;
     x.reshape({784});
     Vector result = neuralNet->predict(x);
-    int prediction = neuralNet->interpret_result(result);
+    int prediction = neuralNet->interpretResult(result);
     // std::cout << prediction << " | " << y_test[i] << std::endl;
     if (i % 12 == 0)
       std::cout << i << " / " << N << "\r" << std::flush;
@@ -100,6 +100,6 @@ int main() {
   neuralNet->addLayer(new Layer(w2, b2));
 
   // evaluate_network_on_test_data(neuralNet);
-  run_server();
+  runServer();
   return 0;
 }

@@ -25,6 +25,6 @@ class Layer {
   public:
     Layer(Matrix weights, Vector biases);
     Vector feedforward(Vector x);
-    void CKKS_diagonal(seal::Ciphertext &in_out, const Matrix &mat, seal::GaloisKeys &galois_keys, seal::CKKSEncoder* ckks_encoder, seal::Evaluator &evaluator);
-    void CKKS_babystep_giantstep(seal::Ciphertext &in_out, const Matrix &mat, seal::GaloisKeys &galois_keys, seal::CKKSEncoder* ckks_encoder, seal::Evaluator &evaluator);
+    void multiplyCKKS(seal::Ciphertext &in_out, const Matrix &mat, seal::GaloisKeys &galois_keys, seal::CKKSEncoder* ckks_encoder, seal::Evaluator &evaluator);
+    void multiplyCKKSBabystepGiantstep(seal::Ciphertext &in_out, const Matrix &mat, seal::GaloisKeys &galois_keys, seal::CKKSEncoder* ckks_encoder, seal::Evaluator &evaluator);
 };

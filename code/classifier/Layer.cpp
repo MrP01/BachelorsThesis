@@ -23,7 +23,7 @@ Vector Layer::feedforward(Vector x) {
   return activation(dot + biases);
 }
 
-void Layer::CKKS_diagonal(seal::Ciphertext &in_out, const Matrix &mat, seal::GaloisKeys &galois_keys, seal::CKKSEncoder *ckks_encoder, seal::Evaluator &evaluator) {
+void Layer::multiplyCKKS(seal::Ciphertext &in_out, const Matrix &mat, seal::GaloisKeys &galois_keys, seal::CKKSEncoder *ckks_encoder, seal::Evaluator &evaluator) {
   size_t matrix_dim = mat.size();
   if (matrix_dim != slots && matrix_dim * 2 > slots)
     throw std::runtime_error("too little slots for matmul implementation!");
@@ -65,7 +65,7 @@ void Layer::CKKS_diagonal(seal::Ciphertext &in_out, const Matrix &mat, seal::Gal
   in_out = sum;
 }
 
-void Layer::CKKS_babystep_giantstep(seal::Ciphertext &in_out, const Matrix &mat, seal::GaloisKeys &galois_keys, seal::CKKSEncoder *ckks_encoder, seal::Evaluator &evaluator) {
+void Layer::multiplyCKKSBabystepGiantstep(seal::Ciphertext &in_out, const Matrix &mat, seal::GaloisKeys &galois_keys, seal::CKKSEncoder *ckks_encoder, seal::Evaluator &evaluator) {
   size_t matrix_dim = mat.size();
 
   if (matrix_dim != slots && matrix_dim * 2 > slots)
