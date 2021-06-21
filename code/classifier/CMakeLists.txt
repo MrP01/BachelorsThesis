@@ -6,6 +6,7 @@ set(CMAKE_CXX_STANDARD 20)
 include(${CMAKE_BINARY_DIR}/conanbuildinfo.cmake)
 conan_basic_setup()
 
+# set(ALLOW_TRANSPARENT_CIPHERTEXT true)
 find_package(SEAL 3.6 REQUIRED)
 
 add_executable(classifier main.cpp Layer.cpp Network.cpp Network.h)

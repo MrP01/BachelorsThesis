@@ -17,7 +17,10 @@ seal::SEALContext sealContext;
 zmq::message_t handlePredictionRequest(zmq::message_t &request) {
   xt::xarray<double> input;
   seal::RelinKeys relinKeys;
-  relinKeys.load(sealContext, request.to_string());
+  seal::GaloisKeys galoisKeys;
+  // TODO, base64-decode of json data
+  seal::Evaluator evaluator();
+
   try {
     nlohmann::json input_json = nlohmann::json::parse(request.to_string());
     xt::from_json(input_json, input);

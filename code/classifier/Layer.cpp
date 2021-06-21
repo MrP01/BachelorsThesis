@@ -3,11 +3,10 @@
 #include <xtensor/xaxis_iterator.hpp>
 #include <xtensor/xmath.hpp>
 
-// TODO:
-int slots = 3;
-int current_level = 1;
+int slots = context.getSlots();  // = N/2 = 4096/2 = 2048
+int current_multiplication_level = 1;
 int scale = 7;
-int bsgs_n1 = 1, bsgs_n2 = 2;
+int bsgs_n1 = 28, bsgs_n2 = 28;  // product = matrix size, minimal sum if possible
 
 Layer::Layer(Matrix weights, Vector biases) : weights(weights), biases(biases) {}
 
@@ -46,7 +45,7 @@ void Layer::multiplyCKKS(seal::Ciphertext &in_out, const Matrix &mat, seal::Galo
     }
     seal::Plaintext row;
     ckks_encoder->encode(diag, scale, row);
-    if (current_level != 0)
+    if (current_multiplication_level != 0)
       evaluator.mod_switch_to_inplace(row, in_out.parms_id());
     matrix.push_back(row);
   }
@@ -100,7 +99,7 @@ void Layer::multiplyCKKSBabystepGiantstep(seal::Ciphertext &in_out, const Matrix
 
     seal::Plaintext row;
     ckks_encoder->encode(diag, scale, row);
-    if (current_level != 0)
+    if (current_multiplication_level != 0)
       evaluator.mod_switch_to_inplace(row, in_out.parms_id());
     matrix.push_back(row);
   }

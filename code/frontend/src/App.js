@@ -3,13 +3,59 @@ import 'materialize-css/dist/css/materialize.css';
 import { Button, Col, Icon, Navbar, Row } from 'react-materialize';
 import { ReactPainter } from 'react-painter';
 import "./App.css";
-import SEAL from 'node-seal/throws_wasm_node_umd'
-
-const seal = await SEAL();
+import SEAL from 'node-seal/throws_wasm_node_umd';
 
 function classify(blob) {
   console.log("Classifying given input", blob);
 }
+
+; (async () => {
+  // Wait for the library to initialize
+  const seal = await SEAL();
+  const schemeType = seal.SchemeType.ckks;
+  // const securityLevel = seal.SecurityLevel.tc128;
+  const securityLevel = seal.SecurityLevel.none;
+  const polyModulusDegree = 4096;
+  const bitSizes = [60, 40, 40, 40, 40, 60];
+
+  const encParms = seal.EncryptionParameters(schemeType);
+  // Set the PolyModulusDegree
+  encParms.setPolyModulusDegree(polyModulusDegree)
+
+  // Create a suitable set of CoeffModulus primes
+  encParms.setCoeffModulus(
+    seal.CoeffModulus.Create(polyModulusDegree, Int32Array.from(bitSizes))
+  );
+  // Create a new Context
+  const context = seal.Context(
+    parms, // Encryption Parameters
+    true, // ExpandModChain
+    securityLevel // Enforce a security level
+  );
+
+  if (!context.parametersSet()) {
+    throw new Error(
+      'Could not set the parameters in the given context. Please try different encryption parameters.'
+    )
+  }
+
+  // Create a new KeyGenerator (creates a new keypair internally)
+  const keyGenerator = seal.KeyGenerator(context)
+
+  const secretKey = keyGenerator.secretKey()
+  const publicKey = keyGenerator.createPublicKey()
+  const relinKey = keyGenerator.createRelinKeys()
+  // Generating Galois keys takes a while compared to the others
+  const galoisKey = keyGenerator.createGaloisKeys(Int32Array.from([]));
+
+  // Saving a key to a string is the same for each type of key
+  // const secretBase64Key = secretKey.save()
+  // const publicBase64Key = publicKey.save()
+  const relinBase64Key = relinKey.save()
+  // Please note saving Galois keys can take an even longer time and the output is **very** large.
+  const galoisBase64Key = galoisKey.save();
+  const contextBase64 = context.save();
+})()
 
 function App() {
   return (
