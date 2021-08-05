@@ -6,8 +6,6 @@ services:
     build:
       context: ./classifier
       dockerfile: classifier.Dockerfile
-    networks:
-      - fheclassifiernet
 
   backend:
     image: extgit.iaik.tugraz.at:8443/crypto_students/2020_bachelor_waldert/djangoapp
@@ -24,8 +22,6 @@ services:
     volumes:
       - fheclassifierstatic:/var/resources/static/
       - fheclassifiermedia:/var/resources/media/
-    networks:
-      - fheclassifiernet
     depends_on:
       - backend_initialization
 
@@ -41,8 +37,6 @@ services:
     volumes:
       - fheclassifierstatic:/web/static/
       - fheclassifiermedia:/web/media/
-    networks:
-      - fheclassifiernet
     depends_on:
       - backend
     secrets:
@@ -58,8 +52,6 @@ services:
       POSTGRES_DB: fheclassifierdb
       POSTGRES_USER: fheclassifier
       POSTGRES_PASSWORD_FILE: /run/secrets/fheclassifier_password
-    networks:
-      - fheclassifiernet
     secrets:
       - fheclassifier_password
 
@@ -78,16 +70,11 @@ services:
     volumes:
       - fheclassifierstatic:/var/resources/static/
       - fheclassifiermedia:/var/resources/media/
-    networks:
-      - fheclassifiernet
 
 volumes:
   fheclassifierdb:
   fheclassifierstatic:
   fheclassifiermedia:
-
-networks:
-  fheclassifiernet:
 
 secrets:
   fheclassifier_password:
@@ -98,3 +85,4 @@ secrets:
     file: "${SECRETS_DIR}/fhe-classifier.cert"
   ssl_privatekey:
     file: "${SECRETS_DIR}/fhe-classifier.key"
+
