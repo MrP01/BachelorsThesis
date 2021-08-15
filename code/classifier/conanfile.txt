@@ -2,6 +2,8 @@
 xtensor/0.21.5
 cppzmq/4.7.1
 nlohmann_json/3.9.1
+backward-cpp/1.5
+cppcodec/0.2
 
 [generators]
 cmake

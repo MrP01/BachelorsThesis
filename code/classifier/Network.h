@@ -10,6 +10,7 @@ class Network {
 
   public:
     Network();
+    void init();
     void addLayer(Layer* layer);
     void addLayer(int neuronsIn, int neuronsOut);
     Vector predict(Vector input);

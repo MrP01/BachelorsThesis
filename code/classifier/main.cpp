@@ -1,3 +1,4 @@
+#include <backward.hpp>
 #include <csignal>
 #include <iostream>
 #include <nlohmann/json.hpp>
@@ -12,6 +13,10 @@
 
 auto neuralNet = new Network();
 bool quit = false;
+
+namespace backward {
+  backward::SignalHandling sh;
+}
 
 zmq::message_t handlePredictionRequest(zmq::message_t &request) {
   xt::xarray<double> input;
@@ -46,6 +51,7 @@ void runServer() {
   zmq::context_t context(1);
   zmq::socket_t socket(context, ZMQ_REP);
   socket.bind("tcp://*:5555");
+  std::cout << "The server is running" << std::endl;
 
   while (!quit) {
     try {
@@ -101,6 +107,8 @@ int main() {
   auto b1 = xt::load_npy<float>("data/models/simple/b1.npy");
   auto w2 = xt::load_npy<float>("data/models/simple/w2.npy");
   auto b2 = xt::load_npy<float>("data/models/simple/b2.npy");
+
+  neuralNet->init();
   neuralNet->addLayer(new Layer(w1, b1));
   neuralNet->addLayer(new Layer(w2, b2));
 
