@@ -18,25 +18,22 @@ function classify(blob) {
   const polyModulusDegree = 4096;
   const bitSizes = [60, 40, 40, 40, 40, 60];
 
-  const encParms = seal.EncryptionParameters(schemeType);
-  // Set the PolyModulusDegree
-  encParms.setPolyModulusDegree(polyModulusDegree)
+  const params = seal.EncryptionParameters(schemeType);
+  params.setPolyModulusDegree(polyModulusDegree)
 
   // Create a suitable set of CoeffModulus primes
-  encParms.setCoeffModulus(
+  params.setCoeffModulus(
     seal.CoeffModulus.Create(polyModulusDegree, Int32Array.from(bitSizes))
   );
   // Create a new Context
   const context = seal.Context(
-    parms, // Encryption Parameters
+    params, // Encryption Parameters
     true, // ExpandModChain
     securityLevel // Enforce a security level
   );
 
   if (!context.parametersSet()) {
-    throw new Error(
-      'Could not set the parameters in the given context. Please try different encryption parameters.'
-    )
+    throw new Error('Could not set the parameters in the given context. Please try different encryption parameters.')
   }
 
   // Create a new KeyGenerator (creates a new keypair internally)
