@@ -1,5 +1,5 @@
-import 'materialize-css';
-import 'materialize-css/dist/css/materialize.css';
+import '@materializecss/materialize';
+import '@materializecss/materialize/dist/css/materialize.css';
 import { Button, Col, Icon, Navbar, Row } from 'react-materialize';
 import { ReactPainter } from 'react-painter';
 import "./App.css";
@@ -51,7 +51,7 @@ function classify(blob) {
   const relinBase64Key = relinKey.save()
   // Please note saving Galois keys can take an even longer time and the output is **very** large.
   const galoisBase64Key = galoisKey.save();
-  const contextBase64 = context.save();
+  // const contextBase64 = context.save();
 })()
 
 function App() {
