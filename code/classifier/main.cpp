@@ -1,4 +1,5 @@
 #include <backward.hpp>
+#include <cppcodec/base64_rfc4648.hpp>
 #include <csignal>
 #include <iostream>
 #include <nlohmann/json.hpp>
@@ -18,32 +19,59 @@ namespace backward {
   backward::SignalHandling sh;
 }
 
-zmq::message_t handlePredictionRequest(zmq::message_t &request) {
+nlohmann::json handlePlainPredictionRequest(nlohmann::json request) {
   xt::xarray<double> input;
-  seal::RelinKeys relinKeys;
-  seal::GaloisKeys galoisKeys;
-  // TODO, base64-decode of json data
-  seal::Evaluator evaluator();
-
-  try {
-    nlohmann::json input_json = nlohmann::json::parse(request.to_string());
-    xt::from_json(input_json, input);
-  } catch (nlohmann::json::parse_error &ex) {
-    std::cerr << "parse error at byte " << ex.byte << std::endl;
-    return zmq::message_t("parse_error", 12);
-  }
+  xt::from_json(request["image"], input);
   assert(input.shape()[0] == 28);
   assert(input.shape()[1] == 28);
   assert(input.dimension() == 2);
   input.reshape({784});
   std::cout << "Incoming data is valid, predicting ..." << std::endl;
   Vector result = neuralNet->predict(input);
-  nlohmann::json response = {
+  return nlohmann::json{
       {"prediction", neuralNet->interpretResult(result)},
       {"probabilites", neuralNet->interpretResultProbabilities(result)},
   };
-  std::cout << "... replying with " << response << std::endl;
-  std::string serialized = response.dump();
+}
+
+nlohmann::json handleEncryptedPredictionRequest(nlohmann::json request) {
+  using base64 = cppcodec::base64_rfc4648;
+
+  seal::RelinKeys relinKeys;
+  seal::GaloisKeys galoisKeys;
+  seal::Evaluator evaluator();
+
+  std::vector<uint8_t> decoded = base64::decode(request["relinKeys"].get<std::string>());
+  std::stringstream dataStream(std::string(decoded.begin(), decoded.end()));
+  relinKeys.load(*neuralNet->context, dataStream);
+
+  decoded = base64::decode(request["galoisKeys"].get<std::string>());
+  dataStream = std::stringstream(std::string(decoded.begin(), decoded.end()));
+  galoisKeys.load(*neuralNet->context, dataStream);
+
+  return nlohmann::json{};
+}
+
+nlohmann::json handleRequest(nlohmann::json request) {
+  nlohmann::json response;
+  if (request["route"].get<std::string>() == "predict_plain")
+    response = handlePlainPredictionRequest(request);
+  else if (request["route"].get<std::string>() == "predict_encrypted")
+    response = handleEncryptedPredictionRequest(request);
+  std::cout << "reply: " << response << std::endl;
+  return response;
+}
+
+zmq::message_t handleMessage(zmq::message_t &request) {
+  nlohmann::json request_json;
+  try {
+    request_json = nlohmann::json::parse(request.to_string());
+  } catch (nlohmann::json::parse_error &ex) {
+    std::cerr << "parse error at byte " << ex.byte << std::endl;
+    return zmq::message_t("parse_error", 12);
+  }
+  nlohmann::json response_json = handleRequest(request_json);
+  std::string serialized = response_json.dump();
   return zmq::message_t(serialized.c_str(), serialized.length());
 }
 
@@ -58,7 +86,7 @@ void runServer() {
       zmq::message_t request;
       auto sent = socket.recv(request);
       std::cout << "Handling request ..." << std::endl;
-      zmq::message_t reply = handlePredictionRequest(request);
+      zmq::message_t reply = handleMessage(request);
       socket.send(reply, zmq::send_flags::none);
     } catch (zmq::error_t) {
       std::cout << "Loop aborted." << std::endl;
