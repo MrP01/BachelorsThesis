@@ -1,4 +1,3 @@
-# syntax = docker/dockerfile:experimental
 FROM conanio/gcc10
 WORKDIR /app
 USER root

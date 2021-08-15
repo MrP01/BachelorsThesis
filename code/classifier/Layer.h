@@ -8,8 +8,13 @@
 typedef xt::xarray<double> Matrix;
 typedef xt::xarray<double> Vector;
 
+class Network;
+
 class Layer {
+  friend Network;  // Network can access my properties
+
   private:
+    Network* parent = nullptr;
     Matrix weights;
     Vector biases;
 

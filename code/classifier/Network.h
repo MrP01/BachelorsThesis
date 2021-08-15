@@ -6,6 +6,9 @@ class Network {
     std::vector<Layer*> layers;
 
   public:
+    seal::SEALContext* context = nullptr;
+
+  public:
     Network();
     void addLayer(Layer* layer);
     void addLayer(int neuronsIn, int neuronsOut);

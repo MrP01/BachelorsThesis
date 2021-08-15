@@ -1,12 +1,12 @@
 #include "Layer.h"
+#include "Network.h"
 #include <algorithm>
 #include <xtensor/xaxis_iterator.hpp>
 #include <xtensor/xmath.hpp>
 
-int slots = context.getSlots();  // = N/2 = 4096/2 = 2048
 int current_multiplication_level = 1;
 int scale = 7;
-int bsgs_n1 = 28, bsgs_n2 = 28;  // product = matrix size, minimal sum if possible
+int bsgs_n1 = 28, bsgs_n2 = 28; // product = matrix size, minimal sum if possible
 
 Layer::Layer(Matrix weights, Vector biases) : weights(weights), biases(biases) {}
 
@@ -24,6 +24,8 @@ Vector Layer::feedforward(Vector x) {
 }
 
 void Layer::multiplyCKKS(seal::Ciphertext &in_out, const Matrix &mat, seal::GaloisKeys &galois_keys, seal::CKKSEncoder *ckks_encoder, seal::Evaluator &evaluator) {
+  // int slots = parent->context->getSlots();  // TODO: = N/2 = 4096/2 = 2048
+  int slots = 2048;
   size_t matrix_dim = mat.size();
   if (matrix_dim != slots && matrix_dim * 2 > slots)
     throw std::runtime_error("too little slots for matmul implementation!");
@@ -66,6 +68,7 @@ void Layer::multiplyCKKS(seal::Ciphertext &in_out, const Matrix &mat, seal::Galo
 }
 
 void Layer::multiplyCKKSBabystepGiantstep(seal::Ciphertext &in_out, const Matrix &mat, seal::GaloisKeys &galois_keys, seal::CKKSEncoder *ckks_encoder, seal::Evaluator &evaluator) {
+  int slots = 2048; // TODO: getSlots()
   size_t matrix_dim = mat.size();
 
   if (matrix_dim != slots && matrix_dim * 2 > slots)
