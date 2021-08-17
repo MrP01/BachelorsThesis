@@ -4,9 +4,22 @@ import { Button, Col, Icon, Navbar, Row } from "react-materialize";
 import { ReactPainter } from "react-painter";
 import "./App.css";
 import SEAL from "node-seal/throws_wasm_node_umd";
+import Pica from "pica";
 
-function classify(blob) {
-  console.log("Classifying given input", blob);
+const pica = new Pica();
+
+function classify() {
+  console.log("Classifying given input");
+  const source = document.querySelector("canvas");
+  const target = document.querySelector("#target-28x28");
+  pica.resize(source, target, { alpha: true }).then((result) => {
+    console.log("Resizing to 28x28 finished.");
+    let ctx = result.getContext("2d");
+    let alphaChannel = ctx
+      .getImageData(0, 0, 28, 28)
+      .data.filter((value, index) => index % 4 === 3); // alpha channel is every 4th element
+    console.log(alphaChannel);
+  });
 }
 
 (async () => {
@@ -53,8 +66,13 @@ function classify(blob) {
   // const secretBase64Key = secretKey.save()
   // const publicBase64Key = publicKey.save()
   const relinBase64Key = relinKey.save();
-  // Please note saving Galois keys can take an even longer time and the output is **very** large.
-  const galoisBase64Key = galoisKey.save();
+  const galoisBase64Key = galoisKey.save(); // saving Galois keys can take an even longer time and the output is **very** large.
+
+  console.log("SEAL initialized.");
+  console.log("Secret key", secretKey);
+  console.log("Public key", publicKey);
+  console.log("Relin key", relinBase64Key);
+  console.log("Galois key", galoisBase64Key);
 })();
 
 function App() {
@@ -67,12 +85,11 @@ function App() {
         menuIcon={<Icon>menu</Icon>}
       ></Navbar>
       <Row>
-        <Col s={12}>
-          <h3 className={"center"}>Classify your Secret Data</h3>
-          <p>
-            Using Fully Homomorphic Encryption, directly from within the
-            browser.
-          </p>
+        <h3 className={"center"}>Classify your Secret Data</h3>
+        <p>
+          Using Fully Homomorphic Encryption, directly from within the browser.
+        </p>
+        <Col m={6} s={12}>
           <ReactPainter
             width={300}
             height={300}
@@ -88,6 +105,9 @@ function App() {
               </div>
             )}
           />
+        </Col>
+        <Col m={6}>
+          <canvas id="target-28x28" width={28} height={28}></canvas>
         </Col>
       </Row>
     </div>

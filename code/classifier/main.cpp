@@ -54,9 +54,9 @@ nlohmann::json handleEncryptedPredictionRequest(nlohmann::json request) {
 
 nlohmann::json handleRequest(nlohmann::json request) {
   nlohmann::json response;
-  if (request["route"].get<std::string>() == "predict_plain")
+  if (request["action"].get<std::string>() == "predict_plain")
     response = handlePlainPredictionRequest(request);
-  else if (request["route"].get<std::string>() == "predict_encrypted")
+  else if (request["action"].get<std::string>() == "predict_encrypted")
     response = handleEncryptedPredictionRequest(request);
   std::cout << "reply: " << response << std::endl;
   return response;

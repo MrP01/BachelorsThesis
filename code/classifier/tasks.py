@@ -28,7 +28,7 @@ def send_test_request(ctx, index=3):
     socket.connect("tcp://localhost:5555")
     x_train, y_train, x_test, y_test = mnist.mnist()
     socket.send_json({
-        "route": "predict_plain",
+        "action": "predict_plain",
         "image": x_test[index].tolist()
     })
     response = socket.recv_json()
