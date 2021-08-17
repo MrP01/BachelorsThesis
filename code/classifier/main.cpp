@@ -22,10 +22,9 @@ namespace backward {
 nlohmann::json handlePlainPredictionRequest(nlohmann::json request) {
   xt::xarray<double> input;
   xt::from_json(request["image"], input);
-  assert(input.shape()[0] == 28);
-  assert(input.shape()[1] == 28);
-  assert(input.dimension() == 2);
-  input.reshape({784});
+  assert(input.dimension() == 1);
+  assert(input.shape()[0] == 784);
+  // input.reshape({784});
   std::cout << "Incoming data is valid, predicting ..." << std::endl;
   Vector result = neuralNet->predict(input);
   return nlohmann::json{

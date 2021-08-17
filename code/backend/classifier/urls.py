@@ -2,5 +2,5 @@ from django.urls import path
 from .views import *
 
 urlpatterns = [
-    path("classify/", ClassifyAPIView.as_view())
+    path("classify/plain/", ClassifyPlainAPIView.as_view())
 ]

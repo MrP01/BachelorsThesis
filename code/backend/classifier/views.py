@@ -12,12 +12,14 @@ socket = context.socket(zmq.REQ)
 socket.connect("tcp://localhost:5555")
 
 
-class ClassifyAPIView(APIView):
+class ClassifyPlainAPIView(APIView):
     def post(self, request):
-        serializer = ClassificationRequestSerializer(data=request.data)
+        serializer = PlainClassificationRequestSerializer(data=request.data)
         if serializer.is_valid():
-            encrypted = serializer.data["encrypted"]
-            socket.send_json()
+            socket.send_json({
+                "action": "predict_plain",
+                "image": serializer.data["image"]
+            })
             result = socket.recv_json()
             return Response(result)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

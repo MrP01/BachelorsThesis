@@ -5,22 +5,9 @@ import { ReactPainter } from "react-painter";
 import "./App.css";
 import SEAL from "node-seal/throws_wasm_node_umd";
 import Pica from "pica";
+import React from "react";
 
 const pica = new Pica();
-
-function classify() {
-  console.log("Classifying given input");
-  const source = document.querySelector("canvas");
-  const target = document.querySelector("#target-28x28");
-  pica.resize(source, target, { alpha: true }).then((result) => {
-    console.log("Resizing to 28x28 finished.");
-    let ctx = result.getContext("2d");
-    let alphaChannel = ctx
-      .getImageData(0, 0, 28, 28)
-      .data.filter((value, index) => index % 4 === 3); // alpha channel is every 4th element
-    console.log(alphaChannel);
-  });
-}
 
 (async () => {
   // Wait for the library to initialize
@@ -69,11 +56,89 @@ function classify() {
   const galoisBase64Key = galoisKey.save(); // saving Galois keys can take an even longer time and the output is **very** large.
 
   console.log("SEAL initialized.");
-  console.log("Secret key", secretKey);
-  console.log("Public key", publicKey);
-  console.log("Relin key", relinBase64Key);
-  console.log("Galois key", galoisBase64Key);
+  // console.log("Secret key", secretKey);
+  // console.log("Public key", publicKey);
+  // console.log("Relin key", relinBase64Key);
+  // console.log("Galois key", galoisBase64Key);
 })();
+
+class ClassificationComponent extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      prediction: -1,
+    };
+  }
+
+  classify() {
+    console.log("Classifying given input");
+    const self = this;
+    const target = document.querySelector("#target-28x28");
+    pica.resize(this.getCanvas(), target, { alpha: true }).then((result) => {
+      console.log("Resizing to 28x28 finished.");
+      let ctx = result.getContext("2d");
+      let alphaChannel = ctx
+        .getImageData(0, 0, 28, 28)
+        .data.filter((value, index) => index % 4 === 3); // alpha channel is the last of every 4-element-block.
+      // TODO: rescale from 0..255 to 0..1
+      console.log(alphaChannel);
+      fetch("http://localhost:8000/api/classify/plain/", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          image: Array.from(alphaChannel),
+        }),
+      }).then((response) => {
+        response
+          .json()
+          .then((data) => self.setState({ prediction: data.prediction }));
+      });
+    });
+  }
+
+  clear() {
+    let canvas = this.getCanvas();
+    canvas.getContext("2d").clearRect(0, 0, canvas.width, canvas.height);
+  }
+
+  getCanvas() {
+    return document.querySelector(".canvas-container canvas");
+  }
+
+  render() {
+    const self = this;
+    return (
+      <Row>
+        <Col m={6} s={12}>
+          <ReactPainter
+            width={300}
+            height={300}
+            initialColor={"cornflowerblue"}
+            initialLineWidth={20}
+            initialLineJoin={"miter"}
+            lineCap={"round"}
+            render={({ triggerSave, canvas, setColor }) => {
+              return (
+                <div>
+                  <div className={"canvas-container center"}>{canvas}</div>
+                  <Button onClick={self.classify.bind(self)}>Classify</Button>
+                  <Button onClick={self.clear.bind(self)}>Clear</Button>
+                </div>
+              );
+            }}
+          />
+        </Col>
+        <Col m={6}>
+          28x28 downscaled version:
+          <canvas id="target-28x28" width={28} height={28}></canvas>
+          <h3>
+            Prediction: <b>{this.state.prediction}</b>
+          </h3>
+        </Col>
+      </Row>
+    );
+  }
+}
 
 function App() {
   return (
@@ -89,27 +154,8 @@ function App() {
         <p>
           Using Fully Homomorphic Encryption, directly from within the browser.
         </p>
-        <Col m={6} s={12}>
-          <ReactPainter
-            width={300}
-            height={300}
-            initialColor={"cornflowerblue"}
-            initialLineWidth={20}
-            initialLineJoin={"miter"}
-            lineCap={"round"}
-            onSave={classify}
-            render={({ triggerSave, canvas, setColor }) => (
-              <div>
-                <div className={"canvas-container center"}>{canvas}</div>
-                <Button onClick={triggerSave}>Classify</Button>
-              </div>
-            )}
-          />
-        </Col>
-        <Col m={6}>
-          <canvas id="target-28x28" width={28} height={28}></canvas>
-        </Col>
       </Row>
+      <ClassificationComponent />
     </div>
   );
 }
