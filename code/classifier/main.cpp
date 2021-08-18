@@ -29,7 +29,7 @@ nlohmann::json handlePlainPredictionRequest(nlohmann::json request) {
   Vector result = neuralNet->predict(input);
   return nlohmann::json{
       {"prediction", neuralNet->interpretResult(result)},
-      {"probabilites", neuralNet->interpretResultProbabilities(result)},
+      {"probabilities", neuralNet->interpretResultProbabilities(result)},
   };
 }
 

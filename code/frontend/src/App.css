@@ -6,3 +6,14 @@
     border: 1px solid grey;
     /* transform: scale(10); */
 }
+
+.probabilities {
+    display: flex;
+}
+
+.probabilities > li {
+    width: 35px;
+    height: 35px;
+    text-align: center;
+    line-height: 35px;
+}

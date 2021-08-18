@@ -1,6 +1,6 @@
 import "@materializecss/materialize";
 import "@materializecss/materialize/dist/css/materialize.css";
-import { Button, Col, Icon, Navbar, Row } from "react-materialize";
+import { Button, Col, Icon, Navbar, Row, Container } from "react-materialize";
 import { ReactPainter } from "react-painter";
 import "./App.css";
 import SEAL from "node-seal/throws_wasm_node_umd";
@@ -63,10 +63,13 @@ const pica = new Pica();
 })();
 
 class ClassificationComponent extends React.Component {
+  themecolor = [100, 149, 237];
+
   constructor(props) {
     super(props);
     this.state = {
       prediction: -1,
+      probabilities: [],
     };
   }
 
@@ -89,9 +92,12 @@ class ClassificationComponent extends React.Component {
           image: Array.from(alphaChannel),
         }),
       }).then((response) => {
-        response
-          .json()
-          .then((data) => self.setState({ prediction: data.prediction }));
+        response.json().then((data) =>
+          self.setState({
+            prediction: data.prediction,
+            probabilities: data.probabilities,
+          })
+        );
       });
     });
   }
@@ -114,7 +120,7 @@ class ClassificationComponent extends React.Component {
             width={300}
             height={300}
             initialColor={"cornflowerblue"}
-            initialLineWidth={20}
+            initialLineWidth={25}
             initialLineJoin={"miter"}
             lineCap={"round"}
             render={({ triggerSave, canvas, setColor }) => {
@@ -134,6 +140,24 @@ class ClassificationComponent extends React.Component {
           <h3>
             Prediction: <b>{this.state.prediction}</b>
           </h3>
+          <h5>Probabilities</h5>
+          <ul className="probabilities">
+            {this.state.probabilities.map((probability, index) => {
+              let factor = 1 - probability / Math.max.apply(Math, this.state.probabilities);
+              return (
+              <li key={index}
+                style={{
+                  backgroundColor: `rgb(
+                  ${factor * (255-this.themecolor[0]) + this.themecolor[0]},
+                  ${factor * (255-this.themecolor[1]) + this.themecolor[1]},
+                  ${factor * (255-this.themecolor[2]) + this.themecolor[2]}
+                  )`,
+                }}
+              >
+                {index}
+              </li>
+            )})}
+          </ul>
         </Col>
       </Row>
     );
@@ -149,13 +173,13 @@ function App() {
         id="mobile-nav"
         menuIcon={<Icon>menu</Icon>}
       ></Navbar>
-      <Row>
+      <Container>
         <h3 className={"center"}>Classify your Secret Data</h3>
         <p>
           Using Fully Homomorphic Encryption, directly from within the browser.
         </p>
-      </Row>
-      <ClassificationComponent />
+        <ClassificationComponent />
+      </Container>
     </div>
   );
 }
