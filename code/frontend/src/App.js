@@ -22,9 +22,7 @@ const pica = new Pica();
   params.setPolyModulusDegree(polyModulusDegree);
 
   // Create a suitable set of CoeffModulus primes
-  params.setCoeffModulus(
-    seal.CoeffModulus.Create(polyModulusDegree, Int32Array.from(bitSizes))
-  );
+  params.setCoeffModulus(seal.CoeffModulus.Create(polyModulusDegree, Int32Array.from(bitSizes)));
 
   // Create a new Context
   const context = seal.Context(
@@ -36,9 +34,7 @@ const pica = new Pica();
   window.context = context;
 
   if (!context.parametersSet()) {
-    throw new Error(
-      "Could not set the parameters in the given context. Please try different encryption parameters."
-    );
+    throw new Error("Could not set the parameters in the given context. Please try different encryption parameters.");
   }
 
   // Create a new KeyGenerator (creates a new keypair internally)
@@ -77,12 +73,10 @@ class ClassificationComponent extends React.Component {
     console.log("Classifying given input");
     const self = this;
     const target = document.querySelector("#target-28x28");
-    pica.resize(this.getCanvas(), target, { alpha: true }).then((result) => {
+    pica.resize(this.getDrawingCanvas(), target, { alpha: true }).then((result) => {
       console.log("Resizing to 28x28 finished.");
       let ctx = result.getContext("2d");
-      let alphaChannel = ctx
-        .getImageData(0, 0, 28, 28)
-        .data.filter((value, index) => index % 4 === 3); // alpha channel is the last of every 4-element-block.
+      let alphaChannel = ctx.getImageData(0, 0, 28, 28).data.filter((value, index) => index % 4 === 3); // alpha channel is the last of every 4-element-block.
       // TODO: rescale from 0..255 to 0..1
       console.log(alphaChannel);
       fetch("http://localhost:8000/api/classify/plain/", {
@@ -103,12 +97,42 @@ class ClassificationComponent extends React.Component {
   }
 
   clear() {
-    let canvas = this.getCanvas();
+    let canvas = this.getDrawingCanvas();
     canvas.getContext("2d").clearRect(0, 0, canvas.width, canvas.height);
+    this.drawGrid();
   }
 
-  getCanvas() {
+  getDrawingCanvas() {
     return document.querySelector(".canvas-container canvas");
+  }
+
+  drawGrid() {
+    console.log("Drawing grid.");
+    const canvas = this.getDrawingCanvas();
+    const ctx = canvas.getContext("2d");
+    const cell = canvas.width / 28;  // width of one grid cell
+    const gridSvg = `<svg width="${canvas.width}" height="${canvas.height}" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+            <pattern id="smallGrid" width="${cell}" height="${cell}" patternUnits="userSpaceOnUse">
+                <path d="M ${cell} 0 L 0 0 0 ${cell}" fill="none" stroke="gray" stroke-width="0.5" />
+            </pattern>
+        </defs>
+        <rect width="100%" height="100%" fill="url(#smallGrid)" />
+    </svg>`;
+    var DOMURL = window.URL || window.webkitURL || window;
+    var img = new Image();
+    var svg = new Blob([gridSvg], { type: "image/svg+xml;charset=utf-8" });
+    var url = DOMURL.createObjectURL(svg);
+
+    img.onload = function () {
+      ctx.drawImage(img, 0, 0);
+      DOMURL.revokeObjectURL(url);
+    };
+    img.src = url;
+  }
+
+  componentDidMount() {
+    this.drawGrid();
   }
 
   render() {
@@ -117,8 +141,8 @@ class ClassificationComponent extends React.Component {
       <Row>
         <Col m={6} s={12}>
           <ReactPainter
-            width={300}
-            height={300}
+            width={280}
+            height={280}
             initialColor={"cornflowerblue"}
             initialLineWidth={25}
             initialLineJoin={"miter"}
@@ -145,18 +169,21 @@ class ClassificationComponent extends React.Component {
             {this.state.probabilities.map((probability, index) => {
               let factor = 1 - probability / Math.max.apply(Math, this.state.probabilities);
               return (
-              <li key={index}
-                style={{
-                  backgroundColor: `rgb(
-                  ${factor * (255-this.themecolor[0]) + this.themecolor[0]},
-                  ${factor * (255-this.themecolor[1]) + this.themecolor[1]},
-                  ${factor * (255-this.themecolor[2]) + this.themecolor[2]}
+                <li
+                  key={index}
+                  style={{
+                    backgroundColor: `rgb(
+                      ${factor * (255 - this.themecolor[0]) + this.themecolor[0]},
+                      ${factor * (255 - this.themecolor[1]) + this.themecolor[1]},
+                      ${factor * (255 - this.themecolor[2]) + this.themecolor[2]}
                   )`,
-                }}
-              >
-                {index}
-              </li>
-            )})}
+                  }}
+                  title={probability}
+                >
+                  {index}
+                </li>
+              );
+            })}
           </ul>
         </Col>
       </Row>
@@ -175,9 +202,7 @@ function App() {
       ></Navbar>
       <Container>
         <h3 className={"center"}>Classify your Secret Data</h3>
-        <p>
-          Using Fully Homomorphic Encryption, directly from within the browser.
-        </p>
+        <p>Using Fully Homomorphic Encryption, directly from within the browser.</p>
         <ClassificationComponent />
       </Container>
     </div>

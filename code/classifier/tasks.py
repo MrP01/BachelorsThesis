@@ -29,7 +29,7 @@ def send_test_request(ctx, index=3):
     x_train, y_train, x_test, y_test = mnist.mnist()
     socket.send_json({
         "action": "predict_plain",
-        "image": x_test[index].tolist()
+        "image": x_test[index].reshape((784,)).tolist()
     })
     response = socket.recv_json()
     print("Response:", json.dumps(response, indent=2))
