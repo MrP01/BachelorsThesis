@@ -9,6 +9,6 @@ class PlainClassificationRequestSerializer(serializers.Serializer):
 
 
 class EncryptedClassificationRequestSerializer(serializers.Serializer):
-    relinKey = serializers.CharField()
-    galoisKey = serializers.CharField()
+    relinKeys = serializers.CharField()
+    galoisKeys = serializers.CharField()
     ciphertext = serializers.CharField()

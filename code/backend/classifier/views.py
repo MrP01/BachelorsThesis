@@ -39,13 +39,14 @@ class ClassifyEncryptedAPIView(APIView):
                 try:
                     socket.send_json({
                         "action": "predict_encrypted",
-                        "relinKey": serializer.data["relinKey"],
-                        "galoisKey": serializer.data["galoisKey"],
+                        "relinKeys": serializer.data["relinKeys"],
+                        "galoisKeys": serializer.data["galoisKeys"],
                         "ciphertext": serializer.data["ciphertext"],
                     })
                     result = socket.recv_json()
                     break
                 except zmq.ZMQError:
+                    print("Retrying")
                     socket.connect("tcp://localhost:5555")
             return Response(result)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

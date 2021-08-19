@@ -75,8 +75,8 @@ export class SEALCommunicator extends BaseCommunicator {
     const keyGenerator = this.seal.KeyGenerator(this.context);
     this._secretKey = keyGenerator.secretKey();
     this._publicKey = keyGenerator.createPublicKey();
-    this._relinKey = keyGenerator.createRelinKeys();
-    this._galoisKey = keyGenerator.createGaloisKeys(Int32Array.from([])); // Generating Galois keys takes a while compared to the others
+    this._relinKeys = keyGenerator.createRelinKeys();
+    this._galoisKeys = keyGenerator.createGaloisKeys(Int32Array.from([])); // Generating Galois keys takes a while compared to the others
     console.log("[SEAL] keys created.");
     keyGenerator.delete();
   }
@@ -96,8 +96,8 @@ export class SEALCommunicator extends BaseCommunicator {
       "/api/classify/encrypted/",
       JSON.stringify({
         ciphertext: ciphertext.save(),
-        relinKey: this._relinKey.save(),
-        galoisKey: this._galoisKey.save(), // saving Galois keys can take an even longer time and the output is **very** large.
+        relinKeys: this._relinKeys.save(),
+        galoisKeys: this._galoisKeys.save(), // saving Galois keys can take an even longer time and the output is **very** large.
       })
     );
   }
@@ -106,7 +106,7 @@ export class SEALCommunicator extends BaseCommunicator {
     this.context.delete();
     this._secretKey.delete();
     this._publicKey.delete();
-    this._relinKey.delete();
-    this._galoisKey.delete();
+    this._relinKeys.delete();
+    this._galoisKeys.delete();
   }
 }
