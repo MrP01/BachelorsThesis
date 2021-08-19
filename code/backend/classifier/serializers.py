@@ -9,6 +9,6 @@ class PlainClassificationRequestSerializer(serializers.Serializer):
 
 
 class EncryptedClassificationRequestSerializer(serializers.Serializer):
-    relinKey = Base64BinaryField()
-    galoisKey = Base64BinaryField()
-    encryptedImage = Base64BinaryField()
+    relinKey = serializers.CharField()
+    galoisKey = serializers.CharField()
+    ciphertext = serializers.CharField()
