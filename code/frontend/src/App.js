@@ -21,6 +21,16 @@ class ClassificationComponent extends React.Component {
     this.communicator = new PlainCommunicator();
   }
 
+  componentDidMount() {
+    this.drawGrid();
+    this.communicator.init().then(() => console.log("Communicator initialized."));
+  }
+
+  componentWillUnmount() {
+    this.communicator.delete();
+    delete this.communicator;
+  }
+
   classify() {
     console.log("Classifying given input");
     const self = this;
@@ -40,14 +50,14 @@ class ClassificationComponent extends React.Component {
     });
   }
 
+  getDrawingCanvas() {
+    return document.querySelector(".canvas-container canvas");
+  }
+
   clear() {
     let canvas = this.getDrawingCanvas();
     canvas.getContext("2d").clearRect(0, 0, canvas.width, canvas.height);
     this.drawGrid();
-  }
-
-  getDrawingCanvas() {
-    return document.querySelector(".canvas-container canvas");
   }
 
   drawGrid() {
@@ -75,10 +85,6 @@ class ClassificationComponent extends React.Component {
     img.src = url;
   }
 
-  componentDidMount() {
-    this.drawGrid();
-  }
-
   render() {
     const self = this;
     return (
@@ -103,7 +109,7 @@ class ClassificationComponent extends React.Component {
               );
             }}
           />
-          <p>Each grid cell represents one pixel in the 28x28 image.</p>
+          <p className="grey-text">Each grid cell represents one pixel in the 28x28 image.</p>
         </Col>
         <Col m={6}>
           <div className="center-align">28x28 downscaled version:</div>

@@ -1,20 +1,29 @@
 import SEAL from "node-seal/throws_wasm_node_umd";
 
+const API_URL = "http://localhost:8000";
+
 class BaseCommunicator {
   async init() {}
   async classify() {}
+  async _makeApiRequest(path, body) {
+    const response = await fetch(API_URL + path, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: body,
+    });
+    return await response.json();
+  }
+  delete() {}
 }
 
 export class PlainCommunicator extends BaseCommunicator {
   async classify(flatImageArray) {
-    const response = await fetch("http://localhost:8000/api/classify/plain/", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
+    return await this._makeApiRequest(
+      "/api/classify/plain/",
+      JSON.stringify({
         image: Array.from(flatImageArray),
-      }),
-    });
-    return await response.json();
+      })
+    );
   }
 }
 
@@ -25,7 +34,7 @@ export class SEALCommunicator extends BaseCommunicator {
     this.context = null;
   }
 
-  async init() {
+  async _initContext() {
     // Wait for the library to initialize
     this.seal = await SEAL();
     const schemeType = this.seal.SchemeType.ckks;
@@ -48,39 +57,54 @@ export class SEALCommunicator extends BaseCommunicator {
     );
 
     if (!this.context.parametersSet()) {
-      throw new Error("Could not set the parameters in the given context. Please try different encryption parameters.");
+      throw new Error("[SEAL] Could not set the parameters in the given context. Please try different encryption parameters.");
     }
 
     // for debugging:
     window._seal = this.seal;
     window._context = this.context;
+    console.log("[SEAL] initialized context.");
+    return this.context;
   }
 
-  cool() {
+  _createKeys() {
     // Create a new KeyGenerator (creates a new keypair internally)
     const keyGenerator = this.seal.KeyGenerator(this.context);
-    const secretKey = keyGenerator.secretKey();
-    const publicKey = keyGenerator.createPublicKey();
-    const relinKey = keyGenerator.createRelinKeys();
-    const galoisKey = keyGenerator.createGaloisKeys(Int32Array.from([])); // Generating Galois keys takes a while compared to the others
+    this._secretKey = keyGenerator.secretKey();
+    this._publicKey = keyGenerator.createPublicKey();
+    this._relinKey = keyGenerator.createRelinKeys();
+    this._galoisKey = keyGenerator.createGaloisKeys(Int32Array.from([])); // Generating Galois keys takes a while compared to the others
+    console.log("[SEAL] keys created.");
+    keyGenerator.delete();
+  }
 
-    // Saving a key to a string is the same for each type of key
-    // const secretBase64Key = secretKey.save()
-    // const publicBase64Key = publicKey.save()
-    const relinBase64Key = relinKey.save();
-    const galoisBase64Key = galoisKey.save(); // saving Galois keys can take an even longer time and the output is **very** large.
+  async init() {
+    await this._initContext();
+    this._createKeys();
+  }
 
-    console.log("SEAL initialized.");
-
+  async classify(flatImageArray) {
     const encoder = this.seal.CKKSEncoder(this.context);
-    const encryptor = this.seal.Encryptor(this.context, publicKey);
+    const encryptor = this.seal.Encryptor(this.context, this._publicKey);
     const scale = Math.pow(2, 20);
-    var plaintext = encoder.encode(Float64Array.from([1, 2, 3]), scale);
+    var plaintext = encoder.encode(Float64Array.from(flatImageArray), scale);
     var ciphertext = encryptor.encrypt(plaintext);
+    return await this._makeApiRequest(
+      "/api/classify/encrypted/",
+      JSON.stringify({
+        ciphertext: ciphertext.save(),
+        relinKey: this._relinKey.save(),
+        galoisKey: this._galoisKey.save(), // saving Galois keys can take an even longer time and the output is **very** large.
+      })
+    );
+  }
 
-    // console.log("Secret key", secretKey);
-    // console.log("Public key", publicKey);
-    // console.log("Relin key", relinBase64Key);
-    // console.log("Galois key", galoisBase64Key);
+  delete() {
+    this.seal.delete();
+    this.context.delete();
+    this._secretKey.delete();
+    this._publicKey.delete();
+    this._relinKey.delete();
+    this._galoisKey.delete();
   }
 }
