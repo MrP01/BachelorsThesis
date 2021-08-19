@@ -11,6 +11,9 @@ class BaseCommunicator {
       headers: { "Content-Type": "application/json" },
       body: body,
     });
+    if (!response.ok) {
+      throw new Error("[API] request completion failed.");
+    }
     return await response.json();
   }
   delete() {}
@@ -100,7 +103,6 @@ export class SEALCommunicator extends BaseCommunicator {
   }
 
   delete() {
-    this.seal.delete();
     this.context.delete();
     this._secretKey.delete();
     this._publicKey.delete();

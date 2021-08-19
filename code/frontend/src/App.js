@@ -1,9 +1,9 @@
+import React from "react";
 import "@materializecss/materialize";
 import "@materializecss/materialize/dist/css/materialize.css";
-import { Button, Col, Icon, Navbar, Row, Container } from "react-materialize";
+import { Button, Col, Icon, Navbar, Row, Container, Switch } from "react-materialize";
 import { ReactPainter } from "react-painter";
 import Pica from "pica";
-import React from "react";
 import "./App.css";
 import { PlainCommunicator, SEALCommunicator } from "./communicators";
 
@@ -29,6 +29,7 @@ class ClassificationComponent extends React.Component {
   componentWillUnmount() {
     this.communicator.delete();
     delete this.communicator;
+    console.log("Cleaned up.");
   }
 
   classify() {
@@ -85,6 +86,12 @@ class ClassificationComponent extends React.Component {
     img.src = url;
   }
 
+  setCommunicator(event) {
+    this.communicator.delete();
+    this.communicator = new (event.target.checked ? SEALCommunicator : PlainCommunicator)();
+    this.communicator.init().then(() => console.log("Communicator initialized."));
+  }
+
   render() {
     const self = this;
     return (
@@ -112,8 +119,17 @@ class ClassificationComponent extends React.Component {
           <p className="grey-text">Each grid cell represents one pixel in the 28x28 image.</p>
         </Col>
         <Col m={6}>
-          <div className="center-align">28x28 downscaled version:</div>
-          <canvas id="target-28x28" className="center-block" width={28} height={28}></canvas>
+          <div className="card-panel z-depth-1">
+            <div className="row valign-wrapper">
+              <div className="col s2">
+                <canvas id="target-28x28" className="center-block" width={28} height={28}></canvas>
+              </div>
+              <div className="col s10">
+                <span className="black-text">The 28x28 downscaled version will be classified using the</span>
+                <Switch offLabel="PlainCommunicator" onChange={self.setCommunicator.bind(self)} onLabel="SEALCommunicator" />
+              </div>
+            </div>
+          </div>
           <h3 className="center-align">
             Prediction: <b>{this.state.prediction}</b>
           </h3>
