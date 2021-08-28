@@ -71,13 +71,16 @@ void runServer() {
   httplib::Server server;
   server.Post("/api/classify/plain/", msgpackRequestHandler(handlePlainPredictionRequest));
   server.Post("/api/classify/encrypted/", msgpackRequestHandler(handleEncryptedPredictionRequest));
+
   server.set_exception_handler([](const httplib::Request &req, httplib::Response &res, std::exception &exception) {
     std::cout << "Exception caught: " << exception.what() << std::endl;
     res.status = 500;
     res.set_content(exception.what(), "text/plain");
   });
-
-  server.set_logger([](const httplib::Request &req, const httplib::Response &res) { std::cout << "[" << req.method << "] " << req.path << " " << res.status << std::endl; });
+  server.set_logger([](const httplib::Request &req, const httplib::Response &res) {
+    // prints log after the response was sent
+    std::cout << "[" << req.method << "] " << req.path << " " << res.status << std::endl;
+  });
 
   std::cout << "The server is running" << std::endl;
   server.listen("0.0.0.0", 8000);
