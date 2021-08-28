@@ -39,7 +39,6 @@ nlohmann::json handleEncryptedPredictionRequest(nlohmann::json request) {
   seal::RelinKeys relinKeys;
   seal::GaloisKeys galoisKeys;
   seal::Ciphertext ciphertext;
-  seal::Evaluator evaluator();
 
   nlohmann::json::binary_t binary = request["relinKeys"].get<nlohmann::json::binary_t>();
   std::cout << "Decoded length: " << binary.size() << std::endl;
@@ -55,6 +54,8 @@ nlohmann::json handleEncryptedPredictionRequest(nlohmann::json request) {
   binary = request["ciphertext"].get<nlohmann::json::binary_t>();
   dataStream = std::stringstream(std::string(binary.begin(), binary.end()));
   ciphertext.load(*neuralNet->context, dataStream);
+
+  neuralNet->predictEncrypted(ciphertext, relinKeys, galoisKeys);
 
   return nlohmann::json{
       {"prediction", 33},

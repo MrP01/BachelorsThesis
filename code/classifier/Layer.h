@@ -30,6 +30,8 @@ class Layer {
   public:
     Layer(Matrix weights, Vector biases);
     Vector feedforward(Vector x);
-    void multiplyCKKS(seal::Ciphertext &in_out, const Matrix &mat, seal::GaloisKeys &galois_keys, seal::CKKSEncoder* ckks_encoder, seal::Evaluator &evaluator);
-    void multiplyCKKSBabystepGiantstep(seal::Ciphertext &in_out, const Matrix &mat, seal::GaloisKeys &galois_keys, seal::CKKSEncoder* ckks_encoder, seal::Evaluator &evaluator);
+    void feedforwardEncrypted(seal::Ciphertext &in_out, seal::GaloisKeys &galoisKeys, seal::RelinKeys relinKeys, seal::CKKSEncoder &ckksEncoder, seal::Evaluator &evaluator);
+    void multiplyCKKS(seal::Ciphertext &in_out, const Matrix &mat, seal::GaloisKeys &galois_keys, seal::CKKSEncoder &ckks_encoder, seal::Evaluator &evaluator);
+    void multiplyCKKSBabystepGiantstep(seal::Ciphertext &in_out, const Matrix &mat, seal::GaloisKeys &galois_keys, seal::CKKSEncoder &ckks_encoder, seal::Evaluator &evaluator);
+    void activationEncrypted(seal::Ciphertext &x1_encrypted, seal::RelinKeys &relinKeys, seal::CKKSEncoder &encoder, seal::Evaluator &evaluator);
 };

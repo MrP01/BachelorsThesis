@@ -30,6 +30,18 @@ Vector Network::predict(Vector input) {
   return input;
 }
 
+seal::Ciphertext Network::predictEncrypted(seal::Ciphertext &ciphertext, seal::RelinKeys &relinKeys, seal::GaloisKeys &galoisKeys) {
+  seal::Evaluator evaluator(*context);
+  seal::CKKSEncoder encoder(*context);
+
+  for (Layer *layer : layers) {
+    std::cout << "Feeding ciphertext forward through layer" << std::endl;
+    layer->feedforwardEncrypted(ciphertext, galoisKeys, relinKeys, encoder, evaluator);
+  }
+
+  return ciphertext;
+};
+
 int Network::interpretResult(Vector result) { return xt::argmax(result)(); };
 
 Vector Network::interpretResultProbabilities(Vector result) {
