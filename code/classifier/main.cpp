@@ -42,11 +42,12 @@ nlohmann::json handleEncryptedPredictionRequest(nlohmann::json request) {
 
   std::vector<uint8_t> decoded = base64::decode(request["relinKeys"].get<std::string>());
   std::stringstream dataStream(std::string(decoded.begin(), decoded.end()));
-  relinKeys.load(*neuralNet->context, dataStream);
+  std::cout << std::string(decoded.begin(), decoded.end()) << std::endl;
+  // relinKeys.load(*neuralNet->context, dataStream);
 
   decoded = base64::decode(request["galoisKeys"].get<std::string>());
   dataStream = std::stringstream(std::string(decoded.begin(), decoded.end()));
-  galoisKeys.load(*neuralNet->context, dataStream);
+  // galoisKeys.load(*neuralNet->context, dataStream);
 
   return nlohmann::json{
       {"prediction", 33},
