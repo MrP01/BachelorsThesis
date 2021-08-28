@@ -1469,6 +1469,11 @@
   resolved "https://registry.yarnpkg.com/@materializecss/materialize/-/materialize-1.1.0-alpha.tgz#448e742f7f4346d1dee11390a9e567545a139c49"
   integrity sha512-dOAcIAe4L7kGtZ8V5oSxUrwHOsPGxfRwefvRk/jRcPwtZfmLoiQtS37JO0p9PTdkCj+aQmqUOzHoRhaF3TxmAg==
 
+"@msgpack/msgpack@^2.7.0":
+  version "2.7.0"
+  resolved "https://registry.yarnpkg.com/@msgpack/msgpack/-/msgpack-2.7.0.tgz#3a0fbe4e0406f6576895f990857e19da97376f18"
+  integrity sha512-mlRYq9FSsOd4m+3wZWatemn3hGFZPWNJ4JQOdrir4rrMK2PyIk26idKBoUWrqF3HJJHl+5GpRU+M0wEruJwecg==
+
 "@nodelib/fs.scandir@2.1.5":
   version "2.1.5"
   resolved "https://registry.yarnpkg.com/@nodelib/fs.scandir/-/fs.scandir-2.1.5.tgz#7619c2eb21b25483f6d167548b4cfd5a7488c3d5"

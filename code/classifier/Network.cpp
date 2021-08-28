@@ -10,7 +10,7 @@ void Network::init() {
   size_t poly_modulus_degree = 4096; // same as for node-seal
   params.set_poly_modulus_degree(poly_modulus_degree);
   params.set_coeff_modulus(seal::CoeffModulus::Create(poly_modulus_degree, {50, 20, 50}));
-  seal::SEALContext context(params);
+  context = new seal::SEALContext(params);
 }
 
 void Network::addLayer(Layer *layer) {

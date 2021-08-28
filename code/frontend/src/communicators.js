@@ -1,6 +1,7 @@
 import SEAL from "node-seal/throws_wasm_node_umd";
+import * as msgpack from "@msgpack/msgpack";
 
-const API_URL = "http://localhost:8000";
+const API_URL = "/api";
 
 class BaseCommunicator {
   async init() {}
@@ -8,25 +9,22 @@ class BaseCommunicator {
   async _makeApiRequest(path, body) {
     const response = await fetch(API_URL + path, {
       method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: body,
+      headers: { "Content-Type": "application/x-msgpack" },
+      body: msgpack.encode(body),
     });
     if (!response.ok) {
       throw new Error("[API] request completion failed.");
     }
-    return await response.json();
+    return await msgpack.decodeAsync(response.body);
   }
   delete() {}
 }
 
 export class PlainCommunicator extends BaseCommunicator {
   async classify(flatImageArray) {
-    return await this._makeApiRequest(
-      "/api/classify/plain/",
-      JSON.stringify({
-        image: Array.from(flatImageArray),
-      })
-    );
+    return await this._makeApiRequest("/classify/plain/", {
+      image: Array.from(flatImageArray),
+    });
   }
 }
 
@@ -92,14 +90,13 @@ export class SEALCommunicator extends BaseCommunicator {
     const scale = Math.pow(2, 20);
     var plaintext = encoder.encode(Float64Array.from(flatImageArray), scale);
     var ciphertext = encryptor.encrypt(plaintext);
-    return await this._makeApiRequest(
-      "/api/classify/encrypted/",
-      JSON.stringify({
-        ciphertext: ciphertext.save(),
-        relinKeys: this._relinKeys.save(),
-        galoisKeys: this._galoisKeys.save(), // saving Galois keys can take an even longer time and the output is **very** large.
-      })
-    );
+    window.theshit = this._relinKeys.saveArray(this.seal.ComprModeType.zstd);
+    console.log("relinKeys");
+    return await this._makeApiRequest("/classify/encrypted/", {
+      ciphertext: ciphertext.saveArray(this.seal.ComprModeType.zstd),
+      relinKeys: this._relinKeys.saveArray(this.seal.ComprModeType.zstd),
+      galoisKeys: this._galoisKeys.saveArray(this.seal.ComprModeType.zstd), // saving Galois keys can take an even longer time and the output is **very** large.
+    });
   }
 
   delete() {

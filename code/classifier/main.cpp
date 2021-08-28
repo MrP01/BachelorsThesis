@@ -1,6 +1,7 @@
 #include <backward.hpp>
 #include <cppcodec/base64_rfc4648.hpp>
 #include <csignal>
+#include <httplib.h>
 #include <iostream>
 #include <nlohmann/json.hpp>
 #include <xtensor/xaxis_iterator.hpp>
@@ -8,7 +9,6 @@
 #include <xtensor/xjson.hpp>
 #include <xtensor/xnpy.hpp>
 #include <xtensor/xsort.hpp>
-#include <zmq.hpp>
 
 #include "Network.h"
 
@@ -34,20 +34,18 @@ nlohmann::json handlePlainPredictionRequest(nlohmann::json request) {
 }
 
 nlohmann::json handleEncryptedPredictionRequest(nlohmann::json request) {
-  using base64 = cppcodec::base64_rfc4648;
+  std::cout << "Incoming encrypted request" << std::endl;
 
   seal::RelinKeys relinKeys;
   seal::GaloisKeys galoisKeys;
   seal::Evaluator evaluator();
 
-  std::vector<uint8_t> decoded = base64::decode(request["relinKeys"].get<std::string>());
-  std::stringstream dataStream(std::string(decoded.begin(), decoded.end()));
-  std::cout << std::string(decoded.begin(), decoded.end()) << std::endl;
-  // relinKeys.load(*neuralNet->context, dataStream);
-
-  decoded = base64::decode(request["galoisKeys"].get<std::string>());
-  dataStream = std::stringstream(std::string(decoded.begin(), decoded.end()));
-  // galoisKeys.load(*neuralNet->context, dataStream);
+  nlohmann::json::binary_t decoded = request["relinKeys"].get<nlohmann::json::binary_t>();
+  std::cout << "Decoded length: " << decoded.size() << std::endl;
+  std::cout << "NeuralNet context poly mod degree: " << neuralNet->context->key_context_data()->parms().poly_modulus_degree() << std::endl;
+  std::stringstream dataStream = std::stringstream(std::string(decoded.begin(), decoded.end()));
+  assert(seal::Serialization::compr_mode_default == seal::compr_mode_type::zstd);
+  relinKeys.load(*neuralNet->context, dataStream);
 
   return nlohmann::json{
       {"prediction", 33},
@@ -55,46 +53,34 @@ nlohmann::json handleEncryptedPredictionRequest(nlohmann::json request) {
   };
 }
 
-nlohmann::json handleRequest(nlohmann::json request) {
-  nlohmann::json response;
-  if (request["action"].get<std::string>() == "predict_plain")
-    response = handlePlainPredictionRequest(request);
-  else if (request["action"].get<std::string>() == "predict_encrypted")
-    response = handleEncryptedPredictionRequest(request);
-  std::cout << "reply: " << response << std::endl;
-  return response;
-}
-
-zmq::message_t handleMessage(zmq::message_t &request) {
-  nlohmann::json request_json;
-  try {
-    request_json = nlohmann::json::parse(request.to_string());
-  } catch (nlohmann::json::parse_error &ex) {
-    std::cerr << "parse error at byte " << ex.byte << std::endl;
-    return zmq::message_t("parse_error", 12);
-  }
-  nlohmann::json response_json = handleRequest(request_json);
-  std::string serialized = response_json.dump();
-  return zmq::message_t(serialized.c_str(), serialized.length());
+auto msgpackRequestHandler(nlohmann::json (*handler)(nlohmann::json)) {
+  return [=](const httplib::Request &request, httplib::Response &response, const httplib::ContentReader &contentReader) {
+    std::string request_body;
+    contentReader([&](const char *data, size_t data_length) {
+      request_body.append(data, data_length);
+      return true;
+    });
+    nlohmann::json request_json = nlohmann::json::from_msgpack(request_body);
+    nlohmann::json response_json = handler(request_json);
+    std::vector<uint8_t> serialized = nlohmann::json::to_msgpack(response_json);
+    response.set_content(std::string(serialized.begin(), serialized.end()), "application/x-msgpack");
+  };
 }
 
 void runServer() {
-  zmq::context_t context(1);
-  zmq::socket_t socket(context, ZMQ_REP);
-  socket.bind("tcp://*:5555");
-  std::cout << "The server is running" << std::endl;
+  httplib::Server server;
+  server.Post("/api/classify/plain/", msgpackRequestHandler(handlePlainPredictionRequest));
+  server.Post("/api/classify/encrypted/", msgpackRequestHandler(handleEncryptedPredictionRequest));
+  server.set_exception_handler([](const httplib::Request &req, httplib::Response &res, std::exception &exception) {
+    std::cout << "Exception caught: " << exception.what() << std::endl;
+    res.status = 500;
+    res.set_content(exception.what(), "text/plain");
+  });
 
-  while (!quit) {
-    try {
-      zmq::message_t request;
-      auto sent = socket.recv(request);
-      std::cout << "Handling request ..." << std::endl;
-      zmq::message_t reply = handleMessage(request);
-      socket.send(reply, zmq::send_flags::none);
-    } catch (zmq::error_t) {
-      std::cout << "Loop aborted." << std::endl;
-    }
-  }
+  server.set_logger([](const httplib::Request &req, const httplib::Response &res) { std::cout << "[" << req.method << "] " << req.path << " " << res.status << std::endl; });
+
+  std::cout << "The server is running" << std::endl;
+  server.listen("0.0.0.0", 8000);
 }
 
 double evaluateNetworkOnTestData() {
