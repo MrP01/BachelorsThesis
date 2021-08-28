@@ -38,14 +38,23 @@ nlohmann::json handleEncryptedPredictionRequest(nlohmann::json request) {
 
   seal::RelinKeys relinKeys;
   seal::GaloisKeys galoisKeys;
+  seal::Ciphertext ciphertext;
   seal::Evaluator evaluator();
 
-  nlohmann::json::binary_t decoded = request["relinKeys"].get<nlohmann::json::binary_t>();
-  std::cout << "Decoded length: " << decoded.size() << std::endl;
+  nlohmann::json::binary_t binary = request["relinKeys"].get<nlohmann::json::binary_t>();
+  std::cout << "Decoded length: " << binary.size() << std::endl;
   std::cout << "NeuralNet context poly mod degree: " << neuralNet->context->key_context_data()->parms().poly_modulus_degree() << std::endl;
-  std::stringstream dataStream = std::stringstream(std::string(decoded.begin(), decoded.end()));
+  std::stringstream dataStream = std::stringstream(std::string(binary.begin(), binary.end()));
   assert(seal::Serialization::compr_mode_default == seal::compr_mode_type::zstd);
   relinKeys.load(*neuralNet->context, dataStream);
+
+  binary = request["galoisKeys"].get<nlohmann::json::binary_t>();
+  dataStream = std::stringstream(std::string(binary.begin(), binary.end()));
+  galoisKeys.load(*neuralNet->context, dataStream);
+
+  binary = request["ciphertext"].get<nlohmann::json::binary_t>();
+  dataStream = std::stringstream(std::string(binary.begin(), binary.end()));
+  ciphertext.load(*neuralNet->context, dataStream);
 
   return nlohmann::json{
       {"prediction", 33},

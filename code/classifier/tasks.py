@@ -4,7 +4,8 @@ import invoke
 import json
 import mnist
 import numpy as np
-import zmq
+import requests
+import msgpack
 
 
 @invoke.task()
@@ -22,15 +23,12 @@ def fetch_training_data(ctx, target="data/mnist"):
 @invoke.task()
 def send_test_request(ctx, index=3):
     """Sends a zeromq test request to localhost:5555"""
-    context = zmq.Context()
-    print("Connecting to server...")
-    socket = context.socket(zmq.REQ)
-    socket.connect("tcp://localhost:5555")
     x_train, y_train, x_test, y_test = mnist.mnist()
-    socket.send_json({
-        "action": "predict_plain",
-        "image": x_test[index].reshape((784,)).tolist()
-    })
-    response = socket.recv_json()
+    response = msgpack.unpackb(
+        requests.post(
+            "http://localhost:8000/api/classify/plain/",
+            data=msgpack.packb({"image": x_test[index].reshape((784,)).tolist()}),
+        ).content
+    )
     print("Response:", json.dumps(response, indent=2))
     print(f"Prediction is {'correct' if response['prediction'] == y_test[index] else 'wrong'}")
