@@ -5,9 +5,35 @@
 \gls{he} makes it possible to operate on data without knowing it.
 One can distinguish three flavors of it, Partial-, Semi- and \gls{fhe}.
 
+% Fully Homomorphic Encryption (FHE):
+\begin{itemize}
+    \item Brakerski/Fan-Vercauteren (BFV) scheme for integer arithmetic
+    \item Brakerski-Gentry-Vaikuntanathan (BGV) scheme for integer arithmetic
+    \item Cheon-Kim-Kim-Song (CKKS) scheme for real-number arithmetic
+    \item Ducas-Micciancio (FHEW) and Chillotti-Gama-Georgieva-Izabachene (TFHE) schemes for Boolean circuit evaluation
+\end{itemize}
+
 \subsection{HE using RSA}
+With unpadded RSA, some arithmetic can be performed on the ciphertext - looking at the encrypted ciphertext $\mathcal{E}(m_1) = (m_1)^r \mod n$ of the message $m_1$ and $m_2$ respectively, the following holds:
+\begin{align}
+    \mathcal{E}(m_1) \cdot \mathcal{E}(m_2)
+    &= (m_1)^r (m_2)^r \mod n \\
+    &= (m_1 m_2)^r \mod n \\
+    &= \mathcal{E}(m_1 \cdot m_2)
+\end{align}
+
+The encryption therefore partially fulfills the properties of ring homomorphism, which in general is defined as follows:
+
+\begin{definition}
+    Given two rings $(R, +, \cdot)$ and $(S, \oplus, \otimes)$, we?? call a mapping $\varphi: R \rightarrow S$ a ring homomorphism, when it satisfies the following conditions:
+    $$\forall a, b \in R: \varphi(a + b) = \varphi(a) \oplus \varphi(b) \wedge \varphi(a \cdot b) = \varphi(a) \otimes \varphi(b)$$
+\end{definition}
+
 \subsection{Learning with Errors (LWE)}
+
 \subsection{Ring-LWE}
+Learning with Errors on Rings (RLWE)
+
 \subsection{The BFV scheme}
 \subsection{The CKKS scheme}
 The CKKS scheme allows us?? to perform approximate arithmetic on floating point numbers.
