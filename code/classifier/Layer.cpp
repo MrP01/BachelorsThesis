@@ -165,11 +165,11 @@ void Layer::activationEncrypted(seal::Ciphertext &x1_encrypted, seal::RelinKeys 
   To compute x^3 we first compute x^2 and relinearize. However, the scale has
   now grown to 2^80.
   */
-  seal::Ciphertext x3_encrypted;
+  seal::Ciphertext x2_encrypted;
   std::cout << "Compute x^2 and relinearize:" << std::endl;
-  evaluator.square(x1_encrypted, x3_encrypted);
-  evaluator.relinearize_inplace(x3_encrypted, relinKeys);
-  std::cout << "    + Scale of x^2 before rescale: " << log2(x3_encrypted.scale()) << " bits" << std::endl;
+  evaluator.square(x1_encrypted, x2_encrypted);
+  evaluator.relinearize_inplace(x2_encrypted, relinKeys);
+  std::cout << "    + Scale of x^2 before rescale: " << log2(x2_encrypted.scale()) << " bits" << std::endl;
 
   /*
   Now rescale; in addition to a modulus switch, the scale is reduced down by
@@ -178,8 +178,8 @@ void Layer::activationEncrypted(seal::Ciphertext &x1_encrypted, seal::RelinKeys 
   to 2^40: this is because the 40-bit prime is only close to 2^40.
   */
   std::cout << "Rescale x^2." << std::endl;
-  evaluator.rescale_to_next_inplace(x3_encrypted);
-  std::cout << "    + Scale of x^2 after rescale: " << log2(x3_encrypted.scale()) << " bits" << std::endl;
+  evaluator.rescale_to_next_inplace(x2_encrypted);
+  std::cout << "    + Scale of x^2 after rescale: " << log2(x2_encrypted.scale()) << " bits" << std::endl;
 
   /*
   Now x3_encrypted is at a different level than x1_encrypted, which prevents us
@@ -189,7 +189,7 @@ void Layer::activationEncrypted(seal::Ciphertext &x1_encrypted, seal::RelinKeys 
   first and multiply that with x^2 to obtain PI*x^3. To this end, we compute
   PI*x and rescale it back from scale 2^80 to something close to 2^40.
   */
-
+  seal::Ciphertext x3_encrypted(x2_encrypted); // TODO: is this a copy operation?
   std::cout << "Compute and rescale PI*x." << std::endl;
   seal::Ciphertext x1_encrypted_coeff3;
   evaluator.multiply_plain(x1_encrypted, plain_coeff3, x1_encrypted_coeff3);
@@ -198,13 +198,18 @@ void Layer::activationEncrypted(seal::Ciphertext &x1_encrypted, seal::RelinKeys 
   std::cout << "    + Scale of PI*x after rescale: " << log2(x1_encrypted_coeff3.scale()) << " bits" << std::endl;
 
   /*
+  Multiply x2_encrypted by its corresponding coefficient plain_coeff2
+  */
+  evaluator.multiply_plain_inplace(x2_encrypted, plain_coeff2);
+  // TODO: probably we need to rescale
+
+  /*
   Since x3_encrypted and x1_encrypted_coeff3 have the same exact scale and use
   the same encryption parameters, we can multiply them together. We write the
   result to x3_encrypted, relinearize, and rescale. Note that again the scale
   is something close to 2^40, but not exactly 2^40 due to yet another scaling
   by a prime. We are down to the last level in the modulus switching chain.
   */
-
   std::cout << "Compute, relinearize, and rescale (PI*x)*x^2." << std::endl;
   evaluator.multiply_inplace(x3_encrypted, x1_encrypted_coeff3);
   evaluator.relinearize_inplace(x3_encrypted, relinKeys);
@@ -216,7 +221,6 @@ void Layer::activationEncrypted(seal::Ciphertext &x1_encrypted, seal::RelinKeys 
   Next we compute the degree one term. All this requires is one multiply_plain
   with plain_coeff1. We overwrite x1_encrypted with the result.
   */
-
   std::cout << "Compute and rescale 0.4*x." << std::endl;
   evaluator.multiply_plain_inplace(x1_encrypted, plain_coeff1);
   std::cout << "    + Scale of 0.4*x before rescale: " << log2(x1_encrypted.scale()) << " bits" << std::endl;
@@ -301,7 +305,8 @@ void Layer::activationEncrypted(seal::Ciphertext &x1_encrypted, seal::RelinKeys 
   All three ciphertexts are now compatible and can be added.
   */
   std::cout << "Compute PI*x^3 + 0.4*x + 1." << std::endl;
-  seal::Ciphertext encrypted_result;
-  evaluator.add(x3_encrypted, x1_encrypted, encrypted_result);
-  evaluator.add_plain_inplace(encrypted_result, plain_coeff0);
+  evaluator.add_inplace(x1_encrypted, x2_encrypted);
+  evaluator.add_inplace(x1_encrypted, x3_encrypted);
+  evaluator.add_plain_inplace(x1_encrypted, plain_coeff0);
+  // return the result in x1_encrypted
 }
