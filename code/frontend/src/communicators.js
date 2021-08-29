@@ -90,13 +90,18 @@ export class SEALCommunicator extends BaseCommunicator {
     const scale = Math.pow(2, 20);
     var plaintext = encoder.encode(Float64Array.from(flatImageArray), scale);
     var ciphertext = encryptor.encrypt(plaintext);
-    window.theshit = this._relinKeys.saveArray(this.seal.ComprModeType.zstd);
-    console.log("relinKeys");
-    return await this._makeApiRequest("/classify/encrypted/", {
+    var response = await this._makeApiRequest("/classify/encrypted/", {
       ciphertext: ciphertext.saveArray(this.seal.ComprModeType.zstd),
       relinKeys: this._relinKeys.saveArray(this.seal.ComprModeType.zstd),
       galoisKeys: this._galoisKeys.saveArray(this.seal.ComprModeType.zstd), // saving Galois keys can take an even longer time and the output is **very** large.
     });
+    var resultCiphertext = this.seal.CipherText();
+    resultCiphertext.loadArray(this.context, response["result"]);
+    const decryptor = this.seal.Decryptor(this.context, this._secretKey);
+    var resultPlaintext = this.seal.PlainText();
+    decryptor.decrypt(resultCiphertext, resultPlaintext);
+    var result = encoder.decode(resultPlaintext);  // TODO: apply softmax and get prediction
+    return result;
   }
 
   delete() {
