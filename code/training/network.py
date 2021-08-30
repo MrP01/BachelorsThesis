@@ -32,7 +32,7 @@ y_test = tf.keras.utils.to_categorical(y_test, 10)
 
 model = tf.keras.Sequential(
     [
-        tf.keras.layers.Flatten(input_shape=(28, 28)),  # TODO: rescale from 0..255 to 0..1
+        tf.keras.layers.Flatten(input_shape=(28, 28)),
         tf.keras.layers.Dense(128, activation=relu_taylor),
         tf.keras.layers.Dense(10),
         tf.keras.layers.Activation(tf.keras.activations.softmax),

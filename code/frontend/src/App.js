@@ -41,7 +41,7 @@ class ClassificationComponent extends React.Component {
       let ctx = result.getContext("2d");
       let alphaChannel = ctx.getImageData(0, 0, 28, 28).data.filter((value, index) => index % 4 === 3); // alpha channel is the last of every 4-element-block.
       // TODO: rescale from 0..255 to 0..1
-      alphaChannel = alphaChannel.map((x) => (x>127) ? 1 : 0);
+      alphaChannel = alphaChannel.map((x) => (x > 127 ? 1 : 0));
       console.log(alphaChannel);
       this.communicator.classify(alphaChannel).then((data) =>
         self.setState({
