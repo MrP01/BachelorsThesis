@@ -13,6 +13,11 @@ One can distinguish three flavors of it, Partial-, Semi- and \gls{fhe}.
     \item Ducas-Micciancio (FHEW) and Chillotti-Gama-Georgieva-Izabachene (TFHE) schemes for Boolean circuit evaluation
 \end{itemize}
 
+\subsection{Packing}
+FFT in CKKS!
+Polynom -> Vektor mit einer FFT
+Vektor -> Polynom mit einer IFFT
+
 \subsection{HE using RSA}
 With unpadded RSA, some arithmetic can be performed on the ciphertext - looking at the encrypted ciphertext $\mathcal{E}(m_1) = (m_1)^r \mod n$ of the message $m_1$ and $m_2$ respectively, the following holds:
 \begin{align}
@@ -39,6 +44,12 @@ Learning with Errors on Rings (RLWE)
 The CKKS scheme allows us?? to perform approximate arithmetic on floating point numbers.
 
 \section{Machine Learning}
+As Shafi Goldwasser puts it, 'Machine Learning is somewhere in the intersection of Artificial Intelligence, Statistics and Theoretical Computer Science' \cite{goldwasserTalk2018}.
+
+\begin{figure}
+    \includegraphics[width=0.4\linewidth]{figures/what-is-machine-learning.png}
+\end{figure}
+
 \subsection{Linear Regression?}
 \subsection{Gradient Descent?}
 \subsection{The Backpropagation Algorithm}
@@ -50,6 +61,8 @@ Matrix -> Activation Function
     \item Sigmoid Activation
     \item Max Pooling
 \end{itemize}
+
+\section{Post-Quantum Security}
 
 \section{Demo}
 In this chapter, we?? provide some usage examples for
