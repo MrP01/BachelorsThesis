@@ -25,16 +25,21 @@ axes.legend()
 fig.savefig(pathlib.Path.cwd().parent.parent / "thesis" / "figures" / "taylor-relu.png")
 
 x_train, y_train, x_test, y_test = mnist.mnist()
-model = tf.keras.Sequential([
-    tf.keras.layers.Flatten(input_shape=(28, 28)),  # TODO: rescale from 0..255 to 0..1
-    tf.keras.layers.Dense(128, activation=relu_taylor),
-    tf.keras.layers.Dense(10, activation=relu_taylor)
-])
-model.summary()
-model.compile(optimizer="adam",
-    loss=tf.keras.losses.SparseCategoricalCrossentropy(from_logits=True),
-    metrics=["accuracy"]
+x_train = x_train.astype("float32") / 255
+x_test = x_test.astype("float32") / 255
+y_train = tf.keras.utils.to_categorical(y_train, 10)
+y_test = tf.keras.utils.to_categorical(y_test, 10)
+
+model = tf.keras.Sequential(
+    [
+        tf.keras.layers.Flatten(input_shape=(28, 28)),  # TODO: rescale from 0..255 to 0..1
+        tf.keras.layers.Dense(128, activation=relu_taylor),
+        tf.keras.layers.Dense(10),
+        tf.keras.layers.Activation(tf.keras.activations.softmax),
+    ]
 )
+model.summary()
+model.compile(optimizer="adam", loss=tf.keras.losses.CategoricalCrossentropy(), metrics=["accuracy"])
 model.fit(x_train, y_train, epochs=10)
 model.evaluate(x_test, y_test)
 

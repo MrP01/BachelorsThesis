@@ -11,7 +11,7 @@ import msgpack
 @invoke.task()
 def fetch_training_data(ctx, target="data/mnist"):
     """Download MNIST training data"""
-    x_train, y_train, x_test, y_test = mnist.mnist()
+    x_train, y_train, x_test, y_test = (data.astype("float32") / 255 for data in mnist.mnist())
     target = pathlib.Path(target).resolve()
     ctx.run(f"mkdir -p {target}")
     np.save(target / "x-train.npy", x_train)
@@ -23,7 +23,7 @@ def fetch_training_data(ctx, target="data/mnist"):
 @invoke.task()
 def send_test_request(ctx, index=3):
     """Sends a zeromq test request to localhost:5555"""
-    x_train, y_train, x_test, y_test = mnist.mnist()
+    x_train, y_train, x_test, y_test = (data.astype("float32") / 255 for data in mnist.mnist())
     response = msgpack.unpackb(
         requests.post(
             "http://localhost:8000/api/classify/plain/",

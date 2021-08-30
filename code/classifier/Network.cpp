@@ -18,11 +18,6 @@ void Network::addLayer(Layer *layer) {
   layer->parent = this;
 }
 
-void Network::addLayer(int neuronsIn, int neuronsOut) {
-  auto layer = new Layer(xt::random::randn<double>({neuronsOut, neuronsIn}), xt::random::randn<double>({neuronsOut}));
-  addLayer(layer);
-}
-
 Vector Network::predict(Vector input) {
   for (Layer *layer : layers) {
     input = layer->feedforward(input);
@@ -45,6 +40,6 @@ seal::Ciphertext Network::predictEncrypted(seal::Ciphertext &ciphertext, seal::R
 int Network::interpretResult(Vector result) { return xt::argmax(result)(); };
 
 Vector Network::interpretResultProbabilities(Vector result) {
-  Vector y = xt::exp(result / (xt::amax(xt::abs(result)) / 8));
+  Vector y = xt::exp(result);
   return y / xt::sum(y);
 };

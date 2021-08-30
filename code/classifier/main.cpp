@@ -1,5 +1,4 @@
 #include <backward.hpp>
-#include <cppcodec/base64_rfc4648.hpp>
 #include <csignal>
 #include <httplib.h>
 #include <iostream>
@@ -22,6 +21,7 @@ backward::SignalHandling sh;
 nlohmann::json handlePlainPredictionRequest(nlohmann::json request) {
   xt::xarray<double> input;
   xt::from_json(request["image"], input);
+  std::cout << input << std::endl;
   assert(input.dimension() == 1);
   assert(input.shape()[0] == 784);
   // input.reshape({784});
@@ -142,8 +142,9 @@ int main() {
   auto b2 = xt::load_npy<float>("data/models/simple/b2.npy");
 
   neuralNet->init();
-  neuralNet->addLayer(new Layer(w1, b1));
-  neuralNet->addLayer(new Layer(w2, b2));
+  neuralNet->addLayer(new DenseLayer(w1, b1));
+  neuralNet->addLayer(new ActivationLayer());
+  neuralNet->addLayer(new DenseLayer(w2, b2));
 
   runServer();
   return 0;

@@ -8,9 +8,9 @@ int current_multiplication_level = 1;
 int scale = 7;
 int bsgs_n1 = 28, bsgs_n2 = 28; // product = matrix size, minimal sum if possible
 
-Layer::Layer(Matrix weights, Vector biases) : weights(weights), biases(biases) {}
+DenseLayer::DenseLayer(Matrix weights, Vector biases) : weights(weights), biases(biases) {}
 
-Vector Layer::feedforward(Vector x) {
+Vector DenseLayer::feedforward(Vector x) {
   // std::cout << x.shape()[0] << " - " << weights.shape()[0] << weights.shape()[1] << std::endl;
   // std::cout << xt::view(x) << std::endl;
   Vector dot = xt::zeros<double>({weights.shape()[1]});
@@ -20,15 +20,15 @@ Vector Layer::feedforward(Vector x) {
     i++;
   }
   // std::copy(dot.begin(), dot.end(), std::ostream_iterator<float>(std::cout, ", "));
-  return activation(dot + biases);
+  return dot + biases;
 }
 
-void Layer::feedforwardEncrypted(seal::Ciphertext &in_out, seal::GaloisKeys &galoisKeys, seal::RelinKeys relinKeys, seal::CKKSEncoder &ckksEncoder, seal::Evaluator &evaluator) {
+void DenseLayer::feedforwardEncrypted(seal::Ciphertext &in_out, seal::GaloisKeys &galoisKeys, seal::RelinKeys relinKeys, seal::CKKSEncoder &ckksEncoder, seal::Evaluator &evaluator) {
   multiplyCKKS(in_out, weights, galoisKeys, ckksEncoder, evaluator);
-  activationEncrypted(in_out, relinKeys, ckksEncoder, evaluator);
+  // activationEncrypted(in_out, relinKeys, ckksEncoder, evaluator);
 }
 
-void Layer::multiplyCKKS(seal::Ciphertext &in_out, const Matrix &mat, seal::GaloisKeys &galois_keys, seal::CKKSEncoder &ckks_encoder, seal::Evaluator &evaluator) {
+void DenseLayer::multiplyCKKS(seal::Ciphertext &in_out, const Matrix &mat, seal::GaloisKeys &galois_keys, seal::CKKSEncoder &ckks_encoder, seal::Evaluator &evaluator) {
   int slots = ckks_encoder.slot_count(); // = N/2 = 4096/2 = 2048
   size_t matrix_dim = mat.shape()[0];
   if (matrix_dim != slots && matrix_dim * 2 > slots)
@@ -71,7 +71,7 @@ void Layer::multiplyCKKS(seal::Ciphertext &in_out, const Matrix &mat, seal::Galo
   in_out = sum;
 }
 
-void Layer::multiplyCKKSBabystepGiantstep(seal::Ciphertext &in_out, const Matrix &mat, seal::GaloisKeys &galois_keys, seal::CKKSEncoder &ckks_encoder, seal::Evaluator &evaluator) {
+void DenseLayer::multiplyCKKSBabystepGiantstep(seal::Ciphertext &in_out, const Matrix &mat, seal::GaloisKeys &galois_keys, seal::CKKSEncoder &ckks_encoder, seal::Evaluator &evaluator) {
   int slots = ckks_encoder.slot_count(); // = N/2 = 4096/2 = 2048
   size_t matrix_dim = mat.shape()[0];
   if (matrix_dim != slots && matrix_dim * 2 > slots)
@@ -148,9 +148,9 @@ void Layer::multiplyCKKSBabystepGiantstep(seal::Ciphertext &in_out, const Matrix
   in_out = outer_sum;
 }
 
-Vector Layer::activation(Vector x) { return 0.54738 + 0.59579 * x + 0.090189 * xt::pow(x, 2) - 0.006137 * xt::pow(x, 3); }
+Vector ActivationLayer::feedforward(Vector x) { return 0.54738 + 0.59579 * x + 0.090189 * xt::pow(x, 2) - 0.006137 * xt::pow(x, 3); }
 
-void Layer::activationEncrypted(seal::Ciphertext &x1_encrypted, seal::RelinKeys &relinKeys, seal::CKKSEncoder &encoder, seal::Evaluator &evaluator) {
+void ActivationLayer::feedforwardEncrypted(seal::Ciphertext &x1_encrypted, seal::GaloisKeys &galoisKeys, seal::RelinKeys relinKeys, seal::CKKSEncoder &encoder, seal::Evaluator &evaluator) {
   /*
   We create plaintexts for PI, 0.4, and 1 using an overload of CKKSEncoder::encode
   that encodes the given floating-point value to every slot in the vector.

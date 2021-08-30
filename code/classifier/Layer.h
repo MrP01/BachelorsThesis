@@ -13,8 +13,17 @@ class Network;
 class Layer {
   friend Network;  // Network can access my properties
 
-  private:
+  protected:
     Network* parent = nullptr;
+
+  public:
+    Layer() = default;
+    virtual Vector feedforward(Vector x) = 0;
+    virtual void feedforwardEncrypted(seal::Ciphertext &in_out, seal::GaloisKeys &galoisKeys, seal::RelinKeys relinKeys, seal::CKKSEncoder &ckksEncoder, seal::Evaluator &evaluator) = 0;
+};
+
+class DenseLayer: public Layer {
+  private:
     Matrix weights;
     Vector biases;
 
@@ -24,14 +33,20 @@ class Layer {
     // out;
     // out_prime;
 
-    static Vector activation(Vector x);
-    // static Vector activationPrime(Vector x);
-
   public:
-    Layer(Matrix weights, Vector biases);
-    Vector feedforward(Vector x);
-    void feedforwardEncrypted(seal::Ciphertext &in_out, seal::GaloisKeys &galoisKeys, seal::RelinKeys relinKeys, seal::CKKSEncoder &ckksEncoder, seal::Evaluator &evaluator);
+    DenseLayer(Matrix weights, Vector biases);
     void multiplyCKKS(seal::Ciphertext &in_out, const Matrix &mat, seal::GaloisKeys &galois_keys, seal::CKKSEncoder &ckks_encoder, seal::Evaluator &evaluator);
     void multiplyCKKSBabystepGiantstep(seal::Ciphertext &in_out, const Matrix &mat, seal::GaloisKeys &galois_keys, seal::CKKSEncoder &ckks_encoder, seal::Evaluator &evaluator);
-    void activationEncrypted(seal::Ciphertext &x1_encrypted, seal::RelinKeys &relinKeys, seal::CKKSEncoder &encoder, seal::Evaluator &evaluator);
+    virtual Vector feedforward(Vector x);
+    virtual void feedforwardEncrypted(seal::Ciphertext &in_out, seal::GaloisKeys &galoisKeys, seal::RelinKeys relinKeys, seal::CKKSEncoder &ckksEncoder, seal::Evaluator &evaluator);
+};
+
+class ActivationLayer: public Layer {
+  public:
+    ActivationLayer() = default;
+    // static Vector activation(Vector x);
+    // static Vector activationPrime(Vector x);
+
+    virtual Vector feedforward(Vector x);
+    virtual void feedforwardEncrypted(seal::Ciphertext &in_out, seal::GaloisKeys &galoisKeys, seal::RelinKeys relinKeys, seal::CKKSEncoder &ckksEncoder, seal::Evaluator &evaluator);
 };
