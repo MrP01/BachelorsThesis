@@ -14,10 +14,18 @@ Vector DenseLayer::feedforward(Vector x) {
   // std::cout << x.shape()[0] << " - " << weights.shape()[0] << weights.shape()[1] << std::endl;
   // std::cout << xt::view(x) << std::endl;
   Vector dot = xt::zeros<double>({weights.shape()[1]});
-  int i = 0;
-  for (auto iter = xt::axis_begin(weights, 1); iter != xt::axis_end(weights, 1); iter++) {
-    dot[i] = xt::sum((*iter) * x)();
-    i++;
+  // int i = 0;
+  // for (auto iter = xt::axis_begin(weights, 1); iter != xt::axis_end(weights, 1); iter++) {
+  //   dot[i] = xt::sum((*iter) * x)();
+  //   i++;
+  // }
+
+  for (uint64_t col = 0; col < weights.shape()[1]; col++) {
+    double sum = 0;
+    for (uint64_t row = 0; row < weights.shape()[0]; row++) {
+      sum += weights.at(row, col) * x[row];
+    }
+    dot[col] = sum;
   }
   // std::copy(dot.begin(), dot.end(), std::ostream_iterator<float>(std::cout, ", "));
   return dot + biases;
