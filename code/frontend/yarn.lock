@@ -1469,10 +1469,10 @@
   resolved "https://registry.yarnpkg.com/@materializecss/materialize/-/materialize-1.1.0-alpha.tgz#448e742f7f4346d1dee11390a9e567545a139c49"
   integrity sha512-dOAcIAe4L7kGtZ8V5oSxUrwHOsPGxfRwefvRk/jRcPwtZfmLoiQtS37JO0p9PTdkCj+aQmqUOzHoRhaF3TxmAg==
 
-"@msgpack/msgpack@^2.7.0":
-  version "2.7.0"
-  resolved "https://registry.yarnpkg.com/@msgpack/msgpack/-/msgpack-2.7.0.tgz#3a0fbe4e0406f6576895f990857e19da97376f18"
-  integrity sha512-mlRYq9FSsOd4m+3wZWatemn3hGFZPWNJ4JQOdrir4rrMK2PyIk26idKBoUWrqF3HJJHl+5GpRU+M0wEruJwecg==
+"@msgpack/msgpack@^2.7.1":
+  version "2.7.1"
+  resolved "https://registry.yarnpkg.com/@msgpack/msgpack/-/msgpack-2.7.1.tgz#f01954baadc502f3c82e9c3f72c740ce65eae1cc"
+  integrity sha512-ApwiSL2c9ObewdOE/sqt788P1C5lomBOHyO8nUBCr4ofErBCnYQ003NtJ8lS9OQZc11ximkbmgAZJjB8y6cCdA==
 
 "@nodelib/fs.scandir@2.1.5":
   version "2.1.5"
@@ -1697,18 +1697,18 @@
     lodash "^4.17.15"
     redent "^3.0.0"
 
-"@testing-library/react@^12.0.0":
-  version "12.0.0"
-  resolved "https://registry.yarnpkg.com/@testing-library/react/-/react-12.0.0.tgz#9aeb2264521522ab9b68f519eaf15136148f164a"
-  integrity sha512-sh3jhFgEshFyJ/0IxGltRhwZv2kFKfJ3fN1vTZ6hhMXzz9ZbbcTgmDYM4e+zJv+oiVKKEWZPyqPAh4MQBI65gA==
+"@testing-library/react@^12.1.2":
+  version "12.1.2"
+  resolved "https://registry.yarnpkg.com/@testing-library/react/-/react-12.1.2.tgz#f1bc9a45943461fa2a598bb4597df1ae044cfc76"
+  integrity sha512-ihQiEOklNyHIpo2Y8FREkyD1QAea054U0MVbwH1m8N9TxeFz+KoJ9LkqoKqJlzx2JDm56DVwaJ1r36JYxZM05g==
   dependencies:
     "@babel/runtime" "^7.12.5"
     "@testing-library/dom" "^8.0.0"
 
-"@testing-library/user-event@^13.2.1":
-  version "13.2.1"
-  resolved "https://registry.yarnpkg.com/@testing-library/user-event/-/user-event-13.2.1.tgz#7a71a39e50b4a733afbe2916fa2b99966e941f98"
-  integrity sha512-cczlgVl+krjOb3j1625usarNEibI0IFRJrSWX9UsJ1HKYFgCQv9Nb7QAipUDXl3Xdz8NDTsiS78eAkPSxlzTlw==
+"@testing-library/user-event@^13.5.0":
+  version "13.5.0"
+  resolved "https://registry.yarnpkg.com/@testing-library/user-event/-/user-event-13.5.0.tgz#69d77007f1e124d55314a2b73fd204b333b13295"
+  integrity sha512-5Kwtbo3Y/NowpkbRuSepbyMFkZmHgD+vPzYB/RJ4oxt5Gj/avFFBYjhw27cqSVPVw/3a67NK1PbiIr9k4Gwmdg==
   dependencies:
     "@babel/runtime" "^7.12.5"
 
@@ -7442,10 +7442,10 @@ node-releases@^1.1.61, node-releases@^1.1.71:
   resolved "https://registry.yarnpkg.com/node-releases/-/node-releases-1.1.72.tgz#14802ab6b1039a79a0c7d662b610a5bbd76eacbe"
   integrity sha512-LLUo+PpH3dU6XizX3iVoubUNheF/owjXCZZ5yACDxNnPtgFuludV1ZL3ayK1kVep42Rmm0+R9/Y60NQbZ2bifw==
 
-node-seal@^4.5.7:
-  version "4.5.7"
-  resolved "https://registry.yarnpkg.com/node-seal/-/node-seal-4.5.7.tgz#33ab82d057cb52d73eb9e89978fa97cc7d25eb0d"
-  integrity sha512-f71CT2J8ZCuLKuHvynyuTUkd41OgXRW51grlxACqViPMABKMTLHoe1/PLD0tS0RXMGuvxsQMlgFigOCOK8k5Aw==
+node-seal@^4.6.1:
+  version "4.6.1"
+  resolved "https://registry.yarnpkg.com/node-seal/-/node-seal-4.6.1.tgz#1a942996356ade9f68d6947b96fa95bd9f5e936c"
+  integrity sha512-lEP5Di+QSOpxukhkFRaX4ZoUK6K/9G+d3PtIwoPrY3vfIqDfNFudF0k9mjBuLHgQ/5XhEOhDWrwMVTfFM7r7ow==
 
 normalize-package-data@^2.3.2, normalize-package-data@^2.5.0:
   version "2.5.0"

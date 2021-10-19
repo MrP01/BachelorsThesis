@@ -8,7 +8,7 @@ include(${CMAKE_BINARY_DIR}/conanbuildinfo.cmake)
 conan_basic_setup()
 
 # set(ALLOW_TRANSPARENT_CIPHERTEXT true)
-find_package(SEAL 3.6 REQUIRED)
+find_package(SEAL 3.7.1 REQUIRED)
 
 add_executable(classifier main.cpp Layer.cpp Network.cpp Network.h)
 target_link_libraries(classifier ${CONAN_LIBS} SEAL::seal)
