@@ -1,8 +1,8 @@
 [requires]
-xtensor/0.21.5
-nlohmann_json/3.9.1
-backward-cpp/1.5
-cpp-httplib/0.9.0
+xtensor/0.24.0
+nlohmann_json/3.10.5
+backward-cpp/1.6
+cpp-httplib/0.10.1
 
 [generators]
 cmake
