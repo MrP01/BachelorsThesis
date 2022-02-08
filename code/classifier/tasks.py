@@ -22,7 +22,7 @@ def fetch_training_data(ctx, target="data/mnist"):
 
 @invoke.task()
 def send_test_request(ctx, index=3):
-    """Sends a zeromq test request to localhost:5555"""
+    """Sends an HTTP test request to localhost:5555"""
     x_train, y_train, x_test, y_test = (data.astype("float32") / 255 for data in mnist.mnist())
     response = msgpack.unpackb(
         requests.post(

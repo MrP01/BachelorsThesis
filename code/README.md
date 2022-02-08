@@ -19,7 +19,7 @@ cd code/
 # Training:
 cd training/
 pip install -r requirements.txt
-python3 network.py
+python3 network.py  # trains the model and stores it
 cd ../
 
 # Classifier:
@@ -33,12 +33,12 @@ conan install ..
 cmake ..
 cmake --build . -- -j 3
 cd ../
-./build/bin/classifier  # start the server
+./build/bin/classifier  # start the backend server
 cd ../
 
 # Frontend:
-cd frontend
+cd frontend/
 yarn install
-yarn start
+yarn start  # runs the frontend and opens a browser tab
 cd ../
 ```
