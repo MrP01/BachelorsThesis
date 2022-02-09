@@ -7,10 +7,10 @@ One can distinguish three flavors of it, Partial-, Semi- and \gls{fhe}.
 
 % Fully Homomorphic Encryption (FHE):
 \begin{itemize}
-    \item Brakerski/Fan-Vercauteren (BFV) scheme for integer arithmetic
-    \item Brakerski-Gentry-Vaikuntanathan (BGV) scheme for integer arithmetic
-    \item Cheon-Kim-Kim-Song (CKKS) scheme for real-number arithmetic
-    \item Ducas-Micciancio (FHEW) and Chillotti-Gama-Georgieva-Izabachene (TFHE) schemes for Boolean circuit evaluation
+  \item Brakerski/Fan-Vercauteren (BFV) scheme for integer arithmetic
+  \item Brakerski-Gentry-Vaikuntanathan (BGV) scheme for integer arithmetic
+  \item Cheon-Kim-Kim-Song (CKKS) scheme for real-number arithmetic
+  \item Ducas-Micciancio (FHEW) and Chillotti-Gama-Georgieva-Izabachene (TFHE) schemes for Boolean circuit evaluation
 \end{itemize}
 
 \subsection{Packing}
@@ -21,17 +21,17 @@ Vektor -> Polynom mit einer IFFT
 \subsection{HE using RSA}
 With unpadded RSA, some arithmetic can be performed on the ciphertext - looking at the encrypted ciphertext $\mathcal{E}(m_1) = (m_1)^r \mod n$ of the message $m_1$ and $m_2$ respectively, the following holds:
 \begin{align}
-    \mathcal{E}(m_1) \cdot \mathcal{E}(m_2)
-    &= (m_1)^r (m_2)^r \mod n \\
-    &= (m_1 m_2)^r \mod n \\
-    &= \mathcal{E}(m_1 \cdot m_2)
+  \mathcal{E}(m_1) \cdot \mathcal{E}(m_2)
+   & = (m_1)^r (m_2)^r \mod n     \\
+   & = (m_1 m_2)^r \mod n         \\
+   & = \mathcal{E}(m_1 \cdot m_2)
 \end{align}
 
 The encryption therefore partially fulfills the properties of ring homomorphism, which in general is defined as follows:
 
-\begin{definition}
-    Given two rings $(R, +, \cdot)$ and $(S, \oplus, \otimes)$, we call a mapping $\varphi: R \rightarrow S$ a ring homomorphism, when it satisfies the following conditions:
-    $$\forall a, b \in R: \varphi(a + b) = \varphi(a) \oplus \varphi(b) \wedge \varphi(a \cdot b) = \varphi(a) \otimes \varphi(b)$$
+\begin{definition}{Ring Homomorphism}{ring-homomorphism} ~
+  Given two rings $(R, +, \cdot)$ and $(S, \oplus, \otimes)$, we call a mapping $\varphi: R \rightarrow S$ a ring homomorphism when it satisfies the following conditions:
+  $$\forall a, b \in R: \varphi(a + b) = \varphi(a) \oplus \varphi(b) \wedge \varphi(a \cdot b) = \varphi(a) \otimes \varphi(b)$$
 \end{definition}
 
 \subsection{Learning with Errors (LWE)}
@@ -46,8 +46,8 @@ The CKKS scheme allows us to perform approximate arithmetic on floating point nu
 \section{Machine Learning}
 As Shafi Goldwasser puts it, 'Machine Learning is somewhere in the intersection of Artificial Intelligence, Statistics and Theoretical Computer Science' \cite{goldwasserTalk2018}.
 
-\begin{figure}
-    \includegraphics[width=0.4\linewidth]{figures/what-is-machine-learning.png}
+\begin{figure}  % TODO: replace me with a TIKZ figure
+  \includegraphics[width=0.4\linewidth]{figures/what-is-machine-learning.png}
 \end{figure}
 
 \subsection{Linear Regression?}
@@ -56,10 +56,10 @@ As Shafi Goldwasser puts it, 'Machine Learning is somewhere in the intersection 
 \subsection{Multi-Layered Neural Networks}
 Matrix -> Activation Function
 \begin{itemize}
-    \item Matrix Multiplication (Dense Layer)
-    \item Convolutional Layer
-    \item Sigmoid Activation
-    \item Max Pooling
+  \item Matrix Multiplication (Dense Layer)
+  \item Convolutional Layer
+  \item Sigmoid Activation
+  \item Max Pooling
 \end{itemize}
 
 \section{Post-Quantum Security}
@@ -70,9 +70,9 @@ glossaries and acronym lists with \texttt{glossaries} (Section \ref{sec:gloss}),
 bibliography and citations with \texttt{biblatex} (Section \ref{sec:bib}), and more.
 
 \begin{figure}[H]
-    \centering
-    \includegraphics[width=0.8\linewidth]{figures/taylor-relu.png}
-    \caption{Comparison of the Relu activation function vs. its Taylor expansion}
+  \centering
+  \includegraphics[width=0.8\linewidth]{figures/taylor-relu.png}
+  \caption{Comparison of the Relu activation function vs. its Taylor expansion}
 \end{figure}
 
 \section{Notation and Acronyms}
