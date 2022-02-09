@@ -1,29 +1,10 @@
-\documentclass[11pt,
-  oneside,openany,    % for one-sided printing and screens
-  %draft              % enable to compile faster and test layout
-]{scrreprt}
-
-% Settings
-\usepackage[ngerman,english]{babel}
-\usepackage[utf8]{inputenc}
-\usepackage{geometry}
-\usepackage{float}
-\usepackage{microtype}
-\usepackage[all]{nowidow}
+\documentclass[oneside,openany]{book}
+\usepackage{prettytex/base}
+\usepackage{prettytex/math}
+\usepackage{prettytex/math-theorems}
+\usepackage{prettytex/thesis}
 \usepackage[bsc,claim,iaik]{iaikthesis}
-\addtokomafont{disposition}{\rmfamily}
-\usepackage{amsmath,amsfonts,amssymb}
-\usepackage{blindtext}
-\usepackage{csquotes}
-\usepackage[backend=biber,
-            style=alphabetic,
-            maxbibnames=20]{biblatex}
 \addbibresource{thesis.bib}
-\usepackage[hidelinks]{hyperref}
-%\usepackage{cleveref}                % named references (\Cref{chap:introduction}, ...)
-\usepackage[toc,acronym,style=long3col]{glossaries} % List of acronyms and symbols  (optional)
-\newtheorem{theorem}{Theorem}
-\newtheorem{definition}{Definition}
 
 \thesistitle{Secure Classification as a Service}
 \thesisauthor{Peter Julius Waldert}
@@ -47,17 +28,16 @@
 \newacronym{aes}{AES}{Advanced Encryption Standard}
 \newglossaryentry{xor}{name={\ensuremath{\oplus}}, sort=xor, description={exclusive-or (\textsc{Xor})}}
 
-
 \begin{document}
-	\printthesistitle
-	\include{chapters/abstract}
-	\tableofcontents
-	\include{chapters/introduction}
-	\include{chapters/background}
-	\include{chapters/implementation}
-	\include{chapters/results}
-	\include{chapters/conclusion}
-	\printnoidxglossary[title={Notation}]  % Symbols / Notation
-	\printnoidxglossary[type=acronym]  % Acronyms
-	\printbibliography[heading=bibintoc]
+  \printthesistitle
+  \include{chapters/abstract}
+  \tableofcontents
+  \include{chapters/introduction}
+  \include{chapters/background}
+  \include{chapters/implementation}
+  \include{chapters/results}
+  \include{chapters/conclusion}
+  \printnoidxglossary[title={Notation}]  % Symbols / Notation
+  \printnoidxglossary[type=acronym]  % Acronyms
+  \printbibliography[heading=bibintoc]
 \end{document}
