@@ -1,4 +1,4 @@
-FROM conanio/gcc10
+FROM conanio/gcc11
 WORKDIR /app
 USER root
 
