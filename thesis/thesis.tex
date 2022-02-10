@@ -1,12 +1,11 @@
-\documentclass[oneside,openany]{book}
+\documentclass{report}
 \usepackage{prettytex/base}
 \usepackage{prettytex/math}
 \usepackage{prettytex/math-theorems}
 \usepackage{prettytex/thesis}
+\usepackage{lastpage}
 \usepackage[bsc,claim,iaik]{iaikthesis}
 \addbibresource{thesis.bib}
-
-% TODO: \autoheadings
 
 \thesistitle{Secure Classification as a Service}
 \thesisauthor{Peter Julius Waldert}
@@ -23,6 +22,25 @@
 
 \title{\@thesistitle}
 \author{\@thesisauthor}
+
+\makeatletter
+\newcommand{\theRealAuthor}{\@thesisauthor}
+\makeatother
+
+\setlength{\headheight}{15.3pt}
+\fancypagestyle{plain}{
+  \fancyhf{}
+  \renewcommand\headrule{}
+  \fancyfoot[C]{\thepage\  \text{ / } \pageref{LastPage}}
+}
+\fancypagestyle{normal}{
+  \fancyhf{}
+  \fancyhead[R]{\theRealAuthor \enspace \textcolor{themecolor3}{\textbullet}}
+  \fancyhead[L]{\leftmark}
+  \fancyfoot[C]{\thepage\  \text{ / } \pageref{LastPage}}
+  \renewcommand\headrule{\vspace{-0.18cm}\color{headrulecolor}\hrulefill}
+}
+\pagestyle{normal}
 
 \makenoidxglossaries
 \newacronym{he}{HE}{Homomorphic Encryption}
