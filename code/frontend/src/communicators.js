@@ -1,4 +1,4 @@
-import SEAL from "node-seal/throws_wasm_node_umd";
+import SEAL from "node-seal/throws_wasm_web_es";
 import * as msgpack from "@msgpack/msgpack";
 
 const API_URL = "/api";
