@@ -31,12 +31,14 @@ Vector DenseLayer::feedforward(Vector x) {
   return dot + biases;
 }
 
-void DenseLayer::feedforwardEncrypted(seal::Ciphertext &in_out, seal::GaloisKeys &galoisKeys, seal::RelinKeys relinKeys, seal::CKKSEncoder &ckksEncoder, seal::Evaluator &evaluator) {
+void DenseLayer::feedforwardEncrypted(seal::Ciphertext &in_out, seal::GaloisKeys &galoisKeys, seal::RelinKeys relinKeys,
+                                      seal::CKKSEncoder &ckksEncoder, seal::Evaluator &evaluator) {
   multiplyCKKS(in_out, weights, galoisKeys, ckksEncoder, evaluator);
   // activationEncrypted(in_out, relinKeys, ckksEncoder, evaluator);
 }
 
-void DenseLayer::multiplyCKKS(seal::Ciphertext &in_out, const Matrix &mat, seal::GaloisKeys &galois_keys, seal::CKKSEncoder &ckks_encoder, seal::Evaluator &evaluator) {
+void DenseLayer::multiplyCKKS(seal::Ciphertext &in_out, const Matrix &mat, seal::GaloisKeys &galois_keys, seal::CKKSEncoder &ckks_encoder,
+                              seal::Evaluator &evaluator) {
   int slots = ckks_encoder.slot_count(); // = N/2 = 4096/2 = 2048
   size_t matrix_dim = mat.shape()[0];
   if (matrix_dim != slots && matrix_dim * 2 > slots)
@@ -79,7 +81,8 @@ void DenseLayer::multiplyCKKS(seal::Ciphertext &in_out, const Matrix &mat, seal:
   in_out = sum;
 }
 
-void DenseLayer::multiplyCKKSBabystepGiantstep(seal::Ciphertext &in_out, const Matrix &mat, seal::GaloisKeys &galois_keys, seal::CKKSEncoder &ckks_encoder, seal::Evaluator &evaluator) {
+void DenseLayer::multiplyCKKSBabystepGiantstep(seal::Ciphertext &in_out, const Matrix &mat, seal::GaloisKeys &galois_keys,
+                                               seal::CKKSEncoder &ckks_encoder, seal::Evaluator &evaluator) {
   int slots = ckks_encoder.slot_count(); // = N/2 = 4096/2 = 2048
   size_t matrix_dim = mat.shape()[0];
   if (matrix_dim != slots && matrix_dim * 2 > slots)
@@ -158,7 +161,8 @@ void DenseLayer::multiplyCKKSBabystepGiantstep(seal::Ciphertext &in_out, const M
 
 Vector ActivationLayer::feedforward(Vector x) { return 0.54738 + 0.59579 * x + 0.090189 * xt::pow(x, 2) - 0.006137 * xt::pow(x, 3); }
 
-void ActivationLayer::feedforwardEncrypted(seal::Ciphertext &x1_encrypted, seal::GaloisKeys &galoisKeys, seal::RelinKeys relinKeys, seal::CKKSEncoder &encoder, seal::Evaluator &evaluator) {
+void ActivationLayer::feedforwardEncrypted(seal::Ciphertext &x1_encrypted, seal::GaloisKeys &galoisKeys, seal::RelinKeys relinKeys,
+                                           seal::CKKSEncoder &encoder, seal::Evaluator &evaluator) {
   /*
   We create plaintexts for PI, 0.4, and 1 using an overload of CKKSEncoder::encode
   that encodes the given floating-point value to every slot in the vector.

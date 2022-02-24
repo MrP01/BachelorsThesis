@@ -7,7 +7,7 @@ class BaseCommunicator {
   async init() {}
   async classify() {}
   async _makeApiRequest(path, body) {
-    console.log("sending", body);
+    // console.log("sending", body);
     const response = await fetch(API_URL + path, {
       method: "POST",
       headers: { "Content-Type": "application/x-msgpack" },

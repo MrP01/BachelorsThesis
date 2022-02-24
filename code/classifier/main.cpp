@@ -3,6 +3,8 @@
 #include <httplib.h>
 #include <iostream>
 #include <nlohmann/json.hpp>
+#include <seal/encryptor.h>
+#include <seal/keygenerator.h>
 #include <xtensor/xaxis_iterator.hpp>
 #include <xtensor/xio.hpp>
 #include <xtensor/xjson.hpp>
@@ -55,14 +57,14 @@ nlohmann::json handleEncryptedPredictionRequest(nlohmann::json request) {
   dataStream = std::stringstream(std::string(binary.begin(), binary.end()));
   ciphertext.load(*neuralNet->context, dataStream);
 
-  // seal::Ciphertext result = neuralNet->predictEncrypted(ciphertext, relinKeys, galoisKeys);
+  seal::Ciphertext result = neuralNet->predictEncrypted(ciphertext, relinKeys, galoisKeys);
 
-  // std::vector<uint8_t> byte_buffer(static_cast<size_t>(result.save_size()));
-  // result.save(reinterpret_cast<seal::seal_byte *>(byte_buffer.data()), byte_buffer.size());
-  // auto binaryResult = nlohmann::json::binary(byte_buffer);
+  std::vector<uint8_t> byte_buffer(static_cast<size_t>(result.save_size()));
+  result.save(reinterpret_cast<seal::seal_byte *>(byte_buffer.data()), byte_buffer.size());
+  auto binaryResult = nlohmann::json::binary(byte_buffer);
   return nlohmann::json{
-      // {"result", binaryResult},
-      {"probabilities", {0, 0, 0, 0, 0, 0, 0, 0, 0, 0}}, // prediction and probabilities should be calculated client-side
+      {"result", binaryResult},
+      // {"probabilities", {0, 0, 0, 0, 0, 0, 0, 0, 0, 0}}, // prediction and probabilities should be calculated client-side
   };
 }
 
@@ -87,6 +89,10 @@ void runServer() {
 
   server.set_exception_handler([](const httplib::Request &req, httplib::Response &res, std::exception &exception) {
     std::cout << "Exception caught: " << exception.what() << std::endl;
+    backward::StackTrace trace;
+    trace.load_here();
+    backward::Printer printer;
+    printer.print(trace);
     res.status = 500;
     res.set_content(exception.what(), "text/plain");
   });
@@ -125,6 +131,27 @@ double evaluateNetworkOnTestData() {
   return accuracy;
 }
 
+void evaluateNetworkOnEncryptedTestData() {
+  auto x_test = xt::load_npy<float>("data/mnist/x-test.npy");
+  auto some_x_test = *xt::axis_begin(x_test, 0);
+  std::vector<double> some_x_test_vector = std::vector<double>(some_x_test.begin(), some_x_test.end());
+  seal::KeyGenerator keyGen(*neuralNet->context);
+  seal::PublicKey publicKey;
+  seal::GaloisKeys galoisKeys;
+  seal::RelinKeys relinKeys;
+  keyGen.create_public_key(publicKey);
+  keyGen.create_galois_keys(galoisKeys);
+  keyGen.create_relin_keys(relinKeys);
+  seal::Encryptor encryptor(*neuralNet->context, publicKey);
+  seal::CKKSEncoder encoder(*neuralNet->context);
+  seal::Plaintext plain;
+  double scale = pow(2.0, 30);
+  encoder.encode(some_x_test_vector, scale, plain);
+  seal::Ciphertext encrypted;
+  encryptor.encrypt(plain, encrypted);
+  neuralNet->predictEncrypted(encrypted, relinKeys, galoisKeys);
+}
+
 void shutdown(int signum) {
   std::cout << "Shutdown..." << std::endl;
   quit = true;
@@ -146,6 +173,7 @@ int main() {
   neuralNet->addLayer(new ActivationLayer());
   neuralNet->addLayer(new DenseLayer(w2, b2));
 
-  runServer();
+  // runServer();
+  evaluateNetworkOnEncryptedTestData();
   return 0;
 }
