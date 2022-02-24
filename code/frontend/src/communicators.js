@@ -7,6 +7,7 @@ class BaseCommunicator {
   async init() {}
   async classify() {}
   async _makeApiRequest(path, body) {
+    console.log("sending", body);
     const response = await fetch(API_URL + path, {
       method: "POST",
       headers: { "Content-Type": "application/x-msgpack" },
@@ -100,7 +101,7 @@ export class SEALCommunicator extends BaseCommunicator {
     const decryptor = this.seal.Decryptor(this.context, this._secretKey);
     var resultPlaintext = this.seal.PlainText();
     decryptor.decrypt(resultCiphertext, resultPlaintext);
-    var result = encoder.decode(resultPlaintext);  // TODO: apply softmax and get prediction
+    var result = encoder.decode(resultPlaintext); // TODO: apply softmax and get prediction
     return result;
   }
 

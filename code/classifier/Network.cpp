@@ -9,7 +9,7 @@ void Network::init() {
   seal::EncryptionParameters params(seal::scheme_type::ckks);
   size_t poly_modulus_degree = 4096; // same as for node-seal
   params.set_poly_modulus_degree(poly_modulus_degree);
-  params.set_coeff_modulus(seal::CoeffModulus::Create(poly_modulus_degree, {50, 20, 50}));
+  params.set_coeff_modulus(seal::CoeffModulus::Create(poly_modulus_degree, {60, 40, 40, 40, 40, 60}));
   context = new seal::SEALContext(params, true, seal::sec_level_type::none);
 }
 

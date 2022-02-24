@@ -55,14 +55,14 @@ nlohmann::json handleEncryptedPredictionRequest(nlohmann::json request) {
   dataStream = std::stringstream(std::string(binary.begin(), binary.end()));
   ciphertext.load(*neuralNet->context, dataStream);
 
-  seal::Ciphertext result = neuralNet->predictEncrypted(ciphertext, relinKeys, galoisKeys);
+  // seal::Ciphertext result = neuralNet->predictEncrypted(ciphertext, relinKeys, galoisKeys);
 
-  std::vector<uint8_t> byte_buffer(static_cast<size_t>(result.save_size()));
-  result.save(reinterpret_cast<seal::seal_byte *>(byte_buffer.data()), byte_buffer.size());
-  auto binaryResult = nlohmann::json::binary(byte_buffer);
+  // std::vector<uint8_t> byte_buffer(static_cast<size_t>(result.save_size()));
+  // result.save(reinterpret_cast<seal::seal_byte *>(byte_buffer.data()), byte_buffer.size());
+  // auto binaryResult = nlohmann::json::binary(byte_buffer);
   return nlohmann::json{
-      {"result", binaryResult},
-      // {"probabilities", {0, 0, 0, 0, 0, 0, 0, 0, 0, 0}},  // prediction and probabilities should be calculated client-side
+      // {"result", binaryResult},
+      {"probabilities", {0, 0, 0, 0, 0, 0, 0, 0, 0, 0}}, // prediction and probabilities should be calculated client-side
   };
 }
 
