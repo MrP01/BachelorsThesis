@@ -135,6 +135,7 @@ void evaluateNetworkOnEncryptedTestData() {
   auto x_test = xt::load_npy<float>("data/mnist/x-test.npy");
   auto some_x_test = *xt::axis_begin(x_test, 0);
   std::vector<double> some_x_test_vector = std::vector<double>(some_x_test.begin(), some_x_test.end());
+  assert(some_x_test_vector.size() == 784);
   seal::KeyGenerator keyGen(*neuralNet->context);
   seal::PublicKey publicKey;
   seal::GaloisKeys galoisKeys;

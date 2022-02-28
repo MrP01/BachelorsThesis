@@ -3,6 +3,7 @@
 #include <algorithm>
 #include <xtensor/xaxis_iterator.hpp>
 #include <xtensor/xmath.hpp>
+#include <xtensor/xpad.hpp>
 
 int current_multiplication_level = 1;
 int scale = 7;
@@ -33,6 +34,11 @@ Vector DenseLayer::feedforward(Vector x) {
 
 void DenseLayer::feedforwardEncrypted(seal::Ciphertext &in_out, seal::GaloisKeys &galoisKeys, seal::RelinKeys relinKeys,
                                       seal::CKKSEncoder &ckksEncoder, seal::Evaluator &evaluator) {
+  unsigned in_dimension = weights.shape(0);
+  unsigned out_dimension = weights.shape(1);
+  Matrix zeroPaddedSquareWeights;
+  if (in_dimension > out_dimension)
+    zeroPaddedSquareWeights = xt::pad(weights, {{0, in_dimension - out_dimension}, {0, 0}});
   multiplyCKKS(in_out, weights, galoisKeys, ckksEncoder, evaluator);
   // activationEncrypted(in_out, relinKeys, ckksEncoder, evaluator);
 }
@@ -50,7 +56,7 @@ void DenseLayer::multiplyCKKS(seal::Ciphertext &in_out, const Matrix &mat, seal:
     evaluator.add_inplace(in_out, in_out_rot);
   }
 
-  // diagonal method preperation:
+  // diagonal method preparation:
   std::vector<seal::Plaintext> matrix;
   matrix.reserve(matrix_dim);
   for (auto i = 0ULL; i < matrix_dim; i++) {
@@ -91,7 +97,7 @@ void DenseLayer::multiplyCKKSBabystepGiantstep(seal::Ciphertext &in_out, const M
   if (bsgs_n1 * bsgs_n2 != matrix_dim)
     throw std::runtime_error("wrong bsgs parameters");
 
-  // baby step giant step method preperation:
+  // baby step giant step method preparation:
   std::vector<seal::Plaintext> matrix;
   matrix.reserve(matrix_dim);
   for (auto i = 0ULL; i < matrix_dim; i++) {
