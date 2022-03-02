@@ -1,6 +1,7 @@
 .idea/
 .vscode/
 secrets/
+stuff/
 __pycache__/
 
 *.[oa]
