@@ -16,14 +16,40 @@ softmax = lambda x: np.exp(x) / np.sum(np.exp(x))
 taylor_relu = lambda x: -0.006137 * x ** 3 + 0.090189 * x ** 2 + 0.59579 * x + 0.54738
 
 
+def _matrix_diagonals(matrix: np.ndarray, offsets="out_dim"):
+    out_dim, in_dim = matrix.shape
+    offsets = out_dim if offsets == "out_dim" else in_dim
+    return [[matrix[i % out_dim, (i + offset) % in_dim] for i in range(in_dim)] for offset in range(offsets)]
+
+
 def matmul_diagonal(matrix: np.ndarray, vector):
     out_dim, in_dim = matrix.shape
-    assert in_dim > out_dim
+    assert in_dim >= out_dim
+    assert len(vector) == in_dim
+    diagonals = _matrix_diagonals(matrix, "in_dim")
+    sum_ = sum(np.roll(vector, -i) * diag for i, diag in enumerate(diagonals))
+    return sum_[:out_dim]
+
+
+def matmul_hybrid(matrix: np.ndarray, vector):
+    out_dim, in_dim = matrix.shape
+    assert in_dim >= out_dim
     assert in_dim % out_dim == 0
     assert len(vector) == in_dim
-    diagonals = [[matrix[i % out_dim, (i + offset) % in_dim] for i in range(in_dim)] for offset in range(out_dim)]
+    diagonals = _matrix_diagonals(matrix, "out_dim")
     sum_ = sum(np.roll(vector, -i) * diag for i, diag in enumerate(diagonals))
     return sum(sum_[n * out_dim : (n + 1) * out_dim] for n in range(in_dim // out_dim))
+
+
+def test(n=100):
+    for _ in range(n):
+        a = np.random.randint(1, 40)
+        b = np.random.randint(a, 50)
+        matrix = np.random.random((a, b))
+        vector = np.random.random((b,))
+        assert sum(matmul_diagonal(matrix, vector) - matrix @ vector) < 1e-8
+        if b % a == 0:
+            assert sum(matmul_hybrid(matrix, vector) - matrix @ vector) < 1e-8
 
 
 def classify_plain(x):
