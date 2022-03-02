@@ -12,7 +12,7 @@ that would allow, for instance, user management next to the basic classification
 However, the resulting communication and computation overhead, even when running with very
 efficient protocols such as ZeroMQ, was too high.
 
-Extending the accessibility argument to reproducibility, Docker is a very solid choice \cite{using-docker-in-science}.
+Extending the accessibility argument to reproducibility, Docker is a very solid choice \parencite{using-docker-in-science}.
 To run the attached demo project, simply execute
 \begin{minted}{bash}
   docker-compose build
@@ -21,7 +21,7 @@ To run the attached demo project, simply execute
 in the 'code' folder and point your browser to \url{http://locahost}.
 
 \section{The MNIST dataset}
-The MNIST dataset \cite{mnist-original} contains X train and Y test images with corresponding labels.
+The MNIST dataset \parencite{mnist-original} contains X train and Y test images with corresponding labels.
 In order to stick to the traditional feedforward technique with data represented
 in vector format, therefore it is common to reshape data from $(28, 28)$ images (represented as grayscale values in a matrix)
 into a $784$ element vector.
@@ -31,7 +31,7 @@ The dot product that is required as part of the neural network evaluation proces
 needs to be implemented on SEAL ciphertexts as well.
 
 There are multiple methods to achieve a syntactically correct dot product (matrix-vector multiplication)
-as described in \cite{2018-gazelle} for square matrices.
+as described by \textcite{2018-gazelle} for square matrices.
 
 \begin{enumerate}
   \item Naive
