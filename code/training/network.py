@@ -16,7 +16,7 @@ def relu_taylor(x):
 
 fig: plt.Figure = plt.figure()
 axes: plt.Axes = fig.add_subplot(1, 1, 1)
-x_ = tf.linspace(-10.0, 10.0, 100)
+x_ = tf.linspace(-5.0, 10.0, 100)
 axes.plot(x_, tf.keras.activations.relu(x_), label=r"$y = \mathrm{relu}(x)$")
 axes.plot(x_, relu_taylor(x_), label="$y = \mathrm{relu\_taylor}(x)$")
 axes.set_xlabel(r"$x$")
@@ -39,9 +39,12 @@ model = tf.keras.Sequential(
     ]
 )
 model.summary()
+early_stopping = tf.keras.callbacks.EarlyStopping(patience=1)
 model.compile(optimizer="adam", loss=tf.keras.losses.CategoricalCrossentropy(), metrics=["accuracy"])
-model.fit(x_train, y_train, epochs=10)
+model.fit(x_train, y_train, epochs=30, validation_split=0.1, callbacks=[early_stopping])
 model.evaluate(x_test, y_test)
+
+# TODO: create and report confusion matrix
 
 freeze = pathlib.Path.cwd().parent / "classifier" / "data" / "models" / "simple"
 w1, b1, w2, b2 = model.get_weights()
