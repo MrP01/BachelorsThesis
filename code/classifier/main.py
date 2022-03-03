@@ -2,9 +2,6 @@ import tenseal
 import numpy as np
 
 ctx = tenseal.context(tenseal.SCHEME_TYPE.CKKS, poly_modulus_degree=8192, coeff_mod_bit_sizes=[60, 40, 40, 60])
-ctx.global_scale = 2 ** 40
-ctx.generate_galois_keys()
-
 w1 = np.load("data/models/simple/w1.npy")
 b1 = np.load("data/models/simple/b1.npy")
 w2 = np.load("data/models/simple/w2.npy")
@@ -41,17 +38,6 @@ def matmul_hybrid(matrix: np.ndarray, vector):
     return sum(sum_[n * out_dim : (n + 1) * out_dim] for n in range(in_dim // out_dim))
 
 
-def test(n=100):
-    for _ in range(n):
-        a = np.random.randint(1, 40)
-        b = np.random.randint(a, 50)
-        matrix = np.random.random((a, b))
-        vector = np.random.random((b,))
-        assert sum(matmul_diagonal(matrix, vector) - matrix @ vector) < 1e-8
-        if b % a == 0:
-            assert sum(matmul_hybrid(matrix, vector) - matrix @ vector) < 1e-8
-
-
 def classify_plain(x):
     out_1 = taylor_relu(w1.T @ x + b1)
     out_2 = w2.T @ out_1 + b2
@@ -63,3 +49,12 @@ def classify_encrypted(x):
     out_1 = taylor_relu(x_enc.matmul(w1) + b1)
     out_2 = out_1.matmul(w2) + b2
     return softmax(out_2.decrypt())
+
+
+def main():
+    ctx.global_scale = 2 ** 40
+    ctx.generate_galois_keys()
+
+
+if __name__ == "__main__":
+    main()
