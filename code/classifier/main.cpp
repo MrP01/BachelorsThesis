@@ -17,7 +17,7 @@ auto neuralNet = new Network();
 bool quit = false;
 
 namespace backward {
-backward::SignalHandling sh;
+backward::SignalHandling _signalHandler;
 }
 
 nlohmann::json handlePlainPredictionRequest(nlohmann::json request) {
@@ -108,8 +108,8 @@ void runServer() {
 double evaluateNetworkOnTestData() {
   auto x_test = xt::load_npy<float>("data/mnist/x-test.npy");
   auto y_test = xt::load_npy<int>("data/mnist/y-test.npy");
-  int N = x_test.shape()[0];
-  // x_test.reshape({N, 784});
+  int N = x_test.shape()[0] * 0.3;
+  x_test /= 255;
 
   int correct = 0, i = 0;
   for (auto iter = xt::axis_begin(x_test, 0); iter != xt::axis_end(x_test, 0); iter++) {
@@ -120,6 +120,8 @@ double evaluateNetworkOnTestData() {
     // std::cout << prediction << " | " << y_test[i] << std::endl;
     if (i % 12 == 0)
       std::cout << i << " / " << N << "\r" << std::flush;
+    if (i > N)
+      break;
     if (prediction == y_test[i])
       correct++;
     i++;
@@ -133,6 +135,7 @@ double evaluateNetworkOnTestData() {
 
 void evaluateNetworkOnEncryptedTestData() {
   auto x_test = xt::load_npy<float>("data/mnist/x-test.npy");
+  x_test /= 255;
   auto some_x_test = *xt::axis_begin(x_test, 0);
   auto some_x_test_vector = std::vector<double>(some_x_test.begin(), some_x_test.end());
   assert(some_x_test_vector.size() == 784);
@@ -175,6 +178,7 @@ int main() {
   neuralNet->addLayer(new DenseLayer(w2, b2));
 
   // runServer();
-  evaluateNetworkOnEncryptedTestData();
+  evaluateNetworkOnTestData();
+  // evaluateNetworkOnEncryptedTestData();
   return 0;
 }

@@ -12,23 +12,14 @@ int bsgs_n1 = 28, bsgs_n2 = 28; // product = matrix size, minimal sum if possibl
 DenseLayer::DenseLayer(Matrix weights, Vector biases) : weights(weights), biases(biases) {}
 
 Vector DenseLayer::feedforward(Vector x) {
-  // std::cout << x.shape()[0] << " - " << weights.shape()[0] << weights.shape()[1] << std::endl;
-  // std::cout << xt::view(x) << std::endl;
   Vector dot = xt::zeros<double>({weights.shape()[1]});
-  // int i = 0;
-  // for (auto iter = xt::axis_begin(weights, 1); iter != xt::axis_end(weights, 1); iter++) {
-  //   dot[i] = xt::sum((*iter) * x)();
-  //   i++;
-  // }
-
   for (uint64_t col = 0; col < weights.shape()[1]; col++) {
     double sum = 0;
-    for (uint64_t row = 0; row < weights.shape()[0]; row++) {
+    for (uint64_t row = 0; row < weights.shape()[0]; row++)
       sum += weights.at(row, col) * x[row];
-    }
     dot[col] = sum;
   }
-  // std::copy(dot.begin(), dot.end(), std::ostream_iterator<float>(std::cout, ", "));
+  // to print it: std::copy(dot.begin(), dot.end(), std::ostream_iterator<float>(std::cout, ", "));
   return dot + biases;
 }
 
@@ -78,12 +69,8 @@ void DenseLayer::matmulDiagonal(seal::Ciphertext &in_out, const Matrix &mat, sea
   for (auto i = 1ULL; i < in_dim; i++) {
     seal::Ciphertext tmp;
     evaluator.rotate_vector_inplace(in_out, 1, galois_keys);
-    // try {
     evaluator.multiply_plain(in_out, diagonals[i], tmp);
     evaluator.add_inplace(sum, tmp);
-    // } catch (std::logic_error &ex) {
-    // ignore transparent ciphertext
-    // }
   }
   in_out = sum;
 }
@@ -148,12 +135,8 @@ void DenseLayer::multiplyCKKSBabystepGiantstep(seal::Ciphertext &in_out, const M
   for (uint64_t k = 0; k < bsgs_n2; k++) {
     evaluator.multiply_plain(rot[0], matrix[k * bsgs_n1], inner_sum);
     for (uint64_t j = 1; j < bsgs_n1; j++) {
-      try {
-        evaluator.multiply_plain(rot[j], matrix[k * bsgs_n1 + j], temp);
-        evaluator.add_inplace(inner_sum, temp);
-      } catch (std::logic_error &ex) {
-        // ignore transparent ciphertext
-      }
+      evaluator.multiply_plain(rot[j], matrix[k * bsgs_n1 + j], temp);
+      evaluator.add_inplace(inner_sum, temp);
     }
     if (!k)
       outer_sum = inner_sum;
