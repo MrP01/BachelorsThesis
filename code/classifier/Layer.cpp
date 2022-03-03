@@ -36,53 +36,54 @@ void DenseLayer::feedforwardEncrypted(seal::Ciphertext &in_out, seal::GaloisKeys
                                       seal::CKKSEncoder &ckksEncoder, seal::Evaluator &evaluator) {
   unsigned in_dimension = weights.shape(0);
   unsigned out_dimension = weights.shape(1);
-  Matrix zeroPaddedSquareWeights;
-  if (in_dimension > out_dimension)
-    zeroPaddedSquareWeights = xt::pad(weights, {{0, in_dimension - out_dimension}, {0, 0}});
-  multiplyCKKS(in_out, weights, galoisKeys, ckksEncoder, evaluator);
+  // Matrix zeroPaddedSquareWeights;
+  // if (in_dimension > out_dimension)
+  //   zeroPaddedSquareWeights = xt::pad(weights, {{0, in_dimension - out_dimension}, {0, 0}});
+  matmulDiagonal(in_out, weights, galoisKeys, ckksEncoder, evaluator);
   // activationEncrypted(in_out, relinKeys, ckksEncoder, evaluator);
 }
 
-void DenseLayer::multiplyCKKS(seal::Ciphertext &in_out, const Matrix &mat, seal::GaloisKeys &galois_keys, seal::CKKSEncoder &ckks_encoder,
-                              seal::Evaluator &evaluator) {
+void DenseLayer::matmulDiagonal(seal::Ciphertext &in_out, const Matrix &mat, seal::GaloisKeys &galois_keys, seal::CKKSEncoder &ckks_encoder,
+                                seal::Evaluator &evaluator) {
   int slots = ckks_encoder.slot_count(); // = N/2 = 4096/2 = 2048
-  size_t matrix_dim = mat.shape()[0];
-  if (matrix_dim != slots && matrix_dim * 2 > slots)
+  size_t in_dim = mat.shape(0);
+  size_t out_dim = mat.shape(1);
+  assert(in_dim > out_dim);
+  if (in_dim != slots && in_dim * 2 > slots)
     throw std::runtime_error("too little slots for matmul implementation!");
 
-  if (slots != matrix_dim) {
+  if (slots != in_dim) {
     seal::Ciphertext in_out_rot;
-    evaluator.rotate_vector(in_out, -((int)matrix_dim), galois_keys, in_out_rot);
+    evaluator.rotate_vector(in_out, -((int)in_dim), galois_keys, in_out_rot);
     evaluator.add_inplace(in_out, in_out_rot);
   }
 
   // diagonal method preparation:
-  std::vector<seal::Plaintext> matrix;
-  matrix.reserve(matrix_dim);
-  for (auto i = 0ULL; i < matrix_dim; i++) {
+  std::vector<seal::Plaintext> diagonals;
+  diagonals.reserve(in_dim);
+  for (auto offset = 0ULL; offset < in_dim; offset++) {
     std::vector<double> diag;
-    diag.reserve(matrix_dim);
-    for (auto j = 0ULL; j < matrix_dim; j++) {
-      diag.push_back(mat.at((i + j) % matrix_dim, j));
-    }
-    seal::Plaintext row;
-    ckks_encoder.encode(diag, scale, row);
+    diag.reserve(in_dim);
+    for (auto j = 0ULL; j < in_dim; j++)
+      diag.push_back(mat.at((j + offset) % in_dim, j % out_dim));
+    seal::Plaintext encoded;
+    ckks_encoder.encode(diag, scale, encoded);
     if (current_multiplication_level != 0)
-      evaluator.mod_switch_to_inplace(row, in_out.parms_id());
-    matrix.push_back(row);
+      evaluator.mod_switch_to_inplace(encoded, in_out.parms_id());
+    diagonals.push_back(encoded);
   }
 
   seal::Ciphertext sum = in_out;
-  evaluator.multiply_plain_inplace(sum, matrix[0]);
-  for (auto i = 1ULL; i < matrix_dim; i++) {
+  evaluator.multiply_plain_inplace(sum, diagonals[0]);
+  for (auto i = 1ULL; i < in_dim; i++) {
     seal::Ciphertext tmp;
     evaluator.rotate_vector_inplace(in_out, 1, galois_keys);
-    try {
-      evaluator.multiply_plain(in_out, matrix[i], tmp);
-      evaluator.add_inplace(sum, tmp);
-    } catch (std::logic_error &ex) {
-      // ignore transparent ciphertext
-    }
+    // try {
+    evaluator.multiply_plain(in_out, diagonals[i], tmp);
+    evaluator.add_inplace(sum, tmp);
+    // } catch (std::logic_error &ex) {
+    // ignore transparent ciphertext
+    // }
   }
   in_out = sum;
 }
@@ -105,9 +106,8 @@ void DenseLayer::multiplyCKKSBabystepGiantstep(seal::Ciphertext &in_out, const M
     auto k = i / bsgs_n1;
     diag.reserve(matrix_dim + k * bsgs_n1);
 
-    for (auto j = 0ULL; j < matrix_dim; j++) {
-      diag.push_back(mat.at((i + j) % matrix_dim, j));
-    }
+    for (auto j = 0ULL; j < matrix_dim; j++)
+      diag.push_back(mat.at(j, (i + j) % matrix_dim));
     // rotate:
     if (k)
       std::rotate(diag.begin(), diag.begin() + diag.size() - k * bsgs_n1, diag.end());

@@ -134,7 +134,7 @@ double evaluateNetworkOnTestData() {
 void evaluateNetworkOnEncryptedTestData() {
   auto x_test = xt::load_npy<float>("data/mnist/x-test.npy");
   auto some_x_test = *xt::axis_begin(x_test, 0);
-  std::vector<double> some_x_test_vector = std::vector<double>(some_x_test.begin(), some_x_test.end());
+  auto some_x_test_vector = std::vector<double>(some_x_test.begin(), some_x_test.end());
   assert(some_x_test_vector.size() == 784);
   seal::KeyGenerator keyGen(*neuralNet->context);
   seal::PublicKey publicKey;
@@ -146,7 +146,7 @@ void evaluateNetworkOnEncryptedTestData() {
   seal::Encryptor encryptor(*neuralNet->context, publicKey);
   seal::CKKSEncoder encoder(*neuralNet->context);
   seal::Plaintext plain;
-  double scale = pow(2.0, 30);
+  double scale = 7;
   encoder.encode(some_x_test_vector, scale, plain);
   seal::Ciphertext encrypted;
   encryptor.encrypt(plain, encrypted);
