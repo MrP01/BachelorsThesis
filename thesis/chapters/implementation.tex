@@ -57,3 +57,19 @@ as described in the proceedings above.
 This 'flaw' can be mitigated by a simple zero-padding approach
 in order to make the matrix square, filling in zeros until
 the lower dimension reaches the higher one.
+
+\subsection{Transparent Ciphertext}
+\begin{quote}
+  The problem is that you are subtracting a ciphertext from itself.
+  This kind of operation results in a ciphertext that is identically zero;
+  this is called a transparent ciphertext. Such a transparent ciphertext
+  is not considered to be valid because the ciphertext reveals its underlying plaintext to anyone who sees it,
+  even if they don't have the secret key.
+  By default SEAL throws an exception when such a situation is encountered to protect you from a problem you may not have noticed.
+  If you truly know what you are doing and want to enable the creation of transparent ciphertexts,
+  you can configure SEAL [...].
+  \parencite{kim-laine-on-transparent-ciphertexts}
+\end{quote}
+
+% https://github.com/microsoft/SEAL/issues/276#issuecomment-777073477
+'transparent ciphertexts (a.k.a. ciphertexts whose second polynomial is zero) are malformed and do not need the secret key to decrypt'
