@@ -6,7 +6,7 @@
 #include <xtensor/xpad.hpp>
 
 int current_multiplication_level = 1;
-int scale = 7;
+double scale = pow(2.0, 40);
 int bsgs_n1 = 28, bsgs_n2 = 28; // product = matrix size, minimal sum if possible
 
 DenseLayer::DenseLayer(Matrix weights, Vector biases) : weights(weights), biases(biases) {}
@@ -205,7 +205,9 @@ void ActivationLayer::feedforwardEncrypted(seal::Ciphertext &x1_encrypted, seal:
   /*
   Multiply x2_encrypted by its corresponding coefficient plain_coeff2
   */
-  evaluator.multiply_plain_inplace(x2_encrypted, plain_coeff2);
+  // evaluator.rescale_to_next_inplace(x2_encrypted);
+  // std::cout << plain_coeff2.parms_id() << " and " << x2_encrypted.parm;
+  // evaluator.multiply_plain_inplace(x2_encrypted, plain_coeff2);
   // TODO: probably we need to rescale
 
   /*

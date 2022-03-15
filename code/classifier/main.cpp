@@ -3,6 +3,7 @@
 #include <httplib.h>
 #include <iostream>
 #include <nlohmann/json.hpp>
+#include <seal/decryptor.h>
 #include <seal/encryptor.h>
 #include <seal/keygenerator.h>
 #include <xtensor/xaxis_iterator.hpp>
@@ -152,11 +153,20 @@ void evaluateNetworkOnEncryptedTestData() {
   seal::Encryptor encryptor(*neuralNet->context, publicKey);
   seal::CKKSEncoder encoder(*neuralNet->context);
   seal::Plaintext plain;
-  double scale = pow(2.0, 30);
+  double scale = pow(2.0, 40);
   encoder.encode(some_x_test_vector, scale, plain);
   seal::Ciphertext encrypted;
   encryptor.encrypt(plain, encrypted);
-  neuralNet->predictEncrypted(encrypted, relinKeys, galoisKeys);
+  seal::Ciphertext result = neuralNet->predictEncrypted(encrypted, relinKeys, galoisKeys);
+  seal::Decryptor decryptor(*neuralNet->context, keyGen.secret_key());
+  seal::Plaintext plain_result;
+  decryptor.decrypt(result, plain_result);
+  std::vector<double> decoded_plain_result;
+  encoder.decode(plain_result, decoded_plain_result);
+  std::cout << "Result: ";
+  for (size_t i = 0; i < 10; i++)
+    std::cout << decoded_plain_result.at(i) << " ";
+  std::cout << std::endl;
 }
 
 void shutdown(int signum) {
@@ -177,7 +187,7 @@ int main() {
 
   neuralNet->init();
   neuralNet->addLayer(new DenseLayer(w1, b1));
-  neuralNet->addLayer(new ActivationLayer());
+  // neuralNet->addLayer(new ActivationLayer());
   neuralNet->addLayer(new DenseLayer(w2, b2));
 
   // runServer();
