@@ -25,7 +25,8 @@ Vector Network::predict(Vector input) {
   return input;
 }
 
-seal::Ciphertext Network::predictEncrypted(seal::Ciphertext &ciphertext, seal::RelinKeys &relinKeys, seal::GaloisKeys &galoisKeys) {
+seal::Ciphertext Network::predictEncrypted(seal::Ciphertext &ciphertext, seal::RelinKeys &relinKeys,
+                                           seal::GaloisKeys &galoisKeys) {
   seal::Evaluator evaluator(*context);
   seal::CKKSEncoder encoder(*context);
 

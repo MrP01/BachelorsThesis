@@ -1,0 +1,2 @@
+[tool.nitpick]
+style = ["github://MrP01/lint-me-now/nitpick-c-cpp-style.toml"]

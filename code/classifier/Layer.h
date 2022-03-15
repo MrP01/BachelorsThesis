@@ -19,8 +19,8 @@ class Layer {
  public:
   Layer() = default;
   virtual Vector feedforward(Vector x) = 0;
-  virtual void feedforwardEncrypted(seal::Ciphertext &in_out, seal::GaloisKeys &galoisKeys, seal::RelinKeys relinKeys, seal::CKKSEncoder &ckksEncoder,
-                                    seal::Evaluator &evaluator) = 0;
+  virtual void feedforwardEncrypted(seal::Ciphertext &in_out, seal::GaloisKeys &galoisKeys, seal::RelinKeys relinKeys,
+                                    seal::CKKSEncoder &ckksEncoder, seal::Evaluator &evaluator) = 0;
 };
 
 class DenseLayer : public Layer {
@@ -36,13 +36,13 @@ class DenseLayer : public Layer {
 
  public:
   DenseLayer(Matrix weights, Vector biases);
-  void matmulDiagonal(seal::Ciphertext &in_out, const Matrix &mat, seal::GaloisKeys &galois_keys, seal::CKKSEncoder &ckks_encoder,
-                      seal::Evaluator &evaluator);
-  void multiplyCKKSBabystepGiantstep(seal::Ciphertext &in_out, const Matrix &mat, seal::GaloisKeys &galois_keys, seal::CKKSEncoder &ckks_encoder,
-                                     seal::Evaluator &evaluator);
+  void matmulDiagonal(seal::Ciphertext &in_out, const Matrix &mat, seal::GaloisKeys &galois_keys,
+                      seal::CKKSEncoder &ckks_encoder, seal::Evaluator &evaluator);
+  void multiplyCKKSBabystepGiantstep(seal::Ciphertext &in_out, const Matrix &mat, seal::GaloisKeys &galois_keys,
+                                     seal::CKKSEncoder &ckks_encoder, seal::Evaluator &evaluator);
   virtual Vector feedforward(Vector x);
-  virtual void feedforwardEncrypted(seal::Ciphertext &in_out, seal::GaloisKeys &galoisKeys, seal::RelinKeys relinKeys, seal::CKKSEncoder &ckksEncoder,
-                                    seal::Evaluator &evaluator);
+  virtual void feedforwardEncrypted(seal::Ciphertext &in_out, seal::GaloisKeys &galoisKeys, seal::RelinKeys relinKeys,
+                                    seal::CKKSEncoder &ckksEncoder, seal::Evaluator &evaluator);
 };
 
 class ActivationLayer : public Layer {
@@ -52,6 +52,6 @@ class ActivationLayer : public Layer {
   // static Vector activationPrime(Vector x);
 
   virtual Vector feedforward(Vector x);
-  virtual void feedforwardEncrypted(seal::Ciphertext &in_out, seal::GaloisKeys &galoisKeys, seal::RelinKeys relinKeys, seal::CKKSEncoder &ckksEncoder,
-                                    seal::Evaluator &evaluator);
+  virtual void feedforwardEncrypted(seal::Ciphertext &in_out, seal::GaloisKeys &galoisKeys, seal::RelinKeys relinKeys,
+                                    seal::CKKSEncoder &ckksEncoder, seal::Evaluator &evaluator);
 };

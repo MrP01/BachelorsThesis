@@ -44,7 +44,8 @@ nlohmann::json handleEncryptedPredictionRequest(nlohmann::json request) {
 
   nlohmann::json::binary_t binary = request["relinKeys"].get<nlohmann::json::binary_t>();
   std::cout << "Decoded length: " << binary.size() << std::endl;
-  std::cout << "NeuralNet context poly mod degree: " << neuralNet->context->key_context_data()->parms().poly_modulus_degree() << std::endl;
+  std::cout << "NeuralNet context poly mod degree: "
+            << neuralNet->context->key_context_data()->parms().poly_modulus_degree() << std::endl;
   std::stringstream dataStream = std::stringstream(std::string(binary.begin(), binary.end()));
   assert(seal::Serialization::compr_mode_default == seal::compr_mode_type::zstd);
   relinKeys.load(*neuralNet->context, dataStream);
@@ -64,22 +65,24 @@ nlohmann::json handleEncryptedPredictionRequest(nlohmann::json request) {
   auto binaryResult = nlohmann::json::binary(byte_buffer);
   return nlohmann::json{
       {"result", binaryResult},
-      // {"probabilities", {0, 0, 0, 0, 0, 0, 0, 0, 0, 0}}, // prediction and probabilities should be calculated client-side
+      // {"probabilities", {0, 0, 0, 0, 0, 0, 0, 0, 0, 0}}, // prediction and probabilities should be calculated
+      // client-side
   };
 }
 
 auto msgpackRequestHandler(nlohmann::json (*handler)(nlohmann::json)) {
-  return [=](const httplib::Request &request, httplib::Response &response, const httplib::ContentReader &contentReader) {
-    std::string request_body;
-    contentReader([&](const char *data, size_t data_length) {
-      request_body.append(data, data_length);
-      return true;
-    });
-    nlohmann::json request_json = nlohmann::json::from_msgpack(request_body);
-    nlohmann::json response_json = handler(request_json);
-    std::vector<uint8_t> serialized = nlohmann::json::to_msgpack(response_json);
-    response.set_content(std::string(serialized.begin(), serialized.end()), "application/x-msgpack");
-  };
+  return
+      [=](const httplib::Request &request, httplib::Response &response, const httplib::ContentReader &contentReader) {
+        std::string request_body;
+        contentReader([&](const char *data, size_t data_length) {
+          request_body.append(data, data_length);
+          return true;
+        });
+        nlohmann::json request_json = nlohmann::json::from_msgpack(request_body);
+        nlohmann::json response_json = handler(request_json);
+        std::vector<uint8_t> serialized = nlohmann::json::to_msgpack(response_json);
+        response.set_content(std::string(serialized.begin(), serialized.end()), "application/x-msgpack");
+      };
 }
 
 void runServer() {
@@ -149,7 +152,7 @@ void evaluateNetworkOnEncryptedTestData() {
   seal::Encryptor encryptor(*neuralNet->context, publicKey);
   seal::CKKSEncoder encoder(*neuralNet->context);
   seal::Plaintext plain;
-  double scale = 7;
+  double scale = pow(2.0, 30);
   encoder.encode(some_x_test_vector, scale, plain);
   seal::Ciphertext encrypted;
   encryptor.encrypt(plain, encrypted);
@@ -177,8 +180,8 @@ int main() {
   neuralNet->addLayer(new ActivationLayer());
   neuralNet->addLayer(new DenseLayer(w2, b2));
 
-  runServer();
+  // runServer();
   // evaluateNetworkOnTestData();
-  // evaluateNetworkOnEncryptedTestData();
+  evaluateNetworkOnEncryptedTestData();
   return 0;
 }

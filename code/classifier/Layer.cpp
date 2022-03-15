@@ -34,8 +34,8 @@ void DenseLayer::feedforwardEncrypted(seal::Ciphertext &in_out, seal::GaloisKeys
   // activationEncrypted(in_out, relinKeys, ckksEncoder, evaluator);
 }
 
-void DenseLayer::matmulDiagonal(seal::Ciphertext &in_out, const Matrix &mat, seal::GaloisKeys &galois_keys, seal::CKKSEncoder &ckks_encoder,
-                                seal::Evaluator &evaluator) {
+void DenseLayer::matmulDiagonal(seal::Ciphertext &in_out, const Matrix &mat, seal::GaloisKeys &galois_keys,
+                                seal::CKKSEncoder &ckks_encoder, seal::Evaluator &evaluator) {
   int slots = ckks_encoder.slot_count(); // = N/2 = 4096/2 = 2048
   size_t in_dim = mat.shape(0);
   size_t out_dim = mat.shape(1);
@@ -75,8 +75,9 @@ void DenseLayer::matmulDiagonal(seal::Ciphertext &in_out, const Matrix &mat, sea
   in_out = sum;
 }
 
-void DenseLayer::multiplyCKKSBabystepGiantstep(seal::Ciphertext &in_out, const Matrix &mat, seal::GaloisKeys &galois_keys,
-                                               seal::CKKSEncoder &ckks_encoder, seal::Evaluator &evaluator) {
+void DenseLayer::multiplyCKKSBabystepGiantstep(seal::Ciphertext &in_out, const Matrix &mat,
+                                               seal::GaloisKeys &galois_keys, seal::CKKSEncoder &ckks_encoder,
+                                               seal::Evaluator &evaluator) {
   int slots = ckks_encoder.slot_count(); // = N/2 = 4096/2 = 2048
   size_t matrix_dim = mat.shape()[0];
   if (matrix_dim != slots && matrix_dim * 2 > slots)
@@ -148,10 +149,13 @@ void DenseLayer::multiplyCKKSBabystepGiantstep(seal::Ciphertext &in_out, const M
   in_out = outer_sum;
 }
 
-Vector ActivationLayer::feedforward(Vector x) { return 0.54738 + 0.59579 * x + 0.090189 * xt::pow(x, 2) - 0.006137 * xt::pow(x, 3); }
+Vector ActivationLayer::feedforward(Vector x) {
+  return 0.54738 + 0.59579 * x + 0.090189 * xt::pow(x, 2) - 0.006137 * xt::pow(x, 3);
+}
 
-void ActivationLayer::feedforwardEncrypted(seal::Ciphertext &x1_encrypted, seal::GaloisKeys &galoisKeys, seal::RelinKeys relinKeys,
-                                           seal::CKKSEncoder &encoder, seal::Evaluator &evaluator) {
+void ActivationLayer::feedforwardEncrypted(seal::Ciphertext &x1_encrypted, seal::GaloisKeys &galoisKeys,
+                                           seal::RelinKeys relinKeys, seal::CKKSEncoder &encoder,
+                                           seal::Evaluator &evaluator) {
   /*
   We create plaintexts for PI, 0.4, and 1 using an overload of CKKSEncoder::encode
   that encodes the given floating-point value to every slot in the vector.
@@ -240,9 +244,12 @@ void ActivationLayer::feedforwardEncrypted(seal::Ciphertext &x1_encrypted, seal:
   std::cout << std::endl;
 
   std::cout << "Parameters used by all three terms are different." << std::endl;
-  std::cout << "  + Modulus chain index for x3_encrypted: " << parent->context->get_context_data(x3_encrypted.parms_id())->chain_index() << std::endl;
-  std::cout << "  + Modulus chain index for x1_encrypted: " << parent->context->get_context_data(x1_encrypted.parms_id())->chain_index() << std::endl;
-  std::cout << "  + Modulus chain index for plain_coeff0: " << parent->context->get_context_data(plain_coeff0.parms_id())->chain_index() << std::endl;
+  std::cout << "  + Modulus chain index for x3_encrypted: "
+            << parent->context->get_context_data(x3_encrypted.parms_id())->chain_index() << std::endl;
+  std::cout << "  + Modulus chain index for x1_encrypted: "
+            << parent->context->get_context_data(x1_encrypted.parms_id())->chain_index() << std::endl;
+  std::cout << "  + Modulus chain index for plain_coeff0: "
+            << parent->context->get_context_data(plain_coeff0.parms_id())->chain_index() << std::endl;
   std::cout << std::endl;
 
   /*
