@@ -1,4 +1,5 @@
 import unittest
+
 import numpy as np
 from main import matmul_diagonal, matmul_hybrid
 

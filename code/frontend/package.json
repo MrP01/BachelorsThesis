@@ -45,5 +45,9 @@
       "last 1 safari version"
     ]
   },
-  "proxy": "http://localhost:8000"
+  "proxy": "http://localhost:8000",
+  "repository": {
+    "type": "gitlab",
+    "url": "https://extgit.iaik.tugraz.at/crypto_students/2020_bachelor_waldert"
+  }
 }

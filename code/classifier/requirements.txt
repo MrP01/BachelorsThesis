@@ -1,4 +1,0 @@
-get-mnist==1.0.1
-numpy==1.22.2
-invoke==1.6.0
-msgpack==1.0.3

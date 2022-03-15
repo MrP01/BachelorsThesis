@@ -1,8 +1,8 @@
 .idea/
 .vscode/
+.cache/
 secrets/
 stuff/
-__pycache__/
 
 *.[oa]
 *~

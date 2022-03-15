@@ -177,8 +177,8 @@ int main() {
   neuralNet->addLayer(new ActivationLayer());
   neuralNet->addLayer(new DenseLayer(w2, b2));
 
-  // runServer();
-  evaluateNetworkOnTestData();
+  runServer();
+  // evaluateNetworkOnTestData();
   // evaluateNetworkOnEncryptedTestData();
   return 0;
 }

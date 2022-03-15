@@ -1,2 +1,50 @@
+[build-system]
+requires = ["poetry_core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.poetry]
+name = "Bachelorarbeit"
+version = "0.1.0"
+description = "Secure Machine Learning on the Cloud with Homomorphic Encryption, using Microsoft SEAL"
+authors = ["MrP01 <peter@waldert.at>"]
+
+[tool.nitpick]
+style = ["github://MrP01/lint-me-now/nitpick-base-style.toml", "github://MrP01/lint-me-now/nitpick-python-style.toml"]
+
+[tool.poetry.dependencies]
+python = "^3.9, <3.11"
+numpy = "^1.22.2"
+tensorflow = "^2.8.0"
+msgpack = "^1.0.3"
+
+[tool.poetry.dev-dependencies]
+invoke = "^1.6.0"
+
 [tool.black]
 line-length = 120
+
+[tool.isort]
+line_length = 120
+profile = "black"
+
+[tool.pylint]
+
+[tool.pylint.MASTER]
+jobs = 1
+extension-pkg-whitelist = "pydantic"
+
+[tool.pylint.REPORTS]
+output-format = "colorized"
+
+[tool.pylint.FORMAT]
+max-line-length = 120
+max-module-lines = 1000
+indent-after-paren = 4
+
+[tool.flakeheaven]
+ignore = "D107,D202,D203,D401,E203,E402,E501,W503"
+max_line_length = 120
+inline-quotes = "double"
+
+[tool.pyright]
+exclude = ["node_modules", "**/__pycache__", ".git", "*stuff*"]

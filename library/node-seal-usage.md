@@ -12,8 +12,8 @@ asynchronously.
 ```javascript
 // ES6 import
 // import SEAL from 'node-seal'
-const SEAL = require('node-seal')
-const seal = await SEAL()
+const SEAL = require("node-seal");
+const seal = await SEAL();
 ```
 
 ### Encryption Parameters
@@ -35,18 +35,18 @@ of parameters for an application, but there is a methodology behind optimization
 There are two `SchemeTypes`:
 
 ```javascript
-seal.SchemeType.bfv
-seal.SchemeType.ckks
+seal.SchemeType.bfv;
+seal.SchemeType.ckks;
 ```
 
 A security level determines the bit level security of the encrypted data.
 There are 3 modes you should be primarily concerned with:
 
 ```javascript
-seal.SecurityLevel.none // Use unless you know what you're doing
-seal.SecurityLevel.tc128
-seal.SecurityLevel.tc192
-seal.SecurityLevel.tc256
+seal.SecurityLevel.none; // Use unless you know what you're doing
+seal.SecurityLevel.tc128;
+seal.SecurityLevel.tc192;
+seal.SecurityLevel.tc256;
 ```
 
 PolyModulusDegree needs to be a power of 2. We've set up initial helpers on the demo to create the following:
@@ -70,24 +70,26 @@ Example:
 // Encryption Parameters
 ////////////////////////
 
-const schemeType = seal.SchemeType.bfv
-const securityLevel = seal.SecurityLevel.tc128
-const polyModulusDegree = 4096
-const bitSizes = [36, 36, 37]
-const bitSize = 20
+const schemeType = seal.SchemeType.bfv;
+const securityLevel = seal.SecurityLevel.tc128;
+const polyModulusDegree = 4096;
+const bitSizes = [36, 36, 37];
+const bitSize = 20;
 
-const encParms = seal.EncryptionParameters(schemeType)
+const encParms = seal.EncryptionParameters(schemeType);
 
 // Set the PolyModulusDegree
-encParms.setPolyModulusDegree(polyModulusDegree)
+encParms.setPolyModulusDegree(polyModulusDegree);
 
 // Create a suitable set of CoeffModulus primes
 encParms.setCoeffModulus(
   seal.CoeffModulus.Create(polyModulusDegree, Int32Array.from(bitSizes))
-)
+);
 
 // Set the PlainModulus to a prime of bitSize 20.
-encParms.setPlainModulus(seal.PlainModulus.Batching(polyModulusDegree, bitSize))
+encParms.setPlainModulus(
+  seal.PlainModulus.Batching(polyModulusDegree, bitSize)
+);
 ```
 
 ### Context
@@ -105,12 +107,12 @@ const context = seal.Context(
   parms, // Encryption Parameters
   true, // ExpandModChain
   securityLevel // Enforce a security level
-)
+);
 
 if (!context.parametersSet()) {
   throw new Error(
-    'Could not set the parameters in the given context. Please try different encryption parameters.'
-  )
+    "Could not set the parameters in the given context. Please try different encryption parameters."
+  );
 }
 ```
 
@@ -194,28 +196,28 @@ provide. CipherTexts store encrypted values of the encoded PlainText. Homomorphi
 ////////////////////////
 
 // Creating PlainText(s)
-const plainA = seal.PlainText()
-const plainB = seal.PlainText()
+const plainA = seal.PlainText();
+const plainB = seal.PlainText();
 
 // Creating CipherText(s)
-const cipherA = seal.CipherText()
-const cipherB = seal.CipherText()
+const cipherA = seal.CipherText();
+const cipherB = seal.CipherText();
 
 // Saving
 // ... after some encoding...
-const plainAbase64 = plainA.save() // Saves as a base64 string.
+const plainAbase64 = plainA.save(); // Saves as a base64 string.
 
 // Loading. Create an empty instance, then use the following method
-const uploadedPlain = seal.PlainText()
-uploadedPlain.load(context, plainAbase64)
+const uploadedPlain = seal.PlainText();
+uploadedPlain.load(context, plainAbase64);
 
 // Saving
 // ... after some encryption...
-const cipherAbase64 = cipherA.save() // Saves as a base64 string.
+const cipherAbase64 = cipherA.save(); // Saves as a base64 string.
 
 // Loading. Create an empty instance, then use the following method
-const uploadedCipherText = seal.CipherText()
-uploadedCipherText.load(context, cipherAbase64)
+const uploadedCipherText = seal.CipherText();
+uploadedCipherText.load(context, cipherAbase64);
 ```
 
 ### Instances
@@ -233,19 +235,19 @@ To perform homomorphic evaluations, we need to construct a few helpers:
 ////////////////////////
 
 // Create an Evaluator which will allow HE functions to execute
-const evaluator = seal.Evaluator(context)
+const evaluator = seal.Evaluator(context);
 
 // Create a BatchEncoder (only BFV SchemeType)
-const encoder = seal.BatchEncoder(context)
+const encoder = seal.BatchEncoder(context);
 
 // Or a CKKSEncoder (only CKKS SchemeType)
 // const encoder = seal.CKKSEncoder(context)
 
 // Create an Encryptor to encrypt PlainTexts
-const encryptor = seal.Encryptor(context, publicKey)
+const encryptor = seal.Encryptor(context, publicKey);
 
 // Create a Decryptor to decrypt CipherTexts
-const decryptor = seal.Decryptor(context, secretKey)
+const decryptor = seal.Decryptor(context, secretKey);
 ```
 
 ### Functions
@@ -280,7 +282,7 @@ be generated from the [demo](https://morfix.io/sandbox).
 // Encode data to a PlainText
 const plainTextA = batchEncoder.encode(
   Int32Array.from([1, 2, 3]) // This could also be a Uint32Array
-)
+);
 
 // An encryptor and decryptor also accept a cihperText and plainText
 // optional parameter. If not provided, an encryptor will
@@ -303,15 +305,15 @@ const plainTextA = batchEncoder.encode(
 //
 
 // Encrypt a PlainText
-const cipherTextA = encryptor.encrypt(plainTextA)
+const cipherTextA = encryptor.encrypt(plainTextA);
 
 // Add CipherText B to CipherText A and store the sum in a destination CipherText
-const cipherTextD = seal.CipherText()
+const cipherTextD = seal.CipherText();
 
-evaluator.add(cipherTextA, cipherTextA, cipherTextD)
+evaluator.add(cipherTextA, cipherTextA, cipherTextD);
 
 // Decrypt a CipherText
-const plainTextD = decryptor.decrypt(cipherTextD)
+const plainTextD = decryptor.decrypt(cipherTextD);
 
 // `signed` defaults to 'true' if not specified and will return an Int32Array.
 // If you have encrypted a Uint32Array and wish to decrypt it, set
@@ -319,7 +321,7 @@ const plainTextD = decryptor.decrypt(cipherTextD)
 const decoded = batchEncoder.decode(
   plainTextD,
   true // Can be omitted since this defaults to true.
-)
+);
 
-console.log('decoded', decoded)
+console.log("decoded", decoded);
 ```

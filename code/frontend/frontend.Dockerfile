@@ -16,4 +16,3 @@ COPY --from=webpack-built /app/build /web/app
 
 VOLUME /web/static/ /web/media/
 EXPOSE 80 443
-

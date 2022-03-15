@@ -1,3 +1,0 @@
-tensorflow==2.8.0
-matplotlib==3.5.1
-get-mnist==1.0.1

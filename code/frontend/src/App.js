@@ -127,7 +127,11 @@ class ClassificationComponent extends React.Component {
               </div>
               <div className="col s10">
                 <span className="black-text">The 28x28 downscaled version will be classified using the</span>
-                <Switch offLabel="PlainCommunicator" onChange={self.setCommunicator.bind(self)} onLabel="SEALCommunicator" />
+                <Switch
+                  offLabel="PlainCommunicator"
+                  onChange={self.setCommunicator.bind(self)}
+                  onLabel="SEALCommunicator"
+                />
               </div>
             </div>
           </div>

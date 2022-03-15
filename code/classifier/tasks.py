@@ -1,19 +1,19 @@
+import json
 import pathlib
 
 import invoke
-import json
-import mnist
+import msgpack
 import numpy as np
 import requests
-import msgpack
+
+TARGET = pathlib.Path("data/mnist").resolve()
 
 
 @invoke.task()
-def fetch_training_data(ctx, target="data/mnist"):
-    """Download MNIST training data"""
-    x_train, y_train, x_test, y_test = (data.astype("float32") / 255 for data in mnist.mnist())
-    target = pathlib.Path(target).resolve()
-    ctx.run(f"mkdir -p {target}")
+def fetch_training_data(ctx):
+    """Download MNIST training data and normalize by 1 / 255."""
+    (x_train, y_train), (x_test, y_test) = (data.astype("float32") / 255 for data in keras.datasets.mnist.load_data())
+    ctx.run(f"mkdir -p {TARGET}")
     np.save(target / "x-train.npy", x_train)
     np.save(target / "y-train.npy", y_train)
     np.save(target / "x-test.npy", x_test)
@@ -23,7 +23,8 @@ def fetch_training_data(ctx, target="data/mnist"):
 @invoke.task()
 def send_test_request(ctx, index=3):
     """Sends an HTTP test request to localhost:5555"""
-    x_train, y_train, x_test, y_test = (data.astype("float32") / 255 for data in mnist.mnist())
+    x_test = np.load(TARGET / "x-test.npy")
+    y_test = np.load(TARGET / "y-test.npy")
     response = msgpack.unpackb(
         requests.post(
             "http://localhost:8000/api/classify/plain/",

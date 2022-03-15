@@ -9,15 +9,15 @@
 if ~exist('train_data', 'var')
     disp('Loading train data');
     table = load('mnist_train.csv');
-    train_data = table(:,2:end) ./ 255;
-    train_labels = table(:,1);
+    train_data = table(:, 2:end) ./ 255;
+    train_labels = table(:, 1);
     trainY = NeuralNetwork.vectorizeLabels(train_labels);
-    
+
     disp('Loading test data');
     table = load('mnist_test.csv');
     table = table(1:1000, :);
-    test_data = table(:,2:end) ./ 255;
-    test_labels = table(:,1);
+    test_data = table(:, 2:end) ./ 255;
+    test_labels = table(:, 1);
     testY = NeuralNetwork.vectorizeLabels(test_labels);
     disp('Finished loading train- and test data!');
 end
@@ -36,14 +36,14 @@ batch_size = 50;
 epochs = 100;
 % try neural network weight decay:
 %learn_rate_f = @(ep, epmax) -atan(-20+ep/epmax*18) * 0.005;
-learn_rate_f = @(ep, epmax) (-atan(-50 + ep/epmax*49) + atan(-1))*1/0.77 * 0.012;
+learn_rate_f = @(ep, epmax) (-atan(-50 + ep / epmax * 49) + atan(-1)) * 1/0.77 * 0.012;
 % or just use constant learning_rate:
 % learn_rate_f = @(ep, epmax) 0.01;
 
 % Train the network!
-net.train_smartly(...
-    train_data(1:train_size_total,:), ...
-    trainY(1:train_size_total,:), ...
+net.train_smartly( ...
+train_data(1:train_size_total, :), ...
+    trainY(1:train_size_total, :), ...
     batch_size, ...
     epochs, ...
     learn_rate_f, ...
@@ -59,4 +59,4 @@ fprintf('Network accuracy: %.1f%%\n', accuracy * 100);
 CM = net.confusion_matrix(test_data, test_labels);
 
 % Display an image, should be a three according to train_labels(1227) = 3
-net.display_image(train_data(1227,:));
+net.display_image(train_data(1227, :));

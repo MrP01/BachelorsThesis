@@ -1,32 +1,32 @@
 canvas {
-    border: 1px solid #26a69a;
+  border: 1px solid #26a69a;
 }
 
 .canvas-container {
-    padding: 20px;
+  padding: 20px;
 }
 
 .canvas-container > canvas {
-    border: 2px solid #26a69a;
-    /* transform: scale(10); */
+  border: 2px solid #26a69a;
+  /* transform: scale(10); */
 }
 
 .command-bar {
-    display: flex;
-    justify-content: space-evenly;
+  display: flex;
+  justify-content: space-evenly;
 }
 
 .probabilities {
-    display: flex;
+  display: flex;
 }
 
 .probabilities > li {
-    width: 35px;
-    height: 35px;
-    text-align: center;
-    line-height: 35px;
+  width: 35px;
+  height: 35px;
+  text-align: center;
+  line-height: 35px;
 }
 
 .card-panel .row {
-    margin-bottom: 3px;
+  margin-bottom: 3px;
 }

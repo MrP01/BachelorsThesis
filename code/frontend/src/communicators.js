@@ -59,7 +59,9 @@ export class SEALCommunicator extends BaseCommunicator {
     );
 
     if (!this.context.parametersSet()) {
-      throw new Error("[SEAL] Could not set the parameters in the given context. Please try different encryption parameters.");
+      throw new Error(
+        "[SEAL] Could not set the parameters in the given context. Please try different encryption parameters."
+      );
     }
 
     // for debugging:

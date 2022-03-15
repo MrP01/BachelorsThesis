@@ -1,5 +1,5 @@
-import tenseal
 import numpy as np
+import tenseal
 
 ctx = tenseal.context(tenseal.SCHEME_TYPE.CKKS, poly_modulus_degree=8192, coeff_mod_bit_sizes=[60, 40, 40, 60])
 w1 = np.load("data/models/simple/w1.npy")
@@ -10,7 +10,7 @@ x_test = np.load("data/mnist/x-test.npy") / 255
 y_test = np.load("data/mnist/y-test.npy")
 
 softmax = lambda x: np.exp(x) / np.sum(np.exp(x))
-taylor_relu = lambda x: -0.006137 * x ** 3 + 0.090189 * x ** 2 + 0.59579 * x + 0.54738
+taylor_relu = lambda x: -0.006137 * x**3 + 0.090189 * x**2 + 0.59579 * x + 0.54738
 
 
 def _matrix_diagonals(matrix: np.ndarray, offsets="out_dim"):
@@ -52,7 +52,7 @@ def classify_encrypted(x):
 
 
 def main():
-    ctx.global_scale = 2 ** 40
+    ctx.global_scale = 2**40
     ctx.generate_galois_keys()
 
 

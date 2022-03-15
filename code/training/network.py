@@ -1,7 +1,6 @@
 import pathlib
 
 import matplotlib.pyplot as plt
-import mnist
 import numpy as np
 import tensorflow as tf
 
@@ -32,7 +31,7 @@ def plot_relu_taylor():
     axes: plt.Axes = fig.add_subplot(1, 1, 1)
     x_ = tf.linspace(-5.0, 10.0, 100)
     axes.plot(x_, tf.keras.activations.relu(x_), label=r"$y = \mathrm{relu}(x)$")
-    axes.plot(x_, relu_taylor(x_), label="$y = \mathrm{relu\_taylor}(x)$")
+    axes.plot(x_, relu_taylor(x_), label=r"$y = \mathrm{relu\_taylor}(x)$")
     axes.set_xlabel(r"$x$")
     axes.set_ylabel(r"$y$")
     axes.legend()
@@ -40,7 +39,7 @@ def plot_relu_taylor():
 
 
 def main():
-    x_train, y_train, x_test, y_test = mnist.mnist()
+    (x_train, y_train), (x_test, y_test) = tf.keras.datasets.mnist.load_data()
     x_train = x_train.astype("float32") / 255
     x_test = x_test.astype("float32") / 255
     y_train = tf.keras.utils.to_categorical(y_train, 10)
