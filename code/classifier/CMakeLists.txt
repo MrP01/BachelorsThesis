@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.16)
 project(classifier)
 
 add_definitions("-std=c++11")
-# add_definitions("-g")  # for debugging
+add_definitions("-g")  # gcc adds debug information (confer `man gcc`)
 set(CMAKE_CXX_STANDARD 20)
 include(${CMAKE_BINARY_DIR}/conanbuildinfo.cmake)
 conan_basic_setup()

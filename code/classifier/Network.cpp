@@ -1,6 +1,8 @@
 #include "Network.h"
 
+#include <xtensor/xadapt.hpp>
 #include <xtensor/xrandom.hpp>
+#include <xtensor/xreducer.hpp>
 #include <xtensor/xsort.hpp>
 
 Network::Network() {}
@@ -9,7 +11,9 @@ void Network::init() {
   seal::EncryptionParameters params(seal::scheme_type::ckks);
   size_t poly_modulus_degree = 4096; // same as for node-seal
   params.set_poly_modulus_degree(poly_modulus_degree);
-  params.set_coeff_modulus(seal::CoeffModulus::Create(poly_modulus_degree, {60, 40, 40, 40, 40, 60}));
+  std::vector<int> bit_sizes = {60, 40, 40, 40, 40, 60};
+  std::cout << "Product(bit_sizes) = " << xt::prod<int>(xt::adapt(bit_sizes, {bit_sizes.size()}))() << std::endl;
+  params.set_coeff_modulus(seal::CoeffModulus::Create(poly_modulus_degree, bit_sizes));
   context = new seal::SEALContext(params, true, seal::sec_level_type::none);
 }
 
@@ -30,8 +34,9 @@ seal::Ciphertext Network::predictEncrypted(seal::Ciphertext &ciphertext, seal::R
   seal::Evaluator evaluator(*context);
   seal::CKKSEncoder encoder(*context);
 
+  int index = 0;
   for (Layer *layer : layers) {
-    std::cout << "Feeding ciphertext forward through layer" << std::endl;
+    std::cout << "Feeding ciphertext forward through layer " << index++ << std::endl;
     layer->feedforwardEncrypted(ciphertext, galoisKeys, relinKeys, encoder, evaluator);
   }
 
