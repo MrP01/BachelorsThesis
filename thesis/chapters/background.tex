@@ -45,12 +45,6 @@ how to get from LWE to RLWE
 \subsection{The CKKS scheme}
 The CKKS scheme allows us to perform approximate arithmetic on floating point numbers.
 
-\begin{quote}
-  Scale has nothing to do with noise. "Scale out of bounds" can appear even if noise is extremely low. Although repeated multiplication of a ciphertext by a plaintext will slowly increase the noise, it is not the reason why you see "scale out of bounds".
-  "Scale out of bounds" error specifically means that the scale of a ciphertext or plaintext is larger than the product of all elements in coeff_modulus. If you perform multiplications without rescaling, you can quickly see this error. The more rescaling you perform, the less elements will be left in coeff_modulus. Even if you managed to have the same scale in a ciphertext after every multiplication and rescale, eventually the coeff_modulus can be too small to accommodate another multiplication.
-\end{quote}
-% https://github.com/microsoft/SEAL/issues/182#issuecomment-646234787
-
 \section{Machine Learning}
 As Shafi Goldwasser puts it, 'Machine Learning is somewhere in the intersection of Artificial Intelligence, Statistics and Theoretical Computer Science' \cite{goldwasserTalk2018}.
 

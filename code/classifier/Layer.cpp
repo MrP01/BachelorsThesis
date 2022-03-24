@@ -24,14 +24,19 @@ Vector DenseLayer::feedforward(Vector x) {
 }
 
 void DenseLayer::feedforwardEncrypted(seal::Ciphertext &in_out, seal::GaloisKeys &galoisKeys, seal::RelinKeys relinKeys,
-    seal::CKKSEncoder &ckksEncoder, seal::Evaluator &evaluator) {
+    seal::CKKSEncoder &encoder, seal::Evaluator &evaluator) {
   unsigned in_dimension = weights.shape(0);
   unsigned out_dimension = weights.shape(1);
   std::cout << "DenseLayer input scale: " << log2(in_out.scale()) << " bits" << std::endl;
+
   // Matrix zeroPaddedSquareWeights;
   // if (in_dimension > out_dimension)
   //   zeroPaddedSquareWeights = xt::pad(weights, {{0, in_dimension - out_dimension}, {0, 0}});
-  matmulDiagonal(in_out, weights, galoisKeys, ckksEncoder, evaluator);
+  matmulDiagonal(in_out, weights, galoisKeys, encoder, evaluator);
+
+  seal::Plaintext plain_biases;
+  encoder.encode(std::vector<double>(biases.begin(), biases.end()), in_out.parms_id(), in_out.scale(), plain_biases);
+  evaluator.add_plain_inplace(in_out, plain_biases);
   std::cout << "DenseLayer output scale: " << log2(in_out.scale()) << " bits" << std::endl;
 }
 
