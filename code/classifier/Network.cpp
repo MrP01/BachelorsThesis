@@ -28,7 +28,9 @@ void Network::addLayer(Layer *layer) {
 }
 
 Vector Network::predict(Vector input) {
+  int index = 0;
   for (Layer *layer : layers) {
+    std::cout << "Feeding plain data through layer " << index++ << std::endl;
     input = layer->feedforward(input);
   }
   return input;
@@ -41,7 +43,7 @@ seal::Ciphertext Network::predictEncrypted(
 
   int index = 0;
   for (Layer *layer : layers) {
-    std::cout << "Feeding ciphertext forward through layer " << index++ << std::endl;
+    std::cout << "Feeding ciphertext through layer " << index++ << std::endl;
     layer->feedforwardEncrypted(ciphertext, galoisKeys, relinKeys, encoder, evaluator);
   }
 

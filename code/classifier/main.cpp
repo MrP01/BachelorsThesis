@@ -163,10 +163,15 @@ void evaluateNetworkOnEncryptedTestData() {
   decryptor.decrypt(result, plain_result);
   std::vector<double> decoded_plain_result;
   encoder.decode(plain_result, decoded_plain_result);
-  std::cout << "Result: ";
-  for (size_t i = 0; i < 10; i++)
-    std::cout << decoded_plain_result.at(i) << " ";
-  std::cout << std::endl;
+  Vector result_from_encrypted_method = xt::adapt(decoded_plain_result, {10});
+  auto exact_result = neuralNet->predict(some_x_test);
+  std::cout << "The encrypted method result: " << result_from_encrypted_method << std::endl;
+  std::cout << "For comparison, plain result: " << exact_result << std::endl;
+  std::cout << "Relative errors: " << xt::abs((result_from_encrypted_method - exact_result) / exact_result)
+            << std::endl;
+  std::cout << "Mean max-relative error: "
+            << xt::mean(xt::abs(result_from_encrypted_method - exact_result) / xt::amax(xt::abs(exact_result)))
+            << std::endl;
 }
 
 void shutdown(int signum) {
