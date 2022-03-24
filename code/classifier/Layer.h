@@ -28,12 +28,6 @@ class DenseLayer : public Layer {
   Matrix weights;
   Vector biases;
 
-  // help properties for use by backpropagation algorithm
-  // Matrix nablaW;
-  // Vector nablaB;
-  // out;
-  // out_prime;
-
  public:
   DenseLayer(Matrix weights, Vector biases);
   void matmulDiagonal(seal::Ciphertext &in_out, const Matrix &mat, seal::GaloisKeys &galois_keys,
@@ -48,12 +42,8 @@ class DenseLayer : public Layer {
 class ActivationLayer : public Layer {
  public:
   ActivationLayer() = default;
-  // static Vector activation(Vector x);
-  // static Vector activationPrime(Vector x);
 
   virtual Vector feedforward(Vector x);
   virtual void feedforwardEncrypted(seal::Ciphertext &in_out, seal::GaloisKeys &galoisKeys, seal::RelinKeys relinKeys,
-      seal::CKKSEncoder &ckksEncoder, seal::Evaluator &evaluator);
-  virtual void feedforwardEncrypted2(seal::Ciphertext &in_out, seal::GaloisKeys &galoisKeys, seal::RelinKeys relinKeys,
       seal::CKKSEncoder &ckksEncoder, seal::Evaluator &evaluator);
 };
