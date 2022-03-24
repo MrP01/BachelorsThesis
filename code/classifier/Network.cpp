@@ -11,7 +11,7 @@ void Network::init() {
   seal::EncryptionParameters params(seal::scheme_type::ckks);
   size_t poly_modulus_degree = 4096; // same as for node-seal
   params.set_poly_modulus_degree(poly_modulus_degree);
-  std::vector<int> bit_sizes = {60, 40, 40, 40, 40, 60};
+  std::vector<int> bit_sizes = {60, 40, 40, 40, 40, 40, 60};
   std::cout << "sum(bit_sizes) = " << xt::sum(xt::adapt(bit_sizes, {bit_sizes.size()}))() << std::endl;
   params.set_coeff_modulus(seal::CoeffModulus::Create(poly_modulus_degree, bit_sizes));
   std::vector<double> log_coeff_moduli;

@@ -187,7 +187,7 @@ int main() {
 
   neuralNet->init();
   neuralNet->addLayer(new DenseLayer(w1, b1));
-  // neuralNet->addLayer(new ActivationLayer());
+  neuralNet->addLayer(new ActivationLayer());
   neuralNet->addLayer(new DenseLayer(w2, b2));
 
   // runServer();

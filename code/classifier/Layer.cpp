@@ -24,18 +24,19 @@ Vector DenseLayer::feedforward(Vector x) {
 }
 
 void DenseLayer::feedforwardEncrypted(seal::Ciphertext &in_out, seal::GaloisKeys &galoisKeys, seal::RelinKeys relinKeys,
-                                      seal::CKKSEncoder &ckksEncoder, seal::Evaluator &evaluator) {
+    seal::CKKSEncoder &ckksEncoder, seal::Evaluator &evaluator) {
   unsigned in_dimension = weights.shape(0);
   unsigned out_dimension = weights.shape(1);
+  std::cout << "DenseLayer input scale: " << log2(in_out.scale()) << " bits" << std::endl;
   // Matrix zeroPaddedSquareWeights;
   // if (in_dimension > out_dimension)
   //   zeroPaddedSquareWeights = xt::pad(weights, {{0, in_dimension - out_dimension}, {0, 0}});
   matmulDiagonal(in_out, weights, galoisKeys, ckksEncoder, evaluator);
-  // activationEncrypted(in_out, relinKeys, ckksEncoder, evaluator);
+  std::cout << "DenseLayer output scale: " << log2(in_out.scale()) << " bits" << std::endl;
 }
 
 void DenseLayer::matmulDiagonal(seal::Ciphertext &in_out, const Matrix &mat, seal::GaloisKeys &galois_keys,
-                                seal::CKKSEncoder &ckks_encoder, seal::Evaluator &evaluator) {
+    seal::CKKSEncoder &ckks_encoder, seal::Evaluator &evaluator) {
   int slots = ckks_encoder.slot_count(); // = N/2 = 4096/2 = 2048
   size_t in_dim = mat.shape(0);
   size_t out_dim = mat.shape(1);
@@ -73,11 +74,11 @@ void DenseLayer::matmulDiagonal(seal::Ciphertext &in_out, const Matrix &mat, sea
     evaluator.add_inplace(sum, tmp);
   }
   in_out = sum;
+  evaluator.rescale_to_next_inplace(in_out); // scale down once
 }
 
 void DenseLayer::multiplyCKKSBabystepGiantstep(seal::Ciphertext &in_out, const Matrix &mat,
-                                               seal::GaloisKeys &galois_keys, seal::CKKSEncoder &ckks_encoder,
-                                               seal::Evaluator &evaluator) {
+    seal::GaloisKeys &galois_keys, seal::CKKSEncoder &ckks_encoder, seal::Evaluator &evaluator) {
   int slots = ckks_encoder.slot_count(); // = N/2 = 4096/2 = 2048
   size_t matrix_dim = mat.shape()[0];
   if (matrix_dim != slots && matrix_dim * 2 > slots)
@@ -153,9 +154,44 @@ Vector ActivationLayer::feedforward(Vector x) {
   return 0.54738 + 0.59579 * x + 0.090189 * xt::pow(x, 2) - 0.006137 * xt::pow(x, 3);
 }
 
-void ActivationLayer::feedforwardEncrypted(seal::Ciphertext &x1_encrypted, seal::GaloisKeys &galoisKeys,
-                                           seal::RelinKeys relinKeys, seal::CKKSEncoder &encoder,
-                                           seal::Evaluator &evaluator) {
+void mult(seal::Ciphertext &in_out, seal::Ciphertext &x, double coeff, seal::RelinKeys relinKeys,
+    seal::CKKSEncoder &encoder, seal::Evaluator &evaluator) {
+  seal::Plaintext plain_coeff;
+  encoder.encode(coeff, x.parms_id(), x.scale(), plain_coeff);
+  evaluator.multiply_inplace(in_out, x);
+  evaluator.relinearize_inplace(in_out, relinKeys); // relinearize after every multiplication?
+  evaluator.rescale_to_next_inplace(in_out);        // rescale down again (-40 bits?)
+  std::cout << "Scale after multiplication: " << log2(x.scale()) << " bits" << std::endl;
+}
+
+void ActivationLayer::feedforwardEncrypted(seal::Ciphertext &x, seal::GaloisKeys &galoisKeys, seal::RelinKeys relinKeys,
+    seal::CKKSEncoder &encoder, seal::Evaluator &evaluator) {
+  std::cout << "ActivationLayer input scale: " << log2(x.scale()) << " bits" << std::endl;
+  seal::Plaintext plain_coeff3, plain_coeff2, plain_coeff1, plain_coeff0;
+
+  evaluator.multiply_inplace(x, x);            // now it's x², scale doubled
+  evaluator.relinearize_inplace(x, relinKeys); // relinearize after every multiplication?
+  evaluator.rescale_to_next_inplace(x);        // rescale down again (-40 bits?)
+  std::cout << "Scale: " << log2(x.scale()) << " bits" << std::endl;
+
+  evaluator.multiply_inplace(x, x); // now it's x³
+  evaluator.relinearize_inplace(x, relinKeys);
+  evaluator.rescale_to_next_inplace(x);
+  std::cout << "Scale: " << log2(x.scale()) << " bits" << std::endl;
+
+  encoder.encode(-0.006137, x.parms_id(), x.scale(), plain_coeff3);
+  evaluator.multiply_plain_inplace(x, plain_coeff3); // now it's a*x³
+  evaluator.relinearize_inplace(x, relinKeys);
+  evaluator.rescale_to_next_inplace(x);
+  std::cout << "Scale: " << log2(x.scale()) << " bits" << std::endl;
+
+  encoder.encode(0.54738, x.parms_id(), x.scale(), plain_coeff0);
+  evaluator.add_plain_inplace(x, plain_coeff0); // now it's a*x³ + d
+  std::cout << "ActivationLayer output scale: " << log2(x.scale()) << " bits" << std::endl;
+}
+
+void ActivationLayer::feedforwardEncrypted2(seal::Ciphertext &x1_encrypted, seal::GaloisKeys &galoisKeys,
+    seal::RelinKeys relinKeys, seal::CKKSEncoder &encoder, seal::Evaluator &evaluator) {
   /*
   We create plaintexts for PI, 0.4, and 1 using an overload of CKKSEncoder::encode
   that encodes the given floating-point value to every slot in the vector.
