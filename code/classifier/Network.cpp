@@ -12,8 +12,13 @@ void Network::init() {
   size_t poly_modulus_degree = 4096; // same as for node-seal
   params.set_poly_modulus_degree(poly_modulus_degree);
   std::vector<int> bit_sizes = {60, 40, 40, 40, 40, 60};
-  std::cout << "Product(bit_sizes) = " << xt::prod<int>(xt::adapt(bit_sizes, {bit_sizes.size()}))() << std::endl;
+  std::cout << "sum(bit_sizes) = " << xt::sum(xt::adapt(bit_sizes, {bit_sizes.size()}))() << std::endl;
   params.set_coeff_modulus(seal::CoeffModulus::Create(poly_modulus_degree, bit_sizes));
+  std::vector<double> log_coeff_moduli;
+  for (auto &&modulus : params.coeff_modulus())
+    log_coeff_moduli.push_back(log2(modulus.value()));
+  std::cout << "log2(product(moduli)) = " << xt::sum(xt::adapt(log_coeff_moduli, {log_coeff_moduli.size()}))()
+            << std::endl;
   context = new seal::SEALContext(params, true, seal::sec_level_type::none);
 }
 
@@ -29,8 +34,8 @@ Vector Network::predict(Vector input) {
   return input;
 }
 
-seal::Ciphertext Network::predictEncrypted(seal::Ciphertext &ciphertext, seal::RelinKeys &relinKeys,
-                                           seal::GaloisKeys &galoisKeys) {
+seal::Ciphertext Network::predictEncrypted(
+    seal::Ciphertext &ciphertext, seal::RelinKeys &relinKeys, seal::GaloisKeys &galoisKeys) {
   seal::Evaluator evaluator(*context);
   seal::CKKSEncoder encoder(*context);
 
