@@ -48,6 +48,7 @@ export class SEALCommunicator extends BaseCommunicator {
   async _initContext() {
     // Wait for the library to initialize
     this.seal = await SEAL();
+    // TODO: fetch the encryption parameters from the server (seclevel, bitSizes, polyModDegree, scale!)
     const schemeType = this.seal.SchemeType.ckks;
     // const securityLevel = this.seal.SecurityLevel.tc128;
     const securityLevel = this.seal.SecurityLevel.none;
@@ -68,9 +69,7 @@ export class SEALCommunicator extends BaseCommunicator {
     );
 
     if (!this.context.parametersSet()) {
-      throw new Error(
-        "[SEAL] Could not set the parameters in the given context. Please try different encryption parameters."
-      );
+      throw new Error("[SEAL] Could not set the parameters in the given context.");
     }
 
     // for debugging:
@@ -96,10 +95,19 @@ export class SEALCommunicator extends BaseCommunicator {
     this._createKeys();
   }
 
+  static argmax(array) {
+    return [].reduce.call(array, (m, c, i, arr) => (c > arr[m] ? i : m), 0);
+  }
+  static softmax(array) {
+    let exponentiated = array.map((x) => Math.exp(x));
+    let sum = exponentiated.reduce((a, b) => a + b);
+    return exponentiated.map((y) => y / sum);
+  }
+
   async classify(flatImageArray) {
     const encoder = this.seal.CKKSEncoder(this.context);
     const encryptor = this.seal.Encryptor(this.context, this._publicKey);
-    const scale = Math.pow(2, 20);
+    const scale = Math.pow(2, 40);
     var plaintext = encoder.encode(Float64Array.from(flatImageArray), scale);
     var ciphertext = encryptor.encrypt(plaintext);
     var response = await this._makeApiRequest("/classify/encrypted/", {
@@ -112,8 +120,13 @@ export class SEALCommunicator extends BaseCommunicator {
     const decryptor = this.seal.Decryptor(this.context, this._secretKey);
     var resultPlaintext = this.seal.PlainText();
     decryptor.decrypt(resultCiphertext, resultPlaintext);
-    var result = encoder.decode(resultPlaintext); // TODO: apply softmax and get prediction
-    return result;
+    var result = encoder.decode(resultPlaintext);
+    window._result = result;
+    result = result.slice(0, 10);
+    return {
+      prediction: SEALCommunicator.argmax(result),
+      probabilities: Array.from(SEALCommunicator.softmax(result)),
+    };
   }
 
   delete() {

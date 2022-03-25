@@ -30,7 +30,6 @@ nlohmann::json handlePlainPredictionRequest(nlohmann::json request) {
   PLOG(plog::debug) << input;
   assert(input.dimension() == 1);
   assert(input.shape()[0] == 784);
-  // input.reshape({784});
   PLOG(plog::debug) << "Incoming data is valid, predicting ...";
   Vector result = neuralNet->predict(input);
   return nlohmann::json{
@@ -105,7 +104,7 @@ void runServer() {
   });
   server.set_logger([](const httplib::Request &req, const httplib::Response &res) {
     // prints log after the response was sent
-    PLOG(plog::debug) << "[" << req.method << "] " << req.path << " " << res.status;
+    PLOG(plog::info) << "[" << req.method << "] " << req.path << " " << res.status;
   });
 
   PLOG(plog::info) << "The server is running";
@@ -201,7 +200,7 @@ void shutdown(int signum) {
 
 int main() {
   static plog::ColorConsoleAppender<plog::FuncMessageFormatter> consoleAppender;
-  plog::init(plog::info, &consoleAppender);
+  plog::init(plog::debug, &consoleAppender);
   PLOG(plog::info) << "--- MNIST Neural Network Predictor ---";
   signal(SIGTERM, shutdown);
 
