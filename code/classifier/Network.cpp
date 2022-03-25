@@ -1,5 +1,6 @@
 #include "Network.h"
 
+#include <plog/Log.h>
 #include <xtensor/xadapt.hpp>
 #include <xtensor/xrandom.hpp>
 #include <xtensor/xreducer.hpp>
@@ -12,13 +13,12 @@ void Network::init() {
   size_t poly_modulus_degree = 4096; // same as for node-seal
   params.set_poly_modulus_degree(poly_modulus_degree);
   std::vector<int> bit_sizes = {60, 40, 40, 40, 40, 40, 60};
-  std::cout << "sum(bit_sizes) = " << xt::sum(xt::adapt(bit_sizes, {bit_sizes.size()}))() << std::endl;
+  PLOG(plog::debug) << "sum(bit_sizes) = " << xt::sum(xt::adapt(bit_sizes, {bit_sizes.size()}))();
   params.set_coeff_modulus(seal::CoeffModulus::Create(poly_modulus_degree, bit_sizes));
   std::vector<double> log_coeff_moduli;
   for (auto &&modulus : params.coeff_modulus())
     log_coeff_moduli.push_back(log2(modulus.value()));
-  std::cout << "log2(product(moduli)) = " << xt::sum(xt::adapt(log_coeff_moduli, {log_coeff_moduli.size()}))()
-            << std::endl;
+  PLOG(plog::debug) << "log2(product(moduli)) = " << xt::sum(xt::adapt(log_coeff_moduli, {log_coeff_moduli.size()}))();
   context = new seal::SEALContext(params, true, seal::sec_level_type::none);
 }
 
@@ -30,7 +30,7 @@ void Network::addLayer(Layer *layer) {
 Vector Network::predict(Vector input) {
   int index = 0;
   for (Layer *layer : layers) {
-    std::cout << "Feeding plain data through layer " << index++ << std::endl;
+    PLOG(plog::debug) << "Feeding plain data through layer " << index++;
     input = layer->feedforward(input);
   }
   return input;
@@ -43,7 +43,7 @@ seal::Ciphertext Network::predictEncrypted(
 
   int index = 0;
   for (Layer *layer : layers) {
-    std::cout << "Feeding ciphertext through layer " << index++ << std::endl;
+    PLOG(plog::debug) << "Feeding ciphertext through layer " << index++;
     layer->feedforwardEncrypted(ciphertext, galoisKeys, relinKeys, encoder, evaluator);
   }
 

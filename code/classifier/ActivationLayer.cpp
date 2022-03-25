@@ -1,5 +1,6 @@
 #include "Layer.h"
 #include "Network.h"
+#include <plog/Log.h>
 
 Vector ActivationLayer::feedforward(Vector x) {
   return 0.54738 + 0.59579 * x + 0.090189 * xt::pow(x, 2) - 0.006137 * xt::pow(x, 3);
@@ -13,7 +14,7 @@ seal::Ciphertext multiplyPlain(seal::Ciphertext &x, double coeff, seal::RelinKey
   evaluator.multiply_plain(x, plain_coeff, result);            // the scale doubles
   evaluator.relinearize_inplace(result, relinKeys);            // relinearize after every multiplication?
   evaluator.rescale_to_next_inplace(result);                   // rescale down again (-40 bits?)
-  std::cout << "Scale after multiplication: " << log2(result.scale()) << " bits" << std::endl;
+  PLOG(plog::debug) << "Scale after multiplication: " << log2(result.scale()) << " bits";
   return result;
 }
 

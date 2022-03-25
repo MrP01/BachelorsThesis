@@ -1,6 +1,7 @@
 #include "Layer.h"
 #include "Network.h"
 #include <algorithm>
+#include <plog/Log.h>
 #include <xtensor/xaxis_iterator.hpp>
 #include <xtensor/xmath.hpp>
 #include <xtensor/xpad.hpp>
@@ -19,7 +20,7 @@ Vector DenseLayer::feedforward(Vector x) {
       sum += weights.at(row, col) * x[row];
     dot[col] = sum;
   }
-  // to print it: std::copy(dot.begin(), dot.end(), std::ostream_iterator<float>(std::cout, ", "));
+  // to print it: std::copy(dot.begin(), dot.end(), std::ostream_iterator<float>(PLOG(plog::debug), ", "));
   return dot + biases;
 }
 

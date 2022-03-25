@@ -3,6 +3,9 @@
 #include <httplib.h>
 #include <iostream>
 #include <nlohmann/json.hpp>
+#include <plog/Appenders/ColorConsoleAppender.h>
+#include <plog/Formatters/FuncMessageFormatter.h>
+#include <plog/Log.h>
 #include <seal/decryptor.h>
 #include <seal/encryptor.h>
 #include <seal/keygenerator.h>
@@ -24,11 +27,11 @@ backward::SignalHandling _signalHandler;
 nlohmann::json handlePlainPredictionRequest(nlohmann::json request) {
   xt::xarray<double> input;
   xt::from_json(request["image"], input);
-  std::cout << input << std::endl;
+  PLOG(plog::debug) << input;
   assert(input.dimension() == 1);
   assert(input.shape()[0] == 784);
   // input.reshape({784});
-  std::cout << "Incoming data is valid, predicting ..." << std::endl;
+  PLOG(plog::debug) << "Incoming data is valid, predicting ...";
   Vector result = neuralNet->predict(input);
   return nlohmann::json{
       {"prediction", neuralNet->interpretResult(result)},
@@ -37,16 +40,16 @@ nlohmann::json handlePlainPredictionRequest(nlohmann::json request) {
 }
 
 nlohmann::json handleEncryptedPredictionRequest(nlohmann::json request) {
-  std::cout << "Incoming encrypted request" << std::endl;
+  PLOG(plog::debug) << "Incoming encrypted request";
 
   seal::RelinKeys relinKeys;
   seal::GaloisKeys galoisKeys;
   seal::Ciphertext ciphertext;
 
   nlohmann::json::binary_t binary = request["relinKeys"].get<nlohmann::json::binary_t>();
-  std::cout << "Decoded length: " << binary.size() << std::endl;
-  std::cout << "NeuralNet context poly mod degree: "
-            << neuralNet->context->key_context_data()->parms().poly_modulus_degree() << std::endl;
+  PLOG(plog::debug) << "Decoded length: " << binary.size();
+  PLOG(plog::debug) << "NeuralNet context poly mod degree: "
+                    << neuralNet->context->key_context_data()->parms().poly_modulus_degree();
   std::stringstream dataStream = std::stringstream(std::string(binary.begin(), binary.end()));
   assert(seal::Serialization::compr_mode_default == seal::compr_mode_type::zstd);
   relinKeys.load(*neuralNet->context, dataStream);
@@ -92,7 +95,7 @@ void runServer() {
   server.Post("/api/classify/encrypted/", msgpackRequestHandler(handleEncryptedPredictionRequest));
 
   server.set_exception_handler([](const httplib::Request &req, httplib::Response &res, std::exception &exception) {
-    std::cout << "Exception caught: " << exception.what() << std::endl;
+    PLOG(plog::debug) << "Exception caught: " << exception.what();
     backward::StackTrace trace;
     trace.load_here();
     backward::Printer printer;
@@ -102,10 +105,10 @@ void runServer() {
   });
   server.set_logger([](const httplib::Request &req, const httplib::Response &res) {
     // prints log after the response was sent
-    std::cout << "[" << req.method << "] " << req.path << " " << res.status << std::endl;
+    PLOG(plog::debug) << "[" << req.method << "] " << req.path << " " << res.status;
   });
 
-  std::cout << "The server is running" << std::endl;
+  PLOG(plog::info) << "The server is running";
   server.listen("0.0.0.0", 8000);
 }
 
@@ -121,19 +124,19 @@ double evaluateNetworkOnTestData() {
     x.reshape({784});
     Vector result = neuralNet->predict(x);
     int prediction = neuralNet->interpretResult(result);
-    // std::cout << prediction << " | " << y_test[i] << std::endl;
+    // PLOG(plog::debug) << prediction << " | " << y_test[i];
     if (i % 12 == 0)
-      std::cout << i << " / " << N << "\r" << std::flush;
+      PLOG(plog::debug) << i << " / " << N << "\r" << std::flush;
     if (i > N)
       break;
     if (prediction == y_test[i])
       correct++;
     i++;
   }
-  std::cout << std::endl;
+  PLOG(plog::debug);
   double accuracy = (double)correct / (double)N;
-  std::cout << "Correct: " << correct << " out of " << N << std::endl;
-  std::cout << "Model accuracy: " << accuracy << std::endl;
+  PLOG(plog::debug) << "Correct: " << correct << " out of " << N;
+  PLOG(plog::debug) << "Model accuracy: " << accuracy;
   return accuracy;
 }
 
@@ -173,30 +176,33 @@ double evaluateNetworkOnEncryptedTestData() {
     Vector result_from_encrypted_method = xt::adapt(decoded_plain_result, {10});
     auto exact_result = neuralNet->predict(some_x_test);
     int prediction = neuralNet->interpretResult(result_from_encrypted_method);
-    std::cout << "The encrypted method result: " << result_from_encrypted_method << std::endl;
-    std::cout << "For comparison, plain result: " << exact_result << std::endl;
-    std::cout << "Relative errors: " << xt::abs((result_from_encrypted_method - exact_result) / exact_result)
-              << std::endl;
+    PLOG(plog::debug) << "The encrypted method result: " << result_from_encrypted_method;
+    PLOG(plog::debug) << "For comparison, plain result: " << exact_result;
+    PLOG(plog::debug) << "Relative errors: " << xt::abs((result_from_encrypted_method - exact_result) / exact_result);
     auto mre = xt::mean(xt::abs(result_from_encrypted_method - exact_result) / xt::amax(xt::abs(exact_result)));
-    std::cout << "Mean max-relative error: " << mre << std::endl;
+    PLOG(plog::debug) << "Mean max-relative error: " << mre;
     if (prediction == y_test[i]) {
-      std::cout << "Correctly predicted!!" << std::endl;
+      PLOG(plog::info) << "--> Correctly predicted!!";
       correct_predictions++;
+    } else {
+      PLOG(plog::info) << "--> Incorrect prediction :(";
     }
     mre_sum += mre();
   }
-  std::cout << "Average MRE: " << mre_sum / N << std::endl;
-  std::cout << "Accuracy: " << (double)correct_predictions / N << std::endl;
+  PLOG(plog::info) << "Average MRE: " << mre_sum / N;
+  PLOG(plog::info) << "Accuracy: " << (double)correct_predictions / N;
   return (double)correct_predictions / N;
 }
 
 void shutdown(int signum) {
-  std::cout << "Shutdown..." << std::endl;
+  PLOG(plog::info) << "Shutdown...";
   quit = true;
 }
 
 int main() {
-  std::cout << "--- MNIST Neural Network Predictor ---" << std::endl;
+  static plog::ColorConsoleAppender<plog::FuncMessageFormatter> consoleAppender;
+  plog::init(plog::info, &consoleAppender);
+  PLOG(plog::info) << "--- MNIST Neural Network Predictor ---";
   signal(SIGTERM, shutdown);
 
   //  neuralNet->addLayer(784, 128);
