@@ -137,42 +137,57 @@ double evaluateNetworkOnTestData() {
   return accuracy;
 }
 
-void evaluateNetworkOnEncryptedTestData() {
+double evaluateNetworkOnEncryptedTestData() {
   auto x_test = xt::load_npy<float>("data/mnist/x-test.npy");
+  auto y_test = xt::load_npy<int>("data/mnist/y-test.npy");
+  int N = 20;
   x_test /= 255;
   x_test.reshape({x_test.shape(0), 784});
-  auto some_x_test = xt::view(x_test, 170, xt::all());
-  auto some_x_test_vector = std::vector<double>(some_x_test.begin(), some_x_test.end());
-  assert(some_x_test_vector.size() == 784);
   seal::KeyGenerator keyGen(*neuralNet->context);
   seal::PublicKey publicKey;
   seal::GaloisKeys galoisKeys;
   seal::RelinKeys relinKeys;
+  seal::Plaintext plain;
+  seal::Ciphertext encrypted;
+  seal::Plaintext plain_result;
+  std::vector<double> decoded_plain_result;
   keyGen.create_public_key(publicKey);
   keyGen.create_galois_keys(galoisKeys);
   keyGen.create_relin_keys(relinKeys);
   seal::Encryptor encryptor(*neuralNet->context, publicKey);
   seal::CKKSEncoder encoder(*neuralNet->context);
-  seal::Plaintext plain;
   double scale = pow(2.0, 40);
-  encoder.encode(some_x_test_vector, scale, plain);
-  seal::Ciphertext encrypted;
-  encryptor.encrypt(plain, encrypted);
-  seal::Ciphertext result = neuralNet->predictEncrypted(encrypted, relinKeys, galoisKeys);
-  seal::Decryptor decryptor(*neuralNet->context, keyGen.secret_key());
-  seal::Plaintext plain_result;
-  decryptor.decrypt(result, plain_result);
-  std::vector<double> decoded_plain_result;
-  encoder.decode(plain_result, decoded_plain_result);
-  Vector result_from_encrypted_method = xt::adapt(decoded_plain_result, {10});
-  auto exact_result = neuralNet->predict(some_x_test);
-  std::cout << "The encrypted method result: " << result_from_encrypted_method << std::endl;
-  std::cout << "For comparison, plain result: " << exact_result << std::endl;
-  std::cout << "Relative errors: " << xt::abs((result_from_encrypted_method - exact_result) / exact_result)
-            << std::endl;
-  std::cout << "Mean max-relative error: "
-            << xt::mean(xt::abs(result_from_encrypted_method - exact_result) / xt::amax(xt::abs(exact_result)))
-            << std::endl;
+
+  double mre_sum = 0;
+  int correct_predictions = 0;
+  for (size_t i = 0; i < N; i++) {
+    auto some_x_test = xt::view(x_test, i, xt::all());
+    auto some_x_test_vector = std::vector<double>(some_x_test.begin(), some_x_test.end());
+    assert(some_x_test_vector.size() == 784);
+    encoder.encode(some_x_test_vector, scale, plain);
+    encryptor.encrypt(plain, encrypted);
+    seal::Ciphertext result = neuralNet->predictEncrypted(encrypted, relinKeys, galoisKeys);
+    seal::Decryptor decryptor(*neuralNet->context, keyGen.secret_key());
+    decryptor.decrypt(result, plain_result);
+    encoder.decode(plain_result, decoded_plain_result);
+    Vector result_from_encrypted_method = xt::adapt(decoded_plain_result, {10});
+    auto exact_result = neuralNet->predict(some_x_test);
+    int prediction = neuralNet->interpretResult(result_from_encrypted_method);
+    std::cout << "The encrypted method result: " << result_from_encrypted_method << std::endl;
+    std::cout << "For comparison, plain result: " << exact_result << std::endl;
+    std::cout << "Relative errors: " << xt::abs((result_from_encrypted_method - exact_result) / exact_result)
+              << std::endl;
+    auto mre = xt::mean(xt::abs(result_from_encrypted_method - exact_result) / xt::amax(xt::abs(exact_result)));
+    std::cout << "Mean max-relative error: " << mre << std::endl;
+    if (prediction == y_test[i]) {
+      std::cout << "Correctly predicted!!" << std::endl;
+      correct_predictions++;
+    }
+    mre_sum += mre();
+  }
+  std::cout << "Average MRE: " << mre_sum / N << std::endl;
+  std::cout << "Accuracy: " << (double)correct_predictions / N << std::endl;
+  return (double)correct_predictions / N;
 }
 
 void shutdown(int signum) {
