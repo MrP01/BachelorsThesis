@@ -2,6 +2,7 @@
 
 #include <plog/Log.h>
 #include <xtensor/xadapt.hpp>
+#include <xtensor/xnpy.hpp>
 #include <xtensor/xrandom.hpp>
 #include <xtensor/xreducer.hpp>
 #include <xtensor/xsort.hpp>
@@ -20,6 +21,16 @@ void Network::init() {
     log_coeff_moduli.push_back(log2(modulus.value()));
   PLOG(plog::debug) << "log2(product(moduli)) = " << xt::sum(xt::adapt(log_coeff_moduli, {log_coeff_moduli.size()}))();
   context = new seal::SEALContext(params, true, seal::sec_level_type::none);
+}
+
+void Network::loadDefaultModel() {
+  auto w1 = xt::load_npy<float>("data/models/simple/w1.npy");
+  auto b1 = xt::load_npy<float>("data/models/simple/b1.npy");
+  auto w2 = xt::load_npy<float>("data/models/simple/w2.npy");
+  auto b2 = xt::load_npy<float>("data/models/simple/b2.npy");
+  addLayer(new DenseLayer(w1, b1));
+  addLayer(new ActivationLayer());
+  addLayer(new DenseLayer(w2, b2));
 }
 
 void Network::addLayer(Layer *layer) {

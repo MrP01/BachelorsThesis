@@ -11,6 +11,7 @@ class Network {
  public:
   Network();
   void init();
+  void loadDefaultModel();
   void addLayer(Layer *layer);
   Vector predict(Vector input);
   seal::Ciphertext predictEncrypted(

@@ -10,4 +10,6 @@ conan_basic_setup()
 find_package(SEAL 3.7.1 REQUIRED)
 
 add_executable(classifier main.cpp DenseLayer.cpp ActivationLayer.cpp Network.cpp)
+add_executable(evaluate evaluate.cpp DenseLayer.cpp ActivationLayer.cpp Network.cpp)
 target_link_libraries(classifier ${CONAN_LIBS} SEAL::seal)
+target_link_libraries(evaluate ${CONAN_LIBS} SEAL::seal)
