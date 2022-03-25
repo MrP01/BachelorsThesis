@@ -1,4 +1,5 @@
 #pragma once
+#include "utils.h"
 
 #include "seal/ciphertext.h"
 #include "seal/ckks.h"

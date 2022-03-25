@@ -10,7 +10,7 @@
 #include <xtensor/xio.hpp>
 #include <xtensor/xjson.hpp>
 #include <xtensor/xnpy.hpp>
-#include <xtensor/xsort.hpp>
+#include <xtensor/xview.hpp>
 
 #include "Network.h"
 
@@ -140,7 +140,8 @@ double evaluateNetworkOnTestData() {
 void evaluateNetworkOnEncryptedTestData() {
   auto x_test = xt::load_npy<float>("data/mnist/x-test.npy");
   x_test /= 255;
-  auto some_x_test = *xt::axis_begin(x_test, 0);
+  x_test.reshape({x_test.shape(0), 784});
+  auto some_x_test = xt::view(x_test, 170, xt::all());
   auto some_x_test_vector = std::vector<double>(some_x_test.begin(), some_x_test.end());
   assert(some_x_test_vector.size() == 784);
   seal::KeyGenerator keyGen(*neuralNet->context);
