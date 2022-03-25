@@ -4,7 +4,16 @@ import * as msgpack from "@msgpack/msgpack";
 const API_URL = "/api";
 
 class BaseCommunicator {
+  static _singleton = null;
+
   async init() {}
+  static instance() {
+    if (this._singleton === null) {
+      this._singleton = new this();
+      this._singleton.init().then(() => console.log("Communicator initialized."));
+    }
+    return this._singleton;
+  }
   async classify() {}
   async _makeApiRequest(path, body) {
     // console.log("sending", body);

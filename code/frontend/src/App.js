@@ -18,12 +18,11 @@ class ClassificationComponent extends React.Component {
       prediction: -1,
       probabilities: [...Array(10).keys()].map((x) => x / 10),
     };
-    this.communicator = new PlainCommunicator();
+    this.communicator = PlainCommunicator.instance();
   }
 
   componentDidMount() {
     this.drawGrid();
-    this.communicator.init().then(() => console.log("Communicator initialized."));
   }
 
   componentWillUnmount() {
@@ -88,9 +87,7 @@ class ClassificationComponent extends React.Component {
   }
 
   setCommunicator(event) {
-    this.communicator.delete();
-    this.communicator = new (event.target.checked ? SEALCommunicator : PlainCommunicator)();
-    this.communicator.init().then(() => console.log("Communicator initialized."));
+    this.communicator = (event.target.checked ? SEALCommunicator : PlainCommunicator).instance();
   }
 
   render() {
