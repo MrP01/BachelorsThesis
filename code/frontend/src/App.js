@@ -1,7 +1,7 @@
 import React from "react";
 import "@materializecss/materialize";
 import "@materializecss/materialize/dist/css/materialize.css";
-import { Button, Col, Icon, Navbar, Row, Container, Switch } from "react-materialize";
+import { Button, Col, Icon, Navbar, Row, Container, Switch, ProgressBar } from "react-materialize";
 import { ReactPainter } from "react-painter";
 import Pica from "pica";
 import "./App.css";
@@ -15,8 +15,9 @@ class ClassificationComponent extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      prediction: -1,
+      prediction: "...",
       probabilities: [...Array(10).keys()].map((x) => x / 10),
+      calculating: false,
     };
     this.communicator = PlainCommunicator.instance();
   }
@@ -35,6 +36,7 @@ class ClassificationComponent extends React.Component {
     console.log("Classifying given input");
     const self = this;
     const target = document.querySelector("#target-28x28");
+    self.setState({ calculating: true, prediction: "..." });
     pica.resize(this.getDrawingCanvas(), target, { alpha: true }).then((result) => {
       console.log("Resizing to 28x28 finished.");
       let ctx = result.getContext("2d");
@@ -42,12 +44,16 @@ class ClassificationComponent extends React.Component {
       // TODO: rescale from 0..255 to 0..1
       alphaChannel = alphaChannel.map((x) => (x > 127 ? 1 : 0));
       console.log(alphaChannel);
-      this.communicator.classify(alphaChannel).then((data) =>
-        self.setState({
-          prediction: data.prediction,
-          probabilities: data.probabilities,
-        })
-      );
+      this.communicator
+        .classify(alphaChannel)
+        .then((data) =>
+          self.setState({
+            prediction: data.prediction,
+            probabilities: data.probabilities,
+            calculating: false,
+          })
+        )
+        .catch((err) => self.setState({ calculating: false }));
     });
   }
 
@@ -94,6 +100,7 @@ class ClassificationComponent extends React.Component {
     const self = this;
     return (
       <Row>
+        <ProgressBar className={self.state.calculating ? "" : "transparent"} />
         <Col m={6} s={12}>
           <ReactPainter
             width={280}
@@ -108,7 +115,9 @@ class ClassificationComponent extends React.Component {
                   <div className={"canvas-container center"}>{canvas}</div>
                   <div className="command-bar">
                     <Button onClick={self.clear.bind(self)}>Clear</Button>
-                    <Button onClick={self.classify.bind(self)}>Classify</Button>
+                    <Button onClick={self.classify.bind(self)} disabled={self.state.calculating}>
+                      Classify
+                    </Button>
                   </div>
                 </div>
               );
@@ -126,8 +135,8 @@ class ClassificationComponent extends React.Component {
                 <span className="black-text">The 28x28 downscaled version will be classified using the</span>
                 <Switch
                   offLabel="PlainCommunicator"
-                  onChange={self.setCommunicator.bind(self)}
                   onLabel="SEALCommunicator"
+                  onChange={self.setCommunicator.bind(self)}
                 />
               </div>
             </div>

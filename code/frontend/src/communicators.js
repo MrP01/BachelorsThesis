@@ -10,7 +10,10 @@ class BaseCommunicator {
   static instance() {
     if (this._singleton === null) {
       this._singleton = new this();
-      this._singleton.init().then(() => console.log("Communicator initialized."));
+      this._singleton
+        .init()
+        .then(() => console.log("Communicator initialized."))
+        .catch((err) => console.log("Error!"));
     }
     return this._singleton;
   }
