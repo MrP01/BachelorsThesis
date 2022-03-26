@@ -1,13 +1,39 @@
 import React from "react";
+import Pica from "pica";
 import "@materializecss/materialize";
 import "@materializecss/materialize/dist/css/materialize.css";
 import { Button, Col, Navbar, Row, Container, Switch, ProgressBar } from "react-materialize";
 import { ReactPainter } from "react-painter";
-import Pica from "pica";
-import "./App.css";
 import { PlainCommunicator, SEALCommunicator } from "./communicators";
+import "./App.css";
 
 const pica = new Pica();
+
+class DemoImageComponent extends React.Component {
+  constructor(props) {
+    super(props);
+    this.imageData = props.imageData;
+    this.canvasRef = React.createRef();
+  }
+
+  componentDidMount() {
+    let ctx = this.canvasRef.current.getContext("2d");
+    ctx.fillStyle = "black";
+    ctx.fillRect(0, 0, 28, 28);
+    let imgData = ctx.getImageData(0, 0, 28, 28);
+    for (let i = 0; i < 28; i++)
+      for (let j = 0; j < 28; j++) {
+        imgData.data[(i * 28 + j) * 4 + 0] = this.imageData[i][j];
+        imgData.data[(i * 28 + j) * 4 + 1] = this.imageData[i][j];
+        imgData.data[(i * 28 + j) * 4 + 2] = this.imageData[i][j];
+      }
+    ctx.putImageData(imgData, 0, 0);
+  }
+
+  render() {
+    return <canvas ref={this.canvasRef} width={28} height={28}></canvas>;
+  }
+}
 
 class ClassificationComponent extends React.Component {
   themecolor = [100, 149, 237]; // cornflowerblue
@@ -18,8 +44,18 @@ class ClassificationComponent extends React.Component {
       prediction: "...",
       probabilities: [...Array(10).keys()].map((x) => x / 10),
       calculating: false,
+      testImagesAvailable: false,
     };
     this.communicator = PlainCommunicator.instance();
+    this.testImages = [];
+    fetch("/api/testdata/?indices=-3-4-5").then((response) => {
+      response.json().then((data) => {
+        this.testImages = data;
+        this.setState({
+          testImagesAvailable: true,
+        });
+      });
+    });
   }
 
   componentDidMount() {
@@ -170,6 +206,11 @@ class ClassificationComponent extends React.Component {
               );
             })}
           </ul>
+        </Col>
+        <Col>
+          {this.testImages.map((img, index) => (
+            <DemoImageComponent imageData={img} key={index} />
+          ))}
         </Col>
       </Row>
     );
