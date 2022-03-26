@@ -13,7 +13,7 @@ class BaseCommunicator {
       this._singleton
         .init()
         .then(() => console.log("Communicator initialized."))
-        .catch((err) => console.log("Error!"));
+        .catch((err) => console.log("Error!", err));
     }
     return this._singleton;
   }

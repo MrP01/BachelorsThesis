@@ -1,7 +1,7 @@
 import React from "react";
 import "@materializecss/materialize";
 import "@materializecss/materialize/dist/css/materialize.css";
-import { Button, Col, Icon, Navbar, Row, Container, Switch, ProgressBar } from "react-materialize";
+import { Button, Col, Navbar, Row, Container, Switch, ProgressBar } from "react-materialize";
 import { ReactPainter } from "react-painter";
 import Pica from "pica";
 import "./App.css";
@@ -27,9 +27,9 @@ class ClassificationComponent extends React.Component {
   }
 
   componentWillUnmount() {
-    this.communicator.delete();
-    delete this.communicator;
-    console.log("Cleaned up.");
+    // this.communicator.delete();
+    // delete this.communicator;
+    // console.log("Cleaned up.");
   }
 
   classify() {
@@ -44,16 +44,21 @@ class ClassificationComponent extends React.Component {
       // TODO: rescale from 0..255 to 0..1
       alphaChannel = alphaChannel.map((x) => (x > 127 ? 1 : 0));
       console.log(alphaChannel);
-      this.communicator
-        .classify(alphaChannel)
-        .then((data) =>
-          self.setState({
-            prediction: data.prediction,
-            probabilities: data.probabilities,
-            calculating: false,
-          })
-        )
-        .catch((err) => self.setState({ calculating: false }));
+      // give the browser one extra cycle for rendering
+      setTimeout(
+        () =>
+          this.communicator
+            .classify(alphaChannel)
+            .then((data) =>
+              self.setState({
+                prediction: data.prediction,
+                probabilities: data.probabilities,
+                calculating: false,
+              })
+            )
+            .catch((err) => self.setState({ calculating: false })),
+        0
+      );
     });
   }
 
@@ -73,12 +78,12 @@ class ClassificationComponent extends React.Component {
     const ctx = canvas.getContext("2d");
     const cell = canvas.width / 28; // width of one grid cell
     const gridSvg = `<svg width="${canvas.width}" height="${canvas.height}" xmlns="http://www.w3.org/2000/svg">
-        <defs>
-            <pattern id="smallGrid" width="${cell}" height="${cell}" patternUnits="userSpaceOnUse">
-                <path d="M ${cell} 0 L 0 0 0 ${cell}" fill="none" stroke="gray" stroke-width="0.5" />
-            </pattern>
-        </defs>
-        <rect width="100%" height="100%" fill="url(#smallGrid)" />
+      <defs>
+        <pattern id="smallGrid" width="${cell}" height="${cell}" patternUnits="userSpaceOnUse">
+          <path d="M ${cell} 0 L 0 0 0 ${cell}" fill="none" stroke="gray" stroke-width="0.5" />
+        </pattern>
+      </defs>
+      <rect width="100%" height="100%" fill="url(#smallGrid)" />
     </svg>`;
     var DOMURL = window.URL || window.webkitURL || window;
     var img = new Image();
@@ -178,7 +183,8 @@ function App() {
         alignLinks="right"
         brand={<span style={{ paddingLeft: "10px" }}>FHE Classifier</span>}
         id="mobile-nav"
-        menuIcon={<Icon>menu</Icon>}
+        menuIcon={<span />}
+        style={{ backgroundColor: "cornflowerblue" }}
       ></Navbar>
       <Container>
         <h3 className={"center"}>Classify your Secret Data</h3>
