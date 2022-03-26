@@ -65,41 +65,28 @@ nlohmann::json handleEncryptedPredictionRequest(nlohmann::json request) {
   auto binaryResult = nlohmann::json::binary(byte_buffer);
   return nlohmann::json{
       {"result", binaryResult},
-      // {"probabilities", {0, 0, 0, 0, 0, 0, 0, 0, 0, 0}}, // prediction and probabilities should be calculated
-      // client-side
   };
 }
 
-nlohmann::json handleGetTestData(nlohmann::json request) {
+void handleGetTestData(const httplib::Request &req, httplib::Response &response) {
   auto x_test = xt::load_npy<float>("data/mnist/x-test.npy");
-  typedef std::vector<std::vector<uint8_t>> Image;
-  std::vector<Image> images;
-  for (auto &&index : request["indices"]) {
-    auto view = xt::view(x_test, index, xt::all());
-    images.push_back(Image(view.begin(), view.end()));
+  size_t pos = 0;
+  std::vector<int> indices;
+  std::string indices_str = req.get_param_value("indices");
+  while ((pos = indices_str.find("-")) != std::string::npos) {
+    indices.push_back(std::atoi(indices_str.substr(0, pos).c_str()));
+    indices_str.erase(0, pos + 1);
   }
-  return nlohmann::json(images);
-}
-
-auto msgpackRequestHandler(nlohmann::json (*handler)(nlohmann::json)) {
-  return
-      [=](const httplib::Request &request, httplib::Response &response, const httplib::ContentReader &contentReader) {
-        std::string request_body;
-        contentReader([&](const char *data, size_t data_length) {
-          request_body.append(data, data_length);
-          return true;
-        });
-        nlohmann::json request_json = nlohmann::json::from_msgpack(request_body);
-        nlohmann::json response_json = handler(request_json);
-        std::vector<uint8_t> serialized = nlohmann::json::to_msgpack(response_json);
-        response.set_content(std::string(serialized.begin(), serialized.end()), "application/x-msgpack");
-      };
+  nlohmann::json data;
+  xt::to_json(data, xt::view(x_test, xt::keep(indices)));
+  response.set_content(data.dump(), "application/json");
 }
 
 void runServer() {
   httplib::Server server;
   server.Post("/api/classify/plain/", msgpackRequestHandler(handlePlainPredictionRequest));
   server.Post("/api/classify/encrypted/", msgpackRequestHandler(handleEncryptedPredictionRequest));
+  server.Get("/api/testdata/", handleGetTestData);
 
   server.set_exception_handler([](const httplib::Request &req, httplib::Response &res, std::exception &exception) {
     PLOG(plog::debug) << "Exception caught: " << exception.what();
