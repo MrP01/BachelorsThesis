@@ -5,11 +5,19 @@ canvas {
 .canvas-container {
   padding: 20px;
   padding-top: 0.5rem;
+  position: relative;
 }
 
 .canvas-container > canvas {
   border: 2px solid #26a69a;
   /* transform: scale(10); */
+}
+
+.background-grid {
+  position: absolute;
+  z-index: -1;
+  width: 280px;
+  height: 280px;
 }
 
 .command-bar {

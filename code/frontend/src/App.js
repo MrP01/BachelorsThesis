@@ -18,20 +18,32 @@ class DemoImageComponent extends React.Component {
 
   componentDidMount() {
     let ctx = this.canvasRef.current.getContext("2d");
-    ctx.fillStyle = "black";
+    ctx.fillStyle = "white";
     ctx.fillRect(0, 0, 28, 28);
     let imgData = ctx.getImageData(0, 0, 28, 28);
     for (let i = 0; i < 28; i++)
       for (let j = 0; j < 28; j++) {
-        imgData.data[(i * 28 + j) * 4 + 0] = this.imageData[i][j];
-        imgData.data[(i * 28 + j) * 4 + 1] = this.imageData[i][j];
-        imgData.data[(i * 28 + j) * 4 + 2] = this.imageData[i][j];
+        const pixelIndex = (i * 28 + j) * 4,
+          value = 255 - this.imageData[i][j];
+        imgData.data[pixelIndex + 0] = value;
+        imgData.data[pixelIndex + 1] = value;
+        imgData.data[pixelIndex + 2] = value;
+        imgData.data[pixelIndex + 3] = 255; // opaque
+        if (value == 255) imgData.data[pixelIndex + 3] = 0; // transparent
       }
     ctx.putImageData(imgData, 0, 0);
   }
 
   render() {
-    return <canvas ref={this.canvasRef} width={28} height={28}></canvas>;
+    return (
+      <canvas
+        ref={this.canvasRef}
+        width={28}
+        height={28}
+        onClick={this.props.onClick}
+        style={{ cursor: "pointer" }}
+      ></canvas>
+    );
   }
 }
 
@@ -47,7 +59,7 @@ class ClassificationComponent extends React.Component {
       testImagesAvailable: false,
     };
     this.communicator = PlainCommunicator.instance();
-    this.testImages = [];
+    this.testImages = []; // outsource this from state because it is large
     fetch("/api/testdata/?indices=-3-4-5").then((response) => {
       response.json().then((data) => {
         this.testImages = data;
@@ -59,7 +71,7 @@ class ClassificationComponent extends React.Component {
   }
 
   componentDidMount() {
-    this.drawGrid();
+    this.initGrid();
   }
 
   componentWillUnmount() {
@@ -73,8 +85,7 @@ class ClassificationComponent extends React.Component {
     const self = this;
     const target = document.querySelector("#target-28x28");
     self.setState({ calculating: true, prediction: "..." });
-    pica.resize(this.getDrawingCanvas(), target, { alpha: true }).then((result) => {
-      console.log("Resizing to 28x28 finished.");
+    pica.resize(this.getDrawingCanvas(), target).then((result) => {
       let ctx = result.getContext("2d");
       let alphaChannel = ctx.getImageData(0, 0, 28, 28).data.filter((value, index) => index % 4 === 3); // alpha channel is the last of every 4-element-block.
       // TODO: rescale from 0..255 to 0..1
@@ -103,15 +114,13 @@ class ClassificationComponent extends React.Component {
   }
 
   clear() {
-    let canvas = this.getDrawingCanvas();
+    const canvas = this.getDrawingCanvas();
     canvas.getContext("2d").clearRect(0, 0, canvas.width, canvas.height);
-    this.drawGrid();
   }
 
-  drawGrid() {
+  initGrid() {
     console.log("Drawing grid.");
     const canvas = this.getDrawingCanvas();
-    const ctx = canvas.getContext("2d");
     const cell = canvas.width / 28; // width of one grid cell
     const gridSvg = `<svg width="${canvas.width}" height="${canvas.height}" xmlns="http://www.w3.org/2000/svg">
       <defs>
@@ -122,15 +131,14 @@ class ClassificationComponent extends React.Component {
       <rect width="100%" height="100%" fill="url(#smallGrid)" />
     </svg>`;
     var DOMURL = window.URL || window.webkitURL || window;
-    var img = new Image();
+    var img = document.querySelector(".background-grid");
     var svg = new Blob([gridSvg], { type: "image/svg+xml;charset=utf-8" });
     var url = DOMURL.createObjectURL(svg);
-
-    img.onload = function () {
-      ctx.drawImage(img, 0, 0);
-      DOMURL.revokeObjectURL(url);
-    };
     img.src = url;
+  }
+
+  loadTestImage(event) {
+    pica.resize(event.target, this.getDrawingCanvas());
   }
 
   setCommunicator(event) {
@@ -153,7 +161,10 @@ class ClassificationComponent extends React.Component {
             render={({ triggerSave, canvas, setColor }) => {
               return (
                 <div>
-                  <div className={"canvas-container center"}>{canvas}</div>
+                  <div className={"canvas-container center"}>
+                    <img className="background-grid" />
+                    {canvas}
+                  </div>
                   <div className="command-bar">
                     <Button onClick={self.clear.bind(self)}>Clear</Button>
                     <Button onClick={self.classify.bind(self)} disabled={self.state.calculating}>
@@ -209,7 +220,7 @@ class ClassificationComponent extends React.Component {
         </Col>
         <Col>
           {this.testImages.map((img, index) => (
-            <DemoImageComponent imageData={img} key={index} />
+            <DemoImageComponent imageData={img} key={index} onClick={self.loadTestImage.bind(self)} />
           ))}
         </Col>
       </Row>
