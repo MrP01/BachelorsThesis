@@ -29,7 +29,7 @@ class DemoImageComponent extends React.Component {
         imgData.data[pixelIndex + 1] = value;
         imgData.data[pixelIndex + 2] = value;
         imgData.data[pixelIndex + 3] = 255; // opaque
-        if (value == 255) imgData.data[pixelIndex + 3] = 0; // transparent
+        if (value === 255) imgData.data[pixelIndex + 3] = 0; // transparent
       }
     ctx.putImageData(imgData, 0, 0);
   }
@@ -56,22 +56,15 @@ class ClassificationComponent extends React.Component {
       prediction: "...",
       probabilities: [...Array(10).keys()].map((x) => x / 10),
       calculating: false,
-      testImagesAvailable: false,
+      testImagesAvailable: 0,
     };
     this.communicator = PlainCommunicator.instance();
     this.testImages = []; // outsource this from state because it is large
-    fetch("/api/testdata/?indices=-3-4-5").then((response) => {
-      response.json().then((data) => {
-        this.testImages = data;
-        this.setState({
-          testImagesAvailable: true,
-        });
-      });
-    });
   }
 
   componentDidMount() {
     this.initGrid();
+    this.fetchMoreTestImages();
   }
 
   componentWillUnmount() {
@@ -87,7 +80,8 @@ class ClassificationComponent extends React.Component {
     self.setState({ calculating: true, prediction: "..." });
     pica.resize(this.getDrawingCanvas(), target).then((result) => {
       let ctx = result.getContext("2d");
-      let alphaChannel = ctx.getImageData(0, 0, 28, 28).data.filter((value, index) => index % 4 === 3); // alpha channel is the last of every 4-element-block.
+      // alpha channel is the last of every 4-element-block, so we have index % 4 == 3
+      let alphaChannel = ctx.getImageData(0, 0, 28, 28).data.filter((value, index) => index % 4 === 3);
       // TODO: rescale from 0..255 to 0..1
       alphaChannel = alphaChannel.map((x) => (x > 127 ? 1 : 0));
       console.log(alphaChannel);
@@ -119,7 +113,6 @@ class ClassificationComponent extends React.Component {
   }
 
   initGrid() {
-    console.log("Drawing grid.");
     const canvas = this.getDrawingCanvas();
     const cell = canvas.width / 28; // width of one grid cell
     const gridSvg = `<svg width="${canvas.width}" height="${canvas.height}" xmlns="http://www.w3.org/2000/svg">
@@ -135,6 +128,20 @@ class ClassificationComponent extends React.Component {
     var svg = new Blob([gridSvg], { type: "image/svg+xml;charset=utf-8" });
     var url = DOMURL.createObjectURL(svg);
     img.src = url;
+  }
+
+  fetchMoreTestImages() {
+    const alreadyThere = this.testImages.length;
+    const indices = [...Array(80).keys()].map((i) => i + alreadyThere).join("-");
+    console.log(indices, alreadyThere);
+    fetch(`/api/testdata/?indices=-${indices}`).then((response) => {
+      response.json().then((data) => {
+        this.testImages = this.testImages.concat(data);
+        this.setState({
+          testImagesAvailable: this.state.testImagesAvailable + 1,
+        });
+      });
+    });
   }
 
   loadTestImage(event) {
@@ -162,7 +169,7 @@ class ClassificationComponent extends React.Component {
               return (
                 <div>
                   <div className={"canvas-container center"}>
-                    <img className="background-grid" />
+                    <img className="background-grid" alt="background grid" />
                     {canvas}
                   </div>
                   <div className="command-bar">
@@ -218,11 +225,21 @@ class ClassificationComponent extends React.Component {
             })}
           </ul>
         </Col>
-        <Col>
-          {this.testImages.map((img, index) => (
-            <DemoImageComponent imageData={img} key={index} onClick={self.loadTestImage.bind(self)} />
-          ))}
-        </Col>
+        {this.state.testImagesAvailable && (
+          <Col s={12}>
+            {this.testImages.map((img, index) => (
+              <DemoImageComponent imageData={img} key={index} onClick={self.loadTestImage.bind(self)} />
+            ))}
+            <button
+              type="button"
+              className="btn-small btn-flat"
+              style={{ marginTop: -20, marginLeft: 8 }}
+              onClick={self.fetchMoreTestImages.bind(self)}
+            >
+              ... more
+            </button>
+          </Col>
+        )}
       </Row>
     );
   }
