@@ -2,8 +2,13 @@
 #include "Network.h"
 #include <plog/Log.h>
 
+#define RELU_COEFF_0 0.54738
+#define RELU_COEFF_1 0.59579
+#define RELU_COEFF_2 0.090189
+#define RELU_COEFF_3 -0.006137
+
 Vector ActivationLayer::feedforward(Vector x) {
-  return 0.54738 + 0.59579 * x + 0.090189 * xt::pow(x, 2) - 0.006137 * xt::pow(x, 3);
+  return RELU_COEFF_0 + RELU_COEFF_1 * x + RELU_COEFF_2 * xt::pow(x, 2) + RELU_COEFF_3 * xt::pow(x, 3);
 }
 
 seal::Ciphertext multiplyPlain(seal::Ciphertext &x, double coeff, seal::RelinKeys relinKeys, seal::CKKSEncoder &encoder,
@@ -63,15 +68,15 @@ void ActivationLayer::feedforwardEncrypted(seal::Ciphertext &x, seal::GaloisKeys
   printCiphertextInternals("x²", x2, parent->context);
   printCiphertextInternals("x³", x3, parent->context);
 
-  auto result = multiplyPlain(x, 0.59579, relinKeys, encoder, evaluator);
-  auto result2 = multiplyPlain(x2, 0.090189, relinKeys, encoder, evaluator);
-  auto result3 = multiplyPlain(x3, -0.006137, relinKeys, encoder, evaluator);
+  auto result = multiplyPlain(x, RELU_COEFF_1, relinKeys, encoder, evaluator);
+  auto result2 = multiplyPlain(x2, RELU_COEFF_2, relinKeys, encoder, evaluator);
+  auto result3 = multiplyPlain(x3, RELU_COEFF_3, relinKeys, encoder, evaluator);
   printCiphertextInternals("c_1 * x", result, parent->context, true);
   printCiphertextInternals("c_2 * x²", result2, parent->context, true);
   printCiphertextInternals("c_3 * x³", result3, parent->context, true);
 
   addThreeInplace(result, result2, result3, evaluator);
-  addPlainInplace(result, 0.54738, encoder, evaluator);
+  addPlainInplace(result, RELU_COEFF_0, encoder, evaluator);
 
   printCiphertextInternals("ActivationLayer output", result, parent->context);
   x = result;
