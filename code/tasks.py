@@ -6,7 +6,7 @@ import msgpack
 import numpy as np
 import requests
 
-TARGET = pathlib.Path("data/mnist").resolve()
+TARGET = pathlib.Path("classifier/data/mnist").resolve()
 
 
 @invoke.task()
@@ -25,10 +25,11 @@ def send_test_request(ctx, index=3):
     """Sends an HTTP test request to localhost:5555"""
     x_test = np.load(TARGET / "x-test.npy")
     y_test = np.load(TARGET / "y-test.npy")
+    vector = x_test[index].reshape((784,)) / 255
     response = msgpack.unpackb(
         requests.post(
             "http://localhost:8000/api/classify/plain/",
-            data=msgpack.packb({"image": x_test[index].reshape((784,)).tolist()}),
+            data=msgpack.packb({"image": vector.tolist()}),
         ).content
     )
     print("Response:", json.dumps(response, indent=2))

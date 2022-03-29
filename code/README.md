@@ -3,10 +3,10 @@ Working directory for all your source code.
 ## For running with Docker (recommended):
 
 - Create secrets
-  - `code/secrets/fheclassifier-password.txt` (e.g. 20 character password)
   - SSL Certificate and Private Key
     `openssl req -x509 -newkey rsa:4096 -nodes -keyout code/secrets/fhe-classifier.key -out code/secrets/fhe-classifier.cert -days 3650 -subj "/C=AT/ST=Styria/L=Springfield/O=IAIK/CN=www.example.com"`
   - Secrets File `secrets.json`
+- `source .env` (which contains the path to the secrets folder)
 - `docker-compose build`
 - `docker-compose up`
 
@@ -15,7 +15,7 @@ Working directory for all your source code.
 For Python, install [poetry](https://python-poetry.org/).
 
 The best way to do so is using [pipx](https://pypa.github.io/pipx/)
-(which performs a global user-installation).
+(which performs a global, isolated user-installation).
 
 `pipx install poetry`
 
@@ -42,7 +42,7 @@ git clone git@extgit.iaik.tugraz.at:crypto_students/2020_bachelor_waldert.git
 
 cd 2020_bachelor_waldert/
 cd code/
-poetry shell  # creates and activates a new virtual environment
+poetry shell  # creates and activates a new virtual environment (run this every time to activate it)
 poetry install  # installs dependencies from pyproject.toml
 
 # Training:
