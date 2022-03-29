@@ -1,14 +1,20 @@
-Working directory for all your source code.
+# Welcome to the code
+
+The project is structured into the
+
+- `network/` component that trains and stores the neural network (Python),
+- `classifier/` component running as the backend, using SEAL (C++),
+- `frontend/` component which displays a small web UI (JavaScript).
 
 ## For running with Docker (recommended):
 
-- Create secrets
-  - SSL Certificate and Private Key
-    `openssl req -x509 -newkey rsa:4096 -nodes -keyout code/secrets/fhe-classifier.key -out code/secrets/fhe-classifier.cert -days 3650 -subj "/C=AT/ST=Styria/L=Springfield/O=IAIK/CN=www.example.com"`
-  - Secrets File `secrets.json`
-- `source .env` (which contains the path to the secrets folder)
-- `docker-compose build`
-- `docker-compose up`
+```bash
+cd code/
+source .env  # which contains the path to the secrets folder
+inv generate-secrets  # creates secrets: SSL Certificate and Private Key for nginx
+docker-compose build  # builds and compiles everything, will take some time
+docker-compose up
+```
 
 ## For local development
 

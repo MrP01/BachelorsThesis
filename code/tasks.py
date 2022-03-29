@@ -1,4 +1,5 @@
 import json
+import os
 import pathlib
 
 import invoke
@@ -34,3 +35,16 @@ def send_test_request(ctx, index=3):
     )
     print("Response:", json.dumps(response, indent=2))
     print(f"Prediction is {'correct' if response['prediction'] == y_test[index] else 'wrong'}")
+
+
+@invoke.task()
+def generate_secrets(ctx):
+    """Creates a self-signed SSL certificate and key and puts them into $SECRETS_DIR"""
+    SECRETS_DIR = pathlib.Path(os.environ["SECRETS_DIR"]).resolve()
+    print(f"Putting secrets into: {SECRETS_DIR}")
+    ctx.run(
+        "openssl req -x509 -newkey rsa:4096 -nodes "
+        f'-keyout {SECRETS_DIR / "fhe-classifier.key"} '
+        f'-out {SECRETS_DIR / "fhe-classifier.cert"} '
+        '-days 3650 -subj "/C=AT/ST=Styria/L=Springfield/O=IAIK/CN=www.example.com"'
+    )
