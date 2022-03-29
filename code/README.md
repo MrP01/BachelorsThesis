@@ -12,14 +12,42 @@ Working directory for all your source code.
 
 ## For local development
 
+For Python, install [poetry](https://python-poetry.org/).
+
+The best way to do so is using [pipx](https://pypa.github.io/pipx/)
+(which performs a global user-installation).
+
+`pipx install poetry`
+
+Or use the other installation method described [here](https://python-poetry.org/docs/#installation).
+
+Also, because SEAL is not yet packaged with Conan, this is
+[the official way](https://github.com/microsoft/SEAL#building-microsoft-seal-manually) to install it:
+
 ```bash
-cd /path/to/the/repo
+git clone git@github.com:microsoft/SEAL.git
+
+cd SEAL/
+cmake -S . -B build
+cmake --build build
+sudo cmake --install build
+```
+
+This will add the headers to your system path and SEAL will be available when compiling.
+
+To run the present project:
+
+```bash
+git clone git@extgit.iaik.tugraz.at:crypto_students/2020_bachelor_waldert.git
+
+cd 2020_bachelor_waldert/
 cd code/
+poetry shell  # creates and activates a new virtual environment
+poetry install  # installs dependencies from pyproject.toml
 
 # Training:
 cd training/
-pip install -r requirements.txt
-python3 network.py  # trains the model and stores it
+python network.py  # trains the model and stores it
 cd ../
 
 # Classifier:
@@ -33,6 +61,7 @@ conan install ..
 cmake ..
 cmake --build . -- -j 3
 cd ../
+./build/bin/evaluate  # either evaluate the network on test data (plain and encrypted), or:
 ./build/bin/classifier  # start the backend server
 cd ../
 
