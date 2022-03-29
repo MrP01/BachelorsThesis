@@ -7,18 +7,21 @@ import msgpack
 import numpy as np
 import requests
 
-TARGET = pathlib.Path("classifier/data/mnist").resolve()
+TARGET = pathlib.Path(__file__).resolve().parent / "classifier" / "data" / "mnist"
 
 
 @invoke.task()
 def fetch_training_data(ctx):
     """Download MNIST training data and normalize by 1 / 255."""
-    (x_train, y_train), (x_test, y_test) = (data.astype("float32") / 255 for data in keras.datasets.mnist.load_data())
+    import tensorflow as tf
+
+    (x_train, y_train), (x_test, y_test) = tf.keras.datasets.mnist.load_data()
     ctx.run(f"mkdir -p {TARGET}")
-    np.save(target / "x-train.npy", x_train)
-    np.save(target / "y-train.npy", y_train)
-    np.save(target / "x-test.npy", x_test)
-    np.save(target / "y-test.npy", y_test)
+    np.save(TARGET / "x-train.npy", x_train / 255)
+    np.save(TARGET / "y-train.npy", y_train)
+    np.save(TARGET / "x-test.npy", x_test / 255)
+    np.save(TARGET / "y-test.npy", y_test)
+    print(f"Saved MNIST data to {TARGET}")
 
 
 @invoke.task()

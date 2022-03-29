@@ -1,6 +1,5 @@
 import pathlib
 
-import matplotlib.pyplot as plt
 import numpy as np
 import tensorflow as tf
 
@@ -13,32 +12,7 @@ def relu_taylor(x):
     return tf.math.polyval(polynomial, x)
 
 
-def plot_metric(history, metric):
-    train_metrics = history.history[metric]
-    val_metrics = history.history["val_" + metric]
-    epochs = range(1, len(train_metrics) + 1)
-    plt.plot(epochs, train_metrics)
-    plt.plot(epochs, val_metrics)
-    plt.title("Training and validation " + metric)
-    plt.xlabel("Epochs")
-    plt.ylabel(metric)
-    plt.legend(["train_" + metric, "val_" + metric])
-    plt.show()
-
-
-def plot_relu_taylor():
-    fig: plt.Figure = plt.figure()
-    axes: plt.Axes = fig.add_subplot(1, 1, 1)
-    x_ = tf.linspace(-5.0, 10.0, 100)
-    axes.plot(x_, tf.keras.activations.relu(x_), label=r"$y = \mathrm{relu}(x)$")
-    axes.plot(x_, relu_taylor(x_), label=r"$y = \mathrm{relu\_taylor}(x)$")
-    axes.set_xlabel(r"$x$")
-    axes.set_ylabel(r"$y$")
-    axes.legend()
-    fig.savefig(pathlib.Path.cwd().parent.parent / "thesis" / "figures" / "taylor-relu.png")
-
-
-def main():
+def train():
     (x_train, y_train), (x_test, y_test) = tf.keras.datasets.mnist.load_data()
     x_train = x_train.astype("float32") / 255
     x_test = x_test.astype("float32") / 255
@@ -70,4 +44,4 @@ def main():
 
 
 if __name__ == "__main__":
-    main()
+    train()

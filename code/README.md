@@ -34,7 +34,7 @@ Also, because SEAL is not yet packaged with Conan, this is
 git clone git@github.com:microsoft/SEAL.git
 
 cd SEAL/
-cmake -S . -B build
+cmake -S . -B build -DSEAL_THROW_ON_TRANSPARENT_CIPHERTEXT=OFF
 cmake --build build
 sudo cmake --install build
 ```

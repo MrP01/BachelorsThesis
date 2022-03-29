@@ -4,8 +4,8 @@ services:
     image: extgit.iaik.tugraz.at:8443/crypto_students/2020_bachelor_waldert/classifier
     restart: unless-stopped
     build:
-      context: ./classifier
-      dockerfile: classifier.Dockerfile
+      context: .
+      dockerfile: classifier/classifier.Dockerfile
 
   frontend:
     image: extgit.iaik.tugraz.at:8443/crypto_students/2020_bachelor_waldert/nginx
