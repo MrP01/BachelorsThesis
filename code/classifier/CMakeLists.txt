@@ -11,5 +11,5 @@ find_package(SEAL 4.0.0 REQUIRED)
 
 add_executable(classifier main.cpp DenseLayer.cpp ActivationLayer.cpp Network.cpp)
 add_executable(evaluate evaluate.cpp DenseLayer.cpp ActivationLayer.cpp Network.cpp)
-target_link_libraries(classifier ${CONAN_LIBS} SEAL::seal -static)
-target_link_libraries(evaluate ${CONAN_LIBS} SEAL::seal -static)
+target_link_libraries(classifier ${CONAN_LIBS} SEAL::seal)
+target_link_libraries(evaluate ${CONAN_LIBS} SEAL::seal)

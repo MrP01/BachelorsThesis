@@ -23,7 +23,7 @@ For Python, install [poetry](https://python-poetry.org/).
 The best way to do so is using [pipx](https://pypa.github.io/pipx/)
 (which performs a global, isolated user-installation).
 
-`pipx install poetry`
+`pipx install git+https://github.com/python-poetry/poetry.git`
 
 Or use the other installation method described [here](https://python-poetry.org/docs/#installation).
 
