@@ -46,5 +46,7 @@ RUN --mount=type=cache,target=/root/.keras/datasets/ python /training/network.py
 FROM base
 COPY --from=cpp-build /root/.conan/data/ /root/.conan/data/
 COPY --from=cpp-build /classifier/build/bin/classifier /classifier/classifier
-COPY --from=trainer /classifier/data/ /classifier/data/
+COPY --from=trainer /classifier/data/models/ /classifier/data/models/
+COPY --from=trainer /classifier/data/mnist/x-test.npy /classifier/data/mnist/x-test.npy
+COPY --from=trainer /classifier/data/mnist/y-test.npy /classifier/data/mnist/y-test.npy
 CMD ["/classifier/classifier"]
