@@ -1,11 +1,20 @@
 # Part 1: C++ build process
-FROM conanio/gcc11 AS cpp-build
+# FROM conanio/gcc11 AS cpp-build
+FROM alpine:edge AS base
 WORKDIR /classifier
 USER root
+RUN apk add --no-cache libstdc++
 
+FROM base AS cpp-build
+RUN apk add --no-cache cmake git python3
+RUN apk add --no-cache py3-pip
+RUN python3 -m pip install --no-cache-dir conan
+
+RUN apk add --no-cache make
+RUN apk add --no-cache g++
 # Maybe we can package SEAL into conan?
-RUN git clone --depth 1 https://github.com/microsoft/SEAL.git /tmp/seal \
-  && cd /tmp/seal \
+RUN git clone --depth 1 https://github.com/microsoft/SEAL.git /tmp/seal
+RUN cd /tmp/seal \
   && cmake -S . -B build -DSEAL_THROW_ON_TRANSPARENT_CIPHERTEXT=OFF \
   && cmake --build build -- -j 3 \
   && cmake --install build
@@ -37,9 +46,8 @@ COPY ./training/ /training/
 RUN --mount=type=cache,target=/root/.keras/datasets/ python /training/network.py
 
 # Part 3: Tiny image only containing the binary, the model and training+test data
-# FROM scratch
-FROM alpine:latest
-WORKDIR /classifier
+FROM base
+COPY --from=cpp-build /root/.conan/data/ /root/.conan/data/
 COPY --from=cpp-build /classifier/build/bin/classifier /classifier/classifier
 COPY --from=trainer /classifier/data/ /classifier/data/
 CMD ["/classifier/classifier"]

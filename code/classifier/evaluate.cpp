@@ -1,4 +1,3 @@
-#include <backward.hpp>
 #include <iostream>
 #include <plog/Appenders/ColorConsoleAppender.h>
 #include <plog/Formatters/FuncMessageFormatter.h>
@@ -17,10 +16,6 @@
 Network neuralNet;
 auto x_test = xt::load_npy<float>("data/mnist/x-test.npy");
 auto y_test = xt::load_npy<int>("data/mnist/y-test.npy");
-
-namespace backward {
-backward::SignalHandling _signalHandler;
-}
 
 double evaluateNetworkOnTestData(int N = 300) {
   int correct = 0, i = 0;

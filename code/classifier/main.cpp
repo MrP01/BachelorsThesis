@@ -1,4 +1,3 @@
-#include <backward.hpp>
 #include <csignal>
 #include <httplib.h>
 #include <iostream>
@@ -16,10 +15,6 @@
 
 Network neuralNet;
 bool quit = false;
-
-namespace backward {
-backward::SignalHandling _signalHandler;
-}
 
 nlohmann::json handlePlainPredictionRequest(nlohmann::json request) {
   xt::xarray<double> input;
@@ -90,10 +85,6 @@ void runServer() {
 
   server.set_exception_handler([](const httplib::Request &req, httplib::Response &res, std::exception &exception) {
     PLOG(plog::debug) << "Exception caught: " << exception.what();
-    backward::StackTrace trace;
-    trace.load_here();
-    backward::Printer printer;
-    printer.print(trace);
     res.status = 500;
     res.set_content(exception.what(), "text/plain");
   });
