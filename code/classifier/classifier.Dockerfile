@@ -6,12 +6,9 @@ USER root
 RUN apk add --no-cache libstdc++
 
 FROM base AS cpp-build
-RUN apk add --no-cache cmake git python3
-RUN apk add --no-cache py3-pip
+RUN apk add --no-cache cmake git python3 py3-pip make g++
 RUN python3 -m pip install --no-cache-dir conan
 
-RUN apk add --no-cache make
-RUN apk add --no-cache g++
 # Maybe we can package SEAL into conan?
 RUN git clone --depth 1 https://github.com/microsoft/SEAL.git /tmp/seal
 RUN cd /tmp/seal \
