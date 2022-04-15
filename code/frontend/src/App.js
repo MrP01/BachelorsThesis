@@ -24,7 +24,7 @@ class DemoImageComponent extends React.Component {
     for (let i = 0; i < 28; i++)
       for (let j = 0; j < 28; j++) {
         const pixelIndex = (i * 28 + j) * 4,
-          value = 255 - this.imageData[i][j];
+          value = 255 - this.imageData[i][j] * 255;
         imgData.data[pixelIndex + 0] = value;
         imgData.data[pixelIndex + 1] = value;
         imgData.data[pixelIndex + 2] = value;

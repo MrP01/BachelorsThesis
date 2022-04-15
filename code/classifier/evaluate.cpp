@@ -15,7 +15,7 @@
 
 Network neuralNet;
 auto x_test = xt::load_npy<float>("data/mnist/x-test.npy");
-auto y_test = xt::load_npy<int>("data/mnist/y-test.npy");
+auto y_test = xt::load_npy<uint8_t>("data/mnist/y-test.npy");
 
 double evaluateNetworkOnTestData(int N = 300) {
   int correct = 0, i = 0;
@@ -89,7 +89,6 @@ double evaluateNetworkOnEncryptedTestData(int N = 20) {
 int main() {
   static plog::ColorConsoleAppender<plog::FuncMessageFormatter> appender;
   plog::init(plog::debug, &appender);
-  x_test /= 255;
   x_test.reshape({x_test.shape(0), 784});
 
   neuralNet.init();

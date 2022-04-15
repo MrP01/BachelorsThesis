@@ -6,7 +6,7 @@ w1 = np.load("data/models/simple/w1.npy")
 b1 = np.load("data/models/simple/b1.npy")
 w2 = np.load("data/models/simple/w2.npy")
 b2 = np.load("data/models/simple/b2.npy")
-x_test = np.load("data/mnist/x-test.npy") / 255
+x_test = np.load("data/mnist/x-test.npy")
 y_test = np.load("data/mnist/y-test.npy")
 
 softmax = lambda x: np.exp(x) / np.sum(np.exp(x))
