@@ -1,14 +1,14 @@
 version: "3.7"
 services:
   classifier:
-    image: extgit.iaik.tugraz.at:8443/crypto_students/2020_bachelor_waldert/classifier
+    image: mrp001/sealed-mnist-classifier
     restart: unless-stopped
     build:
       context: .
       dockerfile: classifier/classifier.Dockerfile
 
   frontend:
-    image: extgit.iaik.tugraz.at:8443/crypto_students/2020_bachelor_waldert/nginx
+    image: mrp001/sealed-mnist-frontend
     restart: unless-stopped
     build:
       context: ./frontend
