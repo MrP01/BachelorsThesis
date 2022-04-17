@@ -8,17 +8,7 @@
 
 ## Documentation
 
-Give a concise description of what your tool/code/design/work achieves.
-
-If you did not include your actual implementation in the repository because you
-contributed to an external project or used your own repo, document where to find it -
-branch name, repository URL, project's name, advisor's name or similar).
-
-If you included your code, clearly document how to compile, set up, run, use your project.
-(Preferably use the ["Markdown" (MD) markup language](https://help.github.com/articles/markdown-basics/))
-
-After your project is finished and before the repository gets archived, make sure the
-`master` branch indicates where to find all your relevant resources:
+For more information on the setup and installation details of the project, confer the [code/README.md](code/README.md).
 
 - Your thesis
 - Your source code contributions
@@ -27,28 +17,26 @@ After your project is finished and before the repository gets archived, make sur
 
 ## Status
 
-- Translating Classifier from MatLab to C++
-- Frontend using small React App, node-seal for HE
-- Backend in Django/Python
+- [✓] Translating Classifier from MatLab to C++
+- [✓] Frontend using small React App, node-seal for HE
+- [✓] Backend in C++
 
-TODOs:
-
-- Zuerst ein einfaches Neural Network ohne homomorphic encryption trainieren (entweder in python oder C++).
+- [✓] Zuerst ein einfaches Neural Network ohne homomorphic encryption trainieren (entweder in python oder C++).
   Wie wir bereits am Donnerstag besprochen haben, müssen die Aktivierungsfunktionen (Relu, Sigmoid, etc.)
   für HE approximiert werden. Experimentiere dafür auch schon in der Plain Implementierung, welche Auswirkungen
   das auf die Accuracy des Netzwerks hat.
-- Exportieren des Neural Networks (Anzahl Neuronen und Layer, die trainierten Weights, ...)
+- [✓] Exportieren des Neural Networks (Anzahl Neuronen und Layer, die trainierten Weights, ...)
   damit dieses für das HE Netzwerk verwendet werden kann.
-- Implementierung des Netzwerkes in SEAL (C++)
-- Für den Web-basierten Demonstrator kannst du dann deine Implementierung nach Node-SEAL,
+- [✓] Implementierung des Netzwerkes in SEAL (C++)
+- [✓] Für den Web-basierten Demonstrator kannst du dann deine Implementierung nach Node-SEAL,
   einen javascript wrapper für die SEAL library, portieren. Der Demonstrator soll folgende Funktionen haben:
   Ein Client sendet ein verschlüsseltes Bild zum Server, der Server benutzt deine Implementierung
   um eine verschlüsselte Klassifizierung zu erzeugen, welche dann vom Client entschlüsselt werden kann.
   Am besten eine einfache Website zur Nutzung für den Client entwickeln.
-- Für ein einfaches Deployment soll am Ende alles in einem Docker Container laufen.
+- [✓] Für ein einfaches Deployment soll am Ende alles in einem Docker Container laufen.
 - Wenn noch Zeit ist, können wir das Thema auch noch auf den smart-meetering use case von dir ausweiten,
   für uns steht in erster Linie jedoch der Demonstrator im Vordergrund.
 - Am Ende musst du dann noch deine Arbeit in Form von einer schriftlichen Thesis niederschreiben
   und deine Ergebnisse präsentieren.
 - Create Conan package of SEAL?
-- Taylor approximate ReLU(x) = 0.54738 + 0.59579 x + 0.090189 x^2 - 0.006137 x^3
+- [✓] Taylor approximate ReLU(x) = 0.54738 + 0.59579 x + 0.090189 x^2 - 0.006137 x^3

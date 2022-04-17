@@ -2,17 +2,34 @@
 
 The project is structured into the
 
-- `network/` component that trains and stores the neural network (Python),
-- `classifier/` component running as the backend, using SEAL (C++),
+- `training/` component that trains and stores the neural network (Python),
+- `classifier/` component running as the backend API server, using SEAL (C++),
 - `frontend/` component which displays a small web UI (JavaScript).
 
 ## For running with Docker (recommended):
 
+The updated setup is completely ready-to-go as-is and can be pulled from the official Docker registry.
+
+To do so, simply create a file named `docker-compose.yml` somewhere with the following contents:
+
+```yaml
+version: "3.7"
+services:
+  classifier:
+    image: mrp001/sealed-mnist-classifier
+
+  frontend:
+    image: mrp001/sealed-mnist-frontend
+    ports:
+      - 80:80
+      - 443:443
+    volumes:
+      - ./secrets/:/etc/secrets/
+```
+
+Docker-Compose will do the rest for you:
+
 ```bash
-cd code/
-source .env  # which contains the path to the secrets folder
-inv generate-secrets  # creates secrets: SSL Certificate and Private Key for nginx
-docker-compose build  # builds and compiles everything, will take some time
 docker-compose up
 ```
 
@@ -21,7 +38,7 @@ docker-compose up
 For Python, install [poetry](https://python-poetry.org/).
 
 The best way to do so is using [pipx](https://pypa.github.io/pipx/)
-(which performs a global, isolated user-installation).
+(which performs a user-wide, isolated installation).
 
 `pipx install git+https://github.com/python-poetry/poetry.git`
 
