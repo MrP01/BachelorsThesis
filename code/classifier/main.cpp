@@ -14,7 +14,7 @@
 #include "Network.h"
 
 Network neuralNet;
-bool quit = false;
+httplib::Server server;
 
 nlohmann::json handlePlainPredictionRequest(nlohmann::json request) {
   xt::xarray<double> input;
@@ -79,7 +79,6 @@ void handleGetTestData(const httplib::Request &req, httplib::Response &response)
 }
 
 void runServer() {
-  httplib::Server server;
   server.Post("/api/classify/plain/", msgpackRequestHandler(handlePlainPredictionRequest));
   server.Post("/api/classify/encrypted/", msgpackRequestHandler(handleEncryptedPredictionRequest));
   server.Get("/api/testdata/", handleGetTestData);
@@ -100,7 +99,7 @@ void runServer() {
 
 void shutdown(int signum) {
   PLOG(plog::info) << "Shutdown...";
-  quit = true;
+  server.stop();
 }
 
 int main() {
