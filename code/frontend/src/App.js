@@ -134,7 +134,7 @@ class ClassificationComponent extends React.Component {
     const alreadyThere = this.testImages.length;
     const indices = [...Array(80).keys()].map((i) => i + alreadyThere).join("-");
     console.log(indices, alreadyThere);
-    fetch(`/api/testdata/?indices=-${indices}`).then((response) => {
+    fetch(`/api/testdata/?indices=${indices}`).then((response) => {
       response.json().then((data) => {
         this.testImages = this.testImages.concat(data);
         this.setState({

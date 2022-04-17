@@ -72,6 +72,7 @@ void handleGetTestData(const httplib::Request &req, httplib::Response &response)
     indices.push_back(std::atoi(indices_str.substr(0, pos).c_str()));
     indices_str.erase(0, pos + 1);
   }
+  indices.push_back(std::atoi(indices_str.c_str()));
   nlohmann::json data;
   xt::to_json(data, xt::view(x_test, xt::keep(indices)));
   response.set_content(data.dump(), "application/json");
