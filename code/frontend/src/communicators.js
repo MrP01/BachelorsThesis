@@ -118,6 +118,7 @@ export class SEALCommunicator extends BaseCommunicator {
       relinKeys: this._relinKeys.saveArray(this.seal.ComprModeType.zstd),
       galoisKeys: this._galoisKeys.saveArray(this.seal.ComprModeType.zstd), // saving Galois keys can take an even longer time and the output is **very** large.
     });
+    console.log("Got encrypted response");
     var resultCiphertext = this.seal.CipherText();
     resultCiphertext.loadArray(this.context, response["result"]);
     const decryptor = this.seal.Decryptor(this.context, this._secretKey);
@@ -126,6 +127,7 @@ export class SEALCommunicator extends BaseCommunicator {
     var result = encoder.decode(resultPlaintext);
     window._result = result;
     result = result.slice(0, 10);
+    console.log("Decoded result");
     return {
       prediction: SEALCommunicator.argmax(result),
       probabilities: Array.from(SEALCommunicator.softmax(result)),
