@@ -1,5 +1,4 @@
 import json
-import os
 import pathlib
 
 import invoke
@@ -42,8 +41,8 @@ def send_test_request(ctx, index=3):
 
 @invoke.task()
 def generate_secrets(ctx):
-    """Creates a self-signed SSL certificate and key and puts them into $SECRETS_DIR"""
-    SECRETS_DIR = pathlib.Path(os.environ["SECRETS_DIR"]).resolve()
+    """Creates a self-signed SSL certificate and key and puts them into secrets/"""
+    SECRETS_DIR = pathlib.Path("secrets/").resolve()
     print(f"Putting secrets into: {SECRETS_DIR}")
     ctx.run(
         "openssl req -x509 -newkey rsa:4096 -nodes "

@@ -16,12 +16,5 @@ services:
     ports:
       - 80:80
       - 443:443
-    secrets:
-      - ssl_certificate
-      - ssl_privatekey
-
-secrets:
-  ssl_certificate:
-    file: "${SECRETS_DIR}/fhe-classifier.cert"
-  ssl_privatekey:
-    file: "${SECRETS_DIR}/fhe-classifier.key"
+    volumes:
+      - ./secrets/:/etc/secrets/

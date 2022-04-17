@@ -18,7 +18,6 @@ RUN cd /tmp/seal \
 
 RUN conan profile new default --detect --force \
   && conan profile update settings.compiler.libcxx=libstdc++11 default
-
 COPY ./classifier/conanfile.txt /classifier/conanfile.txt
 RUN mkdir /classifier/build/
 RUN cd /classifier/build/ && conan install --build=backward-cpp --build=libdwarf --build=libelf ..
@@ -29,12 +28,10 @@ RUN cd /classifier/build/ && cmake .. && cmake --build . -- -j 3
 # Part 2: Train Neural Network
 FROM python:3.10 AS trainer
 WORKDIR /training
-
 RUN pip install --upgrade pip poetry==1.2.0b1
 COPY ./pyproject.toml /training/pyproject.toml
 COPY ./poetry.lock /training/poetry.lock
 RUN poetry config virtualenvs.create false && poetry install --no-interaction
-
 RUN mkdir -p /classifier/data/mnist/ /classifier/data/models/simple/
 COPY ./tasks.py /tasks.py
 RUN --mount=type=cache,target=/root/.keras/datasets/ inv fetch-training-data
