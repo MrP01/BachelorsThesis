@@ -2,10 +2,8 @@
 #include "vector"
 
 class Network {
- private:
-  std::vector<Layer *> layers;
-
  public:
+  std::vector<Layer *> layers;
   seal::SEALContext *context = nullptr;
 
  public:

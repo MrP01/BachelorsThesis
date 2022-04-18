@@ -1,5 +1,4 @@
 # Part 1: C++ build process
-# FROM conanio/gcc11 AS cpp-build
 FROM alpine:edge AS base
 WORKDIR /classifier
 USER root

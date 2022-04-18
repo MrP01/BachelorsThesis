@@ -24,11 +24,10 @@ double evaluateNetworkOnTestData(int N = 300) {
     int prediction = neuralNet.interpretResult(result);
     if (i % 12 == 0)
       PLOG(plog::debug) << i << " / " << N << "\r" << std::flush;
-    if (i > N)
-      break;
     if (prediction == y_test[i])
       correct++;
-    i++;
+    if (++i >= N)
+      break;
   }
   PLOG(plog::debug);
   double accuracy = (double)correct / (double)N;
@@ -61,9 +60,26 @@ double evaluateNetworkOnEncryptedTestData(int N = 20) {
     assert(some_x_test_vector.size() == 784);
     encoder.encode(some_x_test_vector, scale, plain);
     encryptor.encrypt(plain, encrypted);
-    seal::Ciphertext result = neuralNet.predictEncrypted(encrypted, relinKeys, galoisKeys);
     seal::Decryptor decryptor(*neuralNet.context, keyGen.secret_key());
-    decryptor.decrypt(result, plain_result);
+
+    // seal::Ciphertext result = neuralNet.predictEncrypted(encrypted, relinKeys, galoisKeys);
+    seal::Evaluator evaluator(*neuralNet.context);
+    int index = 0;
+    Vector plain = some_x_test;
+    for (Layer *layer : neuralNet.layers) {
+      PLOG(plog::debug) << "Feeding ciphertext through layer " << index++;
+
+      plain = layer->feedforward(plain);
+      PLOG(plog::debug) << "[Intermediate result]: exact: " << plain;
+
+      layer->feedforwardEncrypted(encrypted, galoisKeys, relinKeys, encoder, evaluator);
+      decryptor.decrypt(encrypted, plain_result);
+      encoder.decode(plain_result, decoded_plain_result);
+      Vector result_from_encrypted_method = xt::adapt(decoded_plain_result, {plain.shape(0)});
+      PLOG(plog::debug) << "[Intermediate result]: decrypted: " << result_from_encrypted_method;
+    }
+
+    decryptor.decrypt(encrypted, plain_result);
     encoder.decode(plain_result, decoded_plain_result);
     Vector result_from_encrypted_method = xt::adapt(decoded_plain_result, {10});
     auto exact_result = neuralNet.predict(some_x_test);
@@ -93,7 +109,7 @@ int main() {
 
   neuralNet.init();
   neuralNet.loadDefaultModel();
-  evaluateNetworkOnTestData();
-  evaluateNetworkOnEncryptedTestData();
+  // evaluateNetworkOnTestData(10);
+  evaluateNetworkOnEncryptedTestData(1);
   return 0;
 }
