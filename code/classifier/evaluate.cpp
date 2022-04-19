@@ -77,9 +77,12 @@ double evaluateNetworkOnEncryptedTestData(int N = 20) {
       encoder.decode(plain_result, decoded_plain_result);
       Vector result_from_encrypted_method = xt::adapt(decoded_plain_result, {plain.shape(0)});
       PLOG(plog::debug) << "[Intermediate result]: decrypted: " << result_from_encrypted_method;
+      PLOG(plog::debug) << "--> diff: " << xt::sum(xt::square(result_from_encrypted_method - plain));
+      PLOG(plog::info) << "-------------------------------------------------------------------------------------------";
     }
+    seal::Ciphertext result = encrypted;
 
-    decryptor.decrypt(encrypted, plain_result);
+    decryptor.decrypt(result, plain_result);
     encoder.decode(plain_result, decoded_plain_result);
     Vector result_from_encrypted_method = xt::adapt(decoded_plain_result, {10});
     auto exact_result = neuralNet.predict(some_x_test);

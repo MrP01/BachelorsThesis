@@ -87,6 +87,7 @@ repos:
         name: pyright
         entry: pyright
         language: node
+        exclude: stuff/
         types:
           - python
         pass_filenames: false

@@ -41,6 +41,7 @@ def train():
     np.save(freeze / "b1.npy", b1)
     np.save(freeze / "w2.npy", w2)
     np.save(freeze / "b2.npy", b2)
+    return w1, b1, w2, b2
 
 
 if __name__ == "__main__":
