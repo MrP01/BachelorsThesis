@@ -51,7 +51,12 @@ void DenseLayer::matmulDiagonal(seal::Ciphertext &in_out, const Matrix &mat, sea
   if (in_dim != slots && in_dim * 2 > slots)
     throw std::runtime_error("too little slots for matmul implementation!");
 
+  Vector input;
+  if (debuggingDecryptor != nullptr)
+    input = printCiphertextValue(in_out, in_dim, debuggingDecryptor, encoder);
+
   if (slots != in_dim) {
+    PLOG(plog::debug) << "Adding the rotated input vector to itself...";
     seal::Ciphertext in_out_rot;
     evaluator.rotate_vector(in_out, -((int)in_dim), galois_keys, in_out_rot);
     evaluator.add_inplace(in_out, in_out_rot);
@@ -59,12 +64,15 @@ void DenseLayer::matmulDiagonal(seal::Ciphertext &in_out, const Matrix &mat, sea
 
   // diagonal method preparation: encode the matrix diagonals
   std::vector<seal::Plaintext> diagonals;
+  std::vector<Vector> unencoded_diagonals;
   diagonals.reserve(in_dim);
+  unencoded_diagonals.reserve(in_dim);
   for (auto offset = 0ULL; offset < in_dim; offset++) {
     std::vector<double> diag;
     diag.reserve(in_dim);
     for (auto j = 0ULL; j < in_dim; j++)
       diag.push_back(mat.at((j + offset) % in_dim, j % out_dim));
+    unencoded_diagonals.push_back(xt::adapt(diag));
     seal::Plaintext encoded;
     encoder.encode(diag, scale, encoded);
     if (current_multiplication_level != 0)
@@ -74,15 +82,26 @@ void DenseLayer::matmulDiagonal(seal::Ciphertext &in_out, const Matrix &mat, sea
 
   // perform the actual multiplication
   seal::Ciphertext sum = in_out;
+  Vector plain_sum = input;
   evaluator.multiply_plain_inplace(sum, diagonals[0]);
+  plain_sum *= unencoded_diagonals[0];
+  if (debuggingDecryptor != nullptr)
+    printCiphertextValue(sum, out_dim, debuggingDecryptor, encoder);
   for (auto offset = 1ULL; offset < in_dim; offset++) {
     seal::Ciphertext tmp;
+    Vector temp;
     evaluator.rotate_vector_inplace(in_out, 1, galois_keys);
     evaluator.multiply_plain(in_out, diagonals[offset], tmp);
+    temp = xt::roll(input, -offset) * unencoded_diagonals[offset];
     evaluator.add_inplace(sum, tmp);
-    if (debuggingDecryptor != nullptr)
-      printCiphertextValue(tmp, out_dim, debuggingDecryptor, encoder);
+    plain_sum += temp;
+    if (debuggingDecryptor != nullptr) {
+      PLOG(plog::debug) << xt::view(temp, xt::range(0, out_dim));
+      Vector ency = printCiphertextValue(tmp, out_dim, debuggingDecryptor, encoder);
+      PLOG(plog::debug) << "------> tmp-diff: " << xt::sum(xt::square(xt::view(temp, xt::range(0, out_dim)) - ency));
+    }
   }
+  PLOG(plog::debug) << plain_sum;
   in_out = sum;
   evaluator.rescale_to_next_inplace(in_out); // scale down once
 }

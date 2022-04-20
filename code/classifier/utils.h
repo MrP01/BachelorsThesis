@@ -30,7 +30,7 @@ inline xt::xarray<double> printCiphertextValue(
   decryptor->decrypt(x, plain);
   encoder.decode(plain, decoded_plain);
   xt::xarray<double> result = xt::adapt(decoded_plain, {n});
-  PLOG(plog::debug) << result;
+  PLOG(plog::debug) << "      " << result;
   return result;
 }
 

@@ -83,7 +83,7 @@ double evaluateNetworkOnEncryptedTestData(int N = 20) {
     Vector result_from_encrypted_method = printCiphertextValue(result, 10, &decryptor, encoder);
     auto exact_result = neuralNet.predict(some_x_test);
     int prediction = neuralNet.interpretResult(result_from_encrypted_method);
-    PLOG(plog::debug) << "For comparison, plain result: " << exact_result;
+    PLOG(plog::debug) << "Exact result:    " << exact_result;
     PLOG(plog::debug) << "Relative errors: " << xt::abs((result_from_encrypted_method - exact_result) / exact_result);
     auto mre = xt::mean(xt::abs(result_from_encrypted_method - exact_result) / xt::amax(xt::abs(exact_result)));
     PLOG(plog::debug) << "Mean max-relative error: " << mre;
