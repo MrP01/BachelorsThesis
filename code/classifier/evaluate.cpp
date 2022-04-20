@@ -109,6 +109,6 @@ int main() {
   neuralNet.init();
   neuralNet.loadDefaultModel();
   // evaluateNetworkOnTestData(10);
-  evaluateNetworkOnEncryptedTestData(1);
+  evaluateNetworkOnEncryptedTestData(5);
   return 0;
 }

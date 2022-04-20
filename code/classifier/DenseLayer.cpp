@@ -51,12 +51,12 @@ void DenseLayer::matmulDiagonal(seal::Ciphertext &in_out, const Matrix &mat, sea
   if (in_dim != slots && in_dim * 2 > slots)
     throw std::runtime_error("too little slots for matmul implementation!");
 
-  if (slots != in_dim) {
-    PLOG(plog::debug) << "Adding the rotated input vector to itself...";
-    seal::Ciphertext in_out_rot;
-    evaluator.rotate_vector(in_out, -((int)in_dim), galois_keys, in_out_rot);
-    evaluator.add_inplace(in_out, in_out_rot);
-  }
+  // if (slots != in_dim) {
+  //   PLOG(plog::debug) << "Adding the rotated input vector to itself...";
+  //   seal::Ciphertext in_out_rot;
+  //   evaluator.rotate_vector(in_out, -((int)in_dim), galois_keys, in_out_rot);
+  //   evaluator.add_inplace(in_out, in_out_rot);
+  // }
 
   Vector input;
   if (debuggingDecryptor != nullptr)
@@ -98,7 +98,7 @@ void DenseLayer::matmulDiagonal(seal::Ciphertext &in_out, const Matrix &mat, sea
       auto plainy = xt::view(xt::roll(input, -offset), xt::range(0, out_dim));
       PLOG(plog::debug) << plainy;
       Vector ency = printCiphertextValue(in_out, out_dim, debuggingDecryptor, encoder);
-      PLOG(plog::debug) << "------> rot-diff: " << xt::sum(xt::square(plainy - ency));
+      PLOG(plog::debug) << "------> rot-diff at offset " << offset << ": " << xt::sum(xt::square(plainy - ency));
     }
     evaluator.multiply_plain(in_out, diagonals[offset], tmp);
     temp = xt::roll(input, -offset) * unencoded_diagonals[offset];
@@ -107,7 +107,8 @@ void DenseLayer::matmulDiagonal(seal::Ciphertext &in_out, const Matrix &mat, sea
     if (debuggingDecryptor != nullptr) {
       PLOG(plog::debug) << xt::view(temp, xt::range(0, out_dim));
       Vector ency = printCiphertextValue(tmp, out_dim, debuggingDecryptor, encoder);
-      PLOG(plog::debug) << "------> tmp-diff: " << xt::sum(xt::square(xt::view(temp, xt::range(0, out_dim)) - ency));
+      PLOG(plog::debug) << "------> tmp-diff at offset " << offset << ": "
+                        << xt::sum(xt::square(xt::view(temp, xt::range(0, out_dim)) - ency));
     }
   }
   if (debuggingDecryptor != nullptr)
