@@ -53,9 +53,9 @@ export class SEALCommunicator extends BaseCommunicator {
     this.seal = await SEAL();
     // TODO: fetch the encryption parameters from the server (seclevel, bitSizes, polyModDegree, scale!)
     const schemeType = this.seal.SchemeType.ckks;
-    // const securityLevel = this.seal.SecurityLevel.tc128;
-    const securityLevel = this.seal.SecurityLevel.none;
-    const polyModulusDegree = 4096;
+    const securityLevel = this.seal.SecurityLevel.tc128;
+    // const securityLevel = this.seal.SecurityLevel.none;
+    const polyModulusDegree = 16384;
     const bitSizes = [60, 40, 40, 40, 40, 40, 60];
 
     const params = this.seal.EncryptionParameters(schemeType);
