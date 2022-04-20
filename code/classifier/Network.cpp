@@ -11,7 +11,7 @@ Network::Network() {}
 
 void Network::init() {
   seal::EncryptionParameters params(seal::scheme_type::ckks);
-  size_t poly_modulus_degree = 4096; // same as for node-seal
+  size_t poly_modulus_degree = 16384; // same as for node-seal
   params.set_poly_modulus_degree(poly_modulus_degree);
   std::vector<int> bit_sizes = {60, 40, 40, 40, 40, 40, 60};
   PLOG(plog::debug) << "sum(bit_sizes) = " << xt::sum(xt::adapt(bit_sizes, {bit_sizes.size()}))();

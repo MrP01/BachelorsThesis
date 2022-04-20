@@ -34,9 +34,9 @@ void addThreeInplace(seal::Ciphertext &in_out, seal::Ciphertext &a, seal::Cipher
   // (according to the documentation)
   double new_scale = pow(2.0, round(log2(in_out.scale())));
   PLOG(plog::debug) << "Three scales: " << in_out.scale() << " " << a.scale() << " " << b.scale() << " " << new_scale;
-  assert(abs(in_out.scale() - new_scale) < new_scale * 0.00001);
-  assert(abs(a.scale() - new_scale) < new_scale * 0.00001);
-  assert(abs(b.scale() - new_scale) < new_scale * 0.00001);
+  assert(abs(in_out.scale() - new_scale) < new_scale * 0.0001); // assert that the scales are close together
+  assert(abs(a.scale() - new_scale) < new_scale * 0.0001);
+  assert(abs(b.scale() - new_scale) < new_scale * 0.0001);
   in_out.scale() = new_scale;
   a.scale() = new_scale;
   b.scale() = new_scale;

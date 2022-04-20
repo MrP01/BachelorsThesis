@@ -51,16 +51,16 @@ void DenseLayer::matmulDiagonal(seal::Ciphertext &in_out, const Matrix &mat, sea
   if (in_dim != slots && in_dim * 2 > slots)
     throw std::runtime_error("too little slots for matmul implementation!");
 
-  Vector input;
-  if (debuggingDecryptor != nullptr)
-    input = printCiphertextValue(in_out, in_dim, debuggingDecryptor, encoder);
-
   if (slots != in_dim) {
     PLOG(plog::debug) << "Adding the rotated input vector to itself...";
     seal::Ciphertext in_out_rot;
     evaluator.rotate_vector(in_out, -((int)in_dim), galois_keys, in_out_rot);
     evaluator.add_inplace(in_out, in_out_rot);
   }
+
+  Vector input;
+  if (debuggingDecryptor != nullptr)
+    input = printCiphertextValue(in_out, in_dim, debuggingDecryptor, encoder);
 
   // diagonal method preparation: encode the matrix diagonals
   std::vector<seal::Plaintext> diagonals;
@@ -82,11 +82,14 @@ void DenseLayer::matmulDiagonal(seal::Ciphertext &in_out, const Matrix &mat, sea
 
   // perform the actual multiplication
   seal::Ciphertext sum = in_out;
-  Vector plain_sum = input;
+  Vector plain_sum = Vector(input);
   evaluator.multiply_plain_inplace(sum, diagonals[0]);
   plain_sum *= unencoded_diagonals[0];
-  if (debuggingDecryptor != nullptr)
+  if (debuggingDecryptor != nullptr) {
+    PLOG(plog::debug) << plain_sum;
     printCiphertextValue(sum, out_dim, debuggingDecryptor, encoder);
+  }
+  PLOG(plog::debug) << "--- now the following offsets:";
   for (auto offset = 1ULL; offset < in_dim; offset++) {
     seal::Ciphertext tmp;
     Vector temp;
@@ -107,7 +110,8 @@ void DenseLayer::matmulDiagonal(seal::Ciphertext &in_out, const Matrix &mat, sea
       PLOG(plog::debug) << "------> tmp-diff: " << xt::sum(xt::square(xt::view(temp, xt::range(0, out_dim)) - ency));
     }
   }
-  PLOG(plog::debug) << plain_sum;
+  if (debuggingDecryptor != nullptr)
+    PLOG(plog::debug) << plain_sum;
   in_out = sum;
   evaluator.rescale_to_next_inplace(in_out); // scale down once
 }
