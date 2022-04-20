@@ -20,7 +20,7 @@ void Network::init() {
   for (auto &&modulus : params.coeff_modulus())
     log_coeff_moduli.push_back(log2(modulus.value()));
   PLOG(plog::debug) << "log2(product(moduli)) = " << xt::sum(xt::adapt(log_coeff_moduli, {log_coeff_moduli.size()}))();
-  context = new seal::SEALContext(params, true, seal::sec_level_type::none);
+  context = new seal::SEALContext(params, true, seal::sec_level_type::tc128);
 }
 
 void Network::loadDefaultModel() {

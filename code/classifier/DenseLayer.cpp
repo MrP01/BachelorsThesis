@@ -91,6 +91,12 @@ void DenseLayer::matmulDiagonal(seal::Ciphertext &in_out, const Matrix &mat, sea
     seal::Ciphertext tmp;
     Vector temp;
     evaluator.rotate_vector_inplace(in_out, 1, galois_keys);
+    if (debuggingDecryptor != nullptr) {
+      auto plainy = xt::view(xt::roll(input, -offset), xt::range(0, out_dim));
+      PLOG(plog::debug) << plainy;
+      Vector ency = printCiphertextValue(in_out, out_dim, debuggingDecryptor, encoder);
+      PLOG(plog::debug) << "------> rot-diff: " << xt::sum(xt::square(plainy - ency));
+    }
     evaluator.multiply_plain(in_out, diagonals[offset], tmp);
     temp = xt::roll(input, -offset) * unencoded_diagonals[offset];
     evaluator.add_inplace(sum, tmp);
