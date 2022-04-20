@@ -43,8 +43,6 @@ double evaluateNetworkOnEncryptedTestData(int N = 20) {
   seal::RelinKeys relinKeys;
   seal::Plaintext plain;
   seal::Ciphertext encrypted;
-  seal::Plaintext plain_result;
-  std::vector<double> decoded_plain_result;
   keyGen.create_public_key(publicKey);
   keyGen.create_galois_keys(galoisKeys);
   keyGen.create_relin_keys(relinKeys);
@@ -72,22 +70,19 @@ double evaluateNetworkOnEncryptedTestData(int N = 20) {
       plain = layer->feedforward(plain);
       PLOG(plog::debug) << "[Intermediate result]: exact: " << plain;
 
+      if (layer == neuralNet.layers[2])
+        layer->debuggingDecryptor = &decryptor;
       layer->feedforwardEncrypted(encrypted, galoisKeys, relinKeys, encoder, evaluator);
-      decryptor.decrypt(encrypted, plain_result);
-      encoder.decode(plain_result, decoded_plain_result);
-      Vector result_from_encrypted_method = xt::adapt(decoded_plain_result, {plain.shape(0)});
-      PLOG(plog::debug) << "[Intermediate result]: decrypted: " << result_from_encrypted_method;
-      PLOG(plog::debug) << "--> diff: " << xt::sum(xt::square(result_from_encrypted_method - plain));
+      printCiphertextInternals("Intermediate result", encrypted, neuralNet.context);
+      Vector enc = printCiphertextValue(encrypted, plain.shape(0), &decryptor, encoder);
+      PLOG(plog::debug) << "--> diff: " << xt::sum(xt::square(enc - plain));
       PLOG(plog::info) << "-------------------------------------------------------------------------------------------";
     }
     seal::Ciphertext result = encrypted;
 
-    decryptor.decrypt(result, plain_result);
-    encoder.decode(plain_result, decoded_plain_result);
-    Vector result_from_encrypted_method = xt::adapt(decoded_plain_result, {10});
+    Vector result_from_encrypted_method = printCiphertextValue(result, 10, &decryptor, encoder);
     auto exact_result = neuralNet.predict(some_x_test);
     int prediction = neuralNet.interpretResult(result_from_encrypted_method);
-    PLOG(plog::debug) << "The encrypted method result: " << result_from_encrypted_method;
     PLOG(plog::debug) << "For comparison, plain result: " << exact_result;
     PLOG(plog::debug) << "Relative errors: " << xt::abs((result_from_encrypted_method - exact_result) / exact_result);
     auto mre = xt::mean(xt::abs(result_from_encrypted_method - exact_result) / xt::amax(xt::abs(exact_result)));
@@ -108,6 +103,7 @@ double evaluateNetworkOnEncryptedTestData(int N = 20) {
 int main() {
   static plog::ColorConsoleAppender<plog::FuncMessageFormatter> appender;
   plog::init(plog::debug, &appender);
+  xt::print_options::set_line_width(120);
   x_test.reshape({x_test.shape(0), 784});
 
   neuralNet.init();

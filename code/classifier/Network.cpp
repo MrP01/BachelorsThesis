@@ -29,7 +29,7 @@ void Network::loadDefaultModel() {
   auto w2 = xt::load_npy<float>("data/models/simple/w2.npy");
   auto b2 = xt::load_npy<float>("data/models/simple/b2.npy");
   addLayer(new DenseLayer(w1, b1));
-  addLayer(new ActivationLayer());
+  // addLayer(new ActivationLayer());
   addLayer(new DenseLayer(w2, b2));
 }
 

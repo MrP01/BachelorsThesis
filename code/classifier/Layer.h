@@ -1,9 +1,10 @@
 #pragma once
 #include "utils.h"
 
-#include "seal/ciphertext.h"
-#include "seal/ckks.h"
-#include "seal/evaluator.h"
+#include <seal/ciphertext.h>
+#include <seal/ckks.h>
+#include <seal/decryptor.h>
+#include <seal/evaluator.h>
 #include <xtensor/xarray.hpp>
 
 typedef xt::xarray<double> Matrix;
@@ -22,6 +23,7 @@ class Layer {
   virtual Vector feedforward(Vector x) = 0;
   virtual void feedforwardEncrypted(seal::Ciphertext &in_out, seal::GaloisKeys &galoisKeys, seal::RelinKeys relinKeys,
       seal::CKKSEncoder &ckksEncoder, seal::Evaluator &evaluator) = 0;
+  seal::Decryptor *debuggingDecryptor = nullptr;
 };
 
 class DenseLayer : public Layer {

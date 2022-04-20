@@ -2,7 +2,12 @@
 #include <nlohmann/json.hpp>
 #include <plog/Log.h>
 #include <seal/ciphertext.h>
+#include <seal/ckks.h>
+#include <seal/decryptor.h>
+#include <seal/plaintext.h>
 #include <string>
+#include <xtensor/xadapt.hpp>
+#include <xtensor/xio.hpp>
 
 inline void printCiphertextInternals(
     std::string name, seal::Ciphertext &x, seal::SEALContext *context, bool exact_scale = false) {
@@ -15,6 +20,18 @@ inline void printCiphertextInternals(
   message << "; parms chain index: " << context->get_context_data(x.parms_id())->chain_index()
           << "; size: " << x.size();
   PLOG(plog::debug) << message.str();
+}
+
+inline xt::xarray<double> printCiphertextValue(
+    seal::Ciphertext &x, size_t n, seal::Decryptor *decryptor, seal::CKKSEncoder &encoder) {
+  seal::Plaintext plain;
+  std::vector<double> decoded_plain;
+
+  decryptor->decrypt(x, plain);
+  encoder.decode(plain, decoded_plain);
+  xt::xarray<double> result = xt::adapt(decoded_plain, {n});
+  PLOG(plog::debug) << result;
+  return result;
 }
 
 inline auto msgpackRequestHandler(nlohmann::json (*handler)(nlohmann::json)) {

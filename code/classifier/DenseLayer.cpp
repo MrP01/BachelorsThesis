@@ -43,8 +43,8 @@ void DenseLayer::feedforwardEncrypted(seal::Ciphertext &in_out, seal::GaloisKeys
 }
 
 void DenseLayer::matmulDiagonal(seal::Ciphertext &in_out, const Matrix &mat, seal::GaloisKeys &galois_keys,
-    seal::CKKSEncoder &ckks_encoder, seal::Evaluator &evaluator) {
-  int slots = ckks_encoder.slot_count(); // = N/2 = 4096/2 = 2048
+    seal::CKKSEncoder &encoder, seal::Evaluator &evaluator) {
+  int slots = encoder.slot_count(); // = N/2 = 4096/2 = 2048
   size_t in_dim = mat.shape(0);
   size_t out_dim = mat.shape(1);
   assert(in_dim > out_dim);
@@ -57,7 +57,7 @@ void DenseLayer::matmulDiagonal(seal::Ciphertext &in_out, const Matrix &mat, sea
     evaluator.add_inplace(in_out, in_out_rot);
   }
 
-  // diagonal method preparation:
+  // diagonal method preparation: encode the matrix diagonals
   std::vector<seal::Plaintext> diagonals;
   diagonals.reserve(in_dim);
   for (auto offset = 0ULL; offset < in_dim; offset++) {
@@ -66,19 +66,22 @@ void DenseLayer::matmulDiagonal(seal::Ciphertext &in_out, const Matrix &mat, sea
     for (auto j = 0ULL; j < in_dim; j++)
       diag.push_back(mat.at((j + offset) % in_dim, j % out_dim));
     seal::Plaintext encoded;
-    ckks_encoder.encode(diag, scale, encoded);
+    encoder.encode(diag, scale, encoded);
     if (current_multiplication_level != 0)
       evaluator.mod_switch_to_inplace(encoded, in_out.parms_id());
     diagonals.push_back(encoded);
   }
 
+  // perform the actual multiplication
   seal::Ciphertext sum = in_out;
   evaluator.multiply_plain_inplace(sum, diagonals[0]);
-  for (auto i = 1ULL; i < in_dim; i++) {
+  for (auto offset = 1ULL; offset < in_dim; offset++) {
     seal::Ciphertext tmp;
     evaluator.rotate_vector_inplace(in_out, 1, galois_keys);
-    evaluator.multiply_plain(in_out, diagonals[i], tmp);
+    evaluator.multiply_plain(in_out, diagonals[offset], tmp);
     evaluator.add_inplace(sum, tmp);
+    if (debuggingDecryptor != nullptr)
+      printCiphertextValue(tmp, out_dim, debuggingDecryptor, encoder);
   }
   in_out = sum;
   evaluator.rescale_to_next_inplace(in_out); // scale down once
