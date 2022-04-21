@@ -40,7 +40,6 @@ RUN --mount=type=cache,target=/root/.keras/datasets/ python /training/network.py
 
 # Part 3: Tiny image only containing the binary, the model and training+test data
 FROM base
-COPY --from=cpp-build /root/.conan/data/ /root/.conan/data/
 COPY --from=cpp-build /classifier/build/bin/classifier /classifier/classifier
 COPY --from=trainer /classifier/data/models/ /classifier/data/models/
 COPY --from=trainer /classifier/data/mnist/x-test.npy /classifier/data/mnist/x-test.npy
