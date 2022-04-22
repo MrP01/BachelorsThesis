@@ -22,7 +22,7 @@ inline void printCiphertextInternals(
   PLOG(plog::debug) << message.str();
 }
 
-inline xt::xarray<double> printCiphertextValue(
+inline xt::xarray<double> getCiphertextValue(
     seal::Ciphertext &x, size_t n, seal::Decryptor *decryptor, seal::CKKSEncoder &encoder) {
   seal::Plaintext plain;
   std::vector<double> decoded_plain;
@@ -30,7 +30,7 @@ inline xt::xarray<double> printCiphertextValue(
   decryptor->decrypt(x, plain);
   encoder.decode(plain, decoded_plain);
   xt::xarray<double> result = xt::adapt(decoded_plain, {n});
-  PLOG(plog::debug) << "      " << result;
+  // PLOG(plog::debug) << "      " << result;
   return result;
 }
 

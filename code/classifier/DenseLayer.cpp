@@ -60,7 +60,7 @@ void DenseLayer::matmulDiagonal(seal::Ciphertext &in_out, const Matrix &mat, sea
 
   Vector input;
   if (debuggingDecryptor != nullptr)
-    input = printCiphertextValue(in_out, in_dim, debuggingDecryptor, encoder);
+    input = getCiphertextValue(in_out, in_dim, debuggingDecryptor, encoder);
 
   // diagonal method preparation: encode the matrix diagonals
   std::vector<seal::Plaintext> diagonals;
@@ -87,7 +87,7 @@ void DenseLayer::matmulDiagonal(seal::Ciphertext &in_out, const Matrix &mat, sea
   plain_sum *= unencoded_diagonals[0];
   if (debuggingDecryptor != nullptr) {
     PLOG(plog::debug) << plain_sum;
-    printCiphertextValue(sum, out_dim, debuggingDecryptor, encoder);
+    getCiphertextValue(sum, in_dim, debuggingDecryptor, encoder);
   }
   PLOG(plog::debug) << "--- now the following offsets:";
   for (auto offset = 1ULL; offset < in_dim; offset++) {
@@ -95,9 +95,9 @@ void DenseLayer::matmulDiagonal(seal::Ciphertext &in_out, const Matrix &mat, sea
     Vector temp;
     evaluator.rotate_vector_inplace(in_out, 1, galois_keys);
     if (debuggingDecryptor != nullptr) {
-      auto plainy = xt::view(xt::roll(input, -offset), xt::range(0, out_dim));
-      PLOG(plog::debug) << plainy;
-      Vector ency = printCiphertextValue(in_out, out_dim, debuggingDecryptor, encoder);
+      auto plainy = xt::view(xt::roll(input, -offset), xt::range(0, in_dim));
+      // PLOG(plog::debug) << plainy;
+      Vector ency = getCiphertextValue(in_out, in_dim, debuggingDecryptor, encoder);
       PLOG(plog::debug) << "------> rot-diff at offset " << offset << ": " << xt::sum(xt::square(plainy - ency));
     }
     evaluator.multiply_plain(in_out, diagonals[offset], tmp);
@@ -105,10 +105,10 @@ void DenseLayer::matmulDiagonal(seal::Ciphertext &in_out, const Matrix &mat, sea
     evaluator.add_inplace(sum, tmp);
     plain_sum += temp;
     if (debuggingDecryptor != nullptr) {
-      PLOG(plog::debug) << xt::view(temp, xt::range(0, out_dim));
-      Vector ency = printCiphertextValue(tmp, out_dim, debuggingDecryptor, encoder);
+      // PLOG(plog::debug) << xt::view(temp, xt::range(0, in_dim));
+      Vector ency = getCiphertextValue(tmp, in_dim, debuggingDecryptor, encoder);
       PLOG(plog::debug) << "------> tmp-diff at offset " << offset << ": "
-                        << xt::sum(xt::square(xt::view(temp, xt::range(0, out_dim)) - ency));
+                        << xt::sum(xt::square(xt::view(temp, xt::range(0, in_dim)) - ency));
     }
   }
   if (debuggingDecryptor != nullptr)

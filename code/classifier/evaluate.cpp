@@ -74,13 +74,13 @@ double evaluateNetworkOnEncryptedTestData(int N = 20) {
         layer->debuggingDecryptor = &decryptor;
       layer->feedforwardEncrypted(encrypted, galoisKeys, relinKeys, encoder, evaluator);
       printCiphertextInternals("Intermediate result", encrypted, neuralNet.context);
-      Vector enc = printCiphertextValue(encrypted, plain.shape(0), &decryptor, encoder);
+      Vector enc = getCiphertextValue(encrypted, plain.shape(0), &decryptor, encoder);
       PLOG(plog::debug) << "--> diff: " << xt::sum(xt::square(enc - plain));
       PLOG(plog::info) << "-------------------------------------------------------------------------------------------";
     }
     seal::Ciphertext result = encrypted;
 
-    Vector result_from_encrypted_method = printCiphertextValue(result, 10, &decryptor, encoder);
+    Vector result_from_encrypted_method = getCiphertextValue(result, 10, &decryptor, encoder);
     auto exact_result = neuralNet.predict(some_x_test);
     int prediction = neuralNet.interpretResult(result_from_encrypted_method);
     PLOG(plog::debug) << "Exact result:    " << exact_result;
@@ -100,15 +100,23 @@ double evaluateNetworkOnEncryptedTestData(int N = 20) {
   return (double)correct_predictions / N;
 }
 
-int main() {
+int main(int argc, char *argv[]) {
   static plog::ColorConsoleAppender<plog::FuncMessageFormatter> appender;
   plog::init(plog::debug, &appender);
   xt::print_options::set_line_width(120);
   x_test.reshape({x_test.shape(0), 784});
 
+  size_t evalPlain = 1, evalEnc = 1;
+  if (argc >= 2)
+    evalPlain = atol(argv[1]);
+  if (argc >= 3)
+    evalEnc = atol(argv[2]);
+
   neuralNet.init();
   neuralNet.loadDefaultModel();
-  // evaluateNetworkOnTestData(10);
-  evaluateNetworkOnEncryptedTestData(5);
+  if (evalPlain)
+    evaluateNetworkOnTestData(evalPlain);
+  if (evalEnc)
+    evaluateNetworkOnEncryptedTestData(evalEnc);
   return 0;
 }
