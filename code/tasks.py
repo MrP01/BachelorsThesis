@@ -6,6 +6,8 @@ import msgpack
 import numpy as np
 import requests
 
+from plots import plots
+
 TARGET = pathlib.Path(__file__).resolve().parent / "classifier" / "data" / "mnist"
 
 
@@ -50,3 +52,10 @@ def generate_secrets(ctx):
         f'-out {SECRETS_DIR / "fhe-classifier.cert"} '
         '-days 3650 -subj "/C=AT/ST=Styria/L=Springfield/O=IAIK/CN=www.example.com"'
     )
+
+
+namespace = invoke.Collection()
+namespace.add_task(fetch_training_data)
+namespace.add_task(send_test_request)
+namespace.add_task(generate_secrets)
+namespace.add_collection(invoke.Collection.from_module(plots))
