@@ -99,6 +99,7 @@ void DenseLayer::matmulDiagonal(seal::Ciphertext &in_out, const Matrix &mat, sea
       // PLOG(plog::debug) << plainy;
       Vector ency = getCiphertextValue(in_out, in_dim, debuggingDecryptor, encoder);
       PLOG(plog::debug) << "------> rot-diff at offset " << offset << ": " << xt::sum(xt::square(plainy - ency));
+      // std::cout << xt::sum(xt::square(plainy - ency)) << std::endl;
     }
     evaluator.multiply_plain(in_out, diagonals[offset], tmp);
     temp = xt::roll(input, -offset) * unencoded_diagonals[offset];

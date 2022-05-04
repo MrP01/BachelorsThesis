@@ -70,8 +70,7 @@ double evaluateNetworkOnEncryptedTestData(int N = 20) {
       plain = layer->feedforward(plain);
       PLOG(plog::debug) << "[Intermediate result]: exact: " << plain;
 
-      if (layer == neuralNet.layers[2])
-        layer->debuggingDecryptor = &decryptor;
+      layer->debuggingDecryptor = &decryptor;
       layer->feedforwardEncrypted(encrypted, galoisKeys, relinKeys, encoder, evaluator);
       printCiphertextInternals("Intermediate result", encrypted, neuralNet.context);
       Vector enc = getCiphertextValue(encrypted, plain.shape(0), &decryptor, encoder);
