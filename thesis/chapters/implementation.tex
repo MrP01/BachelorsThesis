@@ -18,7 +18,12 @@ To run the attached demo project, simply execute
   docker-compose build
   docker-compose up
 \end{minted}
-in the 'code' folder and point your browser to \url{https://locahost}.
+in the 'code' folder and point your browser to \url{https://localhost}.
+
+\subsection{Docker Multi-Stage Build}
+An enterprise-grade, scalable deployment is achieved by means of zero-dependency
+Alpine Linux images which contain nothing but compiled binaries and linked libraries.
+
 
 \section{The MNIST dataset}
 The MNIST dataset \parencite{mnist-original} contains X train and Y test images with corresponding labels.
@@ -73,7 +78,7 @@ working with SEAL ciphertexts:
         Can be adjusted with: \cpp{evaluator.rescale_inplace()}
   \item Encryption Parameters (retrieved using \cpp{x.parms_id()}) \\
         Can be adjusted with: \cpp{evaluator.mod_switch_to_inplace()}
-  \item Ciphertext Size (retrieved using \cpp{x.size()})
+  \item Ciphertext Size (retrieved using \cpp{x.size()}) \\
         Can be adjusted with: \cpp{evaluator.relinearize_inplace()}
 \end{enumerate}
 
