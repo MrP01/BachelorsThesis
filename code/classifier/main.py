@@ -8,6 +8,7 @@ w2 = np.load("data/models/simple/w2.npy")
 b2 = np.load("data/models/simple/b2.npy")
 x_test = np.load("data/mnist/x-test.npy")
 y_test = np.load("data/mnist/y-test.npy")
+W1 = np.pad(w1, ((0, 0), (0, 784 - 128)))
 
 softmax = lambda x: np.exp(x) / np.sum(np.exp(x))
 taylor_relu = lambda x: -0.006137 * x**3 + 0.090189 * x**2 + 0.59579 * x + 0.54738
@@ -38,6 +39,13 @@ def matmul_hybrid(matrix: np.ndarray, vector):
     return sum(sum_[n * out_dim : (n + 1) * out_dim] for n in range(in_dim // out_dim))
 
 
+def matmul_bsgs(matrix: np.ndarray, vector, t1, t2):
+    assert matrix.shape[0] == matrix.shape[1] == t1 * t2
+    diagonals = _matrix_diagonals(matrix)
+    diagp = lambda offset: np.roll(diagonals[offset], (offset // t1) * t1)
+    return sum(np.roll(sum(diagp(k * t1 + j) * np.roll(vector, -j) for j in range(t1)), -k * t1) for k in range(t2))
+
+
 def classify_plain(x):
     out_1 = taylor_relu(w1.T @ x + b1)
     out_2 = w2.T @ out_1 + b2
@@ -54,6 +62,8 @@ def classify_encrypted(x):
 def main():
     ctx.global_scale = 2**40
     ctx.generate_galois_keys()
+    v = np.random.randint(10, size=(784,))
+    assert matmul_bsgs(W1.T, v, 28, 28)[:128] == w1.T @ v
 
 
 if __name__ == "__main__":

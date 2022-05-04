@@ -469,6 +469,14 @@ optional = false
 python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*"
 
 [[package]]
+name = "tenseal"
+version = "0.3.11"
+description = "A Library for Homomorphic Encryption Operations on Tensors"
+category = "dev"
+optional = false
+python-versions = "*"
+
+[[package]]
 name = "tensorboard"
 version = "2.8.0"
 description = "TensorBoard lets you watch Tensors Flow"
@@ -643,7 +651,7 @@ testing = ["pytest (>=6)", "pytest-checkdocs (>=2.4)", "pytest-flake8", "pytest-
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.9, <3.11"
-content-hash = "67ca660163cd600aa0d9f6fcd19c4772dd011743480cffcdc457ee5469a3ac1d"
+content-hash = "c0ac8f7c2688091eef32df748f237e6a2cb4ae844235bbce5f3393fc1a8b7525"
 
 [metadata.files]
 absl-py = [
@@ -1080,6 +1088,20 @@ setuptools-scm = [
 six = [
     {file = "six-1.16.0-py2.py3-none-any.whl", hash = "sha256:8abb2f1d86890a2dfb989f9a77cfcfd3e47c2a354b01111771326f8aa26e0254"},
     {file = "six-1.16.0.tar.gz", hash = "sha256:1e61c37477a1626458e36f7b1d82aa5c9b094fa4802892072e49de9c60c4c926"},
+]
+tenseal = [
+    {file = "tenseal-0.3.11-cp310-cp310-macosx_11_0_x86_64.whl", hash = "sha256:94ae8ad7203f0604b0889d19d9ae21821962e79e33c7d75610243da1ffb7abef"},
+    {file = "tenseal-0.3.11-cp310-cp310-win_amd64.whl", hash = "sha256:12a9059ecc522ed60ced35e5bd5b467a435237e7c7ad1798bebb398372a744dc"},
+    {file = "tenseal-0.3.11-cp36-cp36m-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:757b2265707edab4cba304f900fa03e264110e5b743de7f947759e80c8ea6adb"},
+    {file = "tenseal-0.3.11-cp37-cp37m-macosx_11_0_x86_64.whl", hash = "sha256:ff1ec68c108f203b6b7f3304ee92e286f06046c98b74e7a4ad05effcc0e8ac7e"},
+    {file = "tenseal-0.3.11-cp37-cp37m-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:b76a6dbebec0c995fd593cf40e869768e6fe77911435ed70134936cda3265843"},
+    {file = "tenseal-0.3.11-cp37-cp37m-win_amd64.whl", hash = "sha256:0191017527ddc0871831e08a326b08fc25e25dc5500a42a776ae86aae456417d"},
+    {file = "tenseal-0.3.11-cp38-cp38-macosx_11_0_x86_64.whl", hash = "sha256:0062b6120ce14761ad65bbef4416b8efe7870a22bad66ec1e1959dbab9876a86"},
+    {file = "tenseal-0.3.11-cp38-cp38-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:d7d6553c165f023723ec05f452f6aa1ff6893b0645868e2c0d49a690a6ee9f3d"},
+    {file = "tenseal-0.3.11-cp38-cp38-win_amd64.whl", hash = "sha256:b3c7bd8facfb895b6db6a41ac1bac326dd368fd25bc10deb5c35e213094cc0c3"},
+    {file = "tenseal-0.3.11-cp39-cp39-macosx_11_0_x86_64.whl", hash = "sha256:ff2721c0682a92dcb4b8dcb5db4873405b69cbc6e7e0597a3ffa38b565f079cd"},
+    {file = "tenseal-0.3.11-cp39-cp39-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:4979e32ea8e3fa889df16b8944e2ab8dd8da085096f113b42ca1f651bcf2e3cf"},
+    {file = "tenseal-0.3.11-cp39-cp39-win_amd64.whl", hash = "sha256:d456a3b261b518f68850e102f2febe6a4d71e4f175278b32ae7502b4db55ac2d"},
 ]
 tensorboard = [
     {file = "tensorboard-2.8.0-py3-none-any.whl", hash = "sha256:65a338e4424e9079f2604923bdbe301792adce2ace1be68da6b3ddf005170def"},
