@@ -4,10 +4,10 @@
   "private": true,
   "homepage": "/app",
   "dependencies": {
-    "@materializecss/materialize": "^1.1.0-alpha",
+    "@materializecss/materialize": "^1.1.0",
     "@msgpack/msgpack": "^2.7.1",
     "@testing-library/jest-dom": "^5.16.4",
-    "@testing-library/react": "^13.1.1",
+    "@testing-library/react": "^13.2.0",
     "@testing-library/user-event": "^14.1.1",
     "crypto-browserify": "^3.12.0",
     "node-seal": "^5.0.0",
@@ -15,8 +15,8 @@
     "pica": "^9.0.1",
     "postcss-normalize": "^10.0.1",
     "prop-types": "^15.7.2",
-    "react": "^18.0.0",
-    "react-dom": "^18.0.0",
+    "react": "^18.1.0",
+    "react-dom": "^18.1.0",
     "react-materialize": "^3.9.9",
     "react-painter": "^0.4.0",
     "react-scripts": "^5.0.1"

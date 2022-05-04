@@ -19,7 +19,7 @@ msgpack = "^1.0.3"
 
 [tool.poetry.dev-dependencies]
 invoke = "^1.7.0"
-matplotlib = "^3.5.1"
+matplotlib = "^3.5.2"
 
 [tool.black]
 line-length = 120
