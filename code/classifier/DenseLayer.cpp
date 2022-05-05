@@ -4,11 +4,12 @@
 #include <plog/Log.h>
 #include <xtensor/xaxis_iterator.hpp>
 #include <xtensor/xmath.hpp>
-#include <xtensor/xpad.hpp>
+#include <xtensor/xview.hpp>
 
+#define MATMUL_IMPLEMENTATION "bsgs"
 int current_multiplication_level = 1;
-double scale = pow(2.0, 40);
-int bsgs_n1 = 28, bsgs_n2 = 28; // product = matrix size, minimal sum if possible
+static double scale = pow(2.0, 40);
+static std::map<size_t, std::pair<size_t, size_t>> preencoded_bsgs_parameters = {{784, {28, 28}}, {128, {16, 8}}};
 
 DenseLayer::DenseLayer(Matrix weights, Vector biases) : weights(weights), biases(biases) {}
 
@@ -30,11 +31,15 @@ void DenseLayer::feedforwardEncrypted(seal::Ciphertext &in_out, seal::GaloisKeys
   unsigned out_dimension = weights.shape(1);
   printCiphertextInternals("DenseLayer input", in_out, parent->context);
 
-  // Matrix zeroPaddedSquareWeights;
-  // if (in_dimension > out_dimension)
-  //   zeroPaddedSquareWeights = xt::pad(weights, {{0, in_dimension - out_dimension}, {0, 0}});
-  matmulDiagonal(in_out, weights, galoisKeys, encoder, evaluator);
-
+  if (MATMUL_IMPLEMENTATION == "bsgs") {
+    Matrix zeroPaddedWeights = xt::zeros<double>({in_dimension, in_dimension});
+    xt::view(zeroPaddedWeights, xt::range(0, out_dimension), xt::all()) = xt::transpose(weights);
+    std::cout << zeroPaddedWeights << std::endl;
+    assert(zeroPaddedWeights.shape(0) == zeroPaddedWeights.shape(1));
+    matmulBabystepGiantstep(in_out, zeroPaddedWeights, galoisKeys, encoder, evaluator);
+  } else if (MATMUL_IMPLEMENTATION == "hybrid") {
+    matmulHybrid(in_out, weights, galoisKeys, encoder, evaluator);
+  }
   seal::Plaintext plain_biases;
   encoder.encode(std::vector<double>(biases.begin(), biases.end()), in_out.parms_id(), in_out.scale(), plain_biases);
   evaluator.add_plain_inplace(in_out, plain_biases);
@@ -42,7 +47,7 @@ void DenseLayer::feedforwardEncrypted(seal::Ciphertext &in_out, seal::GaloisKeys
   printCiphertextInternals("DenseLayer output", in_out, parent->context);
 }
 
-void DenseLayer::matmulDiagonal(seal::Ciphertext &in_out, const Matrix &mat, seal::GaloisKeys &galois_keys,
+void DenseLayer::matmulHybrid(seal::Ciphertext &in_out, const Matrix &mat, seal::GaloisKeys &galois_keys,
     seal::CKKSEncoder &encoder, seal::Evaluator &evaluator) {
   int slots = encoder.slot_count(); // = N/2 = 4096/2 = 2048
   size_t in_dim = mat.shape(0);
@@ -96,17 +101,14 @@ void DenseLayer::matmulDiagonal(seal::Ciphertext &in_out, const Matrix &mat, sea
     evaluator.rotate_vector_inplace(in_out, 1, galois_keys);
     if (debuggingDecryptor != nullptr) {
       auto plainy = xt::view(xt::roll(input, -offset), xt::range(0, in_dim));
-      // PLOG(plog::debug) << plainy;
       Vector ency = getCiphertextValue(in_out, in_dim, debuggingDecryptor, encoder);
       PLOG(plog::debug) << "------> rot-diff at offset " << offset << ": " << xt::sum(xt::square(plainy - ency));
-      // std::cout << xt::sum(xt::square(plainy - ency)) << std::endl;
     }
     evaluator.multiply_plain(in_out, diagonals[offset], tmp);
     temp = xt::roll(input, -offset) * unencoded_diagonals[offset];
     evaluator.add_inplace(sum, tmp);
     plain_sum += temp;
     if (debuggingDecryptor != nullptr) {
-      // PLOG(plog::debug) << xt::view(temp, xt::range(0, in_dim));
       Vector ency = getCiphertextValue(tmp, in_dim, debuggingDecryptor, encoder);
       PLOG(plog::debug) << "------> tmp-diff at offset " << offset << ": "
                         << xt::sum(xt::square(xt::view(temp, xt::range(0, in_dim)) - ency));
@@ -118,15 +120,20 @@ void DenseLayer::matmulDiagonal(seal::Ciphertext &in_out, const Matrix &mat, sea
   evaluator.rescale_to_next_inplace(in_out); // scale down once
 }
 
-void DenseLayer::multiplyCKKSBabystepGiantstep(seal::Ciphertext &in_out, const Matrix &mat,
-    seal::GaloisKeys &galois_keys, seal::CKKSEncoder &ckks_encoder, seal::Evaluator &evaluator) {
+void DenseLayer::matmulBabystepGiantstep(seal::Ciphertext &in_out, const Matrix &mat, seal::GaloisKeys &galois_keys,
+    seal::CKKSEncoder &ckks_encoder, seal::Evaluator &evaluator) {
   int slots = ckks_encoder.slot_count(); // = N/2 = 4096/2 = 2048
-  size_t matrix_dim = mat.shape()[0];
+  assert(mat.shape(0) == mat.shape(1));
+  size_t matrix_dim = mat.shape(0);
   if (matrix_dim != slots && matrix_dim * 2 > slots)
     throw std::runtime_error("too little slots for matmul implementation!");
 
+  std::pair bsgs_parameters = preencoded_bsgs_parameters.at(matrix_dim);
+  // the product of the parameters = matrix size (t1 * t2 = t), minimal sum if possible for minimal rotation operations
+  int bsgs_n1 = bsgs_parameters.first, bsgs_n2 = bsgs_parameters.second;
   if (bsgs_n1 * bsgs_n2 != matrix_dim)
     throw std::runtime_error("wrong bsgs parameters");
+  PLOG(plog::debug) << "BSGS parameters: " << bsgs_n1 << ", " << bsgs_n2;
 
   // baby step giant step method preparation:
   std::vector<seal::Plaintext> matrix;
@@ -138,7 +145,6 @@ void DenseLayer::multiplyCKKSBabystepGiantstep(seal::Ciphertext &in_out, const M
 
     for (auto j = 0ULL; j < matrix_dim; j++)
       diag.push_back(mat.at(j, (i + j) % matrix_dim));
-    // rotate:
     if (k)
       std::rotate(diag.begin(), diag.begin() + diag.size() - k * bsgs_n1, diag.end());
 
@@ -189,4 +195,5 @@ void DenseLayer::multiplyCKKSBabystepGiantstep(seal::Ciphertext &in_out, const M
     }
   }
   in_out = outer_sum;
+  evaluator.rescale_to_next_inplace(in_out); // scale down once
 }

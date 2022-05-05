@@ -1,7 +1,7 @@
 [requires]
 xtensor/0.24.0
 nlohmann_json/3.10.5
-cpp-httplib/0.10.1
+cpp-httplib/0.10.6
 plog/1.1.5
 
 [generators]
