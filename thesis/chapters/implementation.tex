@@ -64,6 +64,54 @@ This 'flaw' can be mitigated by a simple zero-padding approach
 in order to make the matrix square, filling in zeros until
 the lower dimension reaches the higher one.
 
+\subsection{The Naive Method}
+Term by term, one can express a matrix-vector product as follows:
+$$\{M \vec{x}\}_i = \sum_{j=1}^{t} M_{ij} x_j$$
+
+\subsection{The Diagonal Method}
+For the following, define
+\newcommand{\rot}{\mathrm{rot}}
+\newcommand{\diag}{\mathrm{diag}}
+$$\rot_j: \R^t \mapsto \R^t, \; \{\rot_j(\vec{x})\}_i = x_{i + j}$$
+$$\diag_j: \R^{t \times t} \mapsto \R^t, \; \{\diag_j(M)\}_i = M_{i, (i+j)}$$
+with all indices $i, j \in \Z_t$ member of the cyclic quotient group $\Z_t := \Z / t \Z$ of all integers
+modulo $t$.
+
+\subsection{The Hybrid Method}
+\subsection{The Babystep-Giantstep Optimization}
+Since Galois rotations are the most computationally intensive operations in most cryptographic schemes used
+today \parencite{2021-pasta}, they take a large toll on the efficiency.
+In order to reduce the number of rotations required, one can make use of the \textit{Babystep-Giantstep}
+optimization as described in \cite{2018-faster-helib}, which works as follows:
+
+\begin{theorem}{Babystep-Giantstep Optimization}{bsgs}
+  Given a matrix $M \in \R^{t \times t}$ and a vector $\vec{x} \in \R^t$,
+  with $t = t_1 \cdot t_2$ split into two BSGS parameters $t_1, t_2 \in \N$ and
+  $$\diag'_i(M) = \rot_{-\lfloor i/t_1 \rfloor \cdot t_1}(\diag_i(M))$$,
+  one can express a matrix-vector multiplication as follows:
+
+  \begin{equation}
+    M \vec{x} = \sum_{k=0}^{t_2-1} \rot_{(kt_1)} \bigg(
+    \sum_{j=0}^{t_1-1} \diag'_{(kt_1+j)}(M) \cdot \rot_j(\vec{x})
+    \bigg)
+  \end{equation}
+
+  where $\cdot$ denotes an element-wise multiplication of two vectors.
+\end{theorem}
+
+
+\begin{proof}{Babystep-Giantstep Optimization}
+  \begin{align*}
+    \big\{M \vec{x}\big\}_i \overset{?}{=} \bigg\{\sum_{k=0}^{t_2-1} \rot_{(kt_1)} \big(
+    \sum_{j=0}^{t_1-1} \diag'_{(kt_1+j)}(M) \cdot \rot_j(\vec{x})
+    \big)\bigg\}_i = \sum_{k=0}^{t_2-1} a_{i + kt_1}
+  \end{align*}
+  with
+  $$a_i = \sum_{j=0}^{t_1-1} b_{ij} x_{i+j}$$
+  with
+  $$b_{ij} = 1$$
+\end{proof}
+
 \section{Polynomial Evaluation}
 From the implementation perspective, there are three properties to watch out for when
 working with SEAL ciphertexts:
