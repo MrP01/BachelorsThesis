@@ -69,6 +69,8 @@
 \newcommand{\academicdegree}[1]{\def\@academicdegree{#1}}
 \def\@degreeprogramme{Name of Degree Programme as in Curriculum (set with \texttt{\textbackslash degreeprogramme\{\}})}
 \newcommand{\curriculum}[1]{\def\@degreeprogramme{#1}}
+\def\@thesistitleimage{}
+\newcommand{\thesistitleimage}[1]{\def\@thesistitleimage{#1}}
 \def\@supervisortitle{Supervisor}
 \newcommand{\supervisortitle}[1]{\def\@supervisortitle{#1}}
 \def\@supervisor{%
@@ -139,6 +141,8 @@
     \vskip1.2cm
 
     {\bfseries\tugraz@titlefont\fontsize{16pt}{20pt}\selectfont \@thesistitle \par}
+    \vfill
+    \@thesistitleimage
     \vfill
 
     {\bfseries\tugraz@titlefont\fontsize{12pt}{14pt}\selectfont

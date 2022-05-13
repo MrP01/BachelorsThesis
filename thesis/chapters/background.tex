@@ -19,7 +19,9 @@ Polynom -> Vektor mit einer FFT
 Vektor -> Polynom mit einer IFFT
 
 \subsection{HE using RSA}
-With unpadded RSA, some arithmetic can be performed on the ciphertext - looking at the encrypted ciphertext $\mathcal{E}(m_1) = (m_1)^r \mod n$ of the message $m_1$ and $m_2$ respectively, the following holds:
+With unpadded RSA, some arithmetic can be performed on the ciphertext -
+looking at the encrypted ciphertext $\mathcal{E}(m_1) = (m_1)^r \mod n$
+of the message $m_1$ and $m_2$ respectively, the following holds:
 \begin{align}
   \mathcal{E}(m_1) \cdot \mathcal{E}(m_2)
    & = (m_1)^r (m_2)^r \mod n     \\
@@ -30,8 +32,10 @@ With unpadded RSA, some arithmetic can be performed on the ciphertext - looking 
 The encryption therefore partially fulfills the properties of ring homomorphism, which in general is defined as follows:
 
 \begin{definition}{Ring Homomorphism}{ring-homomorphism} ~
-  Given two rings $(R, +, \cdot)$ and $(S, \oplus, \otimes)$, we call a mapping $\varphi: R \rightarrow S$ a ring homomorphism when it satisfies the following conditions:
-  $$\forall a, b \in R: \varphi(a + b) = \varphi(a) \oplus \varphi(b) \wedge \varphi(a \cdot b) = \varphi(a) \otimes \varphi(b)$$
+  Given two rings $(R, +, \cdot)$ and $(S, \oplus, \otimes)$, we call a mapping $\varphi: R \rightarrow S$
+  a ring homomorphism when it satisfies the following conditions:
+  $$\forall a, b \in R: \varphi(a + b) = \varphi(a) \oplus \varphi(b) \wedge \varphi(a \cdot b) =
+    \varphi(a) \otimes \varphi(b)$$
 \end{definition}
 
 \subsection{Learning with Errors (LWE)}
@@ -46,18 +50,8 @@ how to get from LWE to RLWE
 The CKKS scheme allows us to perform approximate arithmetic on floating point numbers.
 
 \section{Machine Learning}
-As Shafi Goldwasser puts it, 'Machine Learning is somewhere in the intersection of Artificial Intelligence, Statistics and Theoretical Computer Science' \cite{goldwasserTalk2018}.
-
-\begin{figure}
-  \centering
-  \begin{tikzpicture}[thick]
-    % \node[draw=red, fill=red!30, fill opacity=0.5, minimum size=2cm, circle] (ref1);
-    \filldraw[fill=red,fill opacity=0.5] (0:2cm) node [midway, black] {Hallo} circle (22mm);
-    \filldraw[fill=green,fill opacity=0.5] (120:2cm) circle (22mm);
-    \filldraw[fill=blue,fill opacity=0.5] (-120:2cm) circle (22mm);
-  \end{tikzpicture}
-  \caption{Ah yes the caption}
-\end{figure}
+As Shafi Goldwasser puts it, 'Machine Learning is somewhere in the intersection of Artificial Intelligence,
+Statistics and Theoretical Computer Science' \cite{goldwasserTalk2018}.
 
 \subsection{Linear Regression?}
 \subsection{Gradient Descent?}
@@ -88,14 +82,8 @@ bibliography and citations with \texttt{biblatex} (\autoref{sec:bib}), and more.
 \label{sec:gloss}
 Symbols and acronyms are defined in the preamble, after loading the \texttt{glossaries} package, and used as follows.
 
-% \lipsum
-
 In this chapter, we introduce the necessary background on the \gls{aes}.
 We denote binary exclusive-or by \gls{xor}.
-
-\section{Citations}
-
-% \lipsum
 
 \label{sec:bib}
 This is an example of how to specify and cite
