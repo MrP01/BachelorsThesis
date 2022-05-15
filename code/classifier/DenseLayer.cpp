@@ -6,7 +6,7 @@
 #include <xtensor/xmath.hpp>
 #include <xtensor/xview.hpp>
 
-#define MATMUL_IMPLEMENTATION "bsgs"
+#define MATMUL_IMPLEMENTATION "hybrid"
 int current_multiplication_level = 1;
 static double scale = pow(2.0, 40);
 static std::map<size_t, std::pair<size_t, size_t>> preencoded_bsgs_parameters = {{784, {28, 28}}, {128, {16, 8}}};
@@ -86,6 +86,7 @@ void DenseLayer::matmulHybrid(seal::Ciphertext &in_out, const Matrix &mat, seal:
   }
 
   // perform the actual multiplication
+  seal::Ciphertext original_input = in_out; // makes a copy
   seal::Ciphertext sum = in_out;
   Vector plain_sum = Vector(input);
   evaluator.multiply_plain_inplace(sum, diagonals[0]);
@@ -98,9 +99,9 @@ void DenseLayer::matmulHybrid(seal::Ciphertext &in_out, const Matrix &mat, seal:
   for (auto offset = 1ULL; offset < in_dim; offset++) {
     seal::Ciphertext tmp;
     Vector temp;
-    evaluator.rotate_vector_inplace(in_out, 1, galois_keys);
+    evaluator.rotate_vector(original_input, offset, galois_keys, in_out);
     if (debuggingDecryptor != nullptr) {
-      auto plainy = xt::view(xt::roll(input, -offset), xt::range(0, in_dim));
+      auto plainy = xt::roll(input, -offset);
       Vector ency = getCiphertextValue(in_out, in_dim, debuggingDecryptor, encoder);
       PLOG(plog::debug) << "------> rot-diff at offset " << offset << ": " << xt::sum(xt::square(plainy - ency));
     }
@@ -110,8 +111,7 @@ void DenseLayer::matmulHybrid(seal::Ciphertext &in_out, const Matrix &mat, seal:
     plain_sum += temp;
     if (debuggingDecryptor != nullptr) {
       Vector ency = getCiphertextValue(tmp, in_dim, debuggingDecryptor, encoder);
-      PLOG(plog::debug) << "------> tmp-diff at offset " << offset << ": "
-                        << xt::sum(xt::square(xt::view(temp, xt::range(0, in_dim)) - ency));
+      PLOG(plog::debug) << "------> tmp-diff at offset " << offset << ": " << xt::sum(xt::square(temp - ency));
     }
   }
   if (debuggingDecryptor != nullptr)
