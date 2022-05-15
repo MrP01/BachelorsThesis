@@ -49,12 +49,34 @@ how to get from LWE to RLWE
 \subsection{The CKKS scheme}
 The CKKS scheme allows us to perform approximate arithmetic on floating point numbers.
 
+\pagebreak
 \section{Machine Learning}
-As Shafi Goldwasser puts it, 'Machine Learning is somewhere in the intersection of Artificial Intelligence,
-Statistics and Theoretical Computer Science' \cite{goldwasserTalk2018}.
+Undoubtedly one of the most prevalent concepts in todays computing world, \gls{ml} has shaped
+how computers think and how we interact with them significantly.
+As Shafi \name{Goldwasser} puts it, 'Machine Learning is somewhere in the intersection of Artificial Intelligence,
+Statistics and Theoretical Computer Science' \parencite{goldwasserTalk2018}.
 
-\subsection{Linear Regression?}
-\subsection{Gradient Descent?}
+Within the scope of this thesis, the basics of neural networks and associated learning methods shall be covered,
+limited to the category of supervised learning problems (as opposed to unsupervised learning problems).
+Supervised learning refers to the machine \textit{training} an algorithm to match some input data (features)
+with corresponding output data (targets), often related to pattern recognition.
+The trained algorithm can then be utilised to match fresh input data with a prediction of the targets.
+
+A popular subset of applications to \Gls{ml} are classification problems, predominantly image classification,
+which was not as easily possible before without a human eye due to the lack of computing power.
+Classification problems can be formulated quickly, the goal is to computationally categorize input data
+(for instance, images) into a predefined set of classes (for instance, cats and dogs).
+The primary concept behind Machine Learning is not at all new, linear regression
+was already employed by \name{Gauß} and \name{Legendre} in the early 19\textsuperscript{th} century;
+the term 'Neural Network' was first used by \name{McCulloch} and \name{Pitts} in 1943.
+Much media attention was earned in the 2000-2010 decade when larger image classification problem
+became feasible with the increasing computational power of modern computers,
+up until the advent of Deep Learning \parencite{bishop-pattern-recognition-and-ml}.
+
+\subsection{Linear Regression}
+Given an input vector $\vec{x} \in \R^n$, the goal of linear regression is to predict the value of a target $t \in \R$.
+
+\subsection{Gradient Descent}
 \subsection{The Backpropagation Algorithm}
 \subsection{Multi-Layered Neural Networks}
 Matrix -> Activation Function
@@ -66,6 +88,7 @@ Matrix -> Activation Function
 \end{itemize}
 
 \section{Post-Quantum Security}
+\subsection{Shor's Algorithm}
 
 \section{Demo}
 In this chapter, we provide some usage examples for
