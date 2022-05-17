@@ -1,12 +1,10 @@
 #include <csignal>
 #include <httplib.h>
-#include <iostream>
 #include <nlohmann/json.hpp>
 #include <plog/Appenders/ColorConsoleAppender.h>
 #include <plog/Formatters/FuncMessageFormatter.h>
 #include <plog/Log.h>
 #include <xtensor/xaxis_iterator.hpp>
-#include <xtensor/xio.hpp>
 #include <xtensor/xjson.hpp>
 #include <xtensor/xnpy.hpp>
 #include <xtensor/xview.hpp>
