@@ -18,6 +18,9 @@ Due to the inherent applications, this thesis will focus on the CKKS scheme to p
 on (complex-valued) floating point numbers and vectors.
 
 \subsection{Mathematical Foundation}
+The following discussion of the homomorphic encryption schemes requires some mathematical background that
+will (at least partially) be introduced here.
+
 \begin{definition}{Ring}{ring}
   A tuple $(R, +, \cdot)$ consisting of a set $R$, an addition operation $+$ and a multiplication operation $\cdot$
   is referred to as a ring, given that it satisfies the following \textit{ring axioms}:
@@ -49,9 +52,36 @@ An example of a ring would be the integers modulo $t$: $\Z / t \Z$, sometimes al
   where $$\overline{x}_t = \{x \equiv 0 \mod t \,|\, x \in \Z\}$$.
 \end{definition}
 
+\subsection{Cyclotomic Polynomials}
+Due to their interesting structure and efficient computability, in the following schemes, polynomials are
+chosen as representations of plaintexts and ciphertexts.
+An important concept is that of cyclotomic ('circle-cutting') polynomials, which we will discuss
+in a bit more detail here.
+
+An important polynomial is $p: \C \mapsto \C, \; p(x) = x^n - 1$.
+Its roots, found by solving $p(x) = 0$ for $x$, yielding $x^n = 1 \leftrightarrow x_k = \sqrt[n]{1}$
+are referred to as the $n$-th roots of unity.
+
+\begin{definition}{The $n$-th roots of unity}{nth-roots-of-unity}
+  For some integer $n \in \N$, the $n$ complex roots $x_1, x_2, ..., x_n \in \C$ of unity
+  can be found as $$x_k = e^{2\pi i \frac{k}{n}} \quad k \in \{1, 2, ..., n\}$$
+  with $i$ the imaginary unit.
+  Using Euler's identity, their real and imaginary components can be explicitly found as
+  $x_k = \cos(2\pi \frac{k}{n}) + i \sin(2\pi \frac{k}{n})$.
+\end{definition}
+Due to the fact that for any $k, l \in \Z$, their product $x_k \cdot x_l$ is also a root of unity, and
+$x_{k+jn} = x_k \; \forall j \in \Z$, they clearly comprise a cyclic Abelian group over the complex numbers
+$\C$ under multiplication with (for instance) the first root $x_1 = e^{2\pi i \frac{1}{n}}$ as its generator.
+
+An $n$-th root of unity $y$ is referred to as \textit{primitive}, iff\footnote{if and only if}
+there exists no $m < n$ for which that root $y$ is also an $m$-th root of unity, i.e. $y^m \neq 1$.
+
+Given the $n$-th roots of unity, we can define the $n$-th cyclotomic polynomial as
+$$\Phi(x) = ...$$.
+
 \subsection{HE using RSA}
 In order to illustrate the basic idea behind \Gls{he}, without distancing ourselves too far
-from the original goal of introducing basic \gls{he} operations, this short section aims to motivate
+from the original goal of introducing basic \gls{he} operations used in practice, this short section aims to motivate
 the definition of ring homomorphisms (\autoref{def:ring-homomorphism}) behind a cryptographic background.
 
 With unpadded RSA, some arithmetic can be performed on the ciphertext - % TODO: find RSA citation
@@ -73,11 +103,6 @@ which in general terms is defined as follows:
   $$\forall a, b \in R: \varphi(a + b) = \varphi(a) \oplus \varphi(b) \wedge \varphi(a \cdot b) =
     \varphi(a) \otimes \varphi(b)$$
 \end{definition}
-
-\subsection{Cyclotomic Polynomials}
-The following discussion of the homomorphic encryption schemes requires some mathematical basics.
-
-\paragraph{The $n$-th roots of unity}
 
 \subsection{Learning with Errors (LWE)}
 
