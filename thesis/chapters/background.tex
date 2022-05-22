@@ -3,9 +3,9 @@
 
 \section{Basics of Fully Homomorphic Encryption}
 \gls{he} makes it possible to operate on data without knowing it.
-One can distinguish three flavors of it, Partial-, Semi- and \gls{fhe}.
+One can distinguish three flavors of it, Partial-, Somewhat- and \gls{fhe}.
 
-% Fully Homomorphic Encryption (FHE):
+For \Gls{fhe}, there exist a few schemes in use today with existing implementations.
 \begin{itemize}
   \item Brakerski/Fan-Vercauteren (BFV) scheme for integer arithmetic
   \item Brakerski-Gentry-Vaikuntanathan (BGV) scheme for integer arithmetic
@@ -13,30 +13,71 @@ One can distinguish three flavors of it, Partial-, Semi- and \gls{fhe}.
   \item Ducas-Micciancio (FHEW) and Chillotti-Gama-Georgieva-Izabachene (TFHE) schemes for Boolean circuit evaluation
 \end{itemize}
 
-\subsection{Packing}
-FFT in CKKS!
-Polynom -> Vektor mit einer FFT
-Vektor -> Polynom mit einer IFFT
+We will first introduce the BFV scheme (integer arithmetic) as it represents a fundamental building block behind CKKS.
+Due to the inherent applications, this thesis will focus on the CKKS scheme to perform homomorphic operations
+on (complex-valued) floating point numbers and vectors.
+
+\subsection{Mathematical Foundation}
+\begin{definition}{Ring}{ring}
+  A tuple $(R, +, \cdot)$ consisting of a set $R$, an addition operation $+$ and a multiplication operation $\cdot$
+  is referred to as a ring, given that it satisfies the following \textit{ring axioms}:
+  \begin{itemize}
+    \item Addition is commutative: $a + b = b + a \quad\forall a, b \in R$.
+    \item Addition is associative: $(a + b) + c = a + (b + c) \quad\forall a, b, c \in R$.
+    \item There exists an element $0 \in R$ such that $a + 0 = a \quad\forall a \in R$.
+    \item An additive inverse $-a$ of each element $a$ in $R$ exists, such that $a + (-a) = 0$.
+    \item Multiplication is associative: $(a \cdot b) \cdot c = a \cdot (b \cdot c) \quad\forall a, b, c \in R$.
+    \item There exists an element $1 \in R$, referred to as the identity element, or multiplicative identity of $R$,
+          such that $a \cdot 1 = a \quad\forall a \in R$.
+    \item Multiplication $\cdot$ is distributive w.r.t. addition $+$, \\
+          i.e. $a \cdot (b+c) = (a \cdot b) + (a \cdot c) \quad\forall a, b, c \in R$ from the left and \\
+          i.e. $(b+c) \cdot a = (b \cdot a) + (c \cdot a) \quad\forall a, b, c \in R$ from the right.
+  \end{itemize}
+  Where the first 4 properties can be summarised as $(R, +)$ forming an Abelian group.
+  If multiplication is additionally commutative, we refer to the ring as commutative:
+  \begin{itemize}
+    \item Multiplication is commutative: $a \cdot b = b \cdot a \quad\forall a, b \in R$.
+  \end{itemize}
+\end{definition}
+Acting as a logical extension of a group, a ring can be considered the intermediary step towards a field
+(which also defines subtraction and division).
+An example of a ring would be the integers modulo $t$: $\Z / t \Z$, sometimes also denoted as $\Z_t$.
+
+\begin{definition}{Integers modulo $t$: $\Z / t \Z$}{integers-modulo-t}
+  Using equivalence classes $\overline{x}_t$ modulo $t$, define the commutative ring of integers modulo $t$ as
+  $$\Z / t \Z = \{\overline{x}_t \,|\, x \in \Z, 0 \leq x < t\}$$
+  where $$\overline{x}_t = \{x \equiv 0 \mod t \,|\, x \in \Z\}$$.
+\end{definition}
 
 \subsection{HE using RSA}
-With unpadded RSA, some arithmetic can be performed on the ciphertext -
+In order to illustrate the basic idea behind \Gls{he}, without distancing ourselves too far
+from the original goal of introducing basic \gls{he} operations, this short section aims to motivate
+the definition of ring homomorphisms (\autoref{def:ring-homomorphism}) behind a cryptographic background.
+
+With unpadded RSA, some arithmetic can be performed on the ciphertext - % TODO: find RSA citation
 looking at the encrypted ciphertext $\mathcal{E}(m_1) = (m_1)^r \mod n$
 of the message $m_1$ and $m_2$ respectively, the following holds:
 \begin{align}
   \mathcal{E}(m_1) \cdot \mathcal{E}(m_2)
-   & = (m_1)^r (m_2)^r \mod n     \\
-   & = (m_1 m_2)^r \mod n         \\
-   & = \mathcal{E}(m_1 \cdot m_2)
+   & \equiv (m_1)^r (m_2)^r \mod n     \\
+   & \equiv (m_1 m_2)^r \mod n         \\
+   & \equiv \mathcal{E}(m_1 \cdot m_2)
 \end{align}
 
-The encryption therefore partially fulfills the properties of ring homomorphism, which in general is defined as follows:
+The encryption therefore partially fulfills the properties of a ring homomorphism,
+which in general terms is defined as follows:
 
-\begin{definition}{Ring Homomorphism}{ring-homomorphism} ~
-  Given two rings $(R, +, \cdot)$ and $(S, \oplus, \otimes)$, we call a mapping $\varphi: R \rightarrow S$
+\begin{definition}{Ring Homomorphism}{ring-homomorphism}
+  Given two \hyperref[def:ring]{rings} $(R, +, \cdot)$ and $(S, \oplus, \otimes)$, we call a mapping $\varphi: R \rightarrow S$
   a ring homomorphism when it satisfies the following conditions:
   $$\forall a, b \in R: \varphi(a + b) = \varphi(a) \oplus \varphi(b) \wedge \varphi(a \cdot b) =
     \varphi(a) \otimes \varphi(b)$$
 \end{definition}
+
+\subsection{Cyclotomic Polynomials}
+The following discussion of the homomorphic encryption schemes requires some mathematical basics.
+
+\paragraph{The $n$-th roots of unity}
 
 \subsection{Learning with Errors (LWE)}
 
@@ -48,6 +89,21 @@ how to get from LWE to RLWE
 \subsection{The BFV scheme}
 \subsection{The CKKS scheme}
 The CKKS scheme allows us to perform approximate arithmetic on floating point numbers.
+Essentially, the idea is to extend BFV which allows us to operate on vectors $\vec{y} \in \Z_t^n$,
+by an embedding approach that allows us to encode a (complex) floating point number vector $\vec{x} \in \R^n (\C^n)$
+as an integer vector. A na\"ive approach would be to use a fixed-point embedding:
+\newcommand{\embed}{\mathrm{embed}}
+$$\embed(\vec{x}) = \vec{x} \cdot F$$
+with $F \in \Z$. In decimal form, for instance with $F = 1000$, we could effectively encode
+three decimal places of the original vector $\vec{x}$.
+% ... TODO: scale explodes, confer Roman's PETS lecture -> motivation for CKKS.
+
+% \subsubsection{Packing}
+% FFT in CKKS!
+% (Polynom -> Vektor) mit einer FFT
+% (Vektor -> Polynom) mit einer IFFT
+
+\textit{Microsoft SEAL} implements the scheme, enabled using \cpp{seal::scheme_type::ckks}.
 
 \pagebreak
 \section{Machine Learning}

@@ -58,8 +58,10 @@ as described by \textcite{2018-gazelle} for (square) matrices.
 For the following, define
 \newcommand{\rot}{\mathrm{rot}}
 \newcommand{\diag}{\mathrm{diag}}
-$$\rot_j: \R^t \mapsto \R^t, \; \{\rot_j(\vec{x})\}_i = x_{i + j}$$
-$$\diag_j: \R^{t \times t} \mapsto \R^t, \; \{\diag_j(M)\}_i = M_{i, (i+j)}$$
+\begin{align}
+  \rot_j: \R^t \mapsto \R^t,             & \; \{\rot_j(\vec{x})\}_i = x_{i + j} \label{eq:rot-definition} \\
+  \diag_j: \R^{t \times t} \mapsto \R^t, & \; \{\diag_j(M)\}_i = M_{i, (i+j)} \label{eq:diag-definition}
+\end{align}
 with all indices $i, j \in \Z_t$ member of the cyclic quotient group $\Z_t := \Z / t \Z$ of all integers
 modulo $t$, meaning that overflowing indices simply wrap around again starting at index $0$ to simplify notation.
 For the sake of compactness, we stick to this notation for the rest of this section.
@@ -72,6 +74,7 @@ For the sake of compactness, we stick to this notation for the rest of this sect
 \end{figure}
 
 \subsection{Adapting to non-square matrices}
+\label{subsec:non-square-matrices}
 The weight matrices in the given classification setting
 are by no means square, on the contrary their output dimension tends
 to be much lower than the input dimension as the goal is to reduce it from
@@ -113,8 +116,47 @@ would be to
 \end{enumerate}
 
 \subsection{The Diagonal Method}
+\begin{definition}{Diagonal Method}{diagonal-method}
+  Given a matrix $M \in \R^{t \times t}$ and a vector $\vec{x} \in \R^t$,
+  the dot product between the two can be expressed as
+  \begin{equation}
+    M \vec{x} = \sum_{i=0}^t \diag_i(M) rot_i(\vec{x})
+  \end{equation}
+\end{definition}
 
 \subsection{The Hybrid Method}
+To further extend the previous matrix multiplication method to solve the problem
+(cf. \autoref{subsec:non-square-matrices}), it is first necessary to extend the definition of the $\diag$ operator
+to non-square matrices $M \in \R^{s \times t}$.
+For the following, extending the above definition:
+$$\diag_j: \R^{s \times t} \mapsto \R^t, \; \{\diag_j(M)\}_i = M_{i, (i+j)}$$
+
+To exemplarily describe an implementation of an \gls{he} algorithm, we break down the following
+matrix multiplication using the method described above.
+\begin{minted}{cpp}
+void DenseLayer::matmulHybrid(seal::Ciphertext &in_out, const Matrix &mat, seal::GaloisKeys &galois_keys,
+    seal::CKKSEncoder &encoder, seal::Evaluator &evaluator) {
+  size_t in_dim = mat.shape(0);
+  size_t out_dim = mat.shape(1);
+
+  // diagonal method preparation
+  std::vector<seal::Plaintext> diagonals = encodeMatrixDiagonals(mat, encoder);
+
+  // perform the actual multiplication
+  seal::Ciphertext original_input = in_out; // makes a copy
+  seal::Ciphertext sum = in_out; // makes another copy
+  evaluator.multiply_plain_inplace(sum, diagonals[0]);
+  for (auto offset = 1ULL; offset < in_dim; offset++) {
+    seal::Ciphertext tmp;
+    evaluator.rotate_vector(original_input, offset, galois_keys, in_out);
+    evaluator.multiply_plain(in_out, diagonals[offset], tmp);
+    evaluator.add_inplace(sum, tmp);
+  }
+  in_out = sum;
+  evaluator.rescale_to_next_inplace(in_out); // scale down once
+}
+\end{minted}
+
 \subsection{The Babystep-Giantstep Optimization}
 Since Galois rotations are the most computationally intensive operations in most cryptographic schemes used
 today \parencite{2021-pasta}, they take a large toll on the efficiency.
