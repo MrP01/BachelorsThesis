@@ -13,12 +13,12 @@ style = ["github://MrP01/lint-me-now/nitpick-base-style.toml", "github://MrP01/l
 
 [tool.poetry.dependencies]
 python = "^3.9, <3.11"
-numpy = "^1.22.3"
-tensorflow = "^2.8.0"
+numpy = "^1.22.4"
+tensorflow = "^2.9.0"
 msgpack = "^1.0.3"
 
 [tool.poetry.group.dev.dependencies]
-invoke = "^1.7.0"
+invoke = "^1.7.1"
 matplotlib = "^3.5.2"
 tenseal = "^0.3.11"
 
