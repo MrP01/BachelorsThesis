@@ -46,38 +46,79 @@ Acting as a logical extension of a group, a ring can be considered the intermedi
 (which also defines subtraction and division).
 An example of a ring would be the integers modulo $t$: $\Z / t \Z$, sometimes also denoted as $\Z_t$.
 
-\begin{definition}{Integers modulo $t$: $\Z / t \Z$}{integers-modulo-t}
-  Using equivalence classes $\overline{x}_t$ modulo $t$, define the commutative quotient ring of integers modulo $t$ as
+\begin{definition}{Ring of Integers Modulo $t$: $\Z / t \Z$}{integers-modulo-t}
+  Using equivalence classes $\overline{x}_t$ modulo $t$ referred to as congruence classes,
+  define the commutative quotient ring of integers modulo $t$ as
   $$\Z / t \Z = \{\overline{x}_t \,|\, x \in \Z, 0 \leq x < t\}$$
-  where $$\overline{x}_t = \{x \equiv 0 \mod t \,|\, x \in \Z\}$$.
+  where $t \Z \triangleleft \Z$ denotes the $t$\textsuperscript{th} coset\footnote{
+    from the left and from the right, therefore $t \Z$ is called a normal subgroup of $\Z$
+  } of the integers and
+  $$\overline{x}_t = \{y \equiv x \mod t \,|\, y \in \Z\}$$
+  is the set of all multiples of $t$ with remainder $x$.
 \end{definition}
 
+\begin{definition}{Polynomial Ring over $\Z$}{poly-ring}
+  On the set of all complex-valued polynomials with integer coefficients (a function space)
+  $$\Z[X] = \big\{p: \C \mapsto \C \,, p(X) = \sum_{k=0}^\infty a_k X^k, a_k \in \Z \;\forall k \geq 0\big\},$$
+  we can define a commutative ring $(\Z[X], +, \cdot)$ equipped with the
+  standard addition $+$ and multiplication $\cdot$ operations (as an extension over the field $\C$)
+  of polynomials.
+
+  \begin{itemize}
+    \item In their coefficient representations $\vec{p} = \{p_0, p_1, p_2, ...\}$ and $\vec{q} = \{q_0, q_1, q_2, ...\}$,
+          an addition of two polynomials $p, q \in \Z[X]$ is equivalent to the addition of their coefficients
+          \begin{align*}
+            (p + q)(X) & = \sum_{k=0}^\infty p_k X^k + \sum_{k=0}^\infty q_k X^k = \sum_{k=0}^\infty (p_k + q_k) X^k \\
+                       & = \langle (\vec{p} + \vec{q}), \{X^0, X^1, X^2, ...\}^T \rangle
+          \end{align*}
+          which indeed satisfies the additive \hyperref[def:ring]{ring axioms}
+          due to the existing structure of the underlying field $\C$.
+    \item The multiplication operation can be defined using a discrete convolution of the coefficient vectors
+          $$r(X) = (p \cdot q)(X) = (\sum_{k=0}^\infty p_k X^k) \cdot (\sum_{l=0}^\infty q_l X^l)
+            = \sum_{k=0}^\infty \sum_{l=0}^\infty p_k q_l X^{k+l}
+            = \sum_{k=0}^\infty r_k X^k$$
+          with the arising coefficients $\{r_k\}$ determined by the discrete convolution
+          $$r_k = \sum_{l=0}^k p_l q_{k-l} \;\Leftrightarrow\; \vec{r} = \vec{p} * \vec{q}$$
+          in this context also referred to as the \name{Cauchy}-product. Therefore,
+          $$(p \cdot q)(X) = \langle (\vec{p} * \vec{q}), \{X^0, X^1, X^2, ...\}^T \rangle.$$
+          Again, this generally applicable approach satisfies the multiplicative \hyperref[def:ring]{ring axioms}
+          and even satisfies commutativity due to the existing structure of the underlying field $\C$
+          and the symmetry of convolutions.
+  \end{itemize}
+  Where $\langle \cdot, \cdot \rangle$ denotes the dot (scalar) product between two vectors.
+\end{definition}
+
+\begin{corollary}{Polynomials Modulo an Irreducible Form}{polys-mod}
+  Given an irreducible polynomial $\phi(x) \in P$, one can construct the interesting quotient group ...
+\end{corollary}
+
 \subsection{Cyclotomic Polynomials}
-Due to their interesting structure and efficient computability, in the following schemes, polynomials are
+Due to their interesting structure and efficient computability, in the following schemes,
+polynomials modulo an irreducible form (\autoref{corollary:polys-mod}) are
 chosen as representations of plaintexts and ciphertexts.
 An important concept is that of cyclotomic ('circle-cutting') polynomials, which we will discuss
 in a bit more detail here.
 
-An important polynomial is $p: \C \mapsto \C, \; p(x) = x^n - 1$.
+An important polynomial is $$p: \C \mapsto \C, \; p(x) = x^n - 1$$.
 Its roots, found by solving $p(x) = 0$ for $x$, yielding $x^n = 1 \leftrightarrow x_k = \sqrt[n]{1}$
-are referred to as the $n$-th roots of unity.
+are referred to as the $n$\textsuperscript{th} roots of unity.
 
-\begin{definition}{The $n$-th roots of unity}{nth-roots-of-unity}
+\begin{definition}{The $n$\textsuperscript{th} roots of unity}{nth-roots-of-unity}
   For some integer $n \in \N$, the $n$ complex roots $x_1, x_2, ..., x_n \in \C$ of unity
   can be found as $$x_k = e^{2\pi i \frac{k}{n}} \quad k \in \{1, 2, ..., n\}$$
   with $i$ the imaginary unit.
-  Using Euler's identity, their real and imaginary components can be explicitly found as
+  Using \name{Euler}'s identity, their real and imaginary components can be explicitly found as
   $x_k = \cos(2\pi \frac{k}{n}) + i \sin(2\pi \frac{k}{n})$.
 \end{definition}
 Due to the fact that for any $k, l \in \Z$, their product $x_k \cdot x_l$ is also a root of unity, and
 $x_{k+jn} = x_k \; \forall j \in \Z$, they clearly comprise a cyclic Abelian group over the complex numbers
 $\C$ under multiplication with (for instance) the first root $x_1 = e^{2\pi i \frac{1}{n}}$ as its generator.
 
-An $n$-th root of unity $y$ is referred to as \textit{primitive}, iff\footnote{if and only if}
-there exists no $m < n$ for which that root $y$ is also an $m$-th root of unity, i.e. $y^m \neq 1$.
+An $n$\textsuperscript{th} root of unity $y$ is referred to as \textit{primitive}, iff\footnote{if and only if}
+there exists no $m < n$ for which that root $y$ is also an $m$\textsuperscript{th} root of unity, i.e. $y^m \neq 1$.
 
 \begin{definition}{Cyclotomic Polynomial}{cyclotomic-poly}
-  Given the $n$-th roots of unity $\{x_k\}$, we can define the $n$-th cyclotomic polynomial as
+  Given the $n$\textsuperscript{th} roots of unity $\{x_k\}$, we can define the $n$\textsuperscript{th} cyclotomic polynomial as
   $$\Phi(x) = \prod_{k=1}^{\varphi(n)} (x - x_k)$$
   with $\varphi(n)$ denoting Euler's totient function which counts the
   natural numbers $m$ less than $n$ who do not share a common divisor $\neq 1$, i.e. $\gcd(m, n) = 1$.
