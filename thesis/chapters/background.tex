@@ -47,7 +47,7 @@ Acting as a logical extension of a group, a ring can be considered the intermedi
 An example of a ring would be the integers modulo $t$: $\Z / t \Z$, sometimes also denoted as $\Z_t$.
 
 \begin{definition}{Integers modulo $t$: $\Z / t \Z$}{integers-modulo-t}
-  Using equivalence classes $\overline{x}_t$ modulo $t$, define the commutative ring of integers modulo $t$ as
+  Using equivalence classes $\overline{x}_t$ modulo $t$, define the commutative quotient ring of integers modulo $t$ as
   $$\Z / t \Z = \{\overline{x}_t \,|\, x \in \Z, 0 \leq x < t\}$$
   where $$\overline{x}_t = \{x \equiv 0 \mod t \,|\, x \in \Z\}$$.
 \end{definition}
@@ -76,8 +76,12 @@ $\C$ under multiplication with (for instance) the first root $x_1 = e^{2\pi i \f
 An $n$-th root of unity $y$ is referred to as \textit{primitive}, iff\footnote{if and only if}
 there exists no $m < n$ for which that root $y$ is also an $m$-th root of unity, i.e. $y^m \neq 1$.
 
-Given the $n$-th roots of unity, we can define the $n$-th cyclotomic polynomial as
-$$\Phi(x) = ...$$.
+\begin{definition}{Cyclotomic Polynomial}{cyclotomic-poly}
+  Given the $n$-th roots of unity $\{x_k\}$, we can define the $n$-th cyclotomic polynomial as
+  $$\Phi(x) = \prod_{k=1}^{\varphi(n)} (x - x_k)$$
+  with $\varphi(n)$ denoting Euler's totient function which counts the
+  natural numbers $m$ less than $n$ who do not share a common divisor $\neq 1$, i.e. $\gcd(m, n) = 1$.
+\end{definition}
 
 \subsection{HE using RSA}
 In order to illustrate the basic idea behind \Gls{he}, without distancing ourselves too far
@@ -87,12 +91,12 @@ the definition of ring homomorphisms (\autoref{def:ring-homomorphism}) behind a 
 With unpadded RSA, some arithmetic can be performed on the ciphertext - % TODO: find RSA citation
 looking at the encrypted ciphertext $\mathcal{E}(m_1) = (m_1)^r \mod n$
 of the message $m_1$ and $m_2$ respectively, the following holds:
-\begin{align}
+\begin{align*}
   \mathcal{E}(m_1) \cdot \mathcal{E}(m_2)
    & \equiv (m_1)^r (m_2)^r \mod n     \\
    & \equiv (m_1 m_2)^r \mod n         \\
    & \equiv \mathcal{E}(m_1 \cdot m_2)
-\end{align}
+\end{align*}
 
 The encryption therefore partially fulfills the properties of a ring homomorphism,
 which in general terms is defined as follows:
@@ -161,7 +165,7 @@ according to some model $M$.
 \subsection{Gradient Descent}
 \subsection{Multi-Layered Neural Networks}
 
-\begin{theorem}{Universal Approximation Theorem}
+\begin{theorem}{Universal Approximation}
   If the neural network has at least one hidden layer, proper nonlinear activation functions and enough
   data and hidden units, it can approximate any continuous function $y(x, w): \R^n \mapsto \R$
   arbitrarily well on a compact domain

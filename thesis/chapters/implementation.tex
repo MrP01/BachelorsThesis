@@ -116,13 +116,13 @@ would be to
 \end{enumerate}
 
 \subsection{The Diagonal Method}
-\begin{definition}{Diagonal Method}{diagonal-method}
+\begin{theorem}{Diagonal Method}{diagonal-method}
   Given a matrix $M \in \R^{t \times t}$ and a vector $\vec{x} \in \R^t$,
   the dot product between the two can be expressed as
   \begin{equation}
-    M \vec{x} = \sum_{i=0}^t \diag_i(M) rot_i(\vec{x})
+    M \vec{x} = \sum_{i=0}^t \diag_i(M) \rot_i(\vec{x})
   \end{equation}
-\end{definition}
+\end{theorem}
 
 \subsection{The Hybrid Method}
 To further extend the previous matrix multiplication method to solve the problem
