@@ -6,8 +6,6 @@ import msgpack
 import numpy as np
 import requests
 
-from plots import plots
-
 TARGET = pathlib.Path(__file__).resolve().parent / "classifier" / "data" / "mnist"
 
 
@@ -58,4 +56,10 @@ namespace = invoke.Collection()
 namespace.add_task(fetch_training_data)
 namespace.add_task(send_test_request)
 namespace.add_task(generate_secrets)
-namespace.add_collection(invoke.Collection.from_module(plots))
+
+try:
+    from plots import plots
+
+    namespace.add_collection(invoke.Collection.from_module(plots))
+except ImportError:
+    print("Not adding in plots collection")

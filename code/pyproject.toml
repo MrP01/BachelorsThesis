@@ -16,9 +16,9 @@ python = "^3.9, <3.11"
 numpy = "^1.22.4"
 tensorflow = "^2.9.0"
 msgpack = "^1.0.3"
+invoke = "^1.7.1"
 
 [tool.poetry.group.dev.dependencies]
-invoke = "^1.7.1"
 matplotlib = "^3.5.2"
 tenseal = "^0.3.11"
 

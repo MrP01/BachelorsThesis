@@ -30,7 +30,7 @@ WORKDIR /training
 RUN pip install --upgrade pip poetry==1.2.0b1
 COPY ./pyproject.toml /training/pyproject.toml
 COPY ./poetry.lock /training/poetry.lock
-RUN poetry config virtualenvs.create false && poetry install --no-interaction
+RUN poetry config virtualenvs.create false && poetry install --no-interaction --only default
 RUN mkdir -p /classifier/data/mnist/ /classifier/data/models/simple/
 COPY ./tasks.py /tasks.py
 RUN --mount=type=cache,target=/root/.keras/datasets/ inv fetch-training-data
