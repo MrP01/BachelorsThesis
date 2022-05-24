@@ -25,18 +25,20 @@ will (at least partially) be introduced here.
   A tuple $(R, +, \cdot)$ consisting of a set $R$, an addition operation $+$ and a multiplication operation $\cdot$
   is referred to as a ring, given that it satisfies the following \textit{ring axioms}:
   \begin{itemize}
+    \item Addition is closed: $a + b \in R \quad\forall a, b \in R$.
     \item Addition is commutative: $a + b = b + a \quad\forall a, b \in R$.
     \item Addition is associative: $(a + b) + c = a + (b + c) \quad\forall a, b, c \in R$.
     \item There exists an element $0 \in R$ such that $a + 0 = a \quad\forall a \in R$.
     \item An additive inverse $-a$ of each element $a$ in $R$ exists, such that $a + (-a) = 0$.
     \item Multiplication is associative: $(a \cdot b) \cdot c = a \cdot (b \cdot c) \quad\forall a, b, c \in R$.
+    \item Multiplication is closed: $a \cdot b \in R \quad\forall a, b \in R$.
     \item There exists an element $1 \in R$, referred to as the identity element, or multiplicative identity of $R$,
           such that $a \cdot 1 = a \quad\forall a \in R$.
     \item Multiplication $\cdot$ is distributive w.r.t. addition $+$, \\
           i.e. $a \cdot (b+c) = (a \cdot b) + (a \cdot c) \quad\forall a, b, c \in R$ from the left and \\
           i.e. $(b+c) \cdot a = (b \cdot a) + (c \cdot a) \quad\forall a, b, c \in R$ from the right.
   \end{itemize}
-  Where the first 4 properties can be summarised as $(R, +)$ forming an Abelian group.
+  Where the first 5 properties can be summarised as $(R, +)$ forming an Abelian group.
   If multiplication is additionally commutative, we refer to the ring as commutative:
   \begin{itemize}
     \item Multiplication is commutative: $a \cdot b = b \cdot a \quad\forall a, b \in R$.
@@ -45,6 +47,10 @@ will (at least partially) be introduced here.
 Acting as a logical extension of a group, a ring can be considered the intermediary step towards a field
 (which also defines subtraction and division).
 An example of a ring would be the integers modulo $t$: $\Z / t \Z$, sometimes also denoted as $\Z_t$.
+
+\begin{definition}{Quotient Group / Ring}{quotient-group}
+  TODO
+\end{definition}
 
 \begin{definition}{Ring of Integers Modulo $t$: $\Z / t \Z$}{integers-modulo-t}
   Using equivalence classes $\overline{x}_t$ modulo $t$ referred to as congruence classes,
@@ -64,8 +70,11 @@ An example of a ring would be the integers modulo $t$: $\Z / t \Z$, sometimes al
   standard addition $+$ and multiplication $\cdot$ operations (as an extension over the field $\C$)
   of polynomials.
 
+  % TODO: make p, q sequences instead of vectors
+
+  \vspace{.3cm}
   \begin{itemize}
-    \item In their coefficient representations $\vec{p} = \{p_0, p_1, p_2, ...\}$ and $\vec{q} = \{q_0, q_1, q_2, ...\}$,
+    \item In their coefficient representations $(\vec{p})_i = p_0, p_1, p_2, ...$ (which are sequences) and $\vec{q} = \{q_0, q_1, q_2, ...\}$,
           an addition of two polynomials $p, q \in \Z[X]$ is equivalent to the addition of their coefficients
           \begin{align*}
             (p + q)(X) & = \sum_{k=0}^\infty p_k X^k + \sum_{k=0}^\infty q_k X^k = \sum_{k=0}^\infty (p_k + q_k) X^k \\
@@ -85,11 +94,24 @@ An example of a ring would be the integers modulo $t$: $\Z / t \Z$, sometimes al
           and even satisfies commutativity due to the existing structure of the underlying field $\C$
           and the symmetry of convolutions.
   \end{itemize}
+  \vspace{.3cm}
+
   Where $\langle \cdot, \cdot \rangle$ denotes the dot (scalar) product between two vectors.
 \end{definition}
 
+\begin{definition}{Irreducible Polynomials}{irreducible-polys}
+  A polynomial is called irreducible iff it cannot be written as a product of other polynomials
+  \textsl{while staying in the same coefficient space}.
+\end{definition}
+
+Polynomials with degree $\geq 2$ over the complex numbers can always be factorised using their roots
+due to the fundamental theorem of algebra.
+
 \begin{corollary}{Polynomials Modulo an Irreducible Form}{polys-mod}
-  Given an irreducible polynomial $\phi(x) \in P$, one can construct the interesting quotient group ...
+  Given an irreducible polynomial $\phi(x) \in P$, one can construct the interesting quotient group
+  $$\Z[X] / (X^N + 1)$$
+  where $(X^N + 1)$ denotes the set of all polynomial multiples of the polynomial $p \in \Z[X], p(x) = x^n + 1$, so
+  $$(X^N+1) = \{q: \C \mapsto \C,\; q(x) = r(x) \cdot (x^n+1) \;|\; r \in \Z[X]\}$$
 \end{corollary}
 
 \subsection{Cyclotomic Polynomials}
@@ -103,26 +125,31 @@ An important polynomial is $$p: \C \mapsto \C, \; p(x) = x^n - 1$$.
 Its roots, found by solving $p(x) = 0$ for $x$, yielding $x^n = 1 \leftrightarrow x_k = \sqrt[n]{1}$
 are referred to as the $n$\textsuperscript{th} roots of unity.
 
-\begin{definition}{The $n$\textsuperscript{th} roots of unity}{nth-roots-of-unity}
+\begin{lemma}{The $n$\textsuperscript{th} roots of unity}{nth-roots-of-unity}
   For some integer $n \in \N$, the $n$ complex roots $x_1, x_2, ..., x_n \in \C$ of unity
   can be found as $$x_k = e^{2\pi i \frac{k}{n}} \quad k \in \{1, 2, ..., n\}$$
   with $i$ the imaginary unit.
   Using \name{Euler}'s identity, their real and imaginary components can be explicitly found as
   $x_k = \cos(2\pi \frac{k}{n}) + i \sin(2\pi \frac{k}{n})$.
-\end{definition}
+
+  An $n$\textsuperscript{th} root of unity $y$ is referred to as \textit{primitive}, iff\footnote{if and only if}
+  there exists no $m < n$ for which that root $y$ is also an $m$\textsuperscript{th} root of unity, i.e. $y^m \neq 1$.
+\end{lemma}
 Due to the fact that for any $k, l \in \Z$, their product $x_k \cdot x_l$ is also a root of unity, and
 $x_{k+jn} = x_k \; \forall j \in \Z$, they clearly comprise a cyclic Abelian group over the complex numbers
 $\C$ under multiplication with (for instance) the first root $x_1 = e^{2\pi i \frac{1}{n}}$ as its generator.
 
-An $n$\textsuperscript{th} root of unity $y$ is referred to as \textit{primitive}, iff\footnote{if and only if}
-there exists no $m < n$ for which that root $y$ is also an $m$\textsuperscript{th} root of unity, i.e. $y^m \neq 1$.
-
 \begin{definition}{Cyclotomic Polynomial}{cyclotomic-poly}
-  Given the $n$\textsuperscript{th} roots of unity $\{x_k\}$, we can define the $n$\textsuperscript{th} cyclotomic polynomial as
-  $$\Phi(x) = \prod_{k=1}^{\varphi(n)} (x - x_k)$$
+  Given the $n$\textsuperscript{th} roots of unity $\{x_k\}$, we can define the $n$\textsuperscript{th}
+  cyclotomic polynomial $\Phi_n \in \Z[X]$ as
+  $$\Phi_n(x) = \prod_{k=1}^{\varphi(n)} (x - x_k)$$
   with $\varphi(n)$ denoting Euler's totient function which counts the
   natural numbers $m$ less than $n$ who do not share a common divisor $\neq 1$, i.e. $\gcd(m, n) = 1$.
 \end{definition}
+
+\begin{remark}{Irreducibility of Cyclotomic Polynomials}{cyclotomic-irreducibility}
+  Cyclotomic polynomials are always irreducible..?
+\end{remark}
 
 \subsection{HE using RSA}
 In order to illustrate the basic idea behind \Gls{he}, without distancing ourselves too far
