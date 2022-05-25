@@ -49,7 +49,8 @@ Acting as a logical extension of a group, a ring can be considered the intermedi
 An example of a ring would be the integers modulo $t$: $\Z / t \Z$, sometimes also denoted as $\Z_t$.
 
 \begin{definition}{Quotient Group / Ring}{quotient-group}
-  TODO
+  A quotient group $(G / N, +)$ (pronounced '$G$ mod $N$') over the original group $G$ and a normal subgroup $N$ of $G$
+  with a standard element operation $+$ can be defined using the
 \end{definition}
 
 \begin{definition}{Ring of Integers Modulo $t$: $\Z / t \Z$}{integers-modulo-t}
@@ -69,35 +70,33 @@ An example of a ring would be the integers modulo $t$: $\Z / t \Z$, sometimes al
   we can define a commutative ring $(\Z[X], +, \cdot)$ equipped with the
   standard addition $+$ and multiplication $\cdot$ operations (as an extension over the field $\C$)
   of polynomials.
-
-  % TODO: make p, q sequences instead of vectors
-
-  \vspace{.3cm}
-  \begin{itemize}
-    \item In their coefficient representations $(\vec{p})_i = p_0, p_1, p_2, ...$ (which are sequences) and $\vec{q} = \{q_0, q_1, q_2, ...\}$,
-          an addition of two polynomials $p, q \in \Z[X]$ is equivalent to the addition of their coefficients
-          \begin{align*}
-            (p + q)(X) & = \sum_{k=0}^\infty p_k X^k + \sum_{k=0}^\infty q_k X^k = \sum_{k=0}^\infty (p_k + q_k) X^k \\
-                       & = \langle (\vec{p} + \vec{q}), \{X^0, X^1, X^2, ...\}^T \rangle
-          \end{align*}
-          which indeed satisfies the additive \hyperref[def:ring]{ring axioms}
-          due to the existing structure of the underlying field $\C$.
-    \item The multiplication operation can be defined using a discrete convolution of the coefficient vectors
-          $$r(X) = (p \cdot q)(X) = (\sum_{k=0}^\infty p_k X^k) \cdot (\sum_{l=0}^\infty q_l X^l)
-            = \sum_{k=0}^\infty \sum_{l=0}^\infty p_k q_l X^{k+l}
-            = \sum_{k=0}^\infty r_k X^k$$
-          with the arising coefficients $\{r_k\}$ determined by the discrete convolution
-          $$r_k = \sum_{l=0}^k p_l q_{k-l} \;\Leftrightarrow\; \vec{r} = \vec{p} * \vec{q}$$
-          in this context also referred to as the \name{Cauchy}-product. Therefore,
-          $$(p \cdot q)(X) = \langle (\vec{p} * \vec{q}), \{X^0, X^1, X^2, ...\}^T \rangle.$$
-          Again, this generally applicable approach satisfies the multiplicative \hyperref[def:ring]{ring axioms}
-          and even satisfies commutativity due to the existing structure of the underlying field $\C$
-          and the symmetry of convolutions.
-  \end{itemize}
-  \vspace{.3cm}
-
-  Where $\langle \cdot, \cdot \rangle$ denotes the dot (scalar) product between two vectors.
 \end{definition}
+
+% TODO: make p, q sequences instead of vectors
+To further elaborate on the polynomial ring operations:
+\begin{itemize}
+  \item In their coefficient representations $(\vec{p})_i = p_0, p_1, p_2, ...$ (which are sequences) and $\vec{q} = \{q_0, q_1, q_2, ...\}$,
+        an addition of two polynomials $p, q \in \Z[X]$ is equivalent to the addition of their coefficients
+        \begin{align*}
+          (p + q)(X) & = \sum_{k=0}^\infty p_k X^k + \sum_{k=0}^\infty q_k X^k = \sum_{k=0}^\infty (p_k + q_k) X^k \\
+                     & = \langle (\vec{p} + \vec{q}), \{X^0, X^1, X^2, ...\}^T \rangle
+        \end{align*}
+        which indeed satisfies the additive \hyperref[def:ring]{ring axioms}
+        due to the existing structure of the underlying field $\C$.
+  \item The multiplication operation can be defined using a discrete convolution of the coefficient vectors
+        $$r(X) = (p \cdot q)(X) = (\sum_{k=0}^\infty p_k X^k) \cdot (\sum_{l=0}^\infty q_l X^l)
+          = \sum_{k=0}^\infty \sum_{l=0}^\infty p_k q_l X^{k+l}
+          = \sum_{k=0}^\infty r_k X^k$$
+        with the arising coefficients $\{r_k\}$ determined by the discrete convolution
+        $$r_k = \sum_{l=0}^k p_l q_{k-l} \;\Leftrightarrow\; \vec{r} = \vec{p} * \vec{q}$$
+        in this context also referred to as the \name{Cauchy}-product. Therefore,
+        $$(p \cdot q)(X) = \langle (\vec{p} * \vec{q}), \{X^0, X^1, X^2, ...\}^T \rangle.$$
+        Again, this generally applicable approach satisfies the multiplicative \hyperref[def:ring]{ring axioms}
+        and even satisfies commutativity due to the existing structure of the underlying field $\C$
+        and the symmetry of convolutions.
+\end{itemize}
+
+Where $\langle \cdot, \cdot \rangle$ denotes the dot (scalar) product between two vectors.
 
 \begin{definition}{Irreducible Polynomials}{irreducible-polys}
   A polynomial is called irreducible iff it cannot be written as a product of other polynomials
@@ -145,6 +144,7 @@ $\C$ under multiplication with (for instance) the first root $x_1 = e^{2\pi i \f
   $$\Phi_n(x) = \prod_{k=1}^{\varphi(n)} (x - x_k)$$
   with $\varphi(n)$ denoting Euler's totient function which counts the
   natural numbers $m$ less than $n$ who do not share a common divisor $\neq 1$, i.e. $\gcd(m, n) = 1$.
+  It is unique for each given $n \in \N$.
 \end{definition}
 
 \begin{remark}{Irreducibility of Cyclotomic Polynomials}{cyclotomic-irreducibility}
@@ -194,6 +194,39 @@ $$\embed(\vec{x}) = \vec{x} \cdot F$$
 with $F \in \Z$. In decimal form, for instance with $F = 1000$, we could effectively encode
 three decimal places of the original vector $\vec{x}$.
 % ... TODO: scale explodes, confer Roman's PETS lecture -> motivation for CKKS.
+
+\tikzstyle{cleartext} = [rectangle, rounded corners,minimum width=3cm, minimum height=1cm, text centered, draw=black, fill=red!30]
+\tikzstyle{plaintext} = [rectangle, rounded corners,minimum width=3cm, minimum height=1cm, text centered, draw=black, fill=orange!30]
+\tikzstyle{ciphertext} = [rectangle, rounded corners,minimum width=3cm, minimum height=1cm, text centered, draw=black, fill=blue!30]
+\tikzstyle{arrow} = [thick,->,>=stealth]
+
+\begin{figure}
+  \centering
+  \begin{tikzpicture}
+    \node[cleartext, align = center] (m) at (0,0) {message \\ $m$};
+    \node[plaintext, align = center] (p) at (6,0) {plaintext \\ $p(X)$};
+    \node[ciphertext, align = center] (c) at (12,0) {ciphertext \\ $c = (c_0(X), c_1(X))$};
+
+    \node[cleartext, align = center] (m2) at (0,-2.5) {message \\ $\tilde{m}=f(m)$};
+    \node[plaintext, align = center] (p2) at (6,-2.5) {plaintext \\ $\tilde{p}(X) = f(p(X))$};
+    \node[ciphertext, align = center] (c2) at (12,-2.5) {ciphertext \\ $\tilde{c} = f(c)$};
+
+    \draw (m.north) node[above]{$\C^{N/2}$};
+    \draw (m2.south) node[below]{$\C^{N/2}$};
+    \draw (p.north) node[above]{$\Z[X]/(X^N + 1)$};
+    \draw (p2.south) node[below]{$\Z[X]/(X^N + 1)$};
+    \draw (c.north) node[above]{$(\Z_q[X]/(X^N + 1))^2$};
+    \draw (c2.south) node[below]{$(\Z_q[X]/(X^N + 1))^2$};
+
+    \draw [arrow] (m) -- node[anchor=south] {encoding} (p) ;
+    \draw [arrow] (p) -- node[anchor=south] {encryption} (c);
+    \draw [arrow] (c) -- node[anchor=east] {computing $f$} (c2);
+    \draw [arrow] (c2) -- node[anchor=south] {decryption} (p2);
+    \draw [arrow] (p2) -- node[anchor=south] {decoding} (m2);
+  \end{tikzpicture}
+  \caption{Overview of CKKS, adapted from \cite{2020-cryptotree}.}
+  \label{fig:CKKS overview}
+\end{figure}
 
 % \subsubsection{Packing}
 % FFT in CKKS!
