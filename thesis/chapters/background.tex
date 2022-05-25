@@ -8,9 +8,11 @@ One can distinguish three flavors of it, Partial-, Somewhat- and \gls{fhe}.
 For \Gls{fhe}, there exist a few schemes in use today with existing implementations.
 \begin{itemize}
   \item Brakerski/Fan-Vercauteren (BFV) scheme for integer arithmetic
-  \item Brakerski-Gentry-Vaikuntanathan (BGV) scheme for integer arithmetic
-  \item Cheon-Kim-Kim-Song (CKKS) scheme for real-number arithmetic
+        (\cite{2012-fv-original}, \cite{2012-brakerski}).
+  \item Brakerski-Gentry-Vaikuntanathan (BGV) scheme for integer arithmetic \parencite{2012-bgv-original}.
+  \item Cheon-Kim-Kim-Song (CKKS) scheme for real-number arithmetic \parencite{2017-ckks-original}.
   \item Ducas-Micciancio (FHEW) and Chillotti-Gama-Georgieva-Izabachene (TFHE) schemes for Boolean circuit evaluation
+        \parencite{2019-tfhe-original}.
 \end{itemize}
 
 We will first introduce the BFV scheme (integer arithmetic) as it represents a fundamental building block behind CKKS.
@@ -177,13 +179,19 @@ which in general terms is defined as follows:
 \end{definition}
 
 \subsection{Learning with Errors (LWE)}
+Next, we would like to consider \Gls{lwe}, a computing problem that is believed to be sufficiently hard
+to be used in cryptography and, most notably, is not yet solvable in linear time by a quantum algorithm
+(c.f. \autoref{sec:post-quantum-sec}).
 
 \subsection{Ring-LWE}
-Learning with Errors on Rings (RLWE)
+\Gls{rlwe}
 
-how to get from LWE to RLWE
+% TODO: how to get from LWE to RLWE
 
 \subsection{The BFV scheme}
+\cite{2012-fv-original}
+\cite{2012-brakerski}
+
 \subsection{The CKKS scheme}
 The CKKS scheme allows us to perform approximate arithmetic on floating point numbers.
 Essentially, the idea is to extend BFV which allows us to operate on vectors $\vec{y} \in \Z_t^n$,
@@ -284,28 +292,11 @@ Matrix -> Activation Function
 \subsection{The Backpropagation Algorithm}
 
 \section{Post-Quantum Security}
+\label{sec:post-quantum-sec}
 \subsection{Shor's Algorithm}
-
-\section{Demo}
-In this chapter, we provide some usage examples for
-glossaries and acronym lists with \texttt{glossaries} (\autoref{sec:gloss}),
-bibliography and citations with \texttt{biblatex} (\autoref{sec:bib}), and more.
 
 \begin{figure}[H]
   \centering
   \includegraphics[width=0.8\linewidth]{figures/taylor-relu.png}
   \caption{Comparison of the Relu activation function vs. its Taylor expansion}
 \end{figure}
-
-\section{Notation and Acronyms}
-\label{sec:gloss}
-Symbols and acronyms are defined in the preamble, after loading the \texttt{glossaries} package, and used as follows.
-
-In this chapter, we introduce the necessary background on the \gls{aes}.
-We denote binary exclusive-or by \gls{xor}.
-
-\label{sec:bib}
-This is an example of how to specify and cite
-a book \cite{AESbook},
-a journal article \cite{bstjShannon49}.
-\Gls{aes} is a block cipher defined by \textcite{AESbook}.
