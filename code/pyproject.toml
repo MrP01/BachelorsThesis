@@ -50,3 +50,6 @@ inline-quotes = "double"
 
 [tool.pyright]
 exclude = ["node_modules", "**/__pycache__", ".git", "*stuff*"]
+
+[tool.bandit]
+skips = ["B101"]

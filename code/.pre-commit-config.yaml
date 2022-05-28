@@ -54,7 +54,7 @@ repos:
     hooks:
       - id: bandit
         args:
-          - --ini
+          - -c
           - pyproject.toml
         exclude: tests/
   - repo: https://github.com/flakeheaven/flakeheaven
