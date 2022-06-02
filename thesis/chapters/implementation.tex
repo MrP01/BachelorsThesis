@@ -166,7 +166,7 @@ optimization as described in \cite{2018-faster-helib}, which works as follows:
 \begin{theorem}{Babystep-Giantstep Optimization}{bsgs}
   Given a matrix $M \in \R^{t \times t}$ and a vector $\vec{x} \in \R^t$,
   with $t = t_1 \cdot t_2$ split into two BSGS parameters $t_1, t_2 \in \N$ and
-  $$\diag'_p(M) = \rot_{-\lfloor p/t_1 \rfloor \cdot t_1}(\diag_p(M))$$,
+  $$\diag'_p(M) = \rot_{-\lfloor p/t_1 \rfloor \cdot t_1}(\diag_p(M))\,,$$
   one can express a matrix-vector multiplication as follows:
   \begin{equation}
     M \vec{x} = \sum_{k=0}^{t_2-1} \rot_{(kt_1)} \bigg(

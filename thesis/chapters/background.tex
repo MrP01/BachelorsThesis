@@ -156,7 +156,7 @@ $\C$ under multiplication with (for instance) the first root $x_1 = e^{2\pi i \f
 \subsection{HE using RSA}
 In order to illustrate the basic idea behind \Gls{he}, without distancing ourselves too far
 from the original goal of introducing basic \gls{he} operations used in practice, this short section aims to motivate
-the definition of ring homomorphisms (\autoref{def:ring-homomorphism}) behind a cryptographic background.
+the definition of ring homomorphisms (cf. \autoref{def:ring-homomorphism}) behind a cryptographic background.
 
 With unpadded RSA, some arithmetic can be performed on the ciphertext - % TODO: find RSA citation
 looking at the encrypted ciphertext $\mathcal{E}(m_1) = (m_1)^r \mod n$
@@ -183,10 +183,21 @@ Next, we would like to consider \Gls{lwe}, a computing problem that is believed 
 to be used in cryptography and, most notably, is not yet solvable in linear time by a quantum algorithm
 (c.f. \autoref{sec:post-quantum-sec}).
 
+\begin{definition}{LWE-Distribution}{lwe-dist}
+  Given a prime $p \in \Z$ and $n \in \Z$, we call $\vec{s} \in (\Z / p \Z)^n$ a secret.
+\end{definition}
+\begin{definition}{LWE-Problem}{lwe-problem}
+  Given $m$ independent samples $(\vec{a_i}, b_i)$.
+\end{definition}
+
 \subsection{Ring-LWE}
 \Gls{rlwe}
-
 % TODO: how to get from LWE to RLWE
+
+\begin{definition}{Decision-RLWE}{decision-rlwe}
+  Bla bli blub
+\end{definition}
+
 
 \subsection{The BFV scheme}
 \cite{2012-fv-original}
