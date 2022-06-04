@@ -52,18 +52,28 @@ An example of a ring would be the integers modulo $t$: $\Z / t \Z$, sometimes al
 
 \begin{definition}{Quotient Group / Ring}{quotient-group}
   A quotient group $(G / N, +)$ (pronounced '$G$ mod $N$') over the original group $G$ and a normal subgroup $N$ of $G$
-  with a standard element operation $+$ can be defined using the
+  with a standard element operation $+$ can be defined using the left cosets
+  $$gN := \{gn \,|\, n \in N\} \subseteq G$$ of $N$ in $G$.
+  The corresponding set $G / N$ is defined as
+  $$G / N := \{g N \,|\, g \in G\}$$
+  whereas the standard operation $+: G/N \times G/N \mapsto G/N$
+  can be extended from the original group $G$ as follows:
+  $$(gN) + (hN) := (gh)N$$
 \end{definition}
 
 \begin{definition}{Ring of Integers Modulo $t$: $\Z / t \Z$}{integers-modulo-t}
   Using equivalence classes $\overline{x}_t$ modulo $t$ referred to as congruence classes,
-  define the commutative quotient ring of integers modulo $t$ as
+  define the commutative quotient ring of integers modulo $t$ as $(\Z / t \Z, +, \cdot)$ with
   $$\Z / t \Z = \{\overline{x}_t \,|\, x \in \Z, 0 \leq x < t\}$$
+  and two operations $+$ and $\cdot$
   where $t \Z \triangleleft \Z$ denotes the $t$\textsuperscript{th} coset\footnote{
     from the left and from the right, therefore $t \Z$ is called a normal subgroup of $\Z$
   } of the integers and
   $$\overline{x}_t = \{y \equiv x \mod t \,|\, y \in \Z\}$$
   is the set of all multiples of $t$ with remainder $x$.
+  Note that many operations that resulting groups, rings or fields are commonly equipped with,
+  such as addition or multiplication, propagate to an equivalent definition in the ring of integers modulo $t$
+  by considering their result as a congruence class instead of it, which in turn is an element of $\Z / t \Z$.
 \end{definition}
 
 \begin{definition}{Polynomial Ring over $\Z$}{poly-ring}
@@ -182,9 +192,10 @@ which in general terms is defined as follows:
 Next, we would like to consider \Gls{lwe}, a computing problem that is believed to be sufficiently hard
 to be used in cryptography and, most notably, is not yet solvable in linear time by a quantum algorithm
 (c.f. \autoref{sec:post-quantum-sec}).
+It was first formally described by \textcite{2005-lwe-original}.
 
 \begin{definition}{LWE-Distribution}{lwe-dist}
-  Given a prime $p \in \Z$ and $n \in \Z$, we call $\vec{s} \in (\Z / p \Z)^n$ a secret.
+  Given a prime $p \in \N$ and $n \in \N$, we choose some secret $\vec{s} \in (\Z / p \Z)^n$.
 \end{definition}
 \begin{definition}{LWE-Problem}{lwe-problem}
   Given $m$ independent samples $(\vec{a_i}, b_i)$.
@@ -192,6 +203,7 @@ to be used in cryptography and, most notably, is not yet solvable in linear time
 
 \subsection{Ring-LWE}
 \Gls{rlwe}
+\cite{2010-rlwe-original}
 % TODO: how to get from LWE to RLWE
 
 \begin{definition}{Decision-RLWE}{decision-rlwe}
