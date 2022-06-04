@@ -64,8 +64,8 @@ An example of a ring would be the integers modulo $t$: $\Z / t \Z$, sometimes al
 \begin{definition}{Ring of Integers Modulo $t$: $\Z / t \Z$}{integers-modulo-t}
   Using equivalence classes $\overline{x}_t$ modulo $t$ referred to as congruence classes,
   define the commutative quotient ring of integers modulo $t$ as $(\Z / t \Z, +, \cdot)$ with
+  two operations $+$ and $\cdot$ and
   $$\Z / t \Z = \{\overline{x}_t \,|\, x \in \Z, 0 \leq x < t\}$$
-  and two operations $+$ and $\cdot$
   where $t \Z \triangleleft \Z$ denotes the $t$\textsuperscript{th} coset\footnote{
     from the left and from the right, therefore $t \Z$ is called a normal subgroup of $\Z$
   } of the integers and
@@ -192,14 +192,85 @@ which in general terms is defined as follows:
 Next, we would like to consider \Gls{lwe}, a computing problem that is believed to be sufficiently hard
 to be used in cryptography and, most notably, is not yet solvable in linear time by a quantum algorithm
 (c.f. \autoref{sec:post-quantum-sec}).
-It was first formally described by \textcite{2005-lwe-original}.
+Its hardness assumptions were first formally proven by \citeauthor{2005-lwe-original},
+for which he received the 2018 Gödel price.
 
-\begin{definition}{LWE-Distribution}{lwe-dist}
+\begin{definition}{LWE-Distribution $A_{\vec{s}, \chi}$}{lwe-dist}
   Given a prime $p \in \N$ and $n \in \N$, we choose some secret $\vec{s} \in (\Z / p \Z)^n$.
+  In order to sample a value from the LWE distribution $A_{\vec{s}, \chi}$:
+  \begin{itemize}
+    \item Draw a random vector $a \in (\Z/p\Z)^n$ from the multivariate uniform distribution
+          with its domain in the integers up to $p$.
+    \item Given another probability distribution $\chi$ over the integers modulo $p$,
+          sample a scalar 'error term' $\mu \in \Z / p \Z$ from it.
+    \item Set $b = \vec{s} \cdot \vec{a} + \mu$, with $\cdot$ denoting the standard vector product.
+    \item Output the pair $(\vec{a}, b) \in (\Z / p \Z)^n \times (\Z / p \Z)$.
+  \end{itemize}
 \end{definition}
-\begin{definition}{LWE-Problem}{lwe-problem}
-  Given $m$ independent samples $(\vec{a_i}, b_i)$.
+
+The general approach useful to cryptography is to sample an element from the LWE-distribution and construct
+two problems out of it, \textit{search}-LWE and \textit{decision}-LWE.
+
+\begin{definition}{LWE-Problem - Search Version}{lwe-search-problem}
+  Given $m$ independent samples $(\vec{a}_i, b_i)_{0 < i \leq m}$ from $A_{\vec{s}, \chi}$, find the secret $\vec{s}$.
 \end{definition}
+\begin{definition}{LWE-Problem - Decision Version}{lwe-decision-problem}
+  Given $m$ samples $(\vec{a}_i, b_i)_{0 < i \leq m}$, distinguish whether they are drawn from
+  $A_{\vec{s}, \chi}$ or from the uniform distribution $u$ over $(\Z / p \Z)^n \times (\Z / p \Z)$.
+\end{definition}
+
+In their above definitions, \citeauthor{2005-lwe-original} showed that the two problems are equivalent.
+
+To illustrate the connection of these problems to lattices, we
+take a closer look at them before considering further details of LWE.
+Most notably, lattice problems are conjectured to be secure against quantum computers \parencite{2018-lattice-problems}.
+
+\begin{definition}{Lattice}{lattice}
+  A lattice $(\mathcal{L}, +, d)$ is a vector field over the integers, defined using a set of $n$
+  basis vectors $\vec{b_1}, \vec{b_2}, ..., \vec{b_n} \in \R^n$ that can be introduced as a set
+  $$\mathcal{L} = \bigg\{\sum_{i=1}^m c_i \vec{b}_i \,|\, c \in \Z\bigg\} \subseteq \R^n$$
+  equipped with addition $+$ and the standard Euclidean metric\footnote{
+    as an extension of $\R^n$, the Euclidean norm $||\cdot||$ is defined and thus
+    the metric distance can be obtained by the norm of a vector difference, denoted $||(\cdot) - (\cdot)||$.
+  } $d: \mathcal{L} \times \mathcal{L} \mapsto \R$,
+  yielding a metric space $(\mathcal{L}, d)$.
+\end{definition}
+
+Its \textit{minimum distance} $\lambda_{min}$ is defined as the smallest Euclidean distance
+between two points $\vec{p_1}$ and $\vec{p_2} \in \mathcal{L}$
+$$\lambda_{min} = \min_{\vec{p_1}, \vec{p_2} \in \mathcal{L}} d(\vec{p_1}, \vec{p_2}) =
+  \min_{\vec{p_1}, \vec{p_2} \in \mathcal{L}} ||\vec{p_1} - \vec{p_2}|| \,,$$
+which can be equivalently thought of as the minimal length of any non-zero vector in the lattice $\mathcal{L}$,
+because of $\vec{0}$ always being an element of the lattice which can be chosen as $\vec{p_1}$
+and the translational symmetry between fundamental lattice volumes (or regions).
+
+\begin{definition}{Shortest Vector Problem (SVP)}{svp}
+  Given a lattice $\mathcal{L}$ constructed from $n$ basis vectors,
+  find the shortest non-zero lattice vector $\vec{x} \in \mathcal{L} \backslash \{\vec{0}\}$,
+  i.e. find $\vec{x}$ such that $||\vec{x}|| = \lambda_{min}$ \parencite{2016-decade-of-lattice}.
+\end{definition}
+
+\begin{definition}{Decisional Approximate SVP (GapSVP)}{gap-svp}
+  Given a lattice $\mathcal{L}$ and some pre-defined function $\gamma: \N \mapsto \R$ depending
+  on the lattice dimension $n$ (constant for a given $\mathcal{L}$),
+  the decisional approximate shortest vector problem is distinguishing
+  between $\lambda_{min} \leq 1$ and $\lambda_{min} > \gamma(n)$.
+  For other cases, it is up to the algorithm what to return.
+\end{definition}
+
+\begin{theorem}{Hardness of LWE}{lwe-hardness}
+  If there exists an efficient algorithm that solves either search-LWE or decision-LWE then
+  there exists an efficient quantum algorithm that approximates the decision
+  version of the shortest vector problem (GapSVP) in the worst case \parencite{2010-lwe-survey}.
+\end{theorem}
+
+He also provided a construction of a public-key cryptosystem based on them, i.e. an asymmetric cryptographic
+system for at least two parties that includes a public and corresponding private key.
+
+Public-key cryptosystems are fundamentally different from symmetric systems, which only
+require one single key for encryption and decryption at the same time, known by all involved parties.
+Often times, public-key schemes (rather slow) are used to exchange keys for subsequent symmetric encryption
+(rather fast) of large plaintexts, for instance in the \gls{tls} protocol \parencite{rfc8446}.
 
 \subsection{Ring-LWE}
 \Gls{rlwe}
@@ -231,7 +302,7 @@ three decimal places of the original vector $\vec{x}$.
 \tikzstyle{ciphertext} = [rectangle, rounded corners,minimum width=3cm, minimum height=1cm, text centered, draw=black, fill=blue!30]
 \tikzstyle{arrow} = [thick,->,>=stealth]
 
-\begin{figure}
+\begin{figure}[H]
   \centering
   \begin{tikzpicture}
     \node[cleartext, align = center] (m) at (0,0) {message \\ $m$};
