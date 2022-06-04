@@ -258,6 +258,38 @@ and the translational symmetry between fundamental lattice volumes (or regions).
   For other cases, it is up to the algorithm what to return.
 \end{definition}
 
+\usetikzlibrary{calc}
+\begin{figure}
+  \centering
+  \begin{tikzpicture}
+    \coordinate (Origin)   at (0,0);
+    \coordinate (XAxisMin) at (-3,0);
+    \coordinate (XAxisMax) at (5,0);
+    \coordinate (YAxisMin) at (0,-2);
+    \coordinate (YAxisMax) at (0,5);
+    \draw [thin, gray,-latex] (XAxisMin) -- (XAxisMax);
+    \draw [thin, gray,-latex] (YAxisMin) -- (YAxisMax);
+
+    \clip (-3,-2) rectangle (6.5cm, 6.5cm);
+    \pgftransformcm{1}{0.3}{0.7}{1}{\pgfpoint{0cm}{0cm}}
+    \coordinate (Bone) at (0,2);
+    \coordinate (Btwo) at (2,-2);
+    \draw[style=help lines,dashed] (-14,-14) grid[step=2cm] (14,14);
+    \foreach \x in {-7,-6,...,7}{
+        \foreach \y in {-7,-6,...,7}{
+            \node[draw,circle,inner sep=2pt,fill] at (2*\x,2*\y) {};
+          }
+      }
+    \draw [ultra thick,-latex,themecolor] (Origin)
+    -- (Bone) node [above left] {$b_1$};
+    \draw [ultra thick,-latex,themecolor] (Origin)
+    -- (Btwo) node [below right] {$b_2$};
+  \end{tikzpicture}
+  \caption{Illustration of a standard lattice $\mathcal{L}$ over the integers $\Z$
+    with two basis vectors $\vec{b}_1$ and $\vec{b}_2$, c.f. \autoref{def:lattice}.}
+  \label{fig:lattice}
+\end{figure}
+
 \begin{theorem}{Hardness of LWE}{lwe-hardness}
   If there exists an efficient algorithm that solves either search-LWE or decision-LWE then
   there exists an efficient quantum algorithm that approximates the decision
@@ -297,9 +329,9 @@ with $F \in \Z$. In decimal form, for instance with $F = 1000$, we could effecti
 three decimal places of the original vector $\vec{x}$.
 % ... TODO: scale explodes, confer Roman's PETS lecture -> motivation for CKKS.
 
-\tikzstyle{cleartext} = [rectangle, rounded corners,minimum width=3cm, minimum height=1cm, text centered, draw=black, fill=red!30]
-\tikzstyle{plaintext} = [rectangle, rounded corners,minimum width=3cm, minimum height=1cm, text centered, draw=black, fill=orange!30]
-\tikzstyle{ciphertext} = [rectangle, rounded corners,minimum width=3cm, minimum height=1cm, text centered, draw=black, fill=blue!30]
+\tikzstyle{cleartext} = [rectangle, rounded corners,minimum width=3cm, minimum height=1cm, text centered, draw=black, fill=orange!30]
+\tikzstyle{plaintext} = [rectangle, rounded corners,minimum width=3cm, minimum height=1cm, text centered, draw=black, fill=purple!30]
+\tikzstyle{ciphertext} = [rectangle, rounded corners,minimum width=3cm, minimum height=1cm, text centered, draw=black, fill=themecolor!30]
 \tikzstyle{arrow} = [thick,->,>=stealth]
 
 \begin{figure}[H]
