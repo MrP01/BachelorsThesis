@@ -215,8 +215,9 @@ two problems out of it, \textit{search}-LWE and \textit{decision}-LWE.
   Given $m$ independent samples $(\vec{a}_i, b_i)_{0 < i \leq m}$ from $A_{\vec{s}, \chi}$, find the secret $\vec{s}$.
 \end{definition}
 \begin{definition}{LWE-Problem - Decision Version}{lwe-decision-problem}
-  Given $m$ samples $(\vec{a}_i, b_i)_{0 < i \leq m}$, distinguish whether they are drawn from
-  $A_{\vec{s}, \chi}$ or from the uniform distribution $u$ over $(\Z / p \Z)^n \times (\Z / p \Z)$.
+  Given $m$ samples $(\vec{a}_i, b_i)_{0 < i \leq m}$, distinguish (with non-negligible advantage)
+  whether they were drawn from $A_{\vec{s}, \chi}$ or from the uniform distribution
+  $u$ over $(\Z / p \Z)^n \times (\Z / p \Z)$.
 \end{definition}
 
 In their above definitions, \citeauthor{2005-lwe-original} showed that the two problems are equivalent.
@@ -225,34 +226,42 @@ To illustrate the connection of these problems to lattices, we
 take a closer look at them before considering further details of LWE.
 Most notably, lattice problems are conjectured to be secure against quantum computers \parencite{2018-lattice-problems}.
 
+\newcommand{\lat}{\mathcal{L}}
 \begin{definition}{Lattice}{lattice}
-  A lattice $(\mathcal{L}, +, d)$ is a vector field over the integers, defined using a set of $n$
-  basis vectors $\vec{b_1}, \vec{b_2}, ..., \vec{b_n} \in \R^n$ that can be introduced as a set
-  $$\mathcal{L} = \bigg\{\sum_{i=1}^m c_i \vec{b}_i \,|\, c \in \Z\bigg\} \subseteq \R^n$$
-  equipped with addition $+$ and the standard Euclidean metric\footnote{
-    as an extension of $\R^n$, the Euclidean norm $||\cdot||$ is defined and thus
-    the metric distance can be obtained by the norm of a vector difference, denoted $||(\cdot) - (\cdot)||$.
-  } $d: \mathcal{L} \times \mathcal{L} \mapsto \R$,
-  yielding a metric space $(\mathcal{L}, d)$.
+  A lattice $(\lat, +, \cdot)$ is a vector field over the integers $(\Z, +, \cdot)$, defined using a set of $n$
+  basis vectors $\vec{b_1}, \vec{b_2}, ..., \vec{b_n} \in \R^n$, that can be introduced as a set
+  $$\lat = \bigg\{\sum_{i=1}^m c_i \vec{b}_i \,|\, c \in \Z\bigg\} \subseteq \R^n$$
+  equipped with at least vector addition $+: \lat \times \lat \mapsto \lat$
+  and scalar multiplication $\cdot: \Z \times \lat \mapsto \lat$.
+  As an extension of $\R^n$, the Euclidean norm $||\cdot||$ is also defined and
+  the standard Euclidean metric $d: \lat \times \lat \mapsto \R$, yielding a metric space $(\lat, d)$,
+  can be obtained by the norm of a vector difference, denoted $||(\cdot) - (\cdot)||$.
 \end{definition}
 
 Its \textit{minimum distance} $\lambda_{min}$ is defined as the smallest Euclidean distance
-between two points $\vec{p_1}$ and $\vec{p_2} \in \mathcal{L}$
-$$\lambda_{min} = \min_{\vec{p_1}, \vec{p_2} \in \mathcal{L}} d(\vec{p_1}, \vec{p_2}) =
-  \min_{\vec{p_1}, \vec{p_2} \in \mathcal{L}} ||\vec{p_1} - \vec{p_2}|| \,,$$
-which can be equivalently thought of as the minimal length of any non-zero vector in the lattice $\mathcal{L}$,
+between two points $\vec{p_1}$ and $\vec{p_2} \in \lat$
+$$\lambda_{min} = \min_{\vec{p_1}, \vec{p_2} \in \lat} d(\vec{p_1}, \vec{p_2}) =
+  \min_{\vec{p_1}, \vec{p_2} \in \lat} ||\vec{p_1} - \vec{p_2}|| \,,$$
+which can be equivalently thought of as the minimal length of any non-zero vector in the lattice $\lat$,
 because of $\vec{0}$ always being an element of the lattice which can be chosen as $\vec{p_1}$
 and the translational symmetry between fundamental lattice volumes (or regions).
 
+\begin{definition}{Short Integer Solution (SIS) Problem}{sis}
+  For $m$ given vectors $(\vec{a}_i)_{0 < i \leq m} \in (\Z / q\Z)^n$ that comprise the columns of a matrix
+  $A \in (\Z / q\Z)^{n \times n}$ and an upper bound $\beta$, find
+  a solution vector $\vec{z} \in \Z^n \backslash \{\vec{0}\}$ such that
+  $$A \vec{z} = \vec{0} \quad \mathrm{with} \quad ||\vec{z}|| \leq \beta\,.$$
+\end{definition}
+
 \begin{definition}{Shortest Vector Problem (SVP)}{svp}
-  Given a lattice $\mathcal{L}$ constructed from $n$ basis vectors,
-  find the shortest non-zero lattice vector $\vec{x} \in \mathcal{L} \backslash \{\vec{0}\}$,
+  Given a lattice $\lat$ constructed from $n$ basis vectors,
+  find the shortest non-zero lattice vector $\vec{x} \in \lat \backslash \{\vec{0}\}$,
   i.e. find $\vec{x}$ such that $||\vec{x}|| = \lambda_{min}$ \parencite{2016-decade-of-lattice}.
 \end{definition}
 
 \begin{definition}{Decisional Approximate SVP (GapSVP)}{gap-svp}
-  Given a lattice $\mathcal{L}$ and some pre-defined function $\gamma: \N \mapsto \R$ depending
-  on the lattice dimension $n$ (constant for a given $\mathcal{L}$),
+  Given a lattice $\lat$ and some pre-defined function $\gamma: \N \mapsto \R$ depending
+  on the lattice dimension $n$ (constant for a given $\lat$) with $\gamma(n) \geq 1$,
   the decisional approximate shortest vector problem is distinguishing
   between $\lambda_{min} \leq 1$ and $\lambda_{min} > \gamma(n)$.
   For other cases, it is up to the algorithm what to return.
@@ -281,12 +290,13 @@ and the translational symmetry between fundamental lattice volumes (or regions).
           }
       }
     \draw [ultra thick,-latex,themecolor] (Origin)
-    -- (Bone) node [above left] {$b_1$};
+    -- (Bone) node [above left] {$\vec{b}_1$};
     \draw [ultra thick,-latex,themecolor] (Origin)
-    -- (Btwo) node [below right] {$b_2$};
+    -- (Btwo) node [below right] {$\vec{b}_2$};
   \end{tikzpicture}
-  \caption{Illustration of a standard lattice $\mathcal{L}$ over the integers $\Z$
-    with two basis vectors $\vec{b}_1$ and $\vec{b}_2$, c.f. \autoref{def:lattice}.}
+  \caption{Illustration of a standard lattice $\lat$ over the integers $\Z$
+    with two basis vectors $\vec{b}_1$ and $\vec{b}_2$, c.f. \autoref{def:lattice}.
+    The shortest vector problem in this case is solved by $\vec{x} = 0 \vec{b}_1 \pm 1 \vec{b}_2$.}
   \label{fig:lattice}
 \end{figure}
 
@@ -308,6 +318,18 @@ Often times, public-key schemes (rather slow) are used to exchange keys for subs
 \Gls{rlwe}
 \cite{2010-rlwe-original}
 % TODO: how to get from LWE to RLWE
+\begin{corollary}{RLWE-Distribution $A_{\vec{s}, \chi}$}{rlwe-dist}
+  Given a prime $p \in \N$ and $n \in \N$, we choose some secret $\vec{s} \in (\Z / p \Z)^n$.
+  In order to sample a value from the LWE distribution $A_{\vec{s}, \chi}$:
+  \begin{itemize}
+    \item Draw a random vector $a \in (\Z/p\Z)^n$ from the multivariate uniform distribution
+          with its domain in the integers up to $p$.
+    \item Given another probability distribution $\chi$ over the integers modulo $p$,
+          sample a scalar 'error term' $\mu \in \Z / p \Z$ from it.
+    \item Set $b = \vec{s} \cdot \vec{a} + \mu$, with $\cdot$ denoting the standard vector product.
+    \item Output the pair $(\vec{a}, b) \in (\Z / p \Z)^n \times (\Z / p \Z)$.
+  \end{itemize}
+\end{corollary}
 
 \begin{definition}{Decision-RLWE}{decision-rlwe}
   Bla bli blub
