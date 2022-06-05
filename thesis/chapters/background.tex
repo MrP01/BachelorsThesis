@@ -189,6 +189,7 @@ which in general terms is defined as follows:
 \end{definition}
 
 \subsection{Learning with Errors (LWE)}
+\label{subsec:lwe}
 Next, we would like to consider \Gls{lwe}, a computing problem that is believed to be sufficiently hard
 to be used in cryptography and, most notably, is not yet solvable in linear time by a quantum algorithm
 (c.f. \autoref{sec:post-quantum-sec}).
@@ -246,13 +247,6 @@ which can be equivalently thought of as the minimal length of any non-zero vecto
 because of $\vec{0}$ always being an element of the lattice which can be chosen as $\vec{p_1}$
 and the translational symmetry between fundamental lattice volumes (or regions).
 
-\begin{definition}{Short Integer Solution (SIS) Problem}{sis}
-  For $m$ given vectors $(\vec{a}_i)_{0 < i \leq m} \in (\Z / q\Z)^n$ that comprise the columns of a matrix
-  $A \in (\Z / q\Z)^{n \times n}$ and an upper bound $\beta$, find
-  a solution vector $\vec{z} \in \Z^n \backslash \{\vec{0}\}$ such that
-  $$A \vec{z} = \vec{0} \quad \mathrm{with} \quad ||\vec{z}|| \leq \beta\,.$$
-\end{definition}
-
 \begin{definition}{Shortest Vector Problem (SVP)}{svp}
   Given a lattice $\lat$ constructed from $n$ basis vectors,
   find the shortest non-zero lattice vector $\vec{x} \in \lat \backslash \{\vec{0}\}$,
@@ -266,6 +260,23 @@ and the translational symmetry between fundamental lattice volumes (or regions).
   between $\lambda_{min} \leq 1$ and $\lambda_{min} > \gamma(n)$.
   For other cases, it is up to the algorithm what to return.
 \end{definition}
+
+\begin{definition}{Short Integer Solution (SIS) Problem}{sis}
+  For $m$ given vectors $(\vec{a}_i)_{0 < i \leq m} \in (\Z / q\Z)^n$ that comprise the columns of a matrix
+  $A \in (\Z / q\Z)^{n \times n}$ and an upper bound $\beta$, find
+  a solution vector $\vec{z} \in \Z^n \backslash \{\vec{0}\}$ such that
+  $$A \vec{z} = \vec{0} \quad \mathrm{with} \quad ||\vec{z}|| \leq \beta\,.$$
+\end{definition}
+
+Note that without the last requirement, the SIS problem can be easily solved through Gaussian elimination or
+similar algorithms, however they rarely yield a short (or \textit{the} shortest) solution.
+It can be shown that solving SIS is at least as hard as solving GapSVP with appropriate parameters
+\parencite{1996-hard-lattice-problems}.
+
+Using the above problems, multiple cryptographic primitives can be constructed
+due to the proven hardness that also propagates to quantum computers.
+Examples include collision resistant hash functions, signatures, pseudorandom functions
+or even Regev's public-key cryptosystem \parencite{2016-decade-of-lattice}.
 
 \usetikzlibrary{calc}
 \begin{figure}
@@ -318,22 +329,32 @@ Often times, public-key schemes (rather slow) are used to exchange keys for subs
 \Gls{rlwe}
 \cite{2010-rlwe-original}
 % TODO: how to get from LWE to RLWE
-\begin{corollary}{RLWE-Distribution $A_{\vec{s}, \chi}$}{rlwe-dist}
-  Given a prime $p \in \N$ and $n \in \N$, we choose some secret $\vec{s} \in (\Z / p \Z)^n$.
-  In order to sample a value from the LWE distribution $A_{\vec{s}, \chi}$:
+
+Similar to \autoref{def:lwe-dist}, the Ring-LWE distribution can be derived as follows:
+
+\begin{corollary}{RLWE-Distribution $B_{\vec{s}, \chi}$}{rlwe-dist}
+  Given a \hyperref[def:ring]{ring} $(R_q, +, \cdot)$, we choose some secret $s \in R_q$.
+  In order to sample a value from the RLWE distribution $B_{s, \chi}$:
   \begin{itemize}
-    \item Draw a random vector $a \in (\Z/p\Z)^n$ from the multivariate uniform distribution
-          with its domain in the integers up to $p$.
-    \item Given another probability distribution $\chi$ over the integers modulo $p$,
-          sample a scalar 'error term' $\mu \in \Z / p \Z$ from it.
-    \item Set $b = \vec{s} \cdot \vec{a} + \mu$, with $\cdot$ denoting the standard vector product.
-    \item Output the pair $(\vec{a}, b) \in (\Z / p \Z)^n \times (\Z / p \Z)$.
+    \item Uniformly randomly draw an element $a \in R_q$
+    \item Given another probability distribution $\chi$ over the ring elements,
+          sample an 'error term' $\mu \in R_q$ from it.
+    \item Set $b = s \cdot a + \mu$, with $\cdot$ denoting the ring multiplication operation.
+    \item Output the pair $(a, b) \in R_q \times R_q$.
   \end{itemize}
 \end{corollary}
 
-\begin{definition}{Decision-RLWE}{decision-rlwe}
-  Bla bli blub
-\end{definition}
+In the exact same manner as \hyperref[subsec:lwe]{above}, the search and decision problems
+can be constructed.
+
+\begin{corollary}{RLWE-Search Problem}{search-rlwe}
+  Given $m$ independent samples $(a_i, b_i)_{0 < i \leq m}$ from $B_{s, \chi}$, find the secret $s$.
+\end{corollary}
+\begin{corollary}{RLWE-Decision Problem}{decision-rlwe}
+  Given $m$ samples $(a_i, b_i)_{0 < i \leq m}$, distinguish (with non-negligible advantage)
+  whether they were drawn from $B_{s, \chi}$ or from the uniform distribution
+  $u$ over $R_q \times R_q$.
+\end{corollary}
 
 
 \subsection{The BFV scheme}
