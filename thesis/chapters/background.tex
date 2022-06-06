@@ -23,6 +23,8 @@ on (complex-valued) floating point numbers and vectors.
 The following discussion of the homomorphic encryption schemes requires some mathematical background that
 will (at least partially) be introduced here.
 
+Let $\N$ denote the natural numbers without $0$, i.e. $\N = \{n \in \Z | n > 0\}$.
+
 \begin{definition}{Ring}{ring}
   A tuple $(R, +, \cdot)$ consisting of a set $R$, an addition operation $+$ and a multiplication operation $\cdot$
   is referred to as a ring, given that it satisfies the following \textit{ring axioms}:
@@ -118,13 +120,6 @@ Where $\langle \cdot, \cdot \rangle$ denotes the dot (scalar) product between tw
 Polynomials with degree $\geq 2$ over the complex numbers can always be factorised using their roots
 due to the fundamental theorem of algebra.
 
-\begin{corollary}{Polynomials Modulo an Irreducible Form}{polys-mod}
-  Given an irreducible polynomial $\phi(x) \in P$, one can construct the interesting quotient group
-  $$\Z[X] / (X^N + 1)$$
-  where $(X^N + 1)$ denotes the set of all polynomial multiples of the polynomial $p \in \Z[X], p(x) = x^n + 1$, so
-  $$(X^N+1) = \{q: \C \mapsto \C,\; q(x) = r(x) \cdot (x^n+1) \;|\; r \in \Z[X]\}$$
-\end{corollary}
-
 \subsection{Cyclotomic Polynomials}
 Due to their interesting structure and efficient computability, in the following schemes,
 polynomials modulo an irreducible form (\autoref{corollary:polys-mod}) are
@@ -159,6 +154,15 @@ $\C$ under multiplication with (for instance) the first root $x_1 = e^{2\pi i \f
   It is unique for each given $n \in \N$.
 \end{definition}
 
+\begin{corollary}{Polynomials Modulo an Irreducible Form}{polys-mod}
+  Given an irreducible polynomial $\phi(x) \in P$, one can construct the interesting quotient group
+  $$\Z[X] / (X^N + 1)$$
+  where $(X^N + 1)$ denotes the set of all polynomial multiples of the polynomial $p \in \Z[X], p(x) = x^n + 1$, so
+  $$(X^N+1) = \{q: \C \mapsto \C,\; q(x) = r(x) \cdot (x^n+1) \;|\; r \in \Z[X]\}$$
+
+  The elements of $R$ are $n$ polynomials with integer coefficients of degree less than $n = \phi(d)$.
+\end{corollary}
+
 \begin{remark}{Irreducibility of Cyclotomic Polynomials}{cyclotomic-irreducibility}
   Cyclotomic polynomials are always irreducible..?
 \end{remark}
@@ -188,6 +192,8 @@ which in general terms is defined as follows:
     \varphi(a) \otimes \varphi(b)$$
 \end{definition}
 
+\subsection{Lattice Cryptography}
+
 \subsection{Learning with Errors (LWE)}
 \label{subsec:lwe}
 Next, we would like to consider \Gls{lwe}, a computing problem that is believed to be sufficiently hard
@@ -196,13 +202,13 @@ to be used in cryptography and, most notably, is not yet solvable in linear time
 Its hardness assumptions were first formally proven by \citeauthor{2005-lwe-original},
 for which he received the 2018 Gödel price.
 
-\begin{definition}{LWE-Distribution $A_{\vec{s}, \chi}$}{lwe-dist}
+\begin{definition}{LWE-Distribution $A_{\vec{s}, \chi_{error}}$}{lwe-dist}
   Given a prime $p \in \N$ and $n \in \N$, we choose some secret $\vec{s} \in (\Z / p \Z)^n$.
-  In order to sample a value from the LWE distribution $A_{\vec{s}, \chi}$:
+  In order to sample a value from the LWE distribution $A_{\vec{s}, \chi_{error}}$:
   \begin{itemize}
     \item Draw a random vector $a \in (\Z/p\Z)^n$ from the multivariate uniform distribution
           with its domain in the integers up to $p$.
-    \item Given another probability distribution $\chi$ over the integers modulo $p$,
+    \item Given another probability distribution $\chi_{error}$ over the integers modulo $p$,
           sample a scalar 'error term' $\mu \in \Z / p \Z$ from it.
     \item Set $b = \vec{s} \cdot \vec{a} + \mu$, with $\cdot$ denoting the standard vector product.
     \item Output the pair $(\vec{a}, b) \in (\Z / p \Z)^n \times (\Z / p \Z)$.
@@ -213,11 +219,11 @@ The general approach useful to cryptography is to sample an element from the LWE
 two problems out of it, \textit{search}-LWE and \textit{decision}-LWE.
 
 \begin{definition}{LWE-Problem - Search Version}{lwe-search-problem}
-  Given $m$ independent samples $(\vec{a}_i, b_i)_{0 < i \leq m}$ from $A_{\vec{s}, \chi}$, find the secret $\vec{s}$.
+  Given $m$ independent samples $(\vec{a}_i, b_i)_{0 < i \leq m}$ from $A_{\vec{s}, \chi_{error}}$, find the secret $\vec{s}$.
 \end{definition}
 \begin{definition}{LWE-Problem - Decision Version}{lwe-decision-problem}
   Given $m$ samples $(\vec{a}_i, b_i)_{0 < i \leq m}$, distinguish (with non-negligible advantage)
-  whether they were drawn from $A_{\vec{s}, \chi}$ or from the uniform distribution
+  whether they were drawn from $A_{\vec{s}, \chi_{error}}$ or from the uniform distribution
   $u$ over $(\Z / p \Z)^n \times (\Z / p \Z)$.
 \end{definition}
 
@@ -332,15 +338,15 @@ Often times, public-key schemes (rather slow) are used to exchange keys for subs
 
 Similar to \autoref{def:lwe-dist}, the Ring-LWE distribution can be derived as follows:
 
-\begin{corollary}{RLWE-Distribution $B_{\vec{s}, \chi}$}{rlwe-dist}
-  Given a \hyperref[def:ring]{ring} $(R_q, +, \cdot)$, we choose some secret $s \in R_q$.
-  In order to sample a value from the RLWE distribution $B_{s, \chi}$:
+\begin{corollary}{RLWE-Distribution $B_{\vec{s}, \chi_{error}}$}{rlwe-dist}
+  Given a quotient \hyperref[def:ring]{ring} $(R/qR, +, \cdot)$, we choose some secret $s \in R/qR$.
+  In order to sample a value from the RLWE distribution $B_{s, \chi_{error}}$:
   \begin{itemize}
-    \item Uniformly randomly draw an element $a \in R_q$
-    \item Given another probability distribution $\chi$ over the ring elements,
-          sample an 'error term' $\mu \in R_q$ from it.
+    \item Uniformly randomly draw an element $a \in R/qR$
+    \item Given another probability distribution $\chi_{error}$ over the ring elements,
+          sample an 'error term' $\mu \in R/qR$ from it.
     \item Set $b = s \cdot a + \mu$, with $\cdot$ denoting the ring multiplication operation.
-    \item Output the pair $(a, b) \in R_q \times R_q$.
+    \item Output the pair $(a, b) \in R/qR \times R/qR$.
   \end{itemize}
 \end{corollary}
 
@@ -348,18 +354,80 @@ In the exact same manner as \hyperref[subsec:lwe]{above}, the search and decisio
 can be constructed.
 
 \begin{corollary}{RLWE-Search Problem}{search-rlwe}
-  Given $m$ independent samples $(a_i, b_i)_{0 < i \leq m}$ from $B_{s, \chi}$, find the secret $s$.
+  Given $m$ independent samples $(a_i, b_i)_{0 < i \leq m}$ from $B_{s, \chi_{error}}$, find the secret $s$.
 \end{corollary}
 \begin{corollary}{RLWE-Decision Problem}{decision-rlwe}
   Given $m$ samples $(a_i, b_i)_{0 < i \leq m}$, distinguish (with non-negligible advantage)
-  whether they were drawn from $B_{s, \chi}$ or from the uniform distribution
-  $u$ over $R_q \times R_q$.
+  whether they were drawn from $B_{s, \chi_{error}}$ or from the uniform distribution
+  $u$ over $R/qR \times R/qR$.
 \end{corollary}
 
+\subsection{Gentry's FHE-Scheme and BGV}
+\cite{2009-gentry-fhe-original}
+% TODO: historical introduction
 
+\pagebreak
 \subsection{The BFV scheme}
 \cite{2012-fv-original}
 \cite{2012-brakerski}
+BFV is based on BGV.
+
+In this section, we will focus on a slightly altered implementation introduced in \cite{2014-fv-comparison}.
+
+\newcommand{\cryptop}[1]{\textsl{#1}}
+\begin{definition}{The BFV-Scheme}{bfv-scheme}
+  Let $R = \Z[X] / \Phi_d(X)$ be a ring with $\Phi_d(X)$ the $d$-th \hyperref[def:cyclotomic-poly]{cyclotomic polynomial}
+  ($\rightarrow d \in \N$) for ciphertexts $c \in R \times R$.
+  Introduce $R / qR$ the associated quotient ring of the $q$-th coset of $R$ with the modulus $q \in \N$.
+
+  Further let $t \in \N$ denote the message modulus with $1<t<q$
+  for plain messages $m \in R/tR$.
+
+  Introduce two bounded discrete probability distributions $\chi_{key}$ and $\chi_{error}$ over $R/qR$,
+  one which is only used once for key generation and another (usually Gaussian-like) error distribution
+  for the \hyperref[def:lwe-search-problem]{LWE-problem}.
+
+  Finally, define a basis $w \in \N$ required for \cryptop{WordDecomp} and \cryptop{PowersOf}. \\
+  Let the parameters $\mathbb{P} = (d, q, t, \chi_{key}, \chi_{error}, w)$.
+
+  \begin{tblr}{lll}
+    \cryptop{BFV.ParamGen$(\lambda)$}           & {test} & $\rightarrow \mathbb{P}$       \\
+    \cryptop{BFV.KeyGen$(\mathbb{P})$}          & {test} & $\rightarrow (b,a), s, \gamma$ \\
+    \cryptop{BFV.Encrypt$((b, a), m)$}          & {test} & $\rightarrow c$                \\
+    \cryptop{BFV.Decrypt$(s, c)$}               & {test} & $\rightarrow m$                \\
+    \cryptop{BFV.Add$(c_1, c_2)$}               & {test} & $\rightarrow c_3$              \\
+    \cryptop{BFV.Mult$(c_1, c_2)$}              & {test} & $\rightarrow \overline{c}$     \\
+    \cryptop{BFV.ReLin$(\overline{c}, \gamma)$} & {test} & $\rightarrow c$                \\
+  \end{tblr}
+
+  \parencite{2012-fv-original, 2012-brakerski}
+\end{definition}
+
+To summarize the parameters and variables, a brief overview of all used symbols is
+provided in \autoref{tab:bfv-symbols}.
+\begin{table}[H]
+  \centering
+  \caption{Summary of the parameters and symbols in BFV.}
+  \begin{tblr}{rll}
+    \hline
+    \textbf{Symbol} & \textbf{Space} & \textbf{Explanation} \\
+    \hline
+    $d$ & $\in \N$ & Index of the cyclotomic polynomial over $R$ \\
+    $q$ & $\in \N$ & Modulus \\
+    $t$ & $\in \N$ & \\
+    $\chi_{key}$ & $\in \N$ & \\
+    $\chi_{error}$ & $\in \N$ & \\
+    $w$ & $\in \N$ & \\
+    $(b, a)$ & $\in \N$ & Public Key\\
+    $s$ & $\in R$ & Private / Secret Key\\
+    $\gamma$ & $\in R$ & Relinearization Key \\
+    $m$ & $\in \N$ & \\
+    $c$ & $\in \N$ & \\
+    $\overline{c}$ & $\in \N$ & \\
+  \end{tblr}
+  \label{tab:bfv-symbols}
+\end{table}
+
 
 \subsection{The CKKS scheme}
 The CKKS scheme allows us to perform approximate arithmetic on floating point numbers.
