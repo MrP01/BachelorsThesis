@@ -113,7 +113,7 @@ To further elaborate on the polynomial ring operations:
 Where $\langle \cdot, \cdot \rangle$ denotes the dot (scalar) product between two vectors.
 
 \begin{definition}{Irreducible Polynomials}{irreducible-polys}
-  A polynomial is called irreducible iff it cannot be written as a product of other polynomials
+  A polynomial is called irreducible \glstext{iff} it cannot be written as a product of other polynomials
   \textsl{while staying in the same coefficient space}.
 \end{definition}
 
@@ -138,7 +138,7 @@ are referred to as the $n$\textsuperscript{th} roots of unity.
   Using \name{Euler}'s identity, their real and imaginary components can be explicitly found as
   $x_k = \cos(2\pi \frac{k}{n}) + i \sin(2\pi \frac{k}{n})$.
 
-  An $n$\textsuperscript{th} root of unity $y$ is referred to as \textit{primitive}, iff\footnote{if and only if}
+  An $n$\textsuperscript{th} root of unity $y$ is referred to as \textit{primitive}, \glstext{iff}
   there exists no $m < n$ for which that root $y$ is also an $m$\textsuperscript{th} root of unity, i.e. $y^m \neq 1$.
 \end{lemma}
 Due to the fact that for any $k, l \in \Z$, their product $x_k \cdot x_l$ is also a root of unity, and
@@ -147,20 +147,37 @@ $\C$ under multiplication with (for instance) the first root $x_1 = e^{2\pi i \f
 
 \begin{definition}{Cyclotomic Polynomial}{cyclotomic-poly}
   Given the $n$\textsuperscript{th} roots of unity $\{x_k\}$, we can define the $n$\textsuperscript{th}
-  cyclotomic polynomial $\Phi_n \in \Z[X]$ as
-  $$\Phi_n(x) = \prod_{k=1}^{\varphi(n)} (x - x_k)$$
-  with $\varphi(n)$ denoting Euler's totient function which counts the
-  natural numbers $m$ less than $n$ who do not share a common divisor $\neq 1$, i.e. $\gcd(m, n) = 1$.
+  cyclotomic polynomial $\Phi_n \in \Z[X]$ as the product over all primitive roots of unity
+  $$\Phi_n(x) = \prod_{\stackrel{k=1}{x_k \mathrm{primitive}}}^{n} (x - x_k)$$
   It is unique for each given $n \in \N$.
 \end{definition}
+The number of primitive roots of unity is given by $\varphi(n)$, denoting Euler's totient function which counts the
+natural numbers $m$ less than $n$ who do not share a common divisor $\neq 1$, i.e. $\gcd(m, n) = 1$.
+$\varphi(n)$ therefore also counts the number of primitive roots of unity for $n$,
+consequently also yielding the degree of the $n$\textsuperscript{th} cyclotomic polynomial.
+
+\begin{theorem}{$2^k$\textsuperscript{th} cyclotomic polynomial}{power-of-2-cyclo-poly}
+  The $n$\textsuperscript{th} cyclotomic polynomial, where $n = 2^k$ ($k \in \N$) is a power of $2$,
+  can be identified as
+  $$\Phi_{n}(x) = x^{n/2} + 1\,.$$
+  Its degree is $n/2$, consistent with $\varphi(2^k) = 2^{k-1} \; \forall k \in \N$.
+\end{theorem}
 
 \begin{corollary}{Polynomials Modulo an Irreducible Form}{polys-mod}
-  Given an irreducible polynomial $\phi(x) \in P$, one can construct the interesting quotient group
+  One can construct the interesting quotient ring
   $$\Z[X] / (X^N + 1)$$
   where $(X^N + 1)$ denotes the set of all polynomial multiples of the polynomial $p \in \Z[X], p(x) = x^n + 1$, so
   $$(X^N+1) = \{q: \C \mapsto \C,\; q(x) = r(x) \cdot (x^n+1) \;|\; r \in \Z[X]\}$$
+  The elements of $R$ are $n$ polynomials with integer coefficients of degree $N-1$.
+\end{corollary}
 
-  The elements of $R$ are $n$ polynomials with integer coefficients of degree less than $n = \phi(d)$.
+\begin{corollary}{Polynomial Ring modulo $q$}{polys-mod-q}
+  Further modifying $R = \Z[X] / (X^N+1)$ to only take coefficients mod $q$, we obtain two equivalent definitions
+  for the same ring:
+  $$R/qR = (\Z/q\Z)[X] / (X^N+1) = \Z_q[X] / (X^N+1)$$
+  which contains polynomials with integer coefficients modulo $q$ of degree $N-1$.
+  Explicitly stated, the set can be written as:
+  $$R/qR = \{p: \C \mapsto \C,\; p(x) = \sum_{k=0}^{N-1} a_k x^k \;|\; a_k \in \Z/q\Z\}$$
 \end{corollary}
 
 \begin{remark}{Irreducibility of Cyclotomic Polynomials}{cyclotomic-irreducibility}
@@ -376,9 +393,9 @@ In this section, we will focus on a slightly altered implementation introduced i
 
 \newcommand{\cryptop}[1]{\textsl{#1}}
 \begin{definition}{The BFV-Scheme}{bfv-scheme}
-  Let $R = \Z[X] / \Phi_d(X)$ be a ring with $\Phi_d(X)$ the $d$-th \hyperref[def:cyclotomic-poly]{cyclotomic polynomial}
+  Let $R = \Z[X] / \Phi_d(X)$ be a ring with $\Phi_d(X)$ the $d$\textsuperscript{th} \hyperref[def:cyclotomic-poly]{cyclotomic polynomial}
   ($\rightarrow d \in \N$) for ciphertexts $c \in R \times R$.
-  Introduce $R / qR$ the associated quotient ring of the $q$-th coset of $R$ with the modulus $q \in \N$.
+  Introduce $R / qR$ the associated quotient ring of the $q$\textsuperscript{th} coset of $R$ with the modulus $q \in \N$.
 
   Further let $t \in \N$ denote the message modulus with $1<t<q$
   for plain messages $m \in R/tR$.
@@ -388,7 +405,7 @@ In this section, we will focus on a slightly altered implementation introduced i
   for the \hyperref[def:lwe-search-problem]{LWE-problem}.
 
   Finally, define a basis $w \in \N$ required for \cryptop{WordDecomp} and \cryptop{PowersOf}. \\
-  Let the parameters $\mathbb{P} = (d, q, t, \chi_{key}, \chi_{error}, w)$.
+  Let the parameters $\mathbb{P} = (d, q, t, \chi_{key}, \chi_{error}, w)$ and $l = \lfloor \log_w(q) \rfloor + 1$.
 
   \begin{tblr}{lll}
     \cryptop{BFV.ParamGen$(\lambda)$}           & {test} & $\rightarrow \mathbb{P}$       \\
@@ -413,21 +430,58 @@ provided in \autoref{tab:bfv-symbols}.
     \textbf{Symbol} & \textbf{Space} & \textbf{Explanation} \\
     \hline
     $d$ & $\in \N$ & Index of the cyclotomic polynomial over $R$ \\
-    $q$ & $\in \N$ & Modulus \\
-    $t$ & $\in \N$ & \\
-    $\chi_{key}$ & $\in \N$ & \\
-    $\chi_{error}$ & $\in \N$ & \\
-    $w$ & $\in \N$ & \\
-    $(b, a)$ & $\in \N$ & Public Key\\
-    $s$ & $\in R$ & Private / Secret Key\\
-    $\gamma$ & $\in R$ & Relinearization Key \\
-    $m$ & $\in \N$ & \\
-    $c$ & $\in \N$ & \\
-    $\overline{c}$ & $\in \N$ & \\
+    $q$ & $\in \N$ & Modulus of the public key space $R/qR$ \\
+    $t$ & $\in \N$ & Modulus of the plaintext message space $R/tR$ \\
+    $w$ & $\in \N$ & Word size used as basis, e.g. $w = 2$ for bits \\
+    $l$ & $\in \N$ & Number of words of size $w$ required to encode $q$ \\
+    $s$ & $\in R$ & Secret Key \\
+    $(b, a)$ & $\in R/qR \times R/qR$ & Public Key \\
+    $\gamma$ & $\in (R/qR)^l \times (R/qR)^l$ & Relinearization Key \\
+    $m$ & $\in R/tR$ & Plaintext Message\\
+    $c$ & $\in R \times R$ & Ciphertext \\
+    $\overline{c}$ & $\in R \times R \times R$ & Slightly larger ciphertext resulting from multiplication \\
   \end{tblr}
   \label{tab:bfv-symbols}
 \end{table}
 
+
+\tikzstyle{cleartext} = [rectangle, rounded corners,minimum width=3cm, minimum height=1cm, text centered, draw=black, fill=orange!30]
+\tikzstyle{plaintext} = [rectangle, rounded corners,minimum width=3cm, minimum height=1cm, text centered, draw=black, fill=purple!30]
+\tikzstyle{ciphertext} = [rectangle, rounded corners,minimum width=3cm, minimum height=1cm, text centered, draw=black, fill=themecolor!30]
+\tikzstyle{arrow} = [thick,->,>=stealth]
+
+\begin{figure}[H]
+  \centering
+  \begin{tikzpicture}
+    \node[cleartext, align = center] (m) at (0,0) {message \\ $m$};
+    \node[plaintext, align = center] (p) at (6,0) {plaintext \\ $p(X)$};
+    \node[ciphertext, align = center] (c) at (12,0) {ciphertext \\ $c = (c_0(X), c_1(X))$};
+
+    \node[cleartext, align = center] (m2) at (0,-2.5) {message \\ $\tilde{m}=f(m)$};
+    \node[plaintext, align = center] (p2) at (6,-2.5) {plaintext \\ $\tilde{p}(X) = f(p(X))$};
+    \node[ciphertext, align = center] (c2) at (12,-2.5) {ciphertext \\ $\tilde{c} = f(c)$};
+
+    \draw (m.north) node[above]{$\C^{N/2}$};
+    \draw (m2.south) node[below]{$\C^{N/2}$};
+    \draw (p.north) node[above]{$\Z[X]/(X^N + 1)$};
+    \draw (p2.south) node[below]{$\Z[X]/(X^N + 1)$};
+    \draw (c.north) node[above]{$(\Z_q[X]/(X^N + 1))^2$};
+    \draw (c2.south) node[below]{$(\Z_q[X]/(X^N + 1))^2$};
+
+    \draw [arrow] (m) -- node[anchor=south] {encoding} (p) ;
+    \draw [arrow] (p) -- node[anchor=south] {encryption} (c);
+    \draw [arrow] (c) -- node[anchor=east] {computing $f$} (c2);
+    \draw [arrow] (c2) -- node[anchor=south] {decryption} (p2);
+    \draw [arrow] (p2) -- node[anchor=south] {decoding} (m2);
+  \end{tikzpicture}
+  \caption{Overview of BFV, adapted from \cite{2020-cryptotree}.}
+  \label{fig:bfv-overview}
+\end{figure}
+
+\begin{theorem}{BFV encryption is homomorphic with respect to addition}{bfv-enc-is-homomorphic}
+  \cryptop{BFV.Encrypt} should encrypt in such a way that the addition algebra can be retained
+  even in the transformed space, showing that we can indeed refer to it as homomorphic encryption.
+\end{theorem}
 
 \subsection{The CKKS scheme}
 The CKKS scheme allows us to perform approximate arithmetic on floating point numbers.
@@ -470,13 +524,18 @@ three decimal places of the original vector $\vec{x}$.
     \draw [arrow] (p2) -- node[anchor=south] {decoding} (m2);
   \end{tikzpicture}
   \caption{Overview of CKKS, adapted from \cite{2020-cryptotree}.}
-  \label{fig:CKKS overview}
+  \label{fig:ckks-overview}
 \end{figure}
 
 % \subsubsection{Packing}
 % FFT in CKKS!
 % (Polynom -> Vektor) mit einer FFT
 % (Vektor -> Polynom) mit einer IFFT
+
+\begin{theorem}{CKKS encryption is homomorphic with respect to addition}{ckks-enc-is-homomorphic}
+  \cryptop{CKKS.Encrypt} should encrypt in such a way that the addition algebra can be retained
+  even in the transformed space, showing that we can indeed refer to it as homomorphic encryption.
+\end{theorem}
 
 \textit{Microsoft SEAL} implements the scheme, enabled using \cpp{seal::scheme_type::ckks}.
 
