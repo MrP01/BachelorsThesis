@@ -2,8 +2,27 @@
 \addcontentsline{toc}{chapter}{Appendix}
 
 \begin{proof}[Proof of \autoref{thm:power-of-2-cyclo-poly}]
-  With $k \in \N$ a positive integer, we would like to show that
-  $$\Phi_{2^k} (x) = x^{2^{k - 1} } + 1$$
+  With $k \in \N$ a positive integer, we want to show that
+  $$\Phi_{2^k} (x) = x^{2^{k-1}} + 1\,.$$
+
+  A polynomial $p \in \Z[X]$ with $$p(z) = z^m - a$$ of degree $m$ has $m$ roots
+  $$\{z_j\} = \{a^\frac{1}{m} e^{2\pi i \frac{j}{m}} \,|\, j \in \N\}$$
+  related by a factor $a^\frac{1}{m}$ to the
+  \hyperref[lemma:nth-roots-of-unity]{$n$\textsuperscript{th} roots of unity} given by powers of
+  $x_1 = e^{2\pi i \frac{1}{n}}$.
+
+  It is clear from the fundamental theorem of algebra that the polynomial $p$ with roots $\{z_k\}$
+  can be factorised as
+  $$p(z) = \prod_{j=1}^{m} (z - z_j) = \prod_{j=1}^{m} (z - a^\frac{1}{m} e^{2\pi i \frac{j}{m}})\,.$$
+
+  Fixing $a = -1$, we obtain $p(z) = z^m + 1$ with roots given by
+  $$z_j = (-1)^\frac{1}{m} e^{2\pi i \frac{j}{m}}
+    = (e^{i\pi})^\frac{1}{m} e^{2\pi i \frac{j}{m}}
+    = e^{\frac{i\pi (2j + 1)}{m}}$$
+  and according factorisation
+  $$p(z) = \prod_{j=1}^{m} (z - e^{\frac{i\pi}{m} (2j + 1)})\,.$$
+
+  Further letting $m = 2^{k}$
 
   \parencite{power-of-2-cyclo-poly}
 \end{proof}
