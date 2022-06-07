@@ -5,24 +5,39 @@
   With $k \in \N$ a positive integer, we want to show that
   $$\Phi_{2^k} (x) = x^{2^{k-1}} + 1\,.$$
 
-  A polynomial $p \in \Z[X]$ with $$p(z) = z^m - a$$ of degree $m$ has $m$ roots
-  $$\{z_j\} = \{a^\frac{1}{m} e^{2\pi i \frac{j}{m}} \,|\, j \in \N\}$$
-  related by a factor $a^\frac{1}{m}$ to the
+  A polynomial $p \in \Z[X]$ with $$p(x) = x^n - a$$ of degree $n$ has $n$ roots
+  $$\{x_j\} = \{a^\frac{1}{n} e^{2\pi i \frac{j}{n}} \,|\, j \in \N\}$$
+  related by a factor $a^\frac{1}{n}$ to the
   \hyperref[lemma:nth-roots-of-unity]{$n$\textsuperscript{th} roots of unity} given by powers of
-  $x_1 = e^{2\pi i \frac{1}{n}}$.
+  $\xi = e^{2\pi i \frac{1}{n}}$.
 
-  It is clear from the fundamental theorem of algebra that the polynomial $p$ with roots $\{z_k\}$
+  It is clear from the fundamental theorem of algebra that the polynomial $p$ with roots $\{x_k\}$
   can be factorised as
-  $$p(z) = \prod_{j=1}^{m} (z - z_j) = \prod_{j=1}^{m} (z - a^\frac{1}{m} e^{2\pi i \frac{j}{m}})\,.$$
+  $$p(x) = \prod_{j=1}^{n} (x - x_j) = \prod_{j=1}^{n} (x - a^\frac{1}{n} e^{2\pi i \frac{j}{n}})\,.$$
 
-  Fixing $a = -1$, we obtain $p(z) = z^m + 1$ with roots given by
-  $$z_j = (-1)^\frac{1}{m} e^{2\pi i \frac{j}{m}}
-    = (e^{i\pi})^\frac{1}{m} e^{2\pi i \frac{j}{m}}
-    = e^{\frac{i\pi (2j + 1)}{m}}$$
+  Fixing $a = -1$, we obtain $p(x) = x^n + 1$ with roots given by
+  $$x_j = (-1)^\frac{1}{n} e^{2\pi i \frac{j}{n}}
+    = (e^{i\pi})^\frac{1}{n} e^{2\pi i \frac{j}{n}}
+    = e^{\frac{i\pi (2j + 1)}{n}}$$
   and according factorisation
-  $$p(z) = \prod_{j=1}^{m} (z - e^{\frac{i\pi}{m} (2j + 1)})\,.$$
+  $$p(x) = \prod_{j=1}^{n} (x - e^{\frac{i\pi}{n} (2j + 1)})\,.$$
 
-  Further letting $m = 2^{k}$
+  Further letting $n = 2^{k-1}$ and observing that
+  $$\gcd(2^k, l) = \begin{cases}
+      1 & \text{if } l \text{ odd}  \\
+      2 & \text{if } l \text{ even}
+    \end{cases} \quad l, k \in \N$$
+  since a number $2^k$ that can only be decomposed into multiples of $2$
+  never shares a factor with an odd number, in accordance with \autoref{lemma:nth-roots-of-unity}
+  we can conclude that the set of all odd roots of unity is exactly the set of all primitive roots.
 
+  Following from above,
+  \begin{align*}
+    p(x) & = \prod_{j=1}^{2^{k-1}} (x - e^{\frac{i\pi}{n} (2j + 1)})                \\
+         & = \prod_{\stackrel{l=1}{l \text{ odd}}}^{2^k} (x - e^{\frac{i\pi}{n} l}) \\
+         & = \prod_{\stackrel{l=1}{x_l \text{ primitive}}}^{2^k} (x - \xi^l)
+    = \Phi_{2^k}(x)
+  \end{align*}
+  we arrive exactly at the definition of a cyclotomic polynomial (\autoref{def:cyclotomic-poly}). \\
   \parencite{power-of-2-cyclo-poly}
 \end{proof}
