@@ -1,4 +1,5 @@
 \chapter*{Appendix}
+\label{chap:appendix}
 \addcontentsline{toc}{chapter}{Appendix}
 
 \begin{proof}[Proof of \autoref{thm:power-of-2-cyclo-poly}]
@@ -6,12 +7,12 @@
   $$\Phi_{2^k} (x) = x^{2^{k-1}} + 1\,.$$
 
   A polynomial $p \in \Z[X]$ with $$p(x) = x^n - a$$ of degree $n$ has $n$ roots
-  $$\{x_j\} = \{a^\frac{1}{n} e^{2\pi i \frac{j}{n}} \,|\, j \in \N\}$$
+  $$\{x_j\} = \{a^\frac{1}{n} e^{2\pi i \frac{j}{n}} \,|\, j \in \N, j \leq n\}$$
   related by a factor $a^\frac{1}{n}$ to the
   \hyperref[lemma:nth-roots-of-unity]{$n$\textsuperscript{th} roots of unity} given by powers of
   $\xi = e^{2\pi i \frac{1}{n}}$.
 
-  It is clear from the fundamental theorem of algebra that the polynomial $p$ with roots $\{x_k\}$
+  It is clear from the fundamental theorem of algebra that the polynomial $p$ with roots $\{x_j\}$
   can be factorised as
   $$p(x) = \prod_{j=1}^{n} (x - x_j) = \prod_{j=1}^{n} (x - a^\frac{1}{n} e^{2\pi i \frac{j}{n}})\,.$$
 
@@ -35,7 +36,7 @@
   \begin{align*}
     p(x) & = \prod_{j=1}^{2^{k-1}} (x - e^{\frac{i\pi}{n} (2j + 1)})                \\
          & = \prod_{\stackrel{l=1}{l \text{ odd}}}^{2^k} (x - e^{\frac{i\pi}{n} l}) \\
-         & = \prod_{\stackrel{l=1}{x_l \text{ primitive}}}^{2^k} (x - \xi^l)
+         & = \prod_{\stackrel{l=1}{\xi^l \text{ primitive}}}^{2^k} (x - \xi^l)
     = \Phi_{2^k}(x)
   \end{align*}
   we arrive exactly at the definition of a cyclotomic polynomial (\autoref{def:cyclotomic-poly}). \\
