@@ -408,15 +408,38 @@ In this section, we will focus on a slightly altered implementation introduced i
 
   Finally, define a basis $w \in \N$ required for \cryptop{WordDecomp} and \cryptop{PowersOf}. \\
   Let the parameters $\mathbb{P} = (d, q, t, \chi_{key}, \chi_{error}, w)$ and $l = \lfloor \log_w(q) \rfloor + 1$.
+  \vspace{0.4cm}
 
-  \begin{tblr}{lll}
-    \cryptop{BFV.ParamGen$(\lambda)$}           & {test} & $\rightarrow \mathbb{P}$       \\
-    \cryptop{BFV.KeyGen$(\mathbb{P})$}          & {test} & $\rightarrow (b,a), s, \gamma$ \\
-    \cryptop{BFV.Encrypt$((b, a), m)$}          & {test} & $\rightarrow c$                \\
-    \cryptop{BFV.Decrypt$(s, c)$}               & {test} & $\rightarrow m$                \\
-    \cryptop{BFV.Add$(c_1, c_2)$}               & {test} & $\rightarrow c_3$              \\
-    \cryptop{BFV.Mult$(c_1, c_2)$}              & {test} & $\rightarrow \overline{c}$     \\
-    \cryptop{BFV.ReLin$(\overline{c}, \gamma)$} & {test} & $\rightarrow c$                \\
+  \begin{tblr}{Q[l,h]Q[l,h,\textwidth - 3.4cm]}
+    \cryptop{ParamGen$(\lambda)$} & {
+        Choose parameters as defined above, given the
+        security parameter $\lambda$, such that $1 < t < q$, $w > 1$,
+        initialize distributions $\chi_{key}$ and $\chi_{error}$
+        $\quad\rightarrow \mathbb{P}$} \\
+    \cryptop{KeyGen$(\mathbb{P})$} & {
+        Generate the secret key $s$ sampled from $\chi_{key}$ and $\vec{\mu}$
+        from $\chi_{error}$ and choose some $\vec{a} \in (R/qR)^l$ uniformly
+        at random, compute the relinearization key
+        $\gamma = (\cryptop{PowersOf}(s^2) - (\vec{\mu} + \vec{a} \cdot s), \vec{a})$
+        and finally output the public key for uniformly random
+        $a \in (R/qR)$ and $\mu$ sampled from $\chi_{error}$ with $b =-(a \cdot s + \mu)$
+        as $p = (b, a)$.
+        $\quad\rightarrow p, s, \gamma$} \\
+    \cryptop{Encrypt$(p, m)$} & {
+        $p = (b,a)$
+        $\quad\rightarrow c$} \\
+    \cryptop{Add$(c_1, c_2)$} & {
+        test
+        $\quad\rightarrow c_3$} \\
+    \cryptop{Mult$(c_1, c_2)$} & {
+        test
+        $\quad\rightarrow \overline{c}$} \\
+    \cryptop{ReLin$(\overline{c}, \gamma)$} & {
+        test
+        $\quad\rightarrow c$} \\
+    \cryptop{Decrypt$(s, c)$} & {
+        And finally, decrypt
+        $\quad\rightarrow m$} \\
   \end{tblr}
 
   \parencite{2012-fv-original, 2012-brakerski}
@@ -431,13 +454,14 @@ provided in \autoref{tab:bfv-symbols}.
     \hline
     \textbf{Symbol} & \textbf{Space} & \textbf{Explanation} \\
     \hline
+    $\lambda$ & $\in \R$ & Security parameter \\
     $d$ & $\in \N$ & Index of the cyclotomic polynomial over $R$ \\
     $q$ & $\in \N$ & Modulus of the public key space $R/qR$ \\
     $t$ & $\in \N$ & Modulus of the plaintext message space $R/tR$ \\
     $w$ & $\in \N$ & Word size used as basis, e.g. $w = 2$ for bits \\
     $l$ & $\in \N$ & Number of words of size $w$ required to encode $q$ \\
     $s$ & $\in R$ & Secret Key \\
-    $(b, a)$ & $\in R/qR \times R/qR$ & Public Key \\
+    $p$ & $\in R/qR \times R/qR$ & Public Key $(b, a)$ \\
     $\gamma$ & $\in (R/qR)^l \times (R/qR)^l$ & Relinearization Key \\
     $m$ & $\in R/tR$ & Plaintext Message\\
     $c$ & $\in R \times R$ & Ciphertext \\
