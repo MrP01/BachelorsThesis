@@ -24,6 +24,11 @@ The following discussion of the homomorphic encryption schemes requires some mat
 will (at least partially) be introduced here.
 
 Let $\N$ denote the natural numbers without $0$, i.e. $\N = \{n \in \Z | n > 0\}$.
+For a probability distribution $\chi$ over a set $R$, let sampling a value $x \in R$ from
+the probability distribution be denoted by $x \leftarrow \chi$.
+For $a \in \R$ a real number, denote rounding down (floor) $a$ by $\lfloor a \rfloor \in \Z$,
+rounding up (ceil) by $\lceil a \rceil \in \Z$ and rounding to the nearest integer by
+$\lfloor a \rceil \in \Z$.
 
 \begin{definition}{Ring}{ring}
   A tuple $(R, +, \cdot)$ consisting of a set $R$, an addition operation $+$ and a multiplication operation $\cdot$
@@ -129,7 +134,7 @@ in a bit more detail here.
 
 An important polynomial is $$p: \C \mapsto \C, \; p(x) = x^n - 1$$.
 Its roots, found by solving $p(x) = 0$ for $x$, yielding $x^n = 1 \leftrightarrow x_k = \sqrt[n]{1}$
-are referred to as the $n$\textsuperscript{th} roots of unity.
+are referred to as the $n$\textsuperscript{th} roots of unity, of which there are multiple for each $n$.
 
 \begin{lemma}{The $n$\textsuperscript{th} roots of unity}{nth-roots-of-unity}
   For some integer $n \in \N$, the $n$ complex roots $x_1, x_2, ..., x_n \in \C$ of unity
@@ -183,8 +188,9 @@ Find a short but illustrative proof of \autoref{thm:power-of-2-cyclo-poly} in th
 \end{corollary}
 
 \begin{remark}{Irreducibility of Cyclotomic Polynomials}{cyclotomic-irreducibility}
-  Cyclotomic polynomials are always irreducible..?
+  Cyclotomic polynomials are always irreducible.
 \end{remark}
+The proof for the above statement is quite cumbersome, but can be found in \cite{2002-serge-algebra}.
 
 \subsection{HE using RSA}
 In order to illustrate the basic idea behind \Gls{he}, without distancing ourselves too far
@@ -393,52 +399,64 @@ BFV is based on BGV.
 
 In this section, we will focus on a slightly altered implementation introduced in \cite{2014-fv-comparison}.
 
-\newcommand{\cryptop}[1]{\textsl{#1}}
+\newcommand{\cryptop}[1]{\text{\textcolor{darkpurple}{#1}}}
 \begin{definition}{The BFV-Scheme}{bfv-scheme}
   Let $R = \Z[X] / \Phi_d(X)$ be a ring with $\Phi_d(X)$ the $d$\textsuperscript{th} \hyperref[def:cyclotomic-poly]{cyclotomic polynomial}
   ($\rightarrow d \in \N$) for ciphertexts $c \in R \times R$.
   Introduce $R / qR$ the associated quotient ring of the $q$\textsuperscript{th} coset of $R$ with the modulus $q \in \N$.
-
   Further let $t \in \N$ denote the message modulus with $1<t<q$
-  for plain messages $m \in R/tR$.
+  for plain messages $m \in R/tR$ and define $\delta = \lfloor \frac{q}{t} \rfloor$,
+  $\delta^{-1} = \frac{t}{q}$.
 
   Introduce two bounded discrete probability distributions $\chi_{key}$ and $\chi_{error}$ over $R/qR$,
   one which is only used once for key generation and another (usually Gaussian-like) error distribution
   for the \hyperref[def:lwe-search-problem]{LWE-problem}.
 
-  Finally, define a basis $w \in \N$ required for \cryptop{WordDecomp} and \cryptop{PowersOf}. \\
+  For a polynomial $a \in R/qR$, consider the decomposition $a = \sum_{i=0}^{l-1} a_i w^i$ into base $w \in \N$
+  obtained by $\cryptop{WordDecomp}: R \mapsto R^l, \cryptop{WordDecomp}(a) = ([a_i]_w)_{i=0}^{l-1}$. \\
+  Further let $\cryptop{PowersOf}: R \mapsto R^l$ be defined as $\cryptop{PowersOf}(a) = ([a w^i]_q)_{i=0}^{l-1}$.
+
   Let the parameters $\mathbb{P} = (d, q, t, \chi_{key}, \chi_{error}, w)$ and $l = \lfloor \log_w(q) \rfloor + 1$.
   \vspace{0.4cm}
 
   \begin{tblr}{Q[l,h]Q[l,h,\textwidth - 3.4cm]}
-    \cryptop{ParamGen$(\lambda)$} & {
+    \cryptop{ParamGen}$(\lambda)$ & {
         Choose parameters as defined above, given the
-        security parameter $\lambda$, such that $1 < t < q$, $w > 1$,
+        security parameter $\lambda$, such that $1 < t < q$, $w \geq 2$,
         initialize distributions $\chi_{key}$ and $\chi_{error}$
         $\quad\rightarrow \mathbb{P}$} \\
-    \cryptop{KeyGen$(\mathbb{P})$} & {
-        Generate the secret key $s$ sampled from $\chi_{key}$ and $\vec{\mu}$
+    \cryptop{KeyGen}$(\mathbb{P})$ & {
+        Generate the secret key $s \leftarrow \chi_{key}$, sample $\vec{\mu} \in (R/qR)^l$
         from $\chi_{error}$ and choose some $\vec{a} \in (R/qR)^l$ uniformly
         at random, compute the relinearization key
-        $\gamma = (\cryptop{PowersOf}(s^2) - (\vec{\mu} + \vec{a} \cdot s), \vec{a})$
+        $\vec{\gamma} = (\cryptop{PowersOf}(s^2) - (\vec{\mu} + \vec{a} \cdot s), \vec{a})$
         and finally output the public key for uniformly random
-        $a \in (R/qR)$ and $\mu$ sampled from $\chi_{error}$ with $b =-(a \cdot s + \mu)$
-        as $p = (b, a)$.
-        $\quad\rightarrow p, s, \gamma$} \\
-    \cryptop{Encrypt$(p, m)$} & {
-        $p = (b,a)$
-        $\quad\rightarrow c$} \\
-    \cryptop{Add$(c_1, c_2)$} & {
-        test
-        $\quad\rightarrow c_3$} \\
-    \cryptop{Mult$(c_1, c_2)$} & {
-        test
-        $\quad\rightarrow \overline{c}$} \\
-    \cryptop{ReLin$(\overline{c}, \gamma)$} & {
-        test
-        $\quad\rightarrow c$} \\
-    \cryptop{Decrypt$(s, c)$} & {
-        And finally, decrypt
+        $a \in (R/qR)$ and $\mu \leftarrow \chi_{error}$ with $b =-(a \cdot s + \mu)$
+        as $\vec{p} = (b, a)$.
+        $\quad\rightarrow \vec{p}, s, \vec{\gamma}$} \\
+    \cryptop{Encrypt}$(\vec{p}, m)$ & {
+        Let $(b,a) = \vec{p}$, $u \leftarrow \chi_{key}$, $\mu_1, \mu_2 \leftarrow \chi_{error}$,
+        then the ciphertext is $\vec{c} = (\delta m + bu + \mu_1, au + \mu_2)$
+        $\quad\rightarrow \vec{c}$} \\
+    \cryptop{Add}$(\vec{c}_1, \vec{c}_2)$ & {
+        Let $(c_0^1, c_1^1) = \vec{c}_1$ and $(c_0^2, c_1^2) = \vec{c}_2$
+        then $\vec{c}_3 = (c_0^1 + c_0^2, c_1^1 + c_1^2)$
+        $\quad\rightarrow \vec{c}_3$} \\
+    \cryptop{Mult}$(\vec{c}_1, \vec{c}_2)$ & {
+        Output $\overline{\vec{c}} = (
+          \lfloor \delta^{-1} c_0^1 c_0^2 \rceil,
+          \lfloor \delta^{-1}(c_0^1 c_1^2 + c_1^1 c_0^2) \rceil,
+          \lfloor \delta^{-1} c_1^1 c_1^2 \rceil
+          )$
+        $\quad\rightarrow \overline{\vec{c}}$} \\
+    \cryptop{ReLin}$(\overline{\vec{c}}, \vec{\gamma})$ & {
+        Using the relin key $\vec{\gamma} = (\vec{b}, \vec{a})$,
+        relinearize from $\overline{\vec{c}} = (c_0, c_1, c_2)$ as
+        $\vec{c} = (c_0 + \cryptop{WordDecomp}(c_2) \cdot \vec{b}, c_1 + \cryptop{WordDecomp}(c_2) \cdot \vec{a})$
+        $\quad\rightarrow \vec{c}$} \\
+    \cryptop{Decrypt}$(s, \vec{c})$ & {
+        And finally, decrypt $\vec{c} = (c_0, c_1)$ as
+        $m = \lfloor \delta^{-1} [c_0 + c_1 s]_q \rceil \in R/tR$
         $\quad\rightarrow m$} \\
   \end{tblr}
 
@@ -456,16 +474,18 @@ provided in \autoref{tab:bfv-symbols}.
     \hline
     $\lambda$ & $\in \R$ & Security parameter \\
     $d$ & $\in \N$ & Index of the cyclotomic polynomial over $R$ \\
-    $q$ & $\in \N$ & Modulus of the public key space $R/qR$ \\
+    $q$ & $\in \N$ & Modulus of the ciphertext space $R/qR$ \\
     $t$ & $\in \N$ & Modulus of the plaintext message space $R/tR$ \\
+    $\delta$ & $\in \N$ & Ratio between ciphertext and plaintext modulus \\
+    $\delta^{-1}$ & $\in \R$ & Inversion coefficient of the effect of $\delta$ \\
     $w$ & $\in \N$ & Word size used as basis, e.g. $w = 2$ for bits \\
     $l$ & $\in \N$ & Number of words of size $w$ required to encode $q$ \\
     $s$ & $\in R$ & Secret Key \\
-    $p$ & $\in R/qR \times R/qR$ & Public Key $(b, a)$ \\
-    $\gamma$ & $\in (R/qR)^l \times (R/qR)^l$ & Relinearization Key \\
+    $\vec{p}$ & $\in R/qR \times R/qR$ & Public Key $(b, a)$ \\
+    $\vec{\gamma}$ & $\in (R/qR)^l \times (R/qR)^l$ & Relinearization Key \\
     $m$ & $\in R/tR$ & Plaintext Message\\
-    $c$ & $\in R \times R$ & Ciphertext \\
-    $\overline{c}$ & $\in R \times R \times R$ & Slightly larger ciphertext resulting from multiplication \\
+    $\vec{c}$ & $\in R \times R$ & Ciphertext \\
+    $\overline{\vec{c}}$ & $\in R \times R \times R$ & Slightly larger ciphertext resulting from multiplication \\
   \end{tblr}
   \label{tab:bfv-symbols}
 \end{table}
