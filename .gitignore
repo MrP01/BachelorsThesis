@@ -26,4 +26,8 @@ _minted-*
 *.run.xml
 *.nav
 *.snm
-*.thmlist
+*.def
+*.thm
+*.corollary
+*.lemma
+*.remark

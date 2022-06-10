@@ -65,8 +65,15 @@
   \include{chapters/results}
   \include{chapters/conclusion}
   \printnoidxglossary[type=acronym]
-  \tcblistof[\chapter*]{thmlist}{List of Theorems and Definitions}
-  \addcontentsline{toc}{chapter}{List of Theorems and Definitions}
+  \pagebreak
+  \thispagestyle{plain}
+  % \chapter*{List of Definitions and Theorems}
+  \tcblistof[\section*]{def}{Definitions}
+  \addcontentsline{toc}{chapter}{List of Definitions and Theorems}
+  \tcblistof[\section*]{thm}{Theorems}
+  \tcblistof[\section*]{corollary}{Corollaries}
+  \tcblistof[\section*]{lemma}{Lemmata}
+  \tcblistof[\section*]{remark}{Remarks}
   \printbibliography[heading=bibintoc]
   \listoffigures
   \include{chapters/appendix}

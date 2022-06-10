@@ -395,7 +395,8 @@ can be constructed.
 \subsection{The BFV scheme}
 \cite{2012-fv-original}
 \cite{2012-brakerski}
-BFV is based on BGV.
+BFV is based on BGV and they are very similar in the core ideas,
+one can even convert a BFV ciphertext to an equivalent BGV ciphertext \parencite{2021-he-revisiting}.
 
 In this section, we will focus on a slightly altered implementation introduced in \cite{2014-fv-comparison}.
 
@@ -419,7 +420,7 @@ In this section, we will focus on a slightly altered implementation introduced i
   Let the parameters $\mathbb{P} = (d, q, t, \chi_{key}, \chi_{error}, w)$ and $l = \lfloor \log_w(q) \rfloor + 1$.
   \vspace{0.4cm}
 
-  \begin{tblr}{Q[l,h]Q[l,h,\textwidth - 3.4cm]}
+  \begin{tblr}{Q[l,h]Q[l,h,\textwidth - 3.5cm]}
     \cryptop{ParamGen}$(\lambda)$ & {
         Choose parameters as defined above, given the
         security parameter $\lambda$, such that $1 < t < q$, $w \geq 2$,
@@ -463,7 +464,7 @@ In this section, we will focus on a slightly altered implementation introduced i
   \parencite{2012-fv-original, 2012-brakerski}
 \end{definition}
 
-To summarize the parameters and variables, a brief overview of all used symbols is
+To summarise the parameters and variables, a brief overview of all used symbols is
 provided in \autoref{tab:bfv-symbols}.
 \begin{table}[H]
   \centering
