@@ -22,6 +22,13 @@ def plot_rotation_error(ctx, layer1_csv="plots/rotdiff-layer1.csv", layer2_csv="
         axes.legend()
         axes.set_title(f"Layer {i}")
     fig.savefig(THESIS / "figures" / "rotation-error.png")
+    tikzplotlib.clean_figure(fig)
+    tikzplotlib.save(
+        THESIS / "figures" / "rotation-error.tex",
+        figure=fig,
+        axis_width=r"0.7\linewidth",
+        axis_height=r"0.25\linewidth",
+    )
     plt.show()
 
 
