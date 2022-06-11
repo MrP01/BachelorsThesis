@@ -98,18 +98,17 @@ void DenseLayer::matmulHybrid(seal::Ciphertext &in_out, const Matrix &mat, seal:
   PLOG(plog::debug) << "--- now the following offsets:";
   for (auto offset = 1ULL; offset < in_dim; offset++) {
     seal::Ciphertext tmp;
-    Vector temp;
-    evaluator.rotate_vector(original_input, offset, galois_keys, in_out);
+    evaluator.rotate_vector_inplace(in_out, 1, galois_keys);
     if (debuggingDecryptor != nullptr) {
       auto plainy = xt::roll(input, -offset);
       Vector ency = getCiphertextValue(in_out, in_dim, debuggingDecryptor, encoder);
       PLOG(plog::debug) << "------> rot-diff at offset " << offset << ": " << xt::sum(xt::square(plainy - ency));
     }
     evaluator.multiply_plain(in_out, diagonals[offset], tmp);
-    temp = xt::roll(input, -offset) * unencoded_diagonals[offset];
     evaluator.add_inplace(sum, tmp);
-    plain_sum += temp;
     if (debuggingDecryptor != nullptr) {
+      Vector temp = xt::roll(input, -offset) * unencoded_diagonals[offset];
+      plain_sum += temp;
       Vector ency = getCiphertextValue(tmp, in_dim, debuggingDecryptor, encoder);
       PLOG(plog::debug) << "------> tmp-diff at offset " << offset << ": " << xt::sum(xt::square(temp - ency));
     }
