@@ -1,0 +1,305 @@
+\chapter{Homorphic Encryption}
+
+\section{Basics of Fully Homomorphic Encryption}
+\gls{he} makes it possible to operate on data without knowing it.
+One can distinguish three flavors of it, Partial-, Somewhat- and \gls{fhe}.
+
+For \Gls{fhe}, there exist a few schemes in use today with existing implementations.
+\begin{itemize}
+  \item Brakerski/Fan-Vercauteren (BFV) scheme for integer arithmetic
+        (\cite{2012-fv-original}, \cite{2012-brakerski}).
+  \item Brakerski-Gentry-Vaikuntanathan (BGV) scheme for integer arithmetic \parencite{2012-bgv-original}.
+  \item Cheon-Kim-Kim-Song (CKKS) scheme for real-number arithmetic \parencite{2017-ckks-original}.
+  \item Ducas-Micciancio (FHEW) and Chillotti-Gama-Georgieva-Izabachene (TFHE) schemes for Boolean circuit evaluation
+        \parencite{2019-tfhe-original}.
+\end{itemize}
+
+We will first introduce the BFV scheme (integer arithmetic) as it represents a fundamental building block behind CKKS.
+Due to the inherent applications, this thesis will focus on the CKKS scheme to perform homomorphic operations on (complex-valued) floating point numbers and vectors.
+
+\section{HE using RSA}
+In order to illustrate the basic idea behind \Gls{he}, without distancing ourselves too far from the original goal of introducing basic \gls{he} operations used in practice, this short section aims to motivate the definition of ring homomorphisms (cf. \autoref{def:ring-homomorphism}) behind a cryptographic background.
+
+With unpadded RSA, some arithmetic can be performed on the ciphertext - % TODO: find RSA citation
+looking at the encrypted ciphertext $\mathcal{E}(m_1) = (m_1)^r \mod n$
+of the message $m_1$ and $m_2$ respectively, the following holds:
+\begin{align*}
+  \mathcal{E}(m_1) \cdot \mathcal{E}(m_2)
+   & \equiv (m_1)^r (m_2)^r \mod n     \\
+   & \equiv (m_1 m_2)^r \mod n         \\
+   & \equiv \mathcal{E}(m_1 \cdot m_2)
+\end{align*}
+
+The encryption therefore partially fulfills the properties of a ring homomorphism, which in general terms is defined as follows:
+
+\begin{definition}{Ring Homomorphism}{ring-homomorphism}
+  Given two \hyperref[def:ring]{rings} $(R, +, \cdot)$ and $(S, \oplus, \otimes)$, we call a mapping $\varphi: R \rightarrow S$
+  a ring homomorphism when it satisfies the following conditions:
+  $$\forall a, b \in R: \varphi(a + b) = \varphi(a) \oplus \varphi(b) \wedge \varphi(a \cdot b) =
+    \varphi(a) \otimes \varphi(b)$$
+\end{definition}
+
+\section{Gentry's FHE-Scheme and BGV}
+\cite{2009-gentry-fhe-original}
+% TODO: historical introduction
+
+\pagebreak
+\section{The BFV scheme}
+\cite{2012-fv-original}
+\cite{2012-brakerski}
+BFV is based on BGV and they are very similar in the core ideas, one can even convert a BFV ciphertext to an equivalent BGV ciphertext \parencite{2021-he-revisiting}.
+
+In this section, we will focus on a slightly altered implementation introduced in \cite{2014-fv-comparison}.
+
+\newcommand{\cryptop}[1]{\text{\textcolor{darkpurple}{#1}}}
+\begin{definition}{The BFV-Scheme}{bfv-scheme}
+  Let $R = \Z[X] / \Phi_d(X)$ be a ring with $\Phi_d(X)$ the $d$\textsuperscript{th} \hyperref[def:cyclotomic-poly]{cyclotomic polynomial}
+  ($\rightarrow d \in \N$) for ciphertexts $c \in R \times R$.
+  Introduce $R / qR$ the associated quotient ring of the $q$\textsuperscript{th} coset of $R$ with the modulus $q \in \N$.
+  Further let $t \in \N$ denote the message modulus with $1<t<q$
+  for plain messages $m \in R/tR$ and define $\delta = \lfloor \frac{q}{t} \rfloor$,
+  $\delta^{-1} = \frac{t}{q}$.
+
+  Introduce two bounded discrete probability distributions $\chi_{key}$ and $\chi_{error}$ over $R/qR$, one which is only used once for key generation and another (usually Gaussian-like) error distribution for the \hyperref[def:lwe-search-problem]{LWE-problem}.
+
+  For a polynomial $a \in R/qR$, consider the decomposition $a = \sum_{i=0}^{l-1} a_i w^i$ into base $w \in \N$ obtained by $\cryptop{WordDecomp}: R \mapsto R^l, \cryptop{WordDecomp}(a) = ([a_i]_w)_{i=0}^{l-1}$. \\
+  Further let $\cryptop{PowersOf}: R \mapsto R^l$ be defined as $\cryptop{PowersOf}(a) = ([a w^i]_q)_{i=0}^{l-1}$.
+
+  Let the parameters $\mathbb{P} = (d, q, t, \chi_{key}, \chi_{error}, w)$ and $l = \lfloor \log_w(q) \rfloor + 1$.
+  \vspace{0.4cm}
+
+  \begin{tblr}{Q[l,h]Q[l,h,\textwidth - 3.5cm]}
+    \cryptop{ParamGen}$(\lambda)$ & {
+        Choose parameters as defined above, given the
+        security parameter $\lambda$, such that $1 < t < q$, $w \geq 2$,
+        initialize distributions $\chi_{key}$ and $\chi_{error}$
+        $\quad\rightarrow \mathbb{P}$} \\
+    \cryptop{KeyGen}$(\mathbb{P})$ & {
+        Generate the secret key $s \leftarrow \chi_{key}$, sample $\vec{\mu} \in (R/qR)^l$
+        from $\chi_{error}$ and choose some $\vec{a} \in (R/qR)^l$ uniformly
+        at random, compute the relinearization key
+        $\vec{\gamma} = (\cryptop{PowersOf}(s^2) - (\vec{\mu} + \vec{a} \cdot s), \vec{a})$
+        and finally output the public key for uniformly random
+        $a \in (R/qR)$ and $\mu \leftarrow \chi_{error}$ with $b =-(a \cdot s + \mu)$
+        as $\vec{p} = (b, a)$.
+        $\quad\rightarrow \vec{p}, s, \vec{\gamma}$} \\
+    \cryptop{Encrypt}$(\vec{p}, m)$ & {
+        Let $(b,a) = \vec{p}$, $u \leftarrow \chi_{key}$, $\mu_1, \mu_2 \leftarrow \chi_{error}$,
+        then the ciphertext is $\vec{c} = (\delta m + bu + \mu_1, au + \mu_2)$
+        $\quad\rightarrow \vec{c}$} \\
+    \cryptop{Add}$(\vec{c}_1, \vec{c}_2)$ & {
+        Let $(c_0^1, c_1^1) = \vec{c}_1$ and $(c_0^2, c_1^2) = \vec{c}_2$
+        then $\vec{c}_3 = (c_0^1 + c_0^2, c_1^1 + c_1^2)$
+        $\quad\rightarrow \vec{c}_3$} \\
+    \cryptop{Mult}$(\vec{c}_1, \vec{c}_2)$ & {
+        Output $\overline{\vec{c}} = (
+          \lfloor \delta^{-1} c_0^1 c_0^2 \rceil,
+          \lfloor \delta^{-1}(c_0^1 c_1^2 + c_1^1 c_0^2) \rceil,
+          \lfloor \delta^{-1} c_1^1 c_1^2 \rceil
+          )$
+        $\quad\rightarrow \overline{\vec{c}}$} \\
+    \cryptop{ReLin}$(\overline{\vec{c}}, \vec{\gamma})$ & {
+        Using the relin key $\vec{\gamma} = (\vec{b}, \vec{a})$,
+        relinearize from $\overline{\vec{c}} = (c_0, c_1, c_2)$ as
+        $\vec{c} = (c_0 + \cryptop{WordDecomp}(c_2) \cdot \vec{b}, c_1 + \cryptop{WordDecomp}(c_2) \cdot \vec{a})$
+        $\quad\rightarrow \vec{c}$} \\
+    \cryptop{Decrypt}$(s, \vec{c})$ & {
+        And finally, decrypt $\vec{c} = (c_0, c_1)$ as
+        $m = \lfloor \delta^{-1} [c_0 + c_1 s]_q \rceil \in R/tR$
+        $\quad\rightarrow m$} \\
+  \end{tblr}
+
+  \parencite{2012-fv-original, 2012-brakerski}
+\end{definition}
+
+To summarise the parameters and variables, a brief overview of all used symbols is provided in \autoref{tab:bfv-symbols}.
+\begin{table}[H]
+  \centering
+  \caption{Summary of the parameters and symbols in BFV.}
+  \begin{tblr}{rll}
+    \hline
+    \textbf{Symbol} & \textbf{Space} & \textbf{Explanation} \\
+    \hline
+    $\lambda$ & $\in \R$ & Security parameter \\
+    $d$ & $\in \N$ & Index of the cyclotomic polynomial over $R$ \\
+    $q$ & $\in \N$ & Modulus of the ciphertext space $R/qR$ \\
+    $t$ & $\in \N$ & Modulus of the plaintext message space $R/tR$ \\
+    $\delta$ & $\in \N$ & Ratio between ciphertext and plaintext modulus \\
+    $\delta^{-1}$ & $\in \R$ & Inversion coefficient of the effect of $\delta$ \\
+    $w$ & $\in \N$ & Word size used as basis, e.g. $w = 2$ for bits \\
+    $l$ & $\in \N$ & Number of words of size $w$ required to encode $q$ \\
+    $s$ & $\in R$ & Secret Key \\
+    $\vec{p}$ & $\in R/qR \times R/qR$ & Public Key $(b, a)$ \\
+    $\vec{\gamma}$ & $\in (R/qR)^l \times (R/qR)^l$ & Relinearization Key \\
+    $m$ & $\in R/tR$ & Plaintext Message\\
+    $\vec{c}$ & $\in R \times R$ & Ciphertext \\
+    $\overline{\vec{c}}$ & $\in R \times R \times R$ & Slightly larger ciphertext resulting from multiplication \\
+  \end{tblr}
+  \label{tab:bfv-symbols}
+\end{table}
+
+
+\tikzstyle{cleartext} = [rectangle, rounded corners,minimum width=3cm, minimum height=1cm, text centered, draw=black, fill=orange!30]
+\tikzstyle{plaintext} = [rectangle, rounded corners,minimum width=3cm, minimum height=1cm, text centered, draw=black, fill=purple!30]
+\tikzstyle{ciphertext} = [rectangle, rounded corners,minimum width=3cm, minimum height=1cm, text centered, draw=black, fill=themecolor!30]
+\tikzstyle{arrow} = [thick,->,>=stealth]
+
+\begin{figure}[H]
+  \centering
+  \begin{tikzpicture}
+    \node[cleartext, align = center] (m) at (0,0) {message \\ $m$};
+    \node[plaintext, align = center] (p) at (6,0) {plaintext \\ $p(X)$};
+    \node[ciphertext, align = center] (c) at (12,0) {ciphertext \\ $c = (c_0(X), c_1(X))$};
+
+    \node[cleartext, align = center] (m2) at (0,-2.5) {message \\ $\tilde{m}=f(m)$};
+    \node[plaintext, align = center] (p2) at (6,-2.5) {plaintext \\ $\tilde{p}(X) = f(p(X))$};
+    \node[ciphertext, align = center] (c2) at (12,-2.5) {ciphertext \\ $\tilde{c} = f(c)$};
+
+    \draw (m.north) node[above]{$\C^{N/2}$};
+    \draw (m2.south) node[below]{$\C^{N/2}$};
+    \draw (p.north) node[above]{$\Z[X]/(X^N + 1)$};
+    \draw (p2.south) node[below]{$\Z[X]/(X^N + 1)$};
+    \draw (c.north) node[above]{$(\Z_q[X]/(X^N + 1))^2$};
+    \draw (c2.south) node[below]{$(\Z_q[X]/(X^N + 1))^2$};
+
+    \draw [arrow] (m) -- node[anchor=south] {encoding} (p) ;
+    \draw [arrow] (p) -- node[anchor=south] {encryption} (c);
+    \draw [arrow] (c) -- node[anchor=east] {computing $f$} (c2);
+    \draw [arrow] (c2) -- node[anchor=south] {decryption} (p2);
+    \draw [arrow] (p2) -- node[anchor=south] {decoding} (m2);
+  \end{tikzpicture}
+  \caption{Overview of BFV, adapted from \cite{2020-cryptotree}.}
+  \label{fig:bfv-overview}
+\end{figure}
+
+\begin{theorem}{BFV encryption is homomorphic with respect to addition}{bfv-enc-is-homomorphic}
+  \cryptop{BFV.Encrypt} should encrypt in such a way that the addition algebra can be retained
+  even in the transformed space, showing that we can indeed refer to it as homomorphic encryption.
+\end{theorem}
+
+\pagebreak
+\section{The CKKS scheme}
+The CKKS scheme allows us to perform approximate arithmetic on floating point numbers.
+Essentially, the idea is to extend BFV which allows us to operate on vectors $\vec{y} \in \Z_t^n$,
+by an embedding approach that allows us to encode a (complex) floating point number vector $\vec{x} \in \R^n (\C^n)$
+as an integer vector. A na\"ive approach would be to use a fixed-point embedding:
+\newcommand{\embed}{\mathrm{embed}}
+$$\embed(\vec{x}) = \vec{x} \cdot F$$
+with $F \in \Z$. In decimal form, for instance with $F = 1000$, we could effectively encode
+three decimal places of the original vector $\vec{x}$.
+% ... TODO: scale explodes, confer Roman's PETS lecture -> motivation for CKKS.
+
+\begin{definition}{Canonical Embedding $\underline{\sigma}$}{sigma-transform}
+  Blub
+\end{definition}
+\begin{definition}{Natural Projection $\underline{\pi}$}{pi-transform}
+  Blub
+\end{definition}
+
+\begin{definition}{The CKKS Scheme}{ckks-scheme}
+  Let $R = \Z[X] / \Phi_d(X)$ be a ring with $\Phi_d(X)$ the $d$\textsuperscript{th} \hyperref[def:cyclotomic-poly]{cyclotomic polynomial}
+  ($\rightarrow d \in \N$) for ciphertexts $c \in R \times R$.
+  Introduce $R / qR$ the associated quotient ring of the $q$\textsuperscript{th} coset of $R$ with the modulus $q \in \N$.
+  \vspace{0.4cm}
+
+  \begin{tblr}{Q[l,h]Q[l,h,\textwidth - 3.5cm]}
+    \cryptop{ParamGen}$(\lambda)$ & {
+        Choose parameters as defined above, given the
+        security parameter $\lambda$, such that $1 < t < q$, $w \geq 2$,
+        initialize distributions $\chi_{key}$ and $\chi_{error}$
+        $\quad\rightarrow \mathbb{P}$} \\
+    \cryptop{KeyGen}$(\mathbb{P})$ & {
+        $\quad\rightarrow \vec{p}, s, \vec{\gamma}$} \\
+    \cryptop{Encrypt}$(\vec{p}, m)$ & {
+        Let $(b,a) = \vec{p}$, $u \leftarrow \chi_{key}$, $\mu_1, \mu_2 \leftarrow \chi_{error}$,
+        then the ciphertext is $\vec{c} = (\delta m + bu + \mu_1, au + \mu_2)$
+        $\quad\rightarrow \vec{c}$} \\
+    \cryptop{Add}$(\vec{c}_1, \vec{c}_2)$ & {
+        Let $(c_0^1, c_1^1) = \vec{c}_1$ and $(c_0^2, c_1^2) = \vec{c}_2$
+        then $\vec{c}_3 = (c_0^1 + c_0^2, c_1^1 + c_1^2)$
+        $\quad\rightarrow \vec{c}_3$} \\
+    \cryptop{Mult}$(\vec{c}_1, \vec{c}_2)$ & {
+        Output $\overline{\vec{c}} = ()$
+        $\quad\rightarrow \overline{\vec{c}}$} \\
+    \cryptop{ReLin}$(\overline{\vec{c}}, \vec{\gamma})$ & {
+        Using the relin key $\vec{\gamma} = (\vec{b}, \vec{a})$,
+        relinearize from $\overline{\vec{c}} = (c_0, c_1, c_2)$ as
+        $\vec{c} = (c_0 + \cryptop{WordDecomp}(c_2) \cdot \vec{b}, c_1 + \cryptop{WordDecomp}(c_2) \cdot \vec{a})$
+        $\quad\rightarrow \vec{c}$} \\
+    \cryptop{ReScale}$()$ & {
+
+      } \\
+    \cryptop{Decrypt}$(s, \vec{c})$ & {
+        And finally, decrypt $\vec{c} = (c_0, c_1)$ as
+        $m = \lfloor \delta^{-1} [c_0 + c_1 s]_q \rceil \in R/tR$
+        $\quad\rightarrow m$} \\
+  \end{tblr}
+
+  \parencite{2017-ckks-original}
+\end{definition}
+
+To summarise the parameters and variables, a brief overview of all used symbols is
+provided in \autoref{tab:ckks-symbols}.
+\begin{table}[H]
+  \centering
+  \caption{Summary of the parameters and symbols in CKKS.}
+  \begin{tblr}{rll}
+    \hline
+    \textbf{Symbol} & \textbf{Space} & \textbf{Explanation} \\
+    \hline
+    $\lambda$ & $\in \R$ & Security parameter \\
+    $d$ & $\in \N$ & Index of the cyclotomic polynomial over $R$ \\
+    $q$ & $\in \N$ & Modulus of the ciphertext space $R/qR$ \\
+    $t$ & $\in \N$ & Modulus of the plaintext message space $R/tR$ \\
+    $\delta$ & $\in \N$ & Ratio between ciphertext and plaintext modulus \\
+    $\delta^{-1}$ & $\in \R$ & Inversion coefficient of the effect of $\delta$ \\
+    $w$ & $\in \N$ & Word size used as basis, e.g. $w = 2$ for bits \\
+    $l$ & $\in \N$ & Number of words of size $w$ required to encode $q$ \\
+    $s$ & $\in R$ & Secret Key \\
+    $\vec{p}$ & $\in R/qR \times R/qR$ & Public Key $(b, a)$ \\
+    $\vec{\gamma}$ & $\in (R/qR)^l \times (R/qR)^l$ & Relinearization Key \\
+    $m$ & $\in R/tR$ & Plaintext Message\\
+    $\vec{c}$ & $\in R \times R$ & Ciphertext \\
+    $\overline{\vec{c}}$ & $\in R \times R \times R$ & Slightly larger ciphertext resulting from multiplication \\
+  \end{tblr}
+  \label{tab:ckks-symbols}
+\end{table}
+
+\tikzstyle{cleartext} = [rectangle, rounded corners,minimum width=3cm, minimum height=1cm, text centered, draw=black, fill=orange!30]
+\tikzstyle{plaintext} = [rectangle, rounded corners,minimum width=3cm, minimum height=1cm, text centered, draw=black, fill=purple!30]
+\tikzstyle{ciphertext} = [rectangle, rounded corners,minimum width=3cm, minimum height=1cm, text centered, draw=black, fill=themecolor!30]
+\tikzstyle{arrow} = [thick,->,>=stealth]
+
+\begin{figure}[H]
+  \centering
+  \begin{tikzpicture}
+    \node[cleartext, align = center] (m) at (0,0) {message \\ $m$};
+    \node[plaintext, align = center] (p) at (6,0) {plaintext \\ $p(X)$};
+    \node[ciphertext, align = center] (c) at (12,0) {ciphertext \\ $c = (c_0(X), c_1(X))$};
+
+    \node[cleartext, align = center] (m2) at (0,-2.5) {message \\ $\tilde{m}=f(m)$};
+    \node[plaintext, align = center] (p2) at (6,-2.5) {plaintext \\ $\tilde{p}(X) = f(p(X))$};
+    \node[ciphertext, align = center] (c2) at (12,-2.5) {ciphertext \\ $\tilde{c} = f(c)$};
+
+    \draw (m.north) node[above]{$\C^{N/2}$};
+    \draw (m2.south) node[below]{$\C^{N/2}$};
+    \draw (p.north) node[above]{$\Z[X]/(X^N + 1)$};
+    \draw (p2.south) node[below]{$\Z[X]/(X^N + 1)$};
+    \draw (c.north) node[above]{$(\Z_q[X]/(X^N + 1))^2$};
+    \draw (c2.south) node[below]{$(\Z_q[X]/(X^N + 1))^2$};
+
+    \draw [arrow] (m) -- node[anchor=south] {encoding} (p) ;
+    \draw [arrow] (p) -- node[anchor=south] {encryption} (c);
+    \draw [arrow] (c) -- node[anchor=east] {computing $f$} (c2);
+    \draw [arrow] (c2) -- node[anchor=south] {decryption} (p2);
+    \draw [arrow] (p2) -- node[anchor=south] {decoding} (m2);
+  \end{tikzpicture}
+  \caption{Overview of CKKS, adapted from \cite{2020-cryptotree}.}
+  \label{fig:ckks-overview}
+\end{figure}
+
+\begin{theorem}{CKKS encryption is homomorphic with respect to addition}{ckks-enc-is-homomorphic}
+  \cryptop{CKKS.Encrypt} should encrypt in such a way that the addition algebra can be retained even in the transformed space, showing that we can indeed refer to it as homomorphic encryption.
+\end{theorem}
+
+\textit{Microsoft SEAL} implements the scheme, enabled using \cpp{seal::scheme_type::ckks}.

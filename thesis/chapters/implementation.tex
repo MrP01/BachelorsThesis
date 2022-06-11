@@ -4,13 +4,9 @@
 \section{Chosen Software Architecture}
 In the given setting, the most accessible frontend is commonly a JavaScript web application.
 
-To still make the classification run as quickly and efficiently as possible, a C++ binary runs
-in the backend providing an HTTP API to the frontend application.
-In order to allow for more flexibility of the HTTP server, the initial approach was to
-pipe requests through a dedicated web application framework with database access
-that would allow, for instance, user management next to the basic classification.
-However, the resulting communication and computation overhead, even when running with very
-efficient protocols such as ZeroMQ, was too high.
+To still make the classification run as quickly and efficiently as possible, a C++ binary runs in the backend providing an HTTP API to the frontend application.
+In order to allow for more flexibility of the HTTP server, the initial approach was to pipe requests through a dedicated web application framework with database access that would allow, for instance, user management next to the basic classification.
+However, the resulting communication and computation overhead, even when running with very efficient protocols such as ZeroMQ, was too high.
 
 Extending the accessibility argument to reproducibility, Docker is a very solid choice \parencite{using-docker-in-science}.
 To run the attached demo project, simply execute
@@ -26,16 +22,13 @@ Alpine Linux images which contain nothing but compiled binaries and linked libra
 
 \section{The MNIST dataset}
 The MNIST dataset \parencite{mnist-original} contains X train and Y test images with corresponding labels.
-In order to stick to the traditional feedforward technique with data represented
-in vector format, therefore it is common to reshape data from $(28, 28)$ images (represented as grayscale values in a matrix)
+In order to stick to the traditional feedforward technique with data represented in vector format, therefore it is common to reshape data from $(28, 28)$ images (represented as grayscale values in a matrix)
 into a $784$ element vector.
 
 \section{Matrix-Vector Multiplication}
-The dot product that is required as part of the neural network evaluation process
-needs to be implemented on SEAL ciphertexts as well.
+The dot product that is required as part of the neural network evaluation process needs to be implemented on SEAL ciphertexts as well.
 
-There are multiple methods to achieve a syntactically correct dot product (matrix-vector multiplication)
-as described by \textcite{2018-gazelle} for (square) matrices.
+There are multiple methods to achieve a syntactically correct dot product (matrix-vector multiplication) as described by \textcite{2018-gazelle} for (square) matrices.
 
 \begin{enumerate}
   \item \textbf{Naïve MatMul} - very simple to derive but impractical in practice due to the limited further
@@ -62,8 +55,7 @@ For the following, define
   \rot_j: \R^t \mapsto \R^t,             & \; \{\rot_j(\vec{x})\}_i = x_{i + j} \label{eq:rot-definition} \\
   \diag_j: \R^{t \times t} \mapsto \R^t, & \; \{\diag_j(M)\}_i = M_{i, (i+j)} \label{eq:diag-definition}
 \end{align}
-with all indices $i, j \in \Z_t$ member of the cyclic quotient group $\Z_t := \Z / t \Z$ of all integers
-modulo $t$, meaning that overflowing indices simply wrap around again starting at index $0$ to simplify notation.
+with all indices $i, j \in \Z_t$ member of the cyclic quotient group $\Z_t := \Z / t \Z$ of all integers modulo $t$, meaning that overflowing indices simply wrap around again starting at index $0$ to simplify notation.
 For the sake of compactness, we stick to this notation for the rest of this section.
 
 \begin{figure}
@@ -75,24 +67,17 @@ For the sake of compactness, we stick to this notation for the rest of this sect
 
 \subsection{Adapting to non-square matrices}
 \label{subsec:non-square-matrices}
-The weight matrices in the given classification setting
-are by no means square, on the contrary their output dimension tends
-to be much lower than the input dimension as the goal is to reduce it from
-$28^2 = 784$ to $10$ overall.
+The weight matrices in the given classification setting are by no means square, on the contrary their output dimension tends to be much lower than the input dimension as the goal is to reduce it from $28^2 = 784$ to $10$ overall.
 
-However, that also means one cannot directly apply the diagonal method
-as described in the proceedings above.
-This 'flaw' can be mitigated by a simple zero-padding approach
-in order to make the matrix square, filling in zeroes until
-the lower dimension reaches the higher one.
+However, that also means one cannot directly apply the diagonal method as described in the proceedings above.
+This 'flaw' can be mitigated by a simple zero-padding approach in order to make the matrix square, filling in zeroes until the lower dimension reaches the higher one.
 
 \subsection{The Naïve Method}
 Term by term, one can express a matrix-vector product of $M \in \R^{s \times t}$ and
 $\vec{x} \in \R^s$ as follows:
 $$\{M \vec{x}\}_i = \sum_{j=1}^{t} M_{ij} x_j$$
 
-Accordingly, a natural (or rather, naïve) way to model this multiplication in \textit{Microsoft SEAL}
-would be to
+Accordingly, a natural (or rather, naïve) way to model this multiplication in \textit{Microsoft SEAL} would be to
 \begin{enumerate}
   \item encode each $i$-th matrix row $(M_{i,1}, M_{i,2}, ..., M_{i,t})$ using the \cpp{Encoder}
         with matching parameters to the ciphertext of the encoded vector $\vec{x}$.
@@ -133,13 +118,11 @@ would be to
 
 \subsection{The Hybrid Method}
 To further extend the previous matrix multiplication method to solve the problem
-(cf. \autoref{subsec:non-square-matrices}), it is first necessary to extend the definition of the $\diag$ operator
-to non-square matrices $M \in \R^{s \times t}$.
+(cf. \autoref{subsec:non-square-matrices}), it is first necessary to extend the definition of the $\diag$ operator to non-square matrices $M \in \R^{s \times t}$.
 For the following, extending the above definition:
 $$\diag_j: \R^{s \times t} \mapsto \R^t, \; \{\diag_j(M)\}_i = M_{i, (i+j)}$$
 
-To exemplarily describe an implementation of an \gls{he} algorithm, we break down the following
-matrix multiplication using the method described above.
+To exemplarily describe an implementation of an \gls{he} algorithm, we break down the following matrix multiplication using the method described above.
 \begin{minted}{cpp}
 void DenseLayer::matmulHybrid(seal::Ciphertext &in_out, const Matrix &mat, seal::GaloisKeys &galois_keys,
     seal::CKKSEncoder &encoder, seal::Evaluator &evaluator) {
@@ -165,14 +148,11 @@ void DenseLayer::matmulHybrid(seal::Ciphertext &in_out, const Matrix &mat, seal:
 \end{minted}
 
 \subsection{The Babystep-Giantstep Optimization}
-Since Galois rotations are the most computationally intensive operations in most cryptographic schemes used
-today \parencite{2021-pasta}, they take a large toll on the efficiency.
-In order to reduce the number of rotations required, one can make use of the \textit{Babystep-Giantstep}
-optimization as described in \cite{2018-faster-helib}, which works as follows:
+Since Galois rotations are the most computationally intensive operations in most cryptographic schemes used today \parencite{2021-pasta}, they take a large toll on the efficiency.
+In order to reduce the number of rotations required, one can make use of the \textit{Babystep-Giantstep} optimization as described in \cite{2018-faster-helib}, which works as follows:
 
 \begin{theorem}{Babystep-Giantstep Optimization}{bsgs}
-  Given a matrix $M \in \R^{t \times t}$ and a vector $\vec{x} \in \R^t$,
-  with $t = t_1 \cdot t_2$ split into two BSGS parameters $t_1, t_2 \in \N$ and
+  Given a matrix $M \in \R^{t \times t}$ and a vector $\vec{x} \in \R^t$, with $t = t_1 \cdot t_2$ split into two BSGS parameters $t_1, t_2 \in \N$ and
   $$\diag'_p(M) = \rot_{-\lfloor p/t_1 \rfloor \cdot t_1}(\diag_p(M))\,,$$
   one can express a matrix-vector multiplication as follows:
   \begin{equation}
@@ -184,8 +164,7 @@ optimization as described in \cite{2018-faster-helib}, which works as follows:
 \end{theorem}
 
 \begin{proof}
-  Starting from the adapted matrix-multiplication expression $P = (P_1, P_2, ..., P_t)^T \in \R^t$,
-  we want to show that we indeed end up with an authentic matrix-vector product.
+  Starting from the adapted matrix-multiplication expression $P = (P_1, P_2, ..., P_t)^T \in \R^t$, we want to show that we indeed end up with an authentic matrix-vector product.
   \begin{align*}
     P = \bigg\{\sum_{k=0}^{t_2-1} \rot_{(kt_1)} \big(
     \sum_{j=0}^{t_1-1} \diag'_{(kt_1+j)}(M) \cdot \rot_j(\vec{x})
@@ -214,10 +193,7 @@ optimization as described in \cite{2018-faster-helib}, which works as follows:
   \begin{align*}
     P_i = \sum_{k=0}^{t_2-1} \sum_{j=0}^{t_1-1} M_{i,i+kt_1+j} x_{i+kt_1+j}
   \end{align*}
-  which contains two sums running to $t_1$ and $t_2$ respectively, containing an expression
-  of the form $k \cdot t_1 + j$, which allows us to condense the nested sums into one single
-  summation expression, as $$\sum_{k=0}^{t_2-1} \sum_{j=0}^{t_1-1} f(kt_1+j) = \sum_{l=0}^{t-1} f(l)$$
-  indeed catches every single value $l \in \{0, 1, 2, ..., t=t_1 \cdot t_2\}$ with $l = kt_1+j$. \\
+  which contains two sums running to $t_1$ and $t_2$ respectively, containing an expression of the form $k \cdot t_1 + j$, which allows us to condense the nested sums into one single summation expression, as $$\sum_{k=0}^{t_2-1} \sum_{j=0}^{t_1-1} f(kt_1+j) = \sum_{l=0}^{t-1} f(l)$$ indeed catches every single value $l \in \{0, 1, 2, ..., t=t_1 \cdot t_2\}$ with $l = kt_1+j$. \\
   In summary, we obtain
   \begin{align*}
     P_i & = \sum_{k=0}^{t_2-1} \sum_{j=0}^{t_1-1} M_{i,i+kt_1+j} x_{i+kt_1+j} \\
@@ -228,15 +204,11 @@ optimization as described in \cite{2018-faster-helib}, which works as follows:
   which indeed equals the conventional definition of a matrix-vector product.
 \end{proof}
 
-Note that the optimized matrix-vector multiplication only requires $t_1 + t_2$ as
-we can store the $t_1$ inner rotations of the vector $x$ for the upcoming evaluations.
-For larger matrices and vectors (larger $t$), $t_1 + t_2$ are indeed much smaller than
-the conventional number of required rotations in the Diagonal or Hybrid method for instance
-which was the point of this modification in the first place.
+Note that the optimized matrix-vector multiplication only requires $t_1 + t_2$ as we can store the $t_1$ inner rotations of the vector $x$ for the upcoming evaluations.
+For larger matrices and vectors (larger $t$), $t_1 + t_2$ are indeed much smaller than the conventional number of required rotations in the Diagonal or Hybrid method for instance which was the point of this modification in the first place.
 
 \section{Polynomial Evaluation}
-From the implementation perspective, there are three properties to watch out for when
-working with SEAL ciphertexts:
+From the implementation perspective, there are three properties to watch out for when working with SEAL ciphertexts:
 
 \begin{enumerate}
   \item Scale (retrieved using \cpp{x.scale()})
@@ -264,13 +236,9 @@ The scales must be the same, but luckily they will not change.
 \section{Transparent Ciphertext}
 \begin{quote}
   The problem is that you are subtracting a ciphertext from itself.
-  This kind of operation results in a ciphertext that is identically zero;
-  this is called a transparent ciphertext. Such a transparent ciphertext
-  is not considered to be valid because the ciphertext reveals its underlying plaintext to anyone who sees it,
-  even if they don't have the secret key.
+  This kind of operation results in a ciphertext that is identically zero; this is called a transparent ciphertext. Such a transparent ciphertext is not considered to be valid because the ciphertext reveals its underlying plaintext to anyone who sees it, even if they don't have the secret key.
   By default SEAL throws an exception when such a situation is encountered to protect you from a problem you may not have noticed.
-  If you truly know what you are doing and want to enable the creation of transparent ciphertexts,
-  you can configure SEAL [...].
+  If you truly know what you are doing and want to enable the creation of transparent ciphertexts, you can configure SEAL [...].
   \parencite{kim-laine-on-transparent-ciphertexts}
 \end{quote}
 
