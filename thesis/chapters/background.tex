@@ -530,6 +530,7 @@ provided in \autoref{tab:bfv-symbols}.
   even in the transformed space, showing that we can indeed refer to it as homomorphic encryption.
 \end{theorem}
 
+\pagebreak
 \subsection{The CKKS scheme}
 The CKKS scheme allows us to perform approximate arithmetic on floating point numbers.
 Essentially, the idea is to extend BFV which allows us to operate on vectors $\vec{y} \in \Z_t^n$,
@@ -540,6 +541,82 @@ $$\embed(\vec{x}) = \vec{x} \cdot F$$
 with $F \in \Z$. In decimal form, for instance with $F = 1000$, we could effectively encode
 three decimal places of the original vector $\vec{x}$.
 % ... TODO: scale explodes, confer Roman's PETS lecture -> motivation for CKKS.
+
+\begin{definition}{Canonical Embedding $\underline{\sigma}$}{sigma-transform}
+  Blub
+\end{definition}
+\begin{definition}{Natural Projection $\underline{\pi}$}{pi-transform}
+  Blub
+\end{definition}
+
+\begin{definition}{The CKKS Scheme}{ckks-scheme}
+  Let $R = \Z[X] / \Phi_d(X)$ be a ring with $\Phi_d(X)$ the $d$\textsuperscript{th} \hyperref[def:cyclotomic-poly]{cyclotomic polynomial}
+  ($\rightarrow d \in \N$) for ciphertexts $c \in R \times R$.
+  Introduce $R / qR$ the associated quotient ring of the $q$\textsuperscript{th} coset of $R$ with the modulus $q \in \N$.
+  \vspace{0.4cm}
+
+  \begin{tblr}{Q[l,h]Q[l,h,\textwidth - 3.5cm]}
+    \cryptop{ParamGen}$(\lambda)$ & {
+        Choose parameters as defined above, given the
+        security parameter $\lambda$, such that $1 < t < q$, $w \geq 2$,
+        initialize distributions $\chi_{key}$ and $\chi_{error}$
+        $\quad\rightarrow \mathbb{P}$} \\
+    \cryptop{KeyGen}$(\mathbb{P})$ & {
+        $\quad\rightarrow \vec{p}, s, \vec{\gamma}$} \\
+    \cryptop{Encrypt}$(\vec{p}, m)$ & {
+        Let $(b,a) = \vec{p}$, $u \leftarrow \chi_{key}$, $\mu_1, \mu_2 \leftarrow \chi_{error}$,
+        then the ciphertext is $\vec{c} = (\delta m + bu + \mu_1, au + \mu_2)$
+        $\quad\rightarrow \vec{c}$} \\
+    \cryptop{Add}$(\vec{c}_1, \vec{c}_2)$ & {
+        Let $(c_0^1, c_1^1) = \vec{c}_1$ and $(c_0^2, c_1^2) = \vec{c}_2$
+        then $\vec{c}_3 = (c_0^1 + c_0^2, c_1^1 + c_1^2)$
+        $\quad\rightarrow \vec{c}_3$} \\
+    \cryptop{Mult}$(\vec{c}_1, \vec{c}_2)$ & {
+        Output $\overline{\vec{c}} = ()$
+        $\quad\rightarrow \overline{\vec{c}}$} \\
+    \cryptop{ReLin}$(\overline{\vec{c}}, \vec{\gamma})$ & {
+        Using the relin key $\vec{\gamma} = (\vec{b}, \vec{a})$,
+        relinearize from $\overline{\vec{c}} = (c_0, c_1, c_2)$ as
+        $\vec{c} = (c_0 + \cryptop{WordDecomp}(c_2) \cdot \vec{b}, c_1 + \cryptop{WordDecomp}(c_2) \cdot \vec{a})$
+        $\quad\rightarrow \vec{c}$} \\
+    \cryptop{ReScale}$()$ & {
+
+      } \\
+    \cryptop{Decrypt}$(s, \vec{c})$ & {
+        And finally, decrypt $\vec{c} = (c_0, c_1)$ as
+        $m = \lfloor \delta^{-1} [c_0 + c_1 s]_q \rceil \in R/tR$
+        $\quad\rightarrow m$} \\
+  \end{tblr}
+
+  \parencite{2017-ckks-original}
+\end{definition}
+
+To summarise the parameters and variables, a brief overview of all used symbols is
+provided in \autoref{tab:ckks-symbols}.
+\begin{table}[H]
+  \centering
+  \caption{Summary of the parameters and symbols in CKKS.}
+  \begin{tblr}{rll}
+    \hline
+    \textbf{Symbol} & \textbf{Space} & \textbf{Explanation} \\
+    \hline
+    $\lambda$ & $\in \R$ & Security parameter \\
+    $d$ & $\in \N$ & Index of the cyclotomic polynomial over $R$ \\
+    $q$ & $\in \N$ & Modulus of the ciphertext space $R/qR$ \\
+    $t$ & $\in \N$ & Modulus of the plaintext message space $R/tR$ \\
+    $\delta$ & $\in \N$ & Ratio between ciphertext and plaintext modulus \\
+    $\delta^{-1}$ & $\in \R$ & Inversion coefficient of the effect of $\delta$ \\
+    $w$ & $\in \N$ & Word size used as basis, e.g. $w = 2$ for bits \\
+    $l$ & $\in \N$ & Number of words of size $w$ required to encode $q$ \\
+    $s$ & $\in R$ & Secret Key \\
+    $\vec{p}$ & $\in R/qR \times R/qR$ & Public Key $(b, a)$ \\
+    $\vec{\gamma}$ & $\in (R/qR)^l \times (R/qR)^l$ & Relinearization Key \\
+    $m$ & $\in R/tR$ & Plaintext Message\\
+    $\vec{c}$ & $\in R \times R$ & Ciphertext \\
+    $\overline{\vec{c}}$ & $\in R \times R \times R$ & Slightly larger ciphertext resulting from multiplication \\
+  \end{tblr}
+  \label{tab:ckks-symbols}
+\end{table}
 
 \tikzstyle{cleartext} = [rectangle, rounded corners,minimum width=3cm, minimum height=1cm, text centered, draw=black, fill=orange!30]
 \tikzstyle{plaintext} = [rectangle, rounded corners,minimum width=3cm, minimum height=1cm, text centered, draw=black, fill=purple!30]
@@ -573,11 +650,6 @@ three decimal places of the original vector $\vec{x}$.
   \caption{Overview of CKKS, adapted from \cite{2020-cryptotree}.}
   \label{fig:ckks-overview}
 \end{figure}
-
-% \subsubsection{Packing}
-% FFT in CKKS!
-% (Polynom -> Vektor) mit einer FFT
-% (Vektor -> Polynom) mit einer IFFT
 
 \begin{theorem}{CKKS encryption is homomorphic with respect to addition}{ckks-enc-is-homomorphic}
   \cryptop{CKKS.Encrypt} should encrypt in such a way that the addition algebra can be retained
@@ -616,6 +688,20 @@ according to some model $M$.
 
 \subsection{Gradient Descent}
 \subsection{Multi-Layered Neural Networks}
+\begin{figure}[H]
+  \centering
+  \begin{neuralnetwork}[height=4]
+    \newcommand{\x}[2]{$x_#2$}
+    \newcommand{\y}[2]{$\hat{y}_#2$}
+    \newcommand{\hfirst}[2]{\small $h^{(1)}_#2$}
+    \newcommand{\hsecond}[2]{\small $h^{(2)}_#2$}
+    \inputlayer[count=3, bias=true, title=Input\\layer, text=\x]
+    \hiddenlayer[count=4, bias=false, title=Hidden\\layer 1, text=\hfirst] \linklayers
+    \hiddenlayer[count=3, bias=false, title=Hidden\\layer 2, text=\hsecond] \linklayers
+    \outputlayer[count=2, title=Output\\layer, text=\y] \linklayers
+  \end{neuralnetwork}
+  \caption{A neural network}
+\end{figure}
 
 \begin{theorem}{Universal Approximation}
   If the neural network has at least one hidden layer, proper nonlinear activation functions and enough
@@ -640,6 +726,6 @@ Matrix -> Activation Function
 
 \begin{figure}[H]
   \centering
-  \includegraphics[width=0.8\linewidth]{figures/taylor-relu.png}
+  \input{figures/taylor-relu}
   \caption{Comparison of the Relu activation function vs. its Taylor expansion}
 \end{figure}

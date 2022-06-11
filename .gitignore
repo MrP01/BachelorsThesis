@@ -13,6 +13,7 @@ stuff/
 *.out
 *.toc
 *.synctex.gz
+*(busy)
 *.fdb_latexmk
 *.fls
 *.ilg

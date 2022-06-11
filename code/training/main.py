@@ -3,7 +3,6 @@ import pathlib
 
 import matplotlib.pyplot as plt
 import network
-import tensorflow as tf
 
 THESIS = pathlib.Path(__file__).resolve().parent.parent.parent / "thesis"
 
@@ -22,19 +21,6 @@ def plot_metric(history, metric):
     plt.show()
 
 
-def plot_relu_taylor():
-    """Plots the approximated RELU function"""
-    fig = plt.figure()
-    axes: plt.Axes = fig.add_subplot(1, 1, 1)
-    x_ = tf.linspace(-5.0, 10.0, 100)
-    axes.plot(x_, tf.keras.activations.relu(x_), label=r"$y = \mathrm{relu}(x)$")
-    axes.plot(x_, network.relu_taylor(x_), label=r"$y = \mathrm{relu\_taylor}(x)$")
-    axes.set_xlabel(r"$x$")
-    axes.set_ylabel(r"$y$")
-    axes.legend()
-    fig.savefig(THESIS / "figures" / "taylor-relu.png")
-
-
 def plot_weights(w, b, filename):
     """Matshow of the weights and biases"""
     fig = plt.figure()
@@ -49,7 +35,6 @@ def plot_weights(w, b, filename):
 
 
 def main():
-    plot_relu_taylor()
     w1, b1, w2, b2 = network.train()
     plot_weights(w1, b1, "layer-1.png")
     plot_weights(w2, b2, "layer-2.png")

@@ -3,8 +3,10 @@ import pathlib
 import invoke
 import matplotlib.pyplot as plt
 import numpy as np
+import tikzplotlib
 
 THESIS = pathlib.Path(__file__).resolve().parent.parent.parent / "thesis"
+# plt.style.use("ggplot")
 
 
 @invoke.task()
@@ -21,3 +23,26 @@ def plot_rotation_error(ctx, layer1_csv="plots/rotdiff-layer1.csv", layer2_csv="
         axes.set_title(f"Layer {i}")
     fig.savefig(THESIS / "figures" / "rotation-error.png")
     plt.show()
+
+
+@invoke.task()
+def plot_relu_taylor(ctx):
+    """Plots the approximated RELU function"""
+    from training.network import relu_taylor, tf
+
+    fig = plt.figure()
+    axes: plt.Axes = fig.add_subplot(1, 1, 1)
+    x_ = tf.linspace(-5.0, 10.0, 100)
+    axes.plot(x_, tf.keras.activations.relu(x_), label=r"$y = \mathrm{relu}(x)$")
+    axes.plot(x_, relu_taylor(x_), label=r"$y = \mathrm{relu\_taylor}(x)$")
+    axes.set_xlabel(r"$x$")
+    axes.set_ylabel(r"$y$")
+    axes.legend()
+    fig.savefig(THESIS / "figures" / "taylor-relu.png")
+    tikzplotlib.clean_figure(fig)
+    tikzplotlib.save(
+        THESIS / "figures" / "taylor-relu.tex",
+        figure=fig,
+        axis_width=r"0.7\linewidth",
+        axis_height=r"0.4\linewidth",
+    )
