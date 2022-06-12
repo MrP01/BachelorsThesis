@@ -51,14 +51,15 @@ BFV is based on BGV and they are very similar in their core ideas, one can even 
 
 In this section, we will focus on a slightly altered implementation introduced in \cite{2014-fv-comparison}.
 
-\newcommand{\cryptop}[1]{\text{\textcolor{darkpurple}{#1}}}
+For two tuples $(\cdot, \cdot)$ defined over the same group, denote their element-wise addition as $(\cdot, \cdot) + (\cdot, \cdot)$ and element-wise multiplication by a scalar $u$ as $u \cdot (\cdot, \cdot)$.
+
 \begin{definition}{The BFV-Scheme}{bfv-scheme}
   Let $R = \Z[X] / \Phi_d(X)$ be a polynomial ring with $\Phi_d(X)$ the $d$\textsuperscript{th} \hyperref[def:cyclotomic-poly]{cyclotomic polynomial}
   ($\rightarrow d \in \N$) for ciphertexts $c \in R \times R$.
   Introduce $R / qR$ the associated quotient ring of the $q$\textsuperscript{th} coset of $R$ with the modulus $q \in \N$.
   Further let $t \in \N$ denote the message modulus with $1<t<q$
   for plain messages $m \in R/tR$ and define $\delta = \lfloor \frac{q}{t} \rfloor$,
-  $\delta^{-1} = \frac{t}{q}$.
+  $\delta\inv = \frac{t}{q}$.
 
   Introduce two bounded discrete probability distributions $\chi_{key}$ and $\chi_{error}$ over $R/qR$, one which is only used once for key generation and another (usually Gaussian-like) error distribution for the \hyperref[def:lwe-search-problem]{LWE-problem}.
 
@@ -85,17 +86,21 @@ In this section, we will focus on a slightly altered implementation introduced i
         $\quad\rightarrow \vec{p}, s, \vec{\gamma}$} \\
     \cryptop{Encrypt}$(\vec{p}, m)$ & {
         Let $(b,a) = \vec{p}$, $u \leftarrow \chi_{key}$, $\mu_1, \mu_2 \leftarrow \chi_{error}$,
-        then the ciphertext is $\vec{c} = (\delta m + bu + \mu_1, au + \mu_2)$
+        then the ciphertext is $\vec{c} = u \cdot \vec{p} + (\delta m + \mu_1, \mu_2) = (\delta m + bu + \mu_1, au + \mu_2)$
         $\quad\rightarrow \vec{c}$} \\
+    \cryptop{Decrypt}$(s, \vec{c})$ & {
+        Decrypt $\vec{c} = (c_0, c_1)$ as
+        $m = \lfloor \delta\inv [c_0 + c_1 s]_q \rceil \in R/tR$
+        $\quad\rightarrow m$} \\
     \cryptop{Add}$(\vec{c}_1, \vec{c}_2)$ & {
         Let $(c_0^1, c_1^1) = \vec{c}_1$ and $(c_0^2, c_1^2) = \vec{c}_2$
-        then $\vec{c}_3 = (c_0^1 + c_0^2, c_1^1 + c_1^2)$
+        then $\vec{c}_3 = (c_0^1 + c_0^2, c_1^1 + c_1^2) = \vec{c}_1 + \vec{c}_2$
         $\quad\rightarrow \vec{c}_3$} \\
     \cryptop{Mult}$(\vec{c}_1, \vec{c}_2)$ & {
         Output $\overline{\vec{c}} = (
-          \lfloor \delta^{-1} c_0^1 c_0^2 \rceil,
-          \lfloor \delta^{-1}(c_0^1 c_1^2 + c_1^1 c_0^2) \rceil,
-          \lfloor \delta^{-1} c_1^1 c_1^2 \rceil
+          \lfloor \delta\inv c_0^1 c_0^2 \rceil,
+          \lfloor \delta\inv(c_0^1 c_1^2 + c_1^1 c_0^2) \rceil,
+          \lfloor \delta\inv c_1^1 c_1^2 \rceil
           )$
         $\quad\rightarrow \overline{\vec{c}}$} \\
     \cryptop{ReLin}$(\overline{\vec{c}}, \vec{\gamma})$ & {
@@ -103,10 +108,6 @@ In this section, we will focus on a slightly altered implementation introduced i
         relinearize from $\overline{\vec{c}} = (c_0, c_1, c_2)$ as
         $\vec{c} = (c_0 + \cryptop{WordDecomp}(c_2) \cdot \vec{b}, c_1 + \cryptop{WordDecomp}(c_2) \cdot \vec{a})$
         $\quad\rightarrow \vec{c}$} \\
-    \cryptop{Decrypt}$(s, \vec{c})$ & {
-        And finally, decrypt $\vec{c} = (c_0, c_1)$ as
-        $m = \lfloor \delta^{-1} [c_0 + c_1 s]_q \rceil \in R/tR$
-        $\quad\rightarrow m$} \\
   \end{tblr}
 
   \parencite{2012-fv-original, 2012-brakerski}
@@ -125,7 +126,7 @@ To summarise the parameters and variables, a brief overview of all used symbols 
     $q$ & $\in \N$ & Modulus of the ciphertext space $R/qR$ \\
     $t$ & $\in \N$ & Modulus of the plaintext message space $R/tR$ \\
     $\delta$ & $\in \N$ & Ratio between ciphertext and plaintext modulus \\
-    $\delta^{-1}$ & $\in \R$ & Inversion coefficient of the effect of $\delta$ \\
+    $\delta\inv$ & $\in \R$ & Inversion coefficient of the effect of $\delta$ \\
     $w$ & $\in \N$ & Word size used as basis, e.g. $w = 2$ for bits \\
     $l$ & $\in \N$ & Number of words of size $w$ required to encode $q$ \\
     $s$ & $\in R$ & Secret Key \\
@@ -161,15 +162,35 @@ For convenience, we usually choose $d$ a power of $2$ and then, by \autoref{thm:
 \begin{definition}{Canonical Embedding $\underline{\sigma}$}{sigma-transform}
   For a real-valued polynomial $p \in S$, define the canonical embedding of $S$ in $\C^N$ as a mapping $\underline{\sigma}: S \mapsto \C^N$ with $$\underline{\sigma}(p) := \big(p(e^{-2\pi i j / N})\big)_{j \in \Z_d^*}$$
   with $\Z_d^* := \{x \in \Z / d\Z \,|\, \gcd(x, d) = 1\}$ the set of all integers smaller than $d$ that do not share a factor $> 1$ with $d$.
-\end{definition}
-\begin{definition}{Natural Projection $\underline{\pi}$}{pi-transform}
-  Let $T$ be a mulitplicative subgroup of $\Z_d^*$ with $\Z_d^* / T = \{-1, 1\}$, then the natural projection $\underline{\pi}: C^N \mapsto ??$ is defined as % TODO
+  The image of $\underline{\sigma}$ given a set of inputs $R$ shall be denoted as $\underline{\sigma}(R) \subseteq \C^N$.
+  Let the inverse of $\underline{\sigma}$ be denoted by $\underline{\sigma}\inv: \C^N \mapsto S$.
 \end{definition}
 
-\pagebreak
+Define the commutative subring $(H, +, \cdot)$ of $(\C^N, +, \cdot)$ on the set
+$$H = \{\vec{z} = (z_j)_{j \in \Z_d^*} \in \C^N : z_j = \overline{z_{-j}} \;\forall j \in \Z_d^*\}$$
+of all complex-valued vectors $\vec{z}$ where the first half equals the reversed complex-conjugated second half.
+
+\begin{definition}{Natural Projection $\underline{\pi}$}{pi-transform}
+  Let $T$ be a mulitplicative subgroup of $\Z_d^*$ with $\Z_d^* / T = \{-1, 1\}$, then the natural projection $\underline{\pi}: C^N \mapsto ??$ is defined as % TODO
+  Let its inverse be denoted by $\underline{\pi}\inv: ? \mapsto ?$.
+\end{definition}
+\begin{definition}{Discretisation to an element of $\underline{\sigma}(R)$}{}
+  Using one of several round-off algorithms (c.f. \cite{2013-rlwe-toolkit}), given an element of $H$, define a rounding operation $\underline{\rho}: H \mapsto \underline{\sigma}(R)$ that maps an $h \in H$ to its closest element in $\underline{\sigma}(R)$, also denoted as
+  $$\underline{\rho}(h) = \lfloor h \rceil_{\underline{\sigma}(R)}\,.$$
+  Further let $\underline{\rho_\delta}(h) = \lfloor \delta \cdot h \rceil_{\underline{\sigma}(R)}$ denote the same rounding operation but with prior scaling by a scalar factor $\delta$.
+  Note that $\underline{\rho}\inv$ is given directly because all elements of its domain are already elements of its image. Similarly, $\underline{\rho_\delta}\inv(\vec{y}) = \delta\inv \cdot \vec{y}$.
+\end{definition}
+
+Because it is not essential to understanding the encryption scheme, we will skip over concrete implementations of the rounding procedure $\underline{\rho}$.
+Note that for choosing a 'close' element $g \in H$, we must first introduce a sense of proximity, in this case done by the $l_\infty$-norm $||g - h||_\infty$ of the difference between $h \in H$ and $g$.
+
 \begin{definition}{The CKKS Scheme}{ckks-scheme}
   Define $R, R/qR$ as in \autoref{def:bfv-scheme}.
 
+  From the original CKKS paper, choose
+  $\chi_{key} = \mathcal{H}WT$,
+  $\chi_{error} = \mathcal{DG}$
+  and $\mathcal{ZO}$ a distribution over ....
   \vspace{0.4cm}
 
   \begin{tblr}{Q[l,h]Q[l,h,\textwidth - 3.5cm]}
@@ -180,16 +201,27 @@ For convenience, we usually choose $d$ a power of $2$ and then, by \autoref{thm:
         $\quad\rightarrow \mathbb{P}$} \\
     \cryptop{KeyGen}$(\mathbb{P})$ & {
         $\quad\rightarrow \vec{p}, s, \vec{\gamma}$} \\
+    \cryptop{Encode}$(\vec{z})$ & {For a given input vector $\vec{z}$, output
+        $m = (\underline{\sigma}\inv \circ \underline{\rho_\delta} \circ \underline{\pi}\inv)(\vec{z}) = \underline{\sigma}\inv(\lfloor \delta \cdot \underline{\pi}\inv(\vec{z})\rceil_{\underline{\sigma}(R)})$ $\quad\rightarrow m$} \\
+    \cryptop{Decode}$(m)$ & {Decode plaintext $m$ as
+        $\vec{z} = (\underline{\pi} \circ \underline{\rho_\delta}\inv \circ \underline{\sigma})(m) = (\underline{\pi} \circ \underline{\sigma})(\delta\inv m)$
+        $\quad\rightarrow \vec{z}$} \\
     \cryptop{Encrypt}$(\vec{p}, m)$ & {
-        Let $(b,a) = \vec{p}$, $u \leftarrow \chi_{key}$, $\mu_1, \mu_2 \leftarrow \chi_{error}$,
-        then the ciphertext is $\vec{c} = (\delta m + bu + \mu_1, au + \mu_2)$
+        Let $(b,a) = \vec{p}$, $u \leftarrow \mathcal{ZO}$, $\mu_1, \mu_2 \leftarrow \chi_{error}$,
+        then the ciphertext is $\vec{c} = u \cdot \vec{p} + (m + \mu_1, \mu_2) = (m + bu + \mu_1, au + \mu_2)$
         $\quad\rightarrow \vec{c}$} \\
+    \cryptop{Decrypt}$(s, \vec{c})$ & {
+        Decrypt the ciphertext $\vec{c} = (c_0, c_1)$ as $m = \lbrack c_0 + c_1 s\rbrack_{q_L}$
+        $\quad\rightarrow m$} \\
     \cryptop{Add}$(\vec{c}_1, \vec{c}_2)$ & {
-        Let $(c_0^1, c_1^1) = \vec{c}_1$ and $(c_0^2, c_1^2) = \vec{c}_2$
-        then $\vec{c}_3 = (c_0^1 + c_0^2, c_1^1 + c_1^2)$
+        Output $\vec{c}_3 = \vec{c}_1 + \vec{c}_2$
         $\quad\rightarrow \vec{c}_3$} \\
     \cryptop{Mult}$(\vec{c}_1, \vec{c}_2)$ & {
-        Output $\overline{\vec{c}} = ()$
+        Output $\overline{\vec{c}} = (
+          c_0^1 c_0^2,
+          c_0^1 c_1^2 + c_1^1 c_0^2,
+          c_1^1 c_1^2,
+          )$
         $\quad\rightarrow \overline{\vec{c}}$} \\
     \cryptop{ReLin}$(\overline{\vec{c}}, \vec{\gamma})$ & {
         Using the relin key $\vec{\gamma} = (\vec{b}, \vec{a})$,
@@ -199,10 +231,6 @@ For convenience, we usually choose $d$ a power of $2$ and then, by \autoref{thm:
     \cryptop{ReScale}$()$ & {
 
       } \\
-    \cryptop{Decrypt}$(s, \vec{c})$ & {
-        And finally, decrypt $\vec{c} = (c_0, c_1)$ as
-        $m = \lfloor \delta^{-1} [c_0 + c_1 s]_q \rceil \in R/tR$
-        $\quad\rightarrow m$} \\
   \end{tblr}
 
   \parencite{2017-ckks-original}
@@ -221,7 +249,7 @@ To summarise the parameters and variables, a brief overview of all used symbols 
     $q$ & $\in \N$ & Modulus of the ciphertext space $R/qR$ \\
     $t$ & $\in \N$ & Modulus of the plaintext message space $R/tR$ \\
     $\delta$ & $\in \N$ & Ratio between ciphertext and plaintext modulus \\
-    $\delta^{-1}$ & $\in \R$ & Inversion coefficient of the effect of $\delta$ \\
+    $\delta\inv$ & $\in \R$ & Inversion coefficient of the effect of $\delta$ \\
     $w$ & $\in \N$ & Word size used as basis, e.g. $w = 2$ for bits \\
     $l$ & $\in \N$ & Number of words of size $w$ required to encode $q$ \\
     $s$ & $\in R$ & Secret Key \\
