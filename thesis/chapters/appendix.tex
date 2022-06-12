@@ -30,13 +30,14 @@
     \end{cases} \quad l, k \in \N$$
   since a number $2^k$ that can only be decomposed into multiples of $2$
   never shares a factor with an odd number, in accordance with \autoref{lemma:nth-roots-of-unity}
-  we can conclude that the set of all odd roots of unity is exactly the set of all primitive roots.
+  we can conclude that the set of all odd roots of unity is exactly the set of all primitive roots
+  (satisfying $\gcd(2^k, l) = 1$).
 
   Following from above,
   \begin{align*}
-    p(x) & = \prod_{j=1}^{2^{k-1}} (x - e^{\frac{i\pi}{n} (2j + 1)})                \\
-         & = \prod_{\stackrel{l=1}{l \text{ odd}}}^{2^k} (x - e^{\frac{i\pi}{n} l}) \\
-         & = \prod_{\stackrel{l=1}{\xi^l \text{ primitive}}}^{2^k} (x - \xi^l)
+    p(x) = \prod_{j=1}^{2^{k-1}} (x - e^{\frac{i\pi}{n} (2j + 1)})
+    = \prod_{\stackrel{l=1}{l \text{ odd}}}^{2^k} (x - e^{\frac{i\pi}{n} l})
+    = \prod_{\stackrel{l=1}{\xi^l \text{ primitive}}}^{2^k} (x - \xi^l)
     = \Phi_{2^k}(x)
   \end{align*}
   we arrive exactly at the definition of a cyclotomic polynomial (\autoref{def:cyclotomic-poly}). \\

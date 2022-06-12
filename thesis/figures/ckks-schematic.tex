@@ -1,0 +1,32 @@
+\tikzstyle{cleartext} = [rectangle, rounded corners,minimum width=3cm, minimum height=1cm, text centered, draw=black, fill=orange!30]
+\tikzstyle{plaintext} = [rectangle, rounded corners,minimum width=3cm, minimum height=1cm, text centered, draw=black, fill=purple!30]
+\tikzstyle{ciphertext} = [rectangle, rounded corners,minimum width=3cm, minimum height=1cm, text centered, draw=black, fill=themecolor!30]
+\tikzstyle{arrow} = [thick,->,>=stealth]
+
+\begin{figure}[H]
+  \centering
+  \begin{tikzpicture}
+    \node[cleartext, align = center] (m) at (0,0) {message \\ $m$};
+    \node[plaintext, align = center] (p) at (6,0) {plaintext \\ $p(X)$};
+    \node[ciphertext, align = center] (c) at (12,0) {ciphertext \\ $c = (c_0(X), c_1(X))$};
+
+    \node[cleartext, align = center] (m2) at (0,-2.5) {message \\ $\tilde{m}=f(m)$};
+    \node[plaintext, align = center] (p2) at (6,-2.5) {plaintext \\ $\tilde{p}(X) = f(p(X))$};
+    \node[ciphertext, align = center] (c2) at (12,-2.5) {ciphertext \\ $\tilde{c} = f(c)$};
+
+    \draw (m.north) node[above]{$\C^{N/2}$};
+    \draw (m2.south) node[below]{$\C^{N/2}$};
+    \draw (p.north) node[above]{$\Z[X]/(X^N + 1)$};
+    \draw (p2.south) node[below]{$\Z[X]/(X^N + 1)$};
+    \draw (c.north) node[above]{$(\Z_q[X]/(X^N + 1))^2$};
+    \draw (c2.south) node[below]{$(\Z_q[X]/(X^N + 1))^2$};
+
+    \draw [arrow] (m) -- node[anchor=south] {encoding} (p) ;
+    \draw [arrow] (p) -- node[anchor=south] {encryption} (c);
+    \draw [arrow] (c) -- node[anchor=east] {computing $f$} (c2);
+    \draw [arrow] (c2) -- node[anchor=south] {decryption} (p2);
+    \draw [arrow] (p2) -- node[anchor=south] {decoding} (m2);
+  \end{tikzpicture}
+  \caption{Overview of CKKS, adapted from \cite{2020-cryptotree}.}
+  \label{fig:ckks-overview}
+\end{figure}

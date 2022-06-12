@@ -1,0 +1,687 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   width="127.28333mm"
+   height="56.110416mm"
+   viewBox="0 0 127.28333 56.110416"
+   version="1.1"
+   id="svg10073"
+   inkscape:version="1.1.2 (0a00cf5339, 2022-02-04)"
+   sodipodi:docname="matmul-hybrid.svg"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <sodipodi:namedview
+     id="namedview10075"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageshadow="2"
+     inkscape:pageopacity="0.0"
+     inkscape:pagecheckerboard="0"
+     inkscape:document-units="mm"
+     showgrid="false"
+     fit-margin-top="1.2"
+     fit-margin-left="1.2"
+     fit-margin-right="1.2"
+     fit-margin-bottom="1.2"
+     inkscape:zoom="0.64052329"
+     inkscape:cx="193.59171"
+     inkscape:cy="115.53054"
+     inkscape:window-width="2560"
+     inkscape:window-height="1371"
+     inkscape:window-x="0"
+     inkscape:window-y="32"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="layer1" />
+  <defs
+     id="defs10070" />
+  <g
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     id="layer1"
+     transform="translate(-53.819717,-117.71015)">
+    <g
+       id="g2448"
+       style="clip-rule:evenodd;fill-rule:evenodd;image-rendering:optimizeQuality;shape-rendering:geometricPrecision;text-rendering:geometricPrecision"
+       transform="matrix(0.26458333,0,0,0.26458333,50.124925,-21.451311)">
+      <path
+         style="opacity:1"
+         fill="#000000"
+         d="m 237.5,530.5 c 32,0 64,0 96,0 0,8.333 0,16.667 0,25 -32,0 -64,0 -96,0 0,-8.333 0,-16.667 0,-25 z"
+         id="path2446" />
+    </g>
+    <g
+       id="g2452"
+       style="clip-rule:evenodd;fill-rule:evenodd;image-rendering:optimizeQuality;shape-rendering:geometricPrecision;text-rendering:geometricPrecision"
+       transform="matrix(0.26458333,0,0,0.26458333,50.124925,-21.451311)">
+      <path
+         style="opacity:1"
+         fill="#91d04f"
+         d="m 239.5,532.5 c 7,0 14,0 21,0 0,7 0,14 0,21 -7,0 -14,0 -21,0 0,-7 0,-14 0,-21 z"
+         id="path2450" />
+    </g>
+    <g
+       id="g2456"
+       style="clip-rule:evenodd;fill-rule:evenodd;image-rendering:optimizeQuality;shape-rendering:geometricPrecision;text-rendering:geometricPrecision"
+       transform="matrix(0.26458333,0,0,0.26458333,50.124925,-21.451311)">
+      <path
+         style="opacity:1"
+         fill="#91d04f"
+         d="m 262.5,532.5 c 7.333,0 14.667,0 22,0 0,7 0,14 0,21 -7.333,0 -14.667,0 -22,0 0,-7 0,-14 0,-21 z"
+         id="path2454" />
+    </g>
+    <g
+       id="g2460"
+       style="clip-rule:evenodd;fill-rule:evenodd;image-rendering:optimizeQuality;shape-rendering:geometricPrecision;text-rendering:geometricPrecision"
+       transform="matrix(0.26458333,0,0,0.26458333,50.124925,-21.451311)">
+      <path
+         style="opacity:1"
+         fill="#91d04f"
+         d="m 286.5,532.5 c 7,0 14,0 21,0 0,7 0,14 0,21 -7,0 -14,0 -21,0 0,-7 0,-14 0,-21 z"
+         id="path2458" />
+    </g>
+    <g
+       id="g2464"
+       style="clip-rule:evenodd;fill-rule:evenodd;image-rendering:optimizeQuality;shape-rendering:geometricPrecision;text-rendering:geometricPrecision"
+       transform="matrix(0.26458333,0,0,0.26458333,50.124925,-21.451311)">
+      <path
+         style="opacity:1"
+         fill="#91d04f"
+         d="m 309.5,532.5 c 7.333,0 14.667,0 22,0 0,7 0,14 0,21 -7.333,0 -14.667,0 -22,0 0,-7 0,-14 0,-21 z"
+         id="path2462" />
+    </g>
+    <g
+       id="g2472"
+       style="clip-rule:evenodd;fill-rule:evenodd;image-rendering:optimizeQuality;shape-rendering:geometricPrecision;text-rendering:geometricPrecision"
+       transform="matrix(0.26458333,0,0,0.26458333,50.124925,-21.451311)">
+      <path
+         style="opacity:0.554"
+         fill="#000000"
+         d="m 280.5,558.5 c 1.894,0.548 3.56,1.548 5,3 1.314,-0.813 2.481,-1.813 3.5,-3 0.833,0.833 1.667,1.667 2.5,2.5 -1.187,1.019 -2.187,2.186 -3,3.5 1,1.333 2,2.667 3,4 -0.209,0.586 -0.543,1.086 -1,1.5 -1.917,-0.027 -3.584,-0.861 -5,-2.5 -1.333,1 -2.667,2 -4,3 -0.586,-0.209 -1.086,-0.543 -1.5,-1 0.027,-1.917 0.861,-3.584 2.5,-5 -1,-1.333 -2,-2.667 -3,-4 0.363,-0.683 0.696,-1.35 1,-2 z"
+         id="path2470" />
+    </g>
+    <g
+       id="g2480"
+       style="clip-rule:evenodd;fill-rule:evenodd;image-rendering:optimizeQuality;shape-rendering:geometricPrecision;text-rendering:geometricPrecision"
+       transform="matrix(0.26458333,0,0,0.26458333,50.124925,-21.451311)">
+      <path
+         style="opacity:1"
+         fill="#000000"
+         d="m 237.5,572.5 c 32,0 64,0 96,0 0,8.667 0,17.333 0,26 -32,0 -64,0 -96,0 0,-8.667 0,-17.333 0,-26 z"
+         id="path2478" />
+    </g>
+    <g
+       id="g2484"
+       style="clip-rule:evenodd;fill-rule:evenodd;image-rendering:optimizeQuality;shape-rendering:geometricPrecision;text-rendering:geometricPrecision"
+       transform="matrix(0.26458333,0,0,0.26458333,50.124925,-21.451311)">
+      <path
+         style="opacity:1"
+         fill="#f1dcda"
+         d="m 239.5,574.5 c 7,0 14,0 21,0 0,7.333 0,14.667 0,22 -7,0 -14,0 -21,0 0,-7.333 0,-14.667 0,-22 z"
+         id="path2482" />
+    </g>
+    <g
+       id="g2488"
+       style="clip-rule:evenodd;fill-rule:evenodd;image-rendering:optimizeQuality;shape-rendering:geometricPrecision;text-rendering:geometricPrecision"
+       transform="matrix(0.26458333,0,0,0.26458333,50.124925,-21.451311)">
+      <path
+         style="opacity:1"
+         fill="#e5b9b7"
+         d="m 262.5,574.5 c 7.333,0 14.667,0 22,0 0,7.333 0,14.667 0,22 -7.333,0 -14.667,0 -22,0 0,-7.333 0,-14.667 0,-22 z"
+         id="path2486" />
+    </g>
+    <g
+       id="g2492"
+       style="clip-rule:evenodd;fill-rule:evenodd;image-rendering:optimizeQuality;shape-rendering:geometricPrecision;text-rendering:geometricPrecision"
+       transform="matrix(0.26458333,0,0,0.26458333,50.124925,-21.451311)">
+      <path
+         style="opacity:1"
+         fill="#d89693"
+         d="m 286.5,574.5 c 7,0 14,0 21,0 0,7.333 0,14.667 0,22 -7,0 -14,0 -21,0 0,-7.333 0,-14.667 0,-22 z"
+         id="path2490" />
+    </g>
+    <g
+       id="g2496"
+       style="clip-rule:evenodd;fill-rule:evenodd;image-rendering:optimizeQuality;shape-rendering:geometricPrecision;text-rendering:geometricPrecision"
+       transform="matrix(0.26458333,0,0,0.26458333,50.124925,-21.451311)">
+      <path
+         style="opacity:1"
+         fill="#bf504c"
+         d="m 309.5,574.5 c 7.333,0 14.667,0 22,0 0,7.333 0,14.667 0,22 -7.333,0 -14.667,0 -22,0 0,-7.333 0,-14.667 0,-22 z"
+         id="path2494" />
+    </g>
+    <g
+       id="g2500"
+       style="clip-rule:evenodd;fill-rule:evenodd;image-rendering:optimizeQuality;shape-rendering:geometricPrecision;text-rendering:geometricPrecision"
+       transform="matrix(0.26458333,0,0,0.26458333,50.124925,-21.451311)">
+      <path
+         style="opacity:1"
+         fill="#000000"
+         d="m 394.5,576.5 c 32,0 64,0 96,0 0,8.667 0,17.333 0,26 -32,0 -64,0 -96,0 0,-8.667 0,-17.333 0,-26 z"
+         id="path2498" />
+    </g>
+    <g
+       id="g2504"
+       style="clip-rule:evenodd;fill-rule:evenodd;image-rendering:optimizeQuality;shape-rendering:geometricPrecision;text-rendering:geometricPrecision"
+       transform="matrix(0.26458333,0,0,0.26458333,50.124925,-21.451311)">
+      <path
+         style="opacity:1"
+         fill="#d8d9d8"
+         d="m 396.5,578.5 c 7,0 14,0 21,0 0,7.333 0,14.667 0,22 -7,0 -14,0 -21,0 0,-7.333 0,-14.667 0,-22 z"
+         id="path2502" />
+    </g>
+    <g
+       id="g2508"
+       style="clip-rule:evenodd;fill-rule:evenodd;image-rendering:optimizeQuality;shape-rendering:geometricPrecision;text-rendering:geometricPrecision"
+       transform="matrix(0.26458333,0,0,0.26458333,50.124925,-21.451311)">
+      <path
+         style="opacity:1"
+         fill="#bebfbe"
+         d="m 419.5,578.5 c 7.333,0 14.667,0 22,0 0,7.333 0,14.667 0,22 -7.333,0 -14.667,0 -22,0 0,-7.333 0,-14.667 0,-22 z"
+         id="path2506" />
+    </g>
+    <g
+       id="g2512"
+       style="clip-rule:evenodd;fill-rule:evenodd;image-rendering:optimizeQuality;shape-rendering:geometricPrecision;text-rendering:geometricPrecision"
+       transform="matrix(0.26458333,0,0,0.26458333,50.124925,-21.451311)">
+      <path
+         style="opacity:1"
+         fill="#7e7f7e"
+         d="m 443.5,578.5 c 7,0 14,0 21,0 0,7.333 0,14.667 0,22 -7,0 -14,0 -21,0 0,-7.333 0,-14.667 0,-22 z"
+         id="path2510" />
+    </g>
+    <g
+       id="g2516"
+       style="clip-rule:evenodd;fill-rule:evenodd;image-rendering:optimizeQuality;shape-rendering:geometricPrecision;text-rendering:geometricPrecision"
+       transform="matrix(0.26458333,0,0,0.26458333,50.124925,-21.451311)">
+      <path
+         style="opacity:1"
+         fill="#585958"
+         d="m 466.5,578.5 c 7.333,0 14.667,0 22,0 0,7.333 0,14.667 0,22 -7.333,0 -14.667,0 -22,0 0,-7.333 0,-14.667 0,-22 z"
+         id="path2514" />
+    </g>
+    <g
+       id="g2520"
+       style="clip-rule:evenodd;fill-rule:evenodd;image-rendering:optimizeQuality;shape-rendering:geometricPrecision;text-rendering:geometricPrecision"
+       transform="matrix(0.26458333,0,0,0.26458333,50.124925,-21.451311)">
+      <path
+         style="opacity:1"
+         fill="#000000"
+         d="m 18.5,585.5 c 32,0 64,0 96,0 0,16.333 0,32.667 0,49 -32,0 -64,0 -96,0 0,-16.333 0,-32.667 0,-49 z"
+         id="path2518" />
+    </g>
+    <g
+       id="g2524"
+       style="clip-rule:evenodd;fill-rule:evenodd;image-rendering:optimizeQuality;shape-rendering:geometricPrecision;text-rendering:geometricPrecision"
+       transform="matrix(0.26458333,0,0,0.26458333,50.124925,-21.451311)">
+      <path
+         style="opacity:1"
+         fill="#000000"
+         d="m 152.5,585.5 c 8.333,0 16.667,0 25,0 0,32 0,64 0,96 -8.333,0 -16.667,0 -25,0 0,-32 0,-64 0,-96 z"
+         id="path2522" />
+    </g>
+    <g
+       id="g2528"
+       style="clip-rule:evenodd;fill-rule:evenodd;image-rendering:optimizeQuality;shape-rendering:geometricPrecision;text-rendering:geometricPrecision"
+       transform="matrix(0.26458333,0,0,0.26458333,50.124925,-21.451311)">
+      <path
+         style="opacity:1"
+         fill="#91d04f"
+         d="m 20.5,587.5 c 7,0 14,0 21,0 0,7.333 0,14.667 0,22 -7,0 -14,0 -21,0 0,-7.333 0,-14.667 0,-22 z"
+         id="path2526" />
+    </g>
+    <g
+       id="g2532"
+       style="clip-rule:evenodd;fill-rule:evenodd;image-rendering:optimizeQuality;shape-rendering:geometricPrecision;text-rendering:geometricPrecision"
+       transform="matrix(0.26458333,0,0,0.26458333,50.124925,-21.451311)">
+      <path
+         style="opacity:1"
+         fill="#feff00"
+         d="m 43.5,587.5 c 7.3333,0 14.6667,0 22,0 0,7.333 0,14.667 0,22 -7.3333,0 -14.6667,0 -22,0 0,-7.333 0,-14.667 0,-22 z"
+         id="path2530" />
+    </g>
+    <g
+       id="g2536"
+       style="clip-rule:evenodd;fill-rule:evenodd;image-rendering:optimizeQuality;shape-rendering:geometricPrecision;text-rendering:geometricPrecision"
+       transform="matrix(0.26458333,0,0,0.26458333,50.124925,-21.451311)">
+      <path
+         style="opacity:1"
+         fill="#91d04f"
+         d="m 67.5,587.5 c 7.3333,0 14.6667,0 22,0 0,7.333 0,14.667 0,22 -7.3333,0 -14.6667,0 -22,0 0,-7.333 0,-14.667 0,-22 z"
+         id="path2534" />
+    </g>
+    <g
+       id="g2540"
+       style="clip-rule:evenodd;fill-rule:evenodd;image-rendering:optimizeQuality;shape-rendering:geometricPrecision;text-rendering:geometricPrecision"
+       transform="matrix(0.26458333,0,0,0.26458333,50.124925,-21.451311)">
+      <path
+         style="opacity:1"
+         fill="#feff00"
+         d="m 91.5,587.5 c 7,0 14,0 21,0 0,7.333 0,14.667 0,22 -7,0 -14,0 -21,0 0,-7.333 0,-14.667 0,-22 z"
+         id="path2538" />
+    </g>
+    <g
+       id="g2544"
+       style="clip-rule:evenodd;fill-rule:evenodd;image-rendering:optimizeQuality;shape-rendering:geometricPrecision;text-rendering:geometricPrecision"
+       transform="matrix(0.26458333,0,0,0.26458333,50.124925,-21.451311)">
+      <path
+         style="opacity:1"
+         fill="#f1dcda"
+         d="m 154.5,587.5 c 7,0 14,0 21,0 0,7.333 0,14.667 0,22 -7,0 -14,0 -21,0 0,-7.333 0,-14.667 0,-22 z"
+         id="path2542" />
+    </g>
+    <g
+       id="g2548"
+       style="clip-rule:evenodd;fill-rule:evenodd;image-rendering:optimizeQuality;shape-rendering:geometricPrecision;text-rendering:geometricPrecision"
+       transform="matrix(0.26458333,0,0,0.26458333,50.124925,-21.451311)">
+      <path
+         style="opacity:0.645"
+         fill="#000000"
+         d="m 283.5,602.5 c 1,0 2,0 3,0 0,1.667 0,3.333 0,5 1.667,0 3.333,0 5,0 0,1 0,2 0,3 -1.667,0 -3.333,0 -5,0 0,1.667 0,3.333 0,5 -1,0 -2,0 -3,0 0,-1.667 0,-3.333 0,-5 -1.667,0 -3.333,0 -5,0 0,-1 0,-2 0,-3 1.667,0 3.333,0 5,0 0,-1.667 0,-3.333 0,-5 z"
+         id="path2546" />
+    </g>
+    <g
+       id="g2552"
+       style="clip-rule:evenodd;fill-rule:evenodd;image-rendering:optimizeQuality;shape-rendering:geometricPrecision;text-rendering:geometricPrecision"
+       transform="matrix(0.26458333,0,0,0.26458333,50.124925,-21.451311)">
+      <path
+         style="opacity:0.645"
+         fill="#000000"
+         d="m 440.5,604.5 c 1,0 2,0 3,0 0,1.667 0,3.333 0,5 1.667,0 3.333,0 5,0 0,1 0,2 0,3 -1.667,0 -3.333,0 -5,0 0,1.667 0,3.333 0,5 -1,0 -2,0 -3,0 0,-1.667 0,-3.333 0,-5 -1.667,0 -3.333,0 -5,0 0,-1 0,-2 0,-3 1.667,0 3.333,0 5,0 0,-1.667 0,-3.333 0,-5 z"
+         id="path2550" />
+    </g>
+    <g
+       id="g2556"
+       style="clip-rule:evenodd;fill-rule:evenodd;image-rendering:optimizeQuality;shape-rendering:geometricPrecision;text-rendering:geometricPrecision"
+       transform="matrix(0.26458333,0,0,0.26458333,50.124925,-21.451311)">
+      <path
+         style="opacity:1"
+         fill="#feff00"
+         d="m 20.5,611.5 c 7,0 14,0 21,0 0,7 0,14 0,21 -7,0 -14,0 -21,0 0,-7 0,-14 0,-21 z"
+         id="path2554" />
+    </g>
+    <g
+       id="g2560"
+       style="clip-rule:evenodd;fill-rule:evenodd;image-rendering:optimizeQuality;shape-rendering:geometricPrecision;text-rendering:geometricPrecision"
+       transform="matrix(0.26458333,0,0,0.26458333,50.124925,-21.451311)">
+      <path
+         style="opacity:1"
+         fill="#91d04f"
+         d="m 43.5,611.5 c 7.3333,0 14.6667,0 22,0 0,7 0,14 0,21 -7.3333,0 -14.6667,0 -22,0 0,-7 0,-14 0,-21 z"
+         id="path2558" />
+    </g>
+    <g
+       id="g2564"
+       style="clip-rule:evenodd;fill-rule:evenodd;image-rendering:optimizeQuality;shape-rendering:geometricPrecision;text-rendering:geometricPrecision"
+       transform="matrix(0.26458333,0,0,0.26458333,50.124925,-21.451311)">
+      <path
+         style="opacity:1"
+         fill="#feff00"
+         d="m 67.5,611.5 c 7.3333,0 14.6667,0 22,0 0,7 0,14 0,21 -7.3333,0 -14.6667,0 -22,0 0,-7 0,-14 0,-21 z"
+         id="path2562" />
+    </g>
+    <g
+       id="g2568"
+       style="clip-rule:evenodd;fill-rule:evenodd;image-rendering:optimizeQuality;shape-rendering:geometricPrecision;text-rendering:geometricPrecision"
+       transform="matrix(0.26458333,0,0,0.26458333,50.124925,-21.451311)">
+      <path
+         style="opacity:1"
+         fill="#91d04f"
+         d="m 91.5,611.5 c 7,0 14,0 21,0 0,7 0,14 0,21 -7,0 -14,0 -21,0 0,-7 0,-14 0,-21 z"
+         id="path2566" />
+    </g>
+    <g
+       id="g2572"
+       style="clip-rule:evenodd;fill-rule:evenodd;image-rendering:optimizeQuality;shape-rendering:geometricPrecision;text-rendering:geometricPrecision"
+       transform="matrix(0.26458333,0,0,0.26458333,50.124925,-21.451311)">
+      <path
+         style="opacity:1"
+         fill="#e5b9b7"
+         d="m 154.5,611.5 c 7,0 14,0 21,0 0,7 0,14 0,21 -7,0 -14,0 -21,0 0,-7 0,-14 0,-21 z"
+         id="path2570" />
+    </g>
+    <g
+       id="g2576"
+       style="clip-rule:evenodd;fill-rule:evenodd;image-rendering:optimizeQuality;shape-rendering:geometricPrecision;text-rendering:geometricPrecision"
+       transform="matrix(0.26458333,0,0,0.26458333,50.124925,-21.451311)">
+      <path
+         style="opacity:1"
+         fill="#000000"
+         d="m 237.5,619.5 c 32,0 64,0 96,0 0,8.667 0,17.333 0,26 -32,0 -64,0 -96,0 0,-8.667 0,-17.333 0,-26 z"
+         id="path2574" />
+    </g>
+    <g
+       id="g2580"
+       style="clip-rule:evenodd;fill-rule:evenodd;image-rendering:optimizeQuality;shape-rendering:geometricPrecision;text-rendering:geometricPrecision"
+       transform="matrix(0.26458333,0,0,0.26458333,50.124925,-21.451311)">
+      <path
+         style="opacity:1"
+         fill="#000000"
+         d="m 394.5,619.5 c 32,0 64,0 96,0 0,8.333 0,16.667 0,25 -32,0 -64,0 -96,0 0,-8.333 0,-16.667 0,-25 z"
+         id="path2578" />
+    </g>
+    <g
+       id="g2584"
+       style="clip-rule:evenodd;fill-rule:evenodd;image-rendering:optimizeQuality;shape-rendering:geometricPrecision;text-rendering:geometricPrecision"
+       transform="matrix(0.26458333,0,0,0.26458333,50.124925,-21.451311)">
+      <path
+         style="opacity:0.969"
+         fill="#bebebe"
+         d="m 364.5,620.5 c 4.782,2.947 8.782,6.78 12,11.5 -3.135,4.302 -6.801,8.136 -11,11.5 -0.952,-1.545 -1.285,-3.212 -1,-5 -4,0 -8,0 -12,0 0,-4.333 0,-8.667 0,-13 4,0 8,0 12,0 0,-1.667 0,-3.333 0,-5 z"
+         id="path2582" />
+    </g>
+    <g
+       id="g2588"
+       style="clip-rule:evenodd;fill-rule:evenodd;image-rendering:optimizeQuality;shape-rendering:geometricPrecision;text-rendering:geometricPrecision"
+       transform="matrix(0.26458333,0,0,0.26458333,50.124925,-21.451311)">
+      <path
+         style="opacity:0.967"
+         fill="#bebebe"
+         d="m 209.5,621.5 c 4.782,2.947 8.782,6.78 12,11.5 -3.135,4.302 -6.801,8.136 -11,11.5 -0.952,-1.545 -1.285,-3.212 -1,-5 -3.667,0 -7.333,0 -11,0 0,-4.333 0,-8.667 0,-13 3.667,0 7.333,0 11,0 0,-1.667 0,-3.333 0,-5 z"
+         id="path2586" />
+    </g>
+    <g
+       id="g2592"
+       style="clip-rule:evenodd;fill-rule:evenodd;image-rendering:optimizeQuality;shape-rendering:geometricPrecision;text-rendering:geometricPrecision"
+       transform="matrix(0.26458333,0,0,0.26458333,50.124925,-21.451311)">
+      <path
+         style="opacity:1"
+         fill="#feff00"
+         d="m 239.5,621.5 c 7,0 14,0 21,0 0,7.333 0,14.667 0,22 -7,0 -14,0 -21,0 0,-7.333 0,-14.667 0,-22 z"
+         id="path2590" />
+    </g>
+    <g
+       id="g2596"
+       style="clip-rule:evenodd;fill-rule:evenodd;image-rendering:optimizeQuality;shape-rendering:geometricPrecision;text-rendering:geometricPrecision"
+       transform="matrix(0.26458333,0,0,0.26458333,50.124925,-21.451311)">
+      <path
+         style="opacity:1"
+         fill="#feff00"
+         d="m 262.5,621.5 c 7.333,0 14.667,0 22,0 0,7.333 0,14.667 0,22 -7.333,0 -14.667,0 -22,0 0,-7.333 0,-14.667 0,-22 z"
+         id="path2594" />
+    </g>
+    <g
+       id="g2600"
+       style="clip-rule:evenodd;fill-rule:evenodd;image-rendering:optimizeQuality;shape-rendering:geometricPrecision;text-rendering:geometricPrecision"
+       transform="matrix(0.26458333,0,0,0.26458333,50.124925,-21.451311)">
+      <path
+         style="opacity:1"
+         fill="#feff00"
+         d="m 286.5,621.5 c 7,0 14,0 21,0 0,7.333 0,14.667 0,22 -7,0 -14,0 -21,0 0,-7.333 0,-14.667 0,-22 z"
+         id="path2598" />
+    </g>
+    <g
+       id="g2604"
+       style="clip-rule:evenodd;fill-rule:evenodd;image-rendering:optimizeQuality;shape-rendering:geometricPrecision;text-rendering:geometricPrecision"
+       transform="matrix(0.26458333,0,0,0.26458333,50.124925,-21.451311)">
+      <path
+         style="opacity:1"
+         fill="#feff00"
+         d="m 309.5,621.5 c 7.333,0 14.667,0 22,0 0,7.333 0,14.667 0,22 -7.333,0 -14.667,0 -22,0 0,-7.333 0,-14.667 0,-22 z"
+         id="path2602" />
+    </g>
+    <g
+       id="g2608"
+       style="clip-rule:evenodd;fill-rule:evenodd;image-rendering:optimizeQuality;shape-rendering:geometricPrecision;text-rendering:geometricPrecision"
+       transform="matrix(0.26458333,0,0,0.26458333,50.124925,-21.451311)">
+      <path
+         style="opacity:1"
+         fill="#7e7f7e"
+         d="m 396.5,621.5 c 7,0 14,0 21,0 0,7 0,14 0,21 -7,0 -14,0 -21,0 0,-7 0,-14 0,-21 z"
+         id="path2606" />
+    </g>
+    <g
+       id="g2612"
+       style="clip-rule:evenodd;fill-rule:evenodd;image-rendering:optimizeQuality;shape-rendering:geometricPrecision;text-rendering:geometricPrecision"
+       transform="matrix(0.26458333,0,0,0.26458333,50.124925,-21.451311)">
+      <path
+         style="opacity:1"
+         fill="#585958"
+         d="m 419.5,621.5 c 7.333,0 14.667,0 22,0 0,7 0,14 0,21 -7.333,0 -14.667,0 -22,0 0,-7 0,-14 0,-21 z"
+         id="path2610" />
+    </g>
+    <g
+       id="g2616"
+       style="clip-rule:evenodd;fill-rule:evenodd;image-rendering:optimizeQuality;shape-rendering:geometricPrecision;text-rendering:geometricPrecision"
+       transform="matrix(0.26458333,0,0,0.26458333,50.124925,-21.451311)">
+      <path
+         style="opacity:1"
+         fill="#d8d9d8"
+         d="m 443.5,621.5 c 7,0 14,0 21,0 0,7 0,14 0,21 -7,0 -14,0 -21,0 0,-7 0,-14 0,-21 z"
+         id="path2614" />
+    </g>
+    <g
+       id="g2620"
+       style="clip-rule:evenodd;fill-rule:evenodd;image-rendering:optimizeQuality;shape-rendering:geometricPrecision;text-rendering:geometricPrecision"
+       transform="matrix(0.26458333,0,0,0.26458333,50.124925,-21.451311)">
+      <path
+         style="opacity:1"
+         fill="#a5a6a5"
+         d="m 466.5,621.5 c 7.333,0 14.667,0 22,0 0,7 0,14 0,21 -7.333,0 -14.667,0 -22,0 0,-7 0,-14 0,-21 z"
+         id="path2618" />
+    </g>
+    <g
+       id="g2632"
+       style="clip-rule:evenodd;fill-rule:evenodd;image-rendering:optimizeQuality;shape-rendering:geometricPrecision;text-rendering:geometricPrecision"
+       transform="matrix(0.26458333,0,0,0.26458333,50.124925,-21.451311)">
+      <path
+         style="opacity:1"
+         fill="#d89693"
+         d="m 154.5,634.5 c 7,0 14,0 21,0 0,7.333 0,14.667 0,22 -7,0 -14,0 -21,0 0,-7.333 0,-14.667 0,-22 z"
+         id="path2630" />
+    </g>
+    <g
+       id="g2636"
+       style="clip-rule:evenodd;fill-rule:evenodd;image-rendering:optimizeQuality;shape-rendering:geometricPrecision;text-rendering:geometricPrecision"
+       transform="matrix(0.26458333,0,0,0.26458333,50.124925,-21.451311)">
+      <path
+         style="opacity:0.554"
+         fill="#000000"
+         d="m 280.5,647.5 c 1.894,0.548 3.56,1.548 5,3 1.314,-0.813 2.481,-1.813 3.5,-3 0.833,0.833 1.667,1.667 2.5,2.5 -1.187,1.019 -2.187,2.186 -3,3.5 1,1.333 2,2.667 3,4 -0.209,0.586 -0.543,1.086 -1,1.5 -1.917,-0.027 -3.584,-0.861 -5,-2.5 -1.333,1 -2.667,2 -4,3 -0.586,-0.209 -1.086,-0.543 -1.5,-1 0.027,-1.917 0.861,-3.584 2.5,-5 -1,-1.333 -2,-2.667 -3,-4 0.363,-0.683 0.696,-1.35 1,-2 z"
+         id="path2634" />
+    </g>
+    <g
+       id="g2640"
+       style="clip-rule:evenodd;fill-rule:evenodd;image-rendering:optimizeQuality;shape-rendering:geometricPrecision;text-rendering:geometricPrecision"
+       transform="matrix(0.26458333,0,0,0.26458333,50.124925,-21.451311)">
+      <path
+         style="opacity:0.621"
+         fill="#000000"
+         d="m 436.5,649.5 c 4.333,0 8.667,0 13,0 0,1 0,2 0,3 -4.333,0 -8.667,0 -13,0 0,-1 0,-2 0,-3 z"
+         id="path2638" />
+    </g>
+    <g
+       id="g2644"
+       style="clip-rule:evenodd;fill-rule:evenodd;image-rendering:optimizeQuality;shape-rendering:geometricPrecision;text-rendering:geometricPrecision"
+       transform="matrix(0.26458333,0,0,0.26458333,50.124925,-21.451311)">
+      <path
+         style="opacity:0.621"
+         fill="#000000"
+         d="m 436.5,654.5 c 4.333,0 8.667,0 13,0 0,1 0,2 0,3 -4.333,0 -8.667,0 -13,0 0,-1 0,-2 0,-3 z"
+         id="path2642" />
+    </g>
+    <g
+       id="g2648"
+       style="clip-rule:evenodd;fill-rule:evenodd;image-rendering:optimizeQuality;shape-rendering:geometricPrecision;text-rendering:geometricPrecision"
+       transform="matrix(0.26458333,0,0,0.26458333,50.124925,-21.451311)">
+      <path
+         style="opacity:1"
+         fill="#bf504c"
+         d="m 154.5,658.5 c 7,0 14,0 21,0 0,7 0,14 0,21 -7,0 -14,0 -21,0 0,-7 0,-14 0,-21 z"
+         id="path2646" />
+    </g>
+    <g
+       id="g2652"
+       style="clip-rule:evenodd;fill-rule:evenodd;image-rendering:optimizeQuality;shape-rendering:geometricPrecision;text-rendering:geometricPrecision"
+       transform="matrix(0.26458333,0,0,0.26458333,50.124925,-21.451311)">
+      <path
+         style="opacity:1"
+         fill="#000000"
+         d="m 237.5,661.5 c 32,0 64,0 96,0 0,8.667 0,17.333 0,26 -32,0 -64,0 -96,0 0,-8.667 0,-17.333 0,-26 z"
+         id="path2650" />
+    </g>
+    <g
+       id="g2656"
+       style="clip-rule:evenodd;fill-rule:evenodd;image-rendering:optimizeQuality;shape-rendering:geometricPrecision;text-rendering:geometricPrecision"
+       transform="matrix(0.26458333,0,0,0.26458333,50.124925,-21.451311)">
+      <path
+         style="opacity:1"
+         fill="#e5b9b7"
+         d="m 239.5,663.5 c 7,0 14,0 21,0 0,7.333 0,14.667 0,22 -7,0 -14,0 -21,0 0,-7.333 0,-14.667 0,-22 z"
+         id="path2654" />
+    </g>
+    <g
+       id="g2660"
+       style="clip-rule:evenodd;fill-rule:evenodd;image-rendering:optimizeQuality;shape-rendering:geometricPrecision;text-rendering:geometricPrecision"
+       transform="matrix(0.26458333,0,0,0.26458333,50.124925,-21.451311)">
+      <path
+         style="opacity:1"
+         fill="#d89693"
+         d="m 262.5,663.5 c 7.333,0 14.667,0 22,0 0,7.333 0,14.667 0,22 -7.333,0 -14.667,0 -22,0 0,-7.333 0,-14.667 0,-22 z"
+         id="path2658" />
+    </g>
+    <g
+       id="g2664"
+       style="clip-rule:evenodd;fill-rule:evenodd;image-rendering:optimizeQuality;shape-rendering:geometricPrecision;text-rendering:geometricPrecision"
+       transform="matrix(0.26458333,0,0,0.26458333,50.124925,-21.451311)">
+      <path
+         style="opacity:1"
+         fill="#bf504c"
+         d="m 286.5,663.5 c 7,0 14,0 21,0 0,7.333 0,14.667 0,22 -7,0 -14,0 -21,0 0,-7.333 0,-14.667 0,-22 z"
+         id="path2662" />
+    </g>
+    <g
+       id="g2668"
+       style="clip-rule:evenodd;fill-rule:evenodd;image-rendering:optimizeQuality;shape-rendering:geometricPrecision;text-rendering:geometricPrecision"
+       transform="matrix(0.26458333,0,0,0.26458333,50.124925,-21.451311)">
+      <path
+         style="opacity:1"
+         fill="#f1dcda"
+         d="m 309.5,663.5 c 7.333,0 14.667,0 22,0 0,7.333 0,14.667 0,22 -7.333,0 -14.667,0 -22,0 0,-7.333 0,-14.667 0,-22 z"
+         id="path2666" />
+    </g>
+    <g
+       id="g2672"
+       style="clip-rule:evenodd;fill-rule:evenodd;image-rendering:optimizeQuality;shape-rendering:geometricPrecision;text-rendering:geometricPrecision"
+       transform="matrix(0.26458333,0,0,0.26458333,50.124925,-21.451311)">
+      <path
+         style="opacity:1"
+         fill="#000000"
+         d="m 394.5,665.5 c 32,0 64,0 96,0 0,8.333 0,16.667 0,25 -32,0 -64,0 -96,0 0,-8.333 0,-16.667 0,-25 z"
+         id="path2670" />
+    </g>
+    <g
+       id="g2676"
+       style="clip-rule:evenodd;fill-rule:evenodd;image-rendering:optimizeQuality;shape-rendering:geometricPrecision;text-rendering:geometricPrecision"
+       transform="matrix(0.26458333,0,0,0.26458333,50.124925,-21.451311)">
+      <path
+         style="opacity:1"
+         fill="#dbe6f1"
+         d="m 396.5,667.5 c 7,0 14,0 21,0 0,7 0,14 0,21 -7,0 -14,0 -21,0 0,-7 0,-14 0,-21 z"
+         id="path2674" />
+    </g>
+    <g
+       id="g2680"
+       style="clip-rule:evenodd;fill-rule:evenodd;image-rendering:optimizeQuality;shape-rendering:geometricPrecision;text-rendering:geometricPrecision"
+       transform="matrix(0.26458333,0,0,0.26458333,50.124925,-21.451311)">
+      <path
+         style="opacity:1"
+         fill="#b8cde4"
+         d="m 419.5,667.5 c 7.333,0 14.667,0 22,0 0,7 0,14 0,21 -7.333,0 -14.667,0 -22,0 0,-7 0,-14 0,-21 z"
+         id="path2678" />
+    </g>
+    <g
+       id="g2684"
+       style="clip-rule:evenodd;fill-rule:evenodd;image-rendering:optimizeQuality;shape-rendering:geometricPrecision;text-rendering:geometricPrecision"
+       transform="matrix(0.26458333,0,0,0.26458333,50.124925,-21.451311)">
+      <path
+         style="opacity:1"
+         fill="#fefffe"
+         d="m 443.5,667.5 c 7,0 14,0 21,0 0,7 0,14 0,21 -7,0 -14,0 -21,0 0,-7 0,-14 0,-21 z"
+         id="path2682" />
+    </g>
+    <g
+       id="g2688"
+       style="clip-rule:evenodd;fill-rule:evenodd;image-rendering:optimizeQuality;shape-rendering:geometricPrecision;text-rendering:geometricPrecision"
+       transform="matrix(0.26458333,0,0,0.26458333,50.124925,-21.451311)">
+      <path
+         style="opacity:1"
+         fill="#fefffe"
+         d="m 466.5,667.5 c 7.333,0 14.667,0 22,0 0,7 0,14 0,21 -7.333,0 -14.667,0 -22,0 0,-7 0,-14 0,-21 z"
+         id="path2686" />
+    </g>
+    <g
+       id="g2692"
+       style="clip-rule:evenodd;fill-rule:evenodd;image-rendering:optimizeQuality;shape-rendering:geometricPrecision;text-rendering:geometricPrecision"
+       transform="matrix(0.26458333,0,0,0.26458333,50.124925,-21.451311)">
+      <path
+         style="opacity:0.621"
+         fill="#000000"
+         d="m 278.5,692.5 c 4.333,0 8.667,0 13,0 0,1 0,2 0,3 -4.333,0 -8.667,0 -13,0 0,-1 0,-2 0,-3 z"
+         id="path2690" />
+    </g>
+    <g
+       id="g2696"
+       style="clip-rule:evenodd;fill-rule:evenodd;image-rendering:optimizeQuality;shape-rendering:geometricPrecision;text-rendering:geometricPrecision"
+       transform="matrix(0.26458333,0,0,0.26458333,50.124925,-21.451311)">
+      <path
+         style="opacity:0.621"
+         fill="#000000"
+         d="m 278.5,697.5 c 4.333,0 8.667,0 13,0 0,1 0,2 0,3 -4.333,0 -8.667,0 -13,0 0,-1 0,-2 0,-3 z"
+         id="path2694" />
+    </g>
+    <g
+       id="g2708"
+       style="clip-rule:evenodd;fill-rule:evenodd;image-rendering:optimizeQuality;shape-rendering:geometricPrecision;text-rendering:geometricPrecision"
+       transform="matrix(0.26458333,0,0,0.26458333,50.124925,-21.451311)">
+      <path
+         style="opacity:1"
+         fill="#000000"
+         d="m 237.5,707.5 c 32,0 64,0 96,0 0,8.667 0,17.333 0,26 -32,0 -64,0 -96,0 0,-8.667 0,-17.333 0,-26 z"
+         id="path2706" />
+    </g>
+    <g
+       id="g2720"
+       style="clip-rule:evenodd;fill-rule:evenodd;image-rendering:optimizeQuality;shape-rendering:geometricPrecision;text-rendering:geometricPrecision"
+       transform="matrix(0.26458333,0,0,0.26458333,50.124925,-21.451311)">
+      <path
+         style="opacity:1"
+         fill="#d8d9d8"
+         d="m 239.5,709.5 c 7,0 14,0 21,0 0,7.333 0,14.667 0,22 -7,0 -14,0 -21,0 0,-7.333 0,-14.667 0,-22 z"
+         id="path2718" />
+    </g>
+    <g
+       id="g2724"
+       style="clip-rule:evenodd;fill-rule:evenodd;image-rendering:optimizeQuality;shape-rendering:geometricPrecision;text-rendering:geometricPrecision"
+       transform="matrix(0.26458333,0,0,0.26458333,50.124925,-21.451311)">
+      <path
+         style="opacity:1"
+         fill="#bebfbe"
+         d="m 262.5,709.5 c 7.333,0 14.667,0 22,0 0,7.333 0,14.667 0,22 -7.333,0 -14.667,0 -22,0 0,-7.333 0,-14.667 0,-22 z"
+         id="path2722" />
+    </g>
+    <g
+       id="g2728"
+       style="clip-rule:evenodd;fill-rule:evenodd;image-rendering:optimizeQuality;shape-rendering:geometricPrecision;text-rendering:geometricPrecision"
+       transform="matrix(0.26458333,0,0,0.26458333,50.124925,-21.451311)">
+      <path
+         style="opacity:1"
+         fill="#7e7f7e"
+         d="m 286.5,709.5 c 7,0 14,0 21,0 0,7.333 0,14.667 0,22 -7,0 -14,0 -21,0 0,-7.333 0,-14.667 0,-22 z"
+         id="path2726" />
+    </g>
+    <g
+       id="g2732"
+       style="clip-rule:evenodd;fill-rule:evenodd;image-rendering:optimizeQuality;shape-rendering:geometricPrecision;text-rendering:geometricPrecision"
+       transform="matrix(0.26458333,0,0,0.26458333,50.124925,-21.451311)">
+      <path
+         style="opacity:1"
+         fill="#585958"
+         d="m 309.5,709.5 c 7.333,0 14.667,0 22,0 0,7.333 0,14.667 0,22 -7.333,0 -14.667,0 -22,0 0,-7.333 0,-14.667 0,-22 z"
+         id="path2730" />
+    </g>
+  </g>
+</svg>

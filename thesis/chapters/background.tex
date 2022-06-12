@@ -311,7 +311,7 @@ require one single key for encryption and decryption at the same time, known by 
 Often times, public-key schemes (rather slow) are used to exchange keys for subsequent symmetric encryption
 (rather fast) of large plaintexts, for instance in the \gls{tls} protocol \parencite{rfc8446}.
 
-\subsection{Ring-LWE}
+\subsection{Learning with Errors on Rings (RLWE)}
 \Gls{rlwe}
 \cite{2010-rlwe-original}
 % TODO: how to get from LWE to RLWE
@@ -387,7 +387,9 @@ according to some model $M$.
   \caption{A neural network}
 \end{figure}
 
-\begin{theorem}{Universal Approximation}
+To better understand the implications and possibilities of a large neural network, consider the following universal approximation theorem:
+
+\begin{theorem}{Universal Approximation}{universal-approx}
   If the neural network has at least one hidden layer, proper nonlinear activation functions and enough
   data and hidden units, it can approximate any continuous function $y(x, w): \R^n \mapsto \R$
   arbitrarily well on a compact domain
@@ -410,6 +412,6 @@ Matrix -> Activation Function
 
 \begin{figure}[H]
   \centering
-  \input{figures/taylor-relu}
+  \input{figures/generated/taylor-relu.tex}
   \caption{Comparison of the Relu activation function vs. its Taylor expansion}
 \end{figure}

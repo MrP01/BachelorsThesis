@@ -6,10 +6,10 @@ One can distinguish three flavors of it, Partial-, Somewhat- and \gls{fhe}.
 
 For \Gls{fhe}, there exist a few schemes in use today with existing implementations.
 \begin{itemize}
-  \item Brakerski/Fan-Vercauteren (BFV) scheme for integer arithmetic
+  \item \gls{bfv} scheme for integer arithmetic
         (\cite{2012-fv-original}, \cite{2012-brakerski}).
-  \item Brakerski-Gentry-Vaikuntanathan (BGV) scheme for integer arithmetic \parencite{2012-bgv-original}.
-  \item Cheon-Kim-Kim-Song (CKKS) scheme for real-number arithmetic \parencite{2017-ckks-original}.
+  \item \gls{bgv} scheme for integer arithmetic \parencite{2012-bgv-original}.
+  \item \gls{ckks} scheme for (complex) floating point arithmetic \parencite{2017-ckks-original}.
   \item Ducas-Micciancio (FHEW) and Chillotti-Gama-Georgieva-Izabachene (TFHE) schemes for Boolean circuit evaluation
         \parencite{2019-tfhe-original}.
 \end{itemize}
@@ -138,55 +138,21 @@ To summarise the parameters and variables, a brief overview of all used symbols 
   \label{tab:bfv-symbols}
 \end{table}
 
-
-\tikzstyle{cleartext} = [rectangle, rounded corners,minimum width=3cm, minimum height=1cm, text centered, draw=black, fill=orange!30]
-\tikzstyle{plaintext} = [rectangle, rounded corners,minimum width=3cm, minimum height=1cm, text centered, draw=black, fill=purple!30]
-\tikzstyle{ciphertext} = [rectangle, rounded corners,minimum width=3cm, minimum height=1cm, text centered, draw=black, fill=themecolor!30]
-\tikzstyle{arrow} = [thick,->,>=stealth]
-
-\begin{figure}[H]
-  \centering
-  \begin{tikzpicture}
-    \node[cleartext, align = center] (m) at (0,0) {message \\ $m$};
-    \node[plaintext, align = center] (p) at (6,0) {plaintext \\ $p(X)$};
-    \node[ciphertext, align = center] (c) at (12,0) {ciphertext \\ $c = (c_0(X), c_1(X))$};
-
-    \node[cleartext, align = center] (m2) at (0,-2.5) {message \\ $\tilde{m}=f(m)$};
-    \node[plaintext, align = center] (p2) at (6,-2.5) {plaintext \\ $\tilde{p}(X) = f(p(X))$};
-    \node[ciphertext, align = center] (c2) at (12,-2.5) {ciphertext \\ $\tilde{c} = f(c)$};
-
-    \draw (m.north) node[above]{$\C^{N/2}$};
-    \draw (m2.south) node[below]{$\C^{N/2}$};
-    \draw (p.north) node[above]{$\Z[X]/(X^N + 1)$};
-    \draw (p2.south) node[below]{$\Z[X]/(X^N + 1)$};
-    \draw (c.north) node[above]{$(\Z_q[X]/(X^N + 1))^2$};
-    \draw (c2.south) node[below]{$(\Z_q[X]/(X^N + 1))^2$};
-
-    \draw [arrow] (m) -- node[anchor=south] {encoding} (p) ;
-    \draw [arrow] (p) -- node[anchor=south] {encryption} (c);
-    \draw [arrow] (c) -- node[anchor=east] {computing $f$} (c2);
-    \draw [arrow] (c2) -- node[anchor=south] {decryption} (p2);
-    \draw [arrow] (p2) -- node[anchor=south] {decoding} (m2);
-  \end{tikzpicture}
-  \caption{Overview of BFV, adapted from \cite{2020-cryptotree}.}
-  \label{fig:bfv-overview}
-\end{figure}
+\input{figures/bfv-schematic.tex}
 
 \begin{theorem}{BFV encryption is homomorphic with respect to addition}{bfv-enc-is-homomorphic}
-  \cryptop{BFV.Encrypt} should encrypt in such a way that the addition algebra can be retained
-  even in the transformed space, showing that we can indeed refer to it as homomorphic encryption.
+  \cryptop{BFV.Encrypt} should encrypt in such a way that the addition algebra can be retained even in the transformed space, showing that we can indeed refer to it as \hyperref[def:ring-homomorphism]{homomorphic} encryption.
 \end{theorem}
+
+\textit{Microsoft SEAL} implements the scheme, enabled using \cpp{seal::scheme_type::bfv}.
 
 \pagebreak
 \section{The CKKS scheme}
 The CKKS scheme allows us to perform approximate arithmetic on floating point numbers.
-Essentially, the idea is to extend BFV which allows us to operate on vectors $\vec{y} \in \Z_t^n$,
-by an embedding approach that allows us to encode a (complex) floating point number vector $\vec{x} \in \R^n (\C^n)$
-as an integer vector. A na\"ive approach would be to use a fixed-point embedding:
+Essentially, the idea is to extend BFV which allows us to operate on vectors $\vec{y} \in \Z_t^n$, by an embedding approach that allows us to encode a (complex) floating point number vector $\vec{x} \in \R^n (\C^n)$ as an integer vector. A na\"ive approach would be to use a fixed-point embedding:
 \newcommand{\embed}{\mathrm{embed}}
 $$\embed(\vec{x}) = \vec{x} \cdot F$$
-with $F \in \Z$. In decimal form, for instance with $F = 1000$, we could effectively encode
-three decimal places of the original vector $\vec{x}$.
+with $F \in \Z$. In decimal form, for instance with $F = 1000$, we could effectively encode three decimal places of the original vector $\vec{x}$.
 % ... TODO: scale explodes, confer Roman's PETS lecture -> motivation for CKKS.
 
 \begin{definition}{Canonical Embedding $\underline{\sigma}$}{sigma-transform}
@@ -238,8 +204,7 @@ three decimal places of the original vector $\vec{x}$.
   \parencite{2017-ckks-original}
 \end{definition}
 
-To summarise the parameters and variables, a brief overview of all used symbols is
-provided in \autoref{tab:ckks-symbols}.
+To summarise the parameters and variables, a brief overview of all used symbols is provided in \autoref{tab:ckks-symbols}.
 \begin{table}[H]
   \centering
   \caption{Summary of the parameters and symbols in CKKS.}
@@ -265,41 +230,10 @@ provided in \autoref{tab:ckks-symbols}.
   \label{tab:ckks-symbols}
 \end{table}
 
-\tikzstyle{cleartext} = [rectangle, rounded corners,minimum width=3cm, minimum height=1cm, text centered, draw=black, fill=orange!30]
-\tikzstyle{plaintext} = [rectangle, rounded corners,minimum width=3cm, minimum height=1cm, text centered, draw=black, fill=purple!30]
-\tikzstyle{ciphertext} = [rectangle, rounded corners,minimum width=3cm, minimum height=1cm, text centered, draw=black, fill=themecolor!30]
-\tikzstyle{arrow} = [thick,->,>=stealth]
-
-\begin{figure}[H]
-  \centering
-  \begin{tikzpicture}
-    \node[cleartext, align = center] (m) at (0,0) {message \\ $m$};
-    \node[plaintext, align = center] (p) at (6,0) {plaintext \\ $p(X)$};
-    \node[ciphertext, align = center] (c) at (12,0) {ciphertext \\ $c = (c_0(X), c_1(X))$};
-
-    \node[cleartext, align = center] (m2) at (0,-2.5) {message \\ $\tilde{m}=f(m)$};
-    \node[plaintext, align = center] (p2) at (6,-2.5) {plaintext \\ $\tilde{p}(X) = f(p(X))$};
-    \node[ciphertext, align = center] (c2) at (12,-2.5) {ciphertext \\ $\tilde{c} = f(c)$};
-
-    \draw (m.north) node[above]{$\C^{N/2}$};
-    \draw (m2.south) node[below]{$\C^{N/2}$};
-    \draw (p.north) node[above]{$\Z[X]/(X^N + 1)$};
-    \draw (p2.south) node[below]{$\Z[X]/(X^N + 1)$};
-    \draw (c.north) node[above]{$(\Z_q[X]/(X^N + 1))^2$};
-    \draw (c2.south) node[below]{$(\Z_q[X]/(X^N + 1))^2$};
-
-    \draw [arrow] (m) -- node[anchor=south] {encoding} (p) ;
-    \draw [arrow] (p) -- node[anchor=south] {encryption} (c);
-    \draw [arrow] (c) -- node[anchor=east] {computing $f$} (c2);
-    \draw [arrow] (c2) -- node[anchor=south] {decryption} (p2);
-    \draw [arrow] (p2) -- node[anchor=south] {decoding} (m2);
-  \end{tikzpicture}
-  \caption{Overview of CKKS, adapted from \cite{2020-cryptotree}.}
-  \label{fig:ckks-overview}
-\end{figure}
+\input{figures/ckks-schematic.tex}
 
 \begin{theorem}{CKKS encryption is homomorphic with respect to addition}{ckks-enc-is-homomorphic}
-  \cryptop{CKKS.Encrypt} should encrypt in such a way that the addition algebra can be retained even in the transformed space, showing that we can indeed refer to it as homomorphic encryption.
+  \cryptop{CKKS.Encrypt} should encrypt in such a way that the addition algebra can be retained even in the transformed space, showing that we can indeed refer to it as \hyperref[def:ring-homomorphism]{homomorphic} encryption.
 \end{theorem}
 
 \textit{Microsoft SEAL} implements the scheme, enabled using \cpp{seal::scheme_type::ckks}.
