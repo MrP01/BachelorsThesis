@@ -51,7 +51,7 @@ BFV is based on BGV and they are very similar in their core ideas, one can even 
 
 In this section, we will focus on a slightly altered implementation introduced in \cite{2014-fv-comparison}.
 
-For two tuples $(\cdot, \cdot)$ defined over the same group, denote their element-wise addition as $(\cdot, \cdot) + (\cdot, \cdot)$ and element-wise multiplication by a scalar $u$ as $u \cdot (\cdot, \cdot)$.
+For two tuples $(\cdot, \cdot)$ defined over the same ring, denote their element-wise addition as $(\cdot, \cdot) + (\cdot, \cdot)$, element-wise multiplication by a scalar $u$ as $u \cdot (\cdot, \cdot)$ and element-wise rounding as $\lfloor (\cdot, \cdot) \rceil$.
 
 \begin{definition}{The BFV-Scheme}{bfv-scheme}
   Let $R = \Z[X] / \Phi_d(X)$ be a polynomial ring with $\Phi_d(X)$ the $d$\textsuperscript{th} \hyperref[def:cyclotomic-poly]{cyclotomic polynomial}
@@ -61,19 +61,20 @@ For two tuples $(\cdot, \cdot)$ defined over the same group, denote their elemen
   for plain messages $m \in R/tR$ and define $\delta = \lfloor \frac{q}{t} \rfloor$,
   $\delta\inv = \frac{t}{q}$.
 
-  Introduce two bounded discrete probability distributions $\chi_{key}$ and $\chi_{error}$ over $R/qR$, one which is only used once for key generation and another (usually Gaussian-like) error distribution for the \hyperref[def:lwe-search-problem]{LWE-problem}.
+  Introduce three bounded discrete probability distributions $\chi_{key}$, $\chi_{enc}$ and $\chi_{error}$ over $R/qR$, one which is only used once for key generation, another used for \cryptop{BFV.Encrypt} and another (usually Gaussian-like) error distribution for manually inserted error terms (confer the \hyperref[def:lwe-search-problem]{LWE-problem}). For BFV, usually $\chi_{key} = \chi_{enc}$.
 
   For a polynomial $a \in R/qR$, consider the decomposition $a = \sum_{i=0}^{l-1} a_i w^i$ into base $w \in \N$ obtained by $\cryptop{WordDecomp}: R \mapsto R^l, \cryptop{WordDecomp}(a) = ([a_i]_w)_{i=0}^{l-1}$. \\
   Further let $\cryptop{PowersOf}: R \mapsto R^l$ be defined as $\cryptop{PowersOf}(a) = ([a w^i]_q)_{i=0}^{l-1}$.
 
   Let the parameters $\mathbb{P} = (d, q, t, \chi_{key}, \chi_{error}, w)$ and $l = \lfloor \log_w(q) \rfloor + 1$.
-  \vspace{0.4cm}
+  \vspace{0.2cm}
 
+  \cryptop{BFV.} \\
   \begin{tblr}{Q[l,h]Q[l,h,\textwidth - 3.5cm]}
     \cryptop{ParamGen}$(\lambda)$ & {
         Choose parameters as defined above, given the
         security parameter $\lambda$, such that $1 < t < q$, $w \geq 2$,
-        initialize distributions $\chi_{key}$ and $\chi_{error}$
+        initialize distributions $\chi_{key}$, $\chi_{enc}$ and $\chi_{error}$
         $\quad\rightarrow \mathbb{P}$} \\
     \cryptop{KeyGen}$(\mathbb{P})$ & {
         Generate the secret key $s \leftarrow \chi_{key}$, sample $\vec{\mu} \in (R/qR)^l$
@@ -85,7 +86,7 @@ For two tuples $(\cdot, \cdot)$ defined over the same group, denote their elemen
         as $\vec{p} = (b, a)$.
         $\quad\rightarrow \vec{p}, s, \vec{\gamma}$} \\
     \cryptop{Encrypt}$(\vec{p}, m)$ & {
-        Let $(b,a) = \vec{p}$, $u \leftarrow \chi_{key}$, $\mu_1, \mu_2 \leftarrow \chi_{error}$,
+        Let $(b,a) = \vec{p}$, $u \leftarrow \chi_{enc}$, $\mu_1, \mu_2 \leftarrow \chi_{error}$,
         then the ciphertext is $\vec{c} = u \cdot \vec{p} + (\delta m + \mu_1, \mu_2) = (\delta m + bu + \mu_1, au + \mu_2)$
         $\quad\rightarrow \vec{c}$} \\
     \cryptop{Decrypt}$(s, \vec{c})$ & {
@@ -122,7 +123,7 @@ To summarise the parameters and variables, a brief overview of all used symbols 
     \textbf{Symbol} & \textbf{Space} & \textbf{Explanation} \\
     \hline
     $\lambda$ & $\in \R$ & Security parameter \\
-    $d$ & $\in \N$ & Index of the cyclotomic polynomial over $R$ \\
+    $d$ & $\in \N$ & Index of the cyclotomic polynomial used in $R$ \\
     $q$ & $\in \N$ & Modulus of the ciphertext space $R/qR$ \\
     $t$ & $\in \N$ & Modulus of the plaintext message space $R/tR$ \\
     $\delta$ & $\in \N$ & Ratio between ciphertext and plaintext modulus \\
@@ -178,28 +179,27 @@ of all complex-valued vectors $\vec{z}$ where the first half equals the reversed
   Using one of several round-off algorithms (c.f. \cite{2013-rlwe-toolkit}), given an element of $H$, define a rounding operation $\underline{\rho}: H \mapsto \underline{\sigma}(R)$ that maps an $h \in H$ to its closest element in $\underline{\sigma}(R)$, also denoted as
   $$\underline{\rho}(h) = \lfloor h \rceil_{\underline{\sigma}(R)}\,.$$
   Further let $\underline{\rho_\delta}(h) = \lfloor \delta \cdot h \rceil_{\underline{\sigma}(R)}$ denote the same rounding operation but with prior scaling by a scalar factor $\delta$.
-  Note that $\underline{\rho}\inv$ is given directly because all elements of its domain are already elements of its image. Similarly, $\underline{\rho_\delta}\inv(\vec{y}) = \delta\inv \cdot \vec{y}$.
+  Note that $\underline{\rho}\inv$ is given directly as the identity operation because all elements of its domain are already elements of its image. Similarly, $\underline{\rho_\delta}\inv(\vec{y}) = \delta\inv \cdot \vec{y}$.
 \end{definition}
 
 Because it is not essential to understanding the encryption scheme, we will skip over concrete implementations of the rounding procedure $\underline{\rho}$.
 Note that for choosing a 'close' element $g \in H$, we must first introduce a sense of proximity, in this case done by the $l_\infty$-norm $||g - h||_\infty$ of the difference between $h \in H$ and $g$.
 
 \begin{definition}{The CKKS Scheme}{ckks-scheme}
-  Define $R, R/qR$ as in \autoref{def:bfv-scheme}.
+  Define $R, R/q_L R$ as in \autoref{def:bfv-scheme}.
+  \vspace{0.2cm}
 
-  From the original CKKS paper, choose
-  $\chi_{key} = \mathcal{H}WT$,
-  $\chi_{error} = \mathcal{DG}$
-  and $\mathcal{ZO}$ a distribution over ....
-  \vspace{0.4cm}
-
+  \cryptop{CKKS.} \\
   \begin{tblr}{Q[l,h]Q[l,h,\textwidth - 3.5cm]}
     \cryptop{ParamGen}$(\lambda)$ & {
-        Choose parameters as defined above, given the
-        security parameter $\lambda$, such that $1 < t < q$, $w \geq 2$,
-        initialize distributions $\chi_{key}$ and $\chi_{error}$
+        Choose parameters as defined above, given the security parameter $\lambda$ and space modulus $q_L$, choose $d \in \N$ a power of $2$, $P, h \in \Z$, $\sigma \in \R$ and initialize distributions $\chi_{key}$, $\chi_{enc}$ and $\chi_{error}$.
         $\quad\rightarrow \mathbb{P}$} \\
     \cryptop{KeyGen}$(\mathbb{P})$ & {
+        Sample the secret key $s \leftarrow \chi_{key}$, $a \in R_{q_L}$ uniformly at random, $\mu \leftarrow \chi_{error}$ and obtain the public key $\vec{p} = (b, a)$
+        with $b = -a \cdot s + \mu$.
+        Sample $a' \in R_{P \cdot q_L}$ uniformly at random, $\mu' \leftarrow \chi_{error}$
+        and obtain the evaluation key $\vec{\gamma} = (b', a')$
+        with $b' = -a' \cdot s + \mu' + Ps^2$.
         $\quad\rightarrow \vec{p}, s, \vec{\gamma}$} \\
     \cryptop{Encode}$(\vec{z})$ & {For a given input vector $\vec{z}$, output
         $m = (\underline{\sigma}\inv \circ \underline{\rho_\delta} \circ \underline{\pi}\inv)(\vec{z}) = \underline{\sigma}\inv(\lfloor \delta \cdot \underline{\pi}\inv(\vec{z})\rceil_{\underline{\sigma}(R)})$ $\quad\rightarrow m$} \\
@@ -207,7 +207,7 @@ Note that for choosing a 'close' element $g \in H$, we must first introduce a se
         $\vec{z} = (\underline{\pi} \circ \underline{\rho_\delta}\inv \circ \underline{\sigma})(m) = (\underline{\pi} \circ \underline{\sigma})(\delta\inv m)$
         $\quad\rightarrow \vec{z}$} \\
     \cryptop{Encrypt}$(\vec{p}, m)$ & {
-        Let $(b,a) = \vec{p}$, $u \leftarrow \mathcal{ZO}$, $\mu_1, \mu_2 \leftarrow \chi_{error}$,
+        Let $(b,a) = \vec{p}$, $u \leftarrow \chi_{enc}$, $\mu_1, \mu_2 \leftarrow \chi_{error}$,
         then the ciphertext is $\vec{c} = u \cdot \vec{p} + (m + \mu_1, \mu_2) = (m + bu + \mu_1, au + \mu_2)$
         $\quad\rightarrow \vec{c}$} \\
     \cryptop{Decrypt}$(s, \vec{c})$ & {
@@ -220,21 +220,32 @@ Note that for choosing a 'close' element $g \in H$, we must first introduce a se
         Output $\overline{\vec{c}} = (
           c_0^1 c_0^2,
           c_0^1 c_1^2 + c_1^1 c_0^2,
-          c_1^1 c_1^2,
+          c_1^1 c_1^2
           )$
         $\quad\rightarrow \overline{\vec{c}}$} \\
     \cryptop{ReLin}$(\overline{\vec{c}}, \vec{\gamma})$ & {
-        Using the relin key $\vec{\gamma} = (\vec{b}, \vec{a})$,
-        relinearize from $\overline{\vec{c}} = (c_0, c_1, c_2)$ as
-        $\vec{c} = (c_0 + \cryptop{WordDecomp}(c_2) \cdot \vec{b}, c_1 + \cryptop{WordDecomp}(c_2) \cdot \vec{a})$
+        Using the evaluation key $\vec{\gamma}$,
+        relinearize from $\overline{\vec{c}} = (c_0, c_1, c_2)$ to
+        $\vec{c} = (c_0, c_1) + \lfloor P\inv c_2 \vec{\gamma} \rceil$
         $\quad\rightarrow \vec{c}$} \\
-    \cryptop{ReScale}$()$ & {
-
-      } \\
+    \cryptop{ReScale}$(\vec{c})$ & {
+    In order to rescale a ciphertext from level $l_{old}$ to $l_{new}$,
+    multiply by a factor $\frac{q_{l_{new}}}{q_{l_{old}}} \in \Q$ and round to the nearest
+    element of $(R/q_{l_{new}} R) \times (R/q_{l_{new}} R)$:
+    $\vec{c}_{new} = \big\lfloor \frac{q_{l_{new}}}{q_{l_{old}}} \vec{c} \big\rceil$
+    $\quad\rightarrow \vec{c_{new}}$} \\
   \end{tblr}
 
   \parencite{2017-ckks-original}
 \end{definition}
+
+For more details on the probability distributions, refer to the original CKKS paper \parencite{2017-ckks-original}, with the following naming relations:
+$\chi_{key} = \mathcal{H}WT(h)$ over $\{0,\pm 1\}^N$,
+$\chi_{error} = \mathcal{DG}(\sigma^2)$ over $\Z^N$ and
+$\chi_{enc} = \mathcal{ZO}(0.5)$ another distribution over $\{0,\pm 1\}^N$.
+
+It should also be noted that the encoding procedure represents an isometric ring isomorphism between its domain and image, as does the decoding procedure.
+This reflects in the observation that the plaintext sizes and errors are preserved under the transformations \parencite{2017-ckks-original}.
 
 To summarise the parameters and variables, a brief overview of all used symbols is provided in \autoref{tab:ckks-symbols}.
 \begin{table}[H]
@@ -245,19 +256,19 @@ To summarise the parameters and variables, a brief overview of all used symbols 
     \textbf{Symbol} & \textbf{Space} & \textbf{Explanation} \\
     \hline
     $\lambda$ & $\in \R$ & Security parameter \\
-    $d$ & $\in \N$ & Index of the cyclotomic polynomial over $R$ \\
-    $q$ & $\in \N$ & Modulus of the ciphertext space $R/qR$ \\
-    $t$ & $\in \N$ & Modulus of the plaintext message space $R/tR$ \\
-    $\delta$ & $\in \N$ & Ratio between ciphertext and plaintext modulus \\
+    $d$ & $\in \N$ & Index of the cyclotomic polynomial used in $R$ \\
+    $P$ & $\in \Z$ & Hmm... \\ % TODO
+    $h$ & $\in \Z$ & Hamming weight of the secret key (used by $\chi_{key}$) \\
+    $\sigma$ & $\in \R$ & Standard deviation of the Gaussian $\chi_{error}$ \\
+    $q_L$ & $\in \N$ & Modulus of $R/q_L R$ at level $L$ \\
+    $\delta$ & $\in \N$ & Scaling factor used when encoding \\
     $\delta\inv$ & $\in \R$ & Inversion coefficient of the effect of $\delta$ \\
-    $w$ & $\in \N$ & Word size used as basis, e.g. $w = 2$ for bits \\
-    $l$ & $\in \N$ & Number of words of size $w$ required to encode $q$ \\
-    $s$ & $\in R$ & Secret Key \\
-    $\vec{p}$ & $\in R/qR \times R/qR$ & Public Key $(b, a)$ \\
-    $\vec{\gamma}$ & $\in (R/qR)^l \times (R/qR)^l$ & Relinearization Key \\
-    $m$ & $\in R/tR$ & Plaintext Message\\
-    $\vec{c}$ & $\in R \times R$ & Ciphertext \\
-    $\overline{\vec{c}}$ & $\in R \times R \times R$ & Slightly larger ciphertext resulting from multiplication \\
+    $s$ & $\in \{0,\pm 1\}^N$ & Secret Key \\
+    $\vec{p}$ & $\in R/q_L R \times R/q_L R$ & Public Key $(b, a)$ \\
+    $\vec{\gamma}$ & $\in R/(P \cdot q_L)R \times R/(P \cdot q_L)R$ & Relinearization Key \\
+    $m$ & $\in R$ & Plaintext Message \\
+    $\vec{c}$ & $\in R/q_L R \times R/q_L R$ & Ciphertext Message \\
+    $\overline{\vec{c}}$ & $\in R/q_L R \times R/q_L R \times R/q_L R$ & Slightly larger ciphertext from multiplication \\
   \end{tblr}
   \label{tab:ckks-symbols}
 \end{table}
