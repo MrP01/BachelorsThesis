@@ -47,13 +47,13 @@ The encryption therefore partially fulfills the properties of a ring homomorphis
 \section{The BFV scheme}
 \cite{2012-fv-original}
 \cite{2012-brakerski}
-BFV is based on BGV and they are very similar in the core ideas, one can even convert a BFV ciphertext to an equivalent BGV ciphertext \parencite{2021-he-revisiting}.
+BFV is based on BGV and they are very similar in their core ideas, one can even convert a BFV ciphertext to an equivalent BGV ciphertext \parencite{2021-he-revisiting}.
 
 In this section, we will focus on a slightly altered implementation introduced in \cite{2014-fv-comparison}.
 
 \newcommand{\cryptop}[1]{\text{\textcolor{darkpurple}{#1}}}
 \begin{definition}{The BFV-Scheme}{bfv-scheme}
-  Let $R = \Z[X] / \Phi_d(X)$ be a ring with $\Phi_d(X)$ the $d$\textsuperscript{th} \hyperref[def:cyclotomic-poly]{cyclotomic polynomial}
+  Let $R = \Z[X] / \Phi_d(X)$ be a polynomial ring with $\Phi_d(X)$ the $d$\textsuperscript{th} \hyperref[def:cyclotomic-poly]{cyclotomic polynomial}
   ($\rightarrow d \in \N$) for ciphertexts $c \in R \times R$.
   Introduce $R / qR$ the associated quotient ring of the $q$\textsuperscript{th} coset of $R$ with the modulus $q \in \N$.
   Further let $t \in \N$ denote the message modulus with $1<t<q$
@@ -155,17 +155,20 @@ $$\embed(\vec{x}) = \vec{x} \cdot F$$
 with $F \in \Z$. In decimal form, for instance with $F = 1000$, we could effectively encode three decimal places of the original vector $\vec{x}$.
 % ... TODO: scale explodes, confer Roman's PETS lecture -> motivation for CKKS.
 
+Introduce $d, R, R/qR$ as in \autoref{def:bfv-scheme} and further define $S = \R[X] / \Phi_d(X)$ a similar polynomial ring to $R$, but over the reals instead of the integers.
+Let $N = \varphi(d)$ be the degree of the reducing cyclotomic polynomial of $S$, confer \autoref{def:bounded-polynomials}.
+
 \begin{definition}{Canonical Embedding $\underline{\sigma}$}{sigma-transform}
-  Blub
+  For a real-valued polynomial $p \in S$, define the canonical embedding of $S$ in $\C^N$ as a mapping $\underline{\sigma}: S \mapsto \C^N$ with $$\underline{\sigma}(p) := \big(p(e^{-2\pi i j / N})\big)_{j \in \Z_d^*}$$
+  with $\Z_d^* := \{x \in \Z / d\Z \,|\, \gcd(x, d) = 1\}$ the set of all integers smaller than $d$ that do not share a factor $> 1$ with $d$.
 \end{definition}
 \begin{definition}{Natural Projection $\underline{\pi}$}{pi-transform}
   Blub
 \end{definition}
 
 \begin{definition}{The CKKS Scheme}{ckks-scheme}
-  Let $R = \Z[X] / \Phi_d(X)$ be a ring with $\Phi_d(X)$ the $d$\textsuperscript{th} \hyperref[def:cyclotomic-poly]{cyclotomic polynomial}
-  ($\rightarrow d \in \N$) for ciphertexts $c \in R \times R$.
-  Introduce $R / qR$ the associated quotient ring of the $q$\textsuperscript{th} coset of $R$ with the modulus $q \in \N$.
+  Define $R, R/qR$ as in \autoref{def:bfv-scheme}.
+
   \vspace{0.4cm}
 
   \begin{tblr}{Q[l,h]Q[l,h,\textwidth - 3.5cm]}

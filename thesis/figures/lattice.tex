@@ -1,0 +1,32 @@
+\usetikzlibrary{calc}
+\begin{figure}
+  \centering
+  \begin{tikzpicture}
+    \coordinate (Origin)   at (0,0);
+    \coordinate (XAxisMin) at (-3,0);
+    \coordinate (XAxisMax) at (5,0);
+    \coordinate (YAxisMin) at (0,-2);
+    \coordinate (YAxisMax) at (0,5);
+    \draw [thin, gray,-latex] (XAxisMin) -- (XAxisMax);
+    \draw [thin, gray,-latex] (YAxisMin) -- (YAxisMax);
+
+    \clip (-3,-2) rectangle (6.5cm, 6.5cm);
+    \pgftransformcm{1}{0.3}{0.7}{1}{\pgfpoint{0cm}{0cm}}
+    \coordinate (Bone) at (0,2);
+    \coordinate (Btwo) at (2,-2);
+    \draw[style=help lines,dashed] (-14,-14) grid[step=2cm] (14,14);
+    \foreach \x in {-7,-6,...,7}{
+        \foreach \y in {-7,-6,...,7}{
+            \node[draw,circle,inner sep=2pt,fill] at (2*\x,2*\y) {};
+          }
+      }
+    \draw [ultra thick,-latex,themecolor] (Origin)
+    -- (Bone) node [above left] {$\vec{b}_1$};
+    \draw [ultra thick,-latex,themecolor] (Origin)
+    -- (Btwo) node [below right] {$\vec{b}_2$};
+  \end{tikzpicture}
+  \caption{Illustration of a standard lattice $\lat$ over the integers $\Z$
+    with two basis vectors $\vec{b}_1$ and $\vec{b}_2$, c.f. \autoref{def:lattice}.
+    The shortest vector problem in this case is solved by $\vec{x} = 0 \vec{b}_1 \pm 1 \vec{b}_2$.}
+  \label{fig:lattice}
+\end{figure}

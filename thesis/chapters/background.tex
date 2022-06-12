@@ -107,15 +107,11 @@ Polynomials with degree $\geq 1$ over the complex numbers can always be factoris
 due to the fundamental theorem of algebra.
 
 \subsection{Cyclotomic Polynomials}
-Due to their interesting structure and efficient computability, in the following schemes,
-polynomials modulo an irreducible form (\autoref{corollary:polys-mod}) are
-chosen as representations of plaintexts and ciphertexts.
-An important concept is that of cyclotomic ('circle-cutting') polynomials, which we will discuss
-in a bit more detail here.
+Due to their interesting structure and efficient computability, in the schemes introduced in the following chapter, certain polynomials (\autoref{corollary:bounded-polynomials-mod-q}) are chosen as representations of plaintexts and ciphertexts.
+An important concept is that of cyclotomic ('circle-cutting') polynomials, which we will discuss in a bit more detail here.
 
 An important polynomial is $$p: \C \mapsto \C, \; p(x) = x^n - 1$$.
-Its roots, found by solving $p(x) = 0$ for $x$, yielding $x^n = 1 \leftrightarrow x_k = \sqrt[n]{1}$
-are referred to as the $n$\textsuperscript{th} roots of unity, of which there are multiple for each $n$.
+Its roots, found by solving $p(x) = 0$ for $x$, yielding $x^n = 1 \leftrightarrow x_k = \sqrt[n]{1}$ are referred to as the $n$\textsuperscript{th} roots of unity, of which there are multiple for each $n$.
 
 \begin{lemma}{The $n$\textsuperscript{th} roots of unity}{nth-roots-of-unity}
   For some integer $n \in \N$, the $n$ complex roots $x_1, x_2, ..., x_n \in \C$ of unity
@@ -143,6 +139,11 @@ natural numbers $m$ less than $n$ who do not share a common divisor $\neq 1$, i.
 $\varphi(n)$ therefore also counts the number of primitive roots of unity for $n$,
 consequently also yielding the degree of the $n$\textsuperscript{th} cyclotomic polynomial.
 
+\begin{remark}{Irreducibility of Cyclotomic Polynomials}{cyclotomic-irreducibility}
+  Cyclotomic polynomials are always irreducible.
+\end{remark}
+The proof for \autoref{remark:cyclotomic-irreducibility} is quite cumbersome, but can be found in \cite{2002-serge-algebra}.
+
 \begin{theorem}{$2^k$\textsuperscript{th} cyclotomic polynomial}{power-of-2-cyclo-poly}
   The $n$\textsuperscript{th} cyclotomic polynomial, where $n = 2^k$ ($k \in \N$) is a power of $2$,
   can be identified as
@@ -151,64 +152,53 @@ consequently also yielding the degree of the $n$\textsuperscript{th} cyclotomic 
 \end{theorem}
 Find a short but illustrative proof of \autoref{thm:power-of-2-cyclo-poly} in the \hyperref[chap:appendix]{Appendix}.
 
-\begin{corollary}{Polynomials Modulo an Irreducible Form}{polys-mod}
-  One can construct the interesting quotient ring
-  $$\Z[X] / (X^N + 1)$$
+\begin{definition}{Ring of Polynomials of highest degree $N-1$}{bounded-polynomials}
+  One can construct the quotient ring $(R, +, \cdot)$ as
+  $$R = \Z[X] / (X^N + 1)$$
   where $(X^N + 1)$ denotes the set of all polynomial multiples of the polynomial $p \in \Z[X], p(x) = x^n + 1$, so
   $$(X^N+1) = \{q: \C \mapsto \C,\; q(x) = r(x) \cdot (x^n+1) \;|\; r \in \Z[X]\}$$
-  The elements of $R$ are $n$ polynomials with integer coefficients of degree $N-1$.
-\end{corollary}
+  The elements of $R$ are then polynomials with integer coefficients of degree $N-1$.
+\end{definition}
 
-\begin{corollary}{Polynomial Ring modulo $q$}{polys-mod-q}
+If $N$ is a power of $2$, according to \autoref{thm:power-of-2-cyclo-poly},
+$R$ is the set of integer-coefficient polynomials reduced modulo $\Phi_d(X)$
+the $d$\textsuperscript{th} cyclotomic polynomial with $N = \varphi(d) = \frac{d}{2}$.
+$$R = \Z[X] / \Phi_d(X) = \Z[X] / (X^N + 1)\,.$$
+Since every cyclotomic polynomial is irreducible, this is a unique representation of $R$
+without any further possible simplifications.
+
+\begin{corollary}{Polynomial Ring modulo $q$}{bounded-polynomials-mod-q}
   Further modifying $R = \Z[X] / (X^N+1)$ to only take coefficients mod $q$, we obtain two equivalent definitions
   for the same ring:
-  $$R/qR = (\Z/q\Z)[X] / (X^N+1) = \Z_q[X] / (X^N+1)$$
+  $$R_q = R/qR = (\Z/q\Z)[X] / (X^N+1)$$
   which contains polynomials with integer coefficients modulo $q$ of degree $N-1$.
   Explicitly stated, the set can be written as:
   $$R/qR = \{p: \C \mapsto \C,\; p(x) = \sum_{k=0}^{N-1} a_k x^k \;|\; a_k \in \Z/q\Z\}$$
 \end{corollary}
 
-\begin{remark}{Irreducibility of Cyclotomic Polynomials}{cyclotomic-irreducibility}
-  Cyclotomic polynomials are always irreducible.
-\end{remark}
-The proof for the above statement is quite cumbersome, but can be found in \cite{2002-serge-algebra}.
-
 \subsection{Lattice Cryptography}
-To illustrate the connection of these problems to lattices, we
-take a closer look at them before considering further details of LWE.
+To illustrate the connection of these problems to lattices, we take a closer look at them before considering further details of LWE.
 Most notably, lattice problems are conjectured to be secure against quantum computers \parencite{2018-lattice-problems}.
 
 \newcommand{\lat}{\mathcal{L}}
 \begin{definition}{Lattice}{lattice}
-  A lattice $(\lat, +, \cdot)$ is a vector field over the integers $(\Z, +, \cdot)$, defined using a set of $n$
-  basis vectors $\vec{b_1}, \vec{b_2}, ..., \vec{b_n} \in \R^n$, that can be introduced as a set
+  A lattice $(\lat, +, \cdot)$ is a vector field over the integers $(\Z, +, \cdot)$, defined using a set of $n$ basis vectors $\vec{b_1}, \vec{b_2}, ..., \vec{b_n} \in \R^n$, that can be introduced as a set
   $$\lat = \bigg\{\sum_{i=1}^m c_i \vec{b}_i \,|\, c \in \Z\bigg\} \subseteq \R^n$$
-  equipped with at least vector addition $+: \lat \times \lat \mapsto \lat$
-  and scalar multiplication $\cdot: \Z \times \lat \mapsto \lat$.
-  As an extension of $\R^n$, the Euclidean norm $||\cdot||$ is also defined and
-  the standard Euclidean metric $d: \lat \times \lat \mapsto \R$, yielding a metric space $(\lat, d)$,
-  can be obtained by the norm of a vector difference, denoted $||(\cdot) - (\cdot)||$.
+  equipped with at least vector addition $+: \lat \times \lat \mapsto \lat$ and scalar multiplication $\cdot: \Z \times \lat \mapsto \lat$.
+  As an extension of $\R^n$, the Euclidean norm $||\cdot||$ is also defined and the standard Euclidean metric $d: \lat \times \lat \mapsto \R$, yielding a metric space $(\lat, d)$, can be obtained by the norm of a vector difference, denoted $||(\cdot) - (\cdot)||$.
 \end{definition}
 
-Its \textit{minimum distance} $\lambda_{min}$ is defined as the smallest Euclidean distance
-between two points $\vec{p_1}$ and $\vec{p_2} \in \lat$
+Its \textit{minimum distance} $\lambda_{min}$ is defined as the smallest Euclidean distance between two points $\vec{p_1}$ and $\vec{p_2} \in \lat$
 $$\lambda_{min} = \min_{\vec{p_1}, \vec{p_2} \in \lat} d(\vec{p_1}, \vec{p_2}) =
   \min_{\vec{p_1}, \vec{p_2} \in \lat} ||\vec{p_1} - \vec{p_2}|| \,,$$
-which can be equivalently thought of as the minimal length of any non-zero vector in the lattice $\lat$,
-because of $\vec{0}$ always being an element of the lattice which can be chosen as $\vec{p_1}$
-and the translational symmetry between fundamental lattice volumes (or regions).
+which can be equivalently thought of as the minimal length of any non-zero vector in the lattice $\lat$, because of $\vec{0}$ always being an element of the lattice which can be chosen as $\vec{p_1}$ and the translational symmetry between fundamental lattice volumes (or regions).
 
 \begin{definition}{Shortest Vector Problem (SVP)}{svp}
-  Given a lattice $\lat$ constructed from $n$ basis vectors,
-  find the shortest non-zero lattice vector $\vec{x} \in \lat \backslash \{\vec{0}\}$,
-  i.e. find $\vec{x}$ such that $||\vec{x}|| = \lambda_{min}$ \parencite{2016-decade-of-lattice}.
+  Given a lattice $\lat$ constructed from $n$ basis vectors, find the shortest non-zero lattice vector $\vec{x} \in \lat \backslash \{\vec{0}\}$, i.e. find $\vec{x}$ such that $||\vec{x}|| = \lambda_{min}$ \parencite{2016-decade-of-lattice}.
 \end{definition}
 
 \begin{definition}{Decisional Approximate SVP (GapSVP)}{gap-svp}
-  Given a lattice $\lat$ and some pre-defined function $\gamma: \N \mapsto \R$ depending
-  on the lattice dimension $n$ (constant for a given $\lat$) with $\gamma(n) \geq 1$,
-  the decisional approximate shortest vector problem is distinguishing
-  between $\lambda_{min} \leq 1$ and $\lambda_{min} > \gamma(n)$.
+  Given a lattice $\lat$ and some pre-defined function $\gamma: \N \mapsto \R$ depending on the lattice dimension $n$ (constant for a given $\lat$) with $\gamma(n) \geq 1$, the decisional approximate shortest vector problem is distinguishing between $\lambda_{min} \leq 1$ and $\lambda_{min} > \gamma(n)$.
   For other cases, it is up to the algorithm what to return.
 \end{definition}
 
@@ -219,56 +209,18 @@ and the translational symmetry between fundamental lattice volumes (or regions).
   $$A \vec{z} = \vec{0} \quad \mathrm{with} \quad ||\vec{z}|| \leq \beta\,.$$
 \end{definition}
 
-Note that without the last requirement, the SIS problem can be easily solved through Gaussian elimination or
-similar algorithms, however they rarely yield a short (or \textit{the} shortest) solution.
-It can be shown that solving SIS is at least as hard as solving GapSVP with appropriate parameters
-\parencite{1996-hard-lattice-problems}.
+Note that without the last requirement, the SIS problem can be easily solved through Gaussian elimination or similar algorithms, however they rarely yield a short (or \textit{the} shortest) solution.
+It can be shown that solving SIS is at least as hard as solving GapSVP with appropriate parameters \parencite{1996-hard-lattice-problems}.
 
-Using the above problems, multiple cryptographic primitives can be constructed
-due to the proven hardness that also propagates to quantum computers.
-Examples include collision resistant hash functions, signatures, pseudorandom functions
-or even Regev's public-key cryptosystem \parencite{2016-decade-of-lattice}.
+Using the above problems, multiple cryptographic primitives can be constructed due to the proven hardness that also propagates to quantum computers.
+Examples include collision resistant hash functions, signatures, pseudorandom functions or even Regev's public-key cryptosystem \parencite{2016-decade-of-lattice}.
 
-\usetikzlibrary{calc}
-\begin{figure}
-  \centering
-  \begin{tikzpicture}
-    \coordinate (Origin)   at (0,0);
-    \coordinate (XAxisMin) at (-3,0);
-    \coordinate (XAxisMax) at (5,0);
-    \coordinate (YAxisMin) at (0,-2);
-    \coordinate (YAxisMax) at (0,5);
-    \draw [thin, gray,-latex] (XAxisMin) -- (XAxisMax);
-    \draw [thin, gray,-latex] (YAxisMin) -- (YAxisMax);
-
-    \clip (-3,-2) rectangle (6.5cm, 6.5cm);
-    \pgftransformcm{1}{0.3}{0.7}{1}{\pgfpoint{0cm}{0cm}}
-    \coordinate (Bone) at (0,2);
-    \coordinate (Btwo) at (2,-2);
-    \draw[style=help lines,dashed] (-14,-14) grid[step=2cm] (14,14);
-    \foreach \x in {-7,-6,...,7}{
-        \foreach \y in {-7,-6,...,7}{
-            \node[draw,circle,inner sep=2pt,fill] at (2*\x,2*\y) {};
-          }
-      }
-    \draw [ultra thick,-latex,themecolor] (Origin)
-    -- (Bone) node [above left] {$\vec{b}_1$};
-    \draw [ultra thick,-latex,themecolor] (Origin)
-    -- (Btwo) node [below right] {$\vec{b}_2$};
-  \end{tikzpicture}
-  \caption{Illustration of a standard lattice $\lat$ over the integers $\Z$
-    with two basis vectors $\vec{b}_1$ and $\vec{b}_2$, c.f. \autoref{def:lattice}.
-    The shortest vector problem in this case is solved by $\vec{x} = 0 \vec{b}_1 \pm 1 \vec{b}_2$.}
-  \label{fig:lattice}
-\end{figure}
+\input{figures/lattice.tex}
 
 \subsection{Learning with Errors (LWE)}
 \label{subsec:lwe}
-Next, we would like to consider \Gls{lwe}, a computing problem that is believed to be sufficiently hard
-to be used in cryptography and, most notably, is not yet solvable in linear time by a quantum algorithm
-(c.f. \autoref{sec:post-quantum-sec}).
-Its hardness assumptions were first formally proven by \citeauthor{2005-lwe-original},
-for which he received the 2018 Gödel price.
+Next, we would like to consider \Gls{lwe}, a computing problem that is believed to be sufficiently hard to be used in cryptography and, most notably, is not yet solvable in linear time by a quantum algorithm (c.f. \autoref{sec:post-quantum-sec}).
+Its hardness assumptions were first formally proven by \citeauthor{2005-lwe-original}, for which he received the 2018 Gödel price.
 
 \begin{definition}{LWE-Distribution $A_{\vec{s}, \chi_{error}}$}{lwe-dist}
   Given a prime $p \in \N$ and $n \in \N$, we choose some secret $\vec{s} \in (\Z / p \Z)^n$.
@@ -290,26 +242,19 @@ two problems out of it, \textit{search}-LWE and \textit{decision}-LWE.
   Given $m$ independent samples $(\vec{a}_i, b_i)_{0 < i \leq m}$ from $A_{\vec{s}, \chi_{error}}$, find the secret $\vec{s}$.
 \end{definition}
 \begin{definition}{LWE-Problem - Decision Version}{lwe-decision-problem}
-  Given $m$ samples $(\vec{a}_i, b_i)_{0 < i \leq m}$, distinguish (with non-negligible advantage)
-  whether they were drawn from $A_{\vec{s}, \chi_{error}}$ or from the uniform distribution
-  $u$ over $(\Z / p \Z)^n \times (\Z / p \Z)$.
+  Given $m$ samples $(\vec{a}_i, b_i)_{0 < i \leq m}$, distinguish (with non-negligible advantage) whether they were drawn from $A_{\vec{s}, \chi_{error}}$ or from the uniform distribution $u$ over $(\Z / p \Z)^n \times (\Z / p \Z)$.
 \end{definition}
 
 In their above definitions, \citeauthor{2005-lwe-original} showed that the two problems are equivalent.
 
 \begin{theorem}{Hardness of LWE}{lwe-hardness}
-  If there exists an efficient algorithm that solves either search-LWE or decision-LWE then
-  there exists an efficient quantum algorithm that approximates the decision
-  version of the shortest vector problem (GapSVP) in the worst case \parencite{2010-lwe-survey}.
+  If there exists an efficient algorithm that solves either search-LWE or decision-LWE then there exists an efficient quantum algorithm that approximates the decision version of the shortest vector problem (GapSVP) in the worst case \parencite{2010-lwe-survey}.
 \end{theorem}
 
-He also provided a construction of a public-key cryptosystem based on them, i.e. an asymmetric cryptographic
-system for at least two parties that includes a public and corresponding private key.
+He also provided a construction of a public-key cryptosystem based on them, i.e. an asymmetric cryptographic system for at least two parties that includes a public and corresponding private key.
 
-Public-key cryptosystems are fundamentally different from symmetric systems, which only
-require one single key for encryption and decryption at the same time, known by all involved parties.
-Often times, public-key schemes (rather slow) are used to exchange keys for subsequent symmetric encryption
-(rather fast) of large plaintexts, for instance in the \gls{tls} protocol \parencite{rfc8446}.
+Public-key cryptosystems are fundamentally different from symmetric systems, which only require one single key for encryption and decryption at the same time, known by all involved parties.
+Often times, public-key schemes (rather slow) are used to exchange keys for subsequent symmetric encryption (rather fast) of large plaintexts, for instance in the \gls{tls} protocol \parencite{rfc8446}.
 
 \subsection{Learning with Errors on Rings (RLWE)}
 \Gls{rlwe}
@@ -330,8 +275,7 @@ Similar to \autoref{def:lwe-dist}, the Ring-LWE distribution can be derived as f
   \end{itemize}
 \end{corollary}
 
-In the exact same manner as \hyperref[subsec:lwe]{above}, the search and decision problems
-can be constructed.
+In the exact same manner as \hyperref[subsec:lwe]{above}, the search and decision problems can be constructed.
 
 \begin{corollary}{RLWE-Search Problem}{search-rlwe}
   Given $m$ independent samples $(a_i, b_i)_{0 < i \leq m}$ from $B_{s, \chi_{error}}$, find the secret $s$.
@@ -344,31 +288,20 @@ can be constructed.
 
 \pagebreak
 \section{Machine Learning}
-Undoubtedly one of the most prevalent concepts in todays computing world, \gls{ml} has shaped
-how computers think and how we interact with them significantly.
-As Shafi \name{Goldwasser} puts it, 'Machine Learning is somewhere in the intersection of Artificial Intelligence,
-Statistics and Theoretical Computer Science' \parencite{goldwasserTalk2018}.
+Undoubtedly one of the most prevalent concepts in todays computing world, \gls{ml} has shaped how computers think and how we interact with them significantly.
+As Shafi \name{Goldwasser} puts it, 'Machine Learning is somewhere in the intersection of Artificial Intelligence, Statistics and Theoretical Computer Science' \parencite{goldwasserTalk2018}.
 
-Within the scope of this thesis, the basics of neural networks and associated learning methods shall be covered,
-limited to the category of supervised learning problems (as opposed to unsupervised learning problems).
-Supervised learning refers to the machine \textit{training} an algorithm to match some input data (features)
-with corresponding output data (targets), often related to pattern recognition.
+Within the scope of this thesis, the basics of neural networks and associated learning methods shall be covered, limited to the category of supervised learning problems (as opposed to unsupervised learning problems).
+Supervised learning refers to the machine \textit{training} an algorithm to match some input data (features) with corresponding output data (targets), often related to pattern recognition.
 The trained algorithm can then be utilised to match fresh input data with a prediction of the targets.
 
-A popular subset of applications to \gls{ml} are classification problems, predominantly image classification,
-which was not as easily possible before without a human eye due to the lack of computing power.
-Classification problems can be formulated quickly, the goal is to computationally categorize input data
-(for instance, images) into a predefined set of classes (for instance, cats and dogs).
-The primary concept behind \acrlong{ml} is not at all new, linear regression
-was already employed by \name{Gauß} and \name{Legendre} in the early 19\textsuperscript{th} century;
-the term 'Neural Network' was first used by \name{McCulloch} and \name{Pitts} in 1943.
-Much media attention was earned in the 2000-2010 decade when larger image classification problems
-became feasible with the increasing computational power of modern computers,
-up until the advent of Deep Learning \parencite{bishop-pattern-recognition-and-ml}.
+A popular subset of applications to \gls{ml} are classification problems, predominantly image classification, which was not as easily possible before without a human eye due to the lack of computing power.
+Classification problems can be formulated quickly, the goal is to computationally categorize input data (for instance, images) into a predefined set of classes (for instance, cats and dogs).
+The primary concept behind \acrlong{ml} is not at all new, linear regression was already employed by \name{Gauß} and \name{Legendre} in the early 19\textsuperscript{th} century; the term 'Neural Network' was first used by \name{McCulloch} and \name{Pitts} in 1943.
+Much media attention was earned in the 2000-2010 decade when larger image classification problems became feasible with the increasing computational power of modern computers, up until the advent of Deep Learning \parencite{bishop-pattern-recognition-and-ml}.
 
 \subsection{Linear Regression}
-Given an input vector $\vec{x} \in \R^n$, the goal of linear regression is to predict the value of a target $t \in \R$,
-according to some model $M$.
+Given an input vector $\vec{x} \in \R^n$, the goal of linear regression is to predict the value of a target $t \in \R$, according to some model $M$.
 
 \subsection{Gradient Descent}
 \subsection{Multi-Layered Neural Networks}
@@ -390,10 +323,7 @@ according to some model $M$.
 To better understand the implications and possibilities of a large neural network, consider the following universal approximation theorem:
 
 \begin{theorem}{Universal Approximation}{universal-approx}
-  If the neural network has at least one hidden layer, proper nonlinear activation functions and enough
-  data and hidden units, it can approximate any continuous function $y(x, w): \R^n \mapsto \R$
-  arbitrarily well on a compact domain
-  \parencite{1989-HornikMultilayerFN}.
+  If the neural network has at least one hidden layer, proper nonlinear activation functions and enough data and hidden units, it can approximate any continuous function $y(x, w): \R^n \mapsto \R$ arbitrarily well on a compact domain \parencite{1989-HornikMultilayerFN}.
 \end{theorem}
 
 Matrix -> Activation Function
