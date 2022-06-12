@@ -146,7 +146,6 @@ To summarise the parameters and variables, a brief overview of all used symbols 
 
 \textit{Microsoft SEAL} implements the scheme, enabled using \cpp{seal::scheme_type::bfv}.
 
-\pagebreak
 \section{The CKKS scheme}
 The CKKS scheme allows us to perform approximate arithmetic on floating point numbers.
 Essentially, the idea is to extend BFV which allows us to operate on vectors $\vec{y} \in \Z_t^n$, by an embedding approach that allows us to encode a (complex) floating point number vector $\vec{x} \in \R^n (\C^n)$ as an integer vector. A na\"ive approach would be to use a fixed-point embedding:
@@ -157,15 +156,17 @@ with $F \in \Z$. In decimal form, for instance with $F = 1000$, we could effecti
 
 Introduce $d, R, R/qR$ as in \autoref{def:bfv-scheme} and further define $S = \R[X] / \Phi_d(X)$ a similar polynomial ring to $R$, but over the reals instead of the integers.
 Let $N = \varphi(d)$ be the degree of the reducing cyclotomic polynomial of $S$, confer \autoref{def:bounded-polynomials}.
+For convenience, we usually choose $d$ a power of $2$ and then, by \autoref{thm:power-of-2-cyclo-poly}, $N = \varphi(d) = \frac{d}{2}$ which yields very efficiently multipliable polynomials because the homomorphic multiplication operation can be performed using a \gls{dft} and further optimized using the \gls{fft}, which in its unmodified form only accepts power-of-2 vector sizes \parencite{2017-ckks-original}.
 
 \begin{definition}{Canonical Embedding $\underline{\sigma}$}{sigma-transform}
   For a real-valued polynomial $p \in S$, define the canonical embedding of $S$ in $\C^N$ as a mapping $\underline{\sigma}: S \mapsto \C^N$ with $$\underline{\sigma}(p) := \big(p(e^{-2\pi i j / N})\big)_{j \in \Z_d^*}$$
   with $\Z_d^* := \{x \in \Z / d\Z \,|\, \gcd(x, d) = 1\}$ the set of all integers smaller than $d$ that do not share a factor $> 1$ with $d$.
 \end{definition}
 \begin{definition}{Natural Projection $\underline{\pi}$}{pi-transform}
-  Blub
+  Let $T$ be a mulitplicative subgroup of $\Z_d^*$ with $\Z_d^* / T = \{-1, 1\}$, then the natural projection $\underline{\pi}: C^N \mapsto ??$ is defined as % TODO
 \end{definition}
 
+\pagebreak
 \begin{definition}{The CKKS Scheme}{ckks-scheme}
   Define $R, R/qR$ as in \autoref{def:bfv-scheme}.
 
