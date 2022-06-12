@@ -72,11 +72,10 @@ An example of a ring would be the integers modulo $t$: $\Z / t \Z$, sometimes al
   of polynomials.
 \end{definition}
 
-% TODO: make p, q sequences instead of vectors
 To further elaborate on the polynomial ring operations:
 \begin{itemize}
-  \item In their coefficient representations $(\vec{p})_i = p_0, p_1, p_2, ...$ (which are sequences) and $\vec{q} = \{q_0, q_1, q_2, ...\}$,
-        an addition of two polynomials $p, q \in \Z[X]$ is equivalent to the addition of their coefficients
+  \item In their coefficient representations $\vec{p} = (p_j)_{j\in\N} = (p_0, p_1, p_2, ...)$ (which are sequences) and $\vec{q} = (q_j)_{j\in\N} = (q_0, q_1, q_2, ...)$,
+        an addition of two polynomials $p, q \in \Z[X]$ is equivalent to the element-wise addition of their coefficient sequences
         \begin{align*}
           (p + q)(X) & = \sum_{k=0}^\infty p_k X^k + \sum_{k=0}^\infty q_k X^k = \sum_{k=0}^\infty (p_k + q_k) X^k \\
                      & = \langle (\vec{p} + \vec{q}), \{X^0, X^1, X^2, ...\}^T \rangle
@@ -87,7 +86,7 @@ To further elaborate on the polynomial ring operations:
         $$r(X) = (p \cdot q)(X) = (\sum_{k=0}^\infty p_k X^k) \cdot (\sum_{l=0}^\infty q_l X^l)
           = \sum_{k=0}^\infty \sum_{l=0}^\infty p_k q_l X^{k+l}
           = \sum_{k=0}^\infty r_k X^k$$
-        with the arising coefficients $\{r_k\}$ determined by the discrete convolution
+        with the arising coefficients $(r_k)_{k\in\N}$ determined by the discrete convolution
         $$r_k = \sum_{l=0}^k p_l q_{k-l} \;\Leftrightarrow\; \vec{r} = \vec{p} * \vec{q}$$
         in this context also referred to as the \name{Cauchy}-product. Therefore,
         $$(p \cdot q)(X) = \langle (\vec{p} * \vec{q}), \{X^0, X^1, X^2, ...\}^T \rangle.$$
@@ -98,20 +97,20 @@ To further elaborate on the polynomial ring operations:
 
 Where $\langle \cdot, \cdot \rangle$ denotes the dot (scalar) product between two vectors.
 
+Polynomials with degree $\geq 1$ over the complex numbers can always be factorised using their roots due to the fundamental theorem of algebra.
+Polynomials over the integers however, cannot always be factorised further, yielding the definition of an irreducible polynomial.
+
 \begin{definition}{Irreducible Polynomials}{irreducible-polys}
   A polynomial is called irreducible \glstext{iff} it cannot be written as a product of other polynomials
   \textsl{while staying in the same coefficient space}.
 \end{definition}
-
-Polynomials with degree $\geq 1$ over the complex numbers can always be factorised using their roots
-due to the fundamental theorem of algebra.
 
 \subsection{Cyclotomic Polynomials}
 Due to their interesting structure and efficient computability, in the schemes introduced in the following chapter, certain polynomials (\autoref{corollary:bounded-polynomials-mod-q}) are chosen as representations of plaintexts and ciphertexts.
 An important concept is that of cyclotomic ('circle-cutting') polynomials, which we will discuss in a bit more detail here.
 
 An important polynomial is $$p: \C \mapsto \C, \; p(x) = x^n - 1$$.
-Its roots, found by solving $p(x) = 0$ for $x$, yielding $x^n = 1 \leftrightarrow x_k = \sqrt[n]{1}$ are referred to as the $n$\textsuperscript{th} roots of unity, of which there are multiple for each $n$.
+Its roots, found by solving $p(x) = 0$ for $x$, yielding $x^n = 1 \leftrightarrow x_k = \sqrt[n]{1}$ are referred to as the $n$\textsuperscript{th} roots of unity, of which there are multiple for each $n \in \N$.
 
 \begin{lemma}{The $n$\textsuperscript{th} roots of unity}{nth-roots-of-unity}
   For some integer $n \in \N$, the $n$ complex roots $x_1, x_2, ..., x_n \in \C$ of unity
