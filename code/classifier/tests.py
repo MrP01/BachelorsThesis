@@ -1,7 +1,7 @@
 import unittest
 
 import numpy as np
-from main import matmul_diagonal, matmul_hybrid
+from multiplications import matmul_diagonal, matmul_hybrid
 
 
 class TestArithmetic(unittest.TestCase):

@@ -22,6 +22,9 @@ repos:
     rev: v14.0.5
     hooks:
       - id: clang-format
+        types:
+          - c++
+          - c
   - repo: https://github.com/psf/black
     rev: 22.3.0
     hooks:
@@ -50,26 +53,10 @@ repos:
         language: system
         args:
           - -c
-          - pyproject.toml
+          - code/pyproject.toml
         exclude: tests/
         types:
           - python
-  - repo: https://github.com/flakeheaven/flakeheaven
-    rev: 1.0.1
-    hooks:
-      - id: flakeheaven
-        additional_dependencies:
-          - flake8-blind-except
-          - flake8-bugbear
-          - flake8-comprehensions
-          - flake8-debugger
-          - flake8-docstrings
-          - flake8-isort
-          - flake8-polyfill
-          - flake8-pytest
-          - flake8-quotes
-          - flake8-typing-imports
-          - yesqa
   - repo: https://github.com/pre-commit/pygrep-hooks
     rev: v1.9.0
     hooks:
@@ -88,8 +75,10 @@ repos:
       - id: pyright
         name: pyright
         entry: pyright
+        args:
+          - --project
+          - code/
         language: node
-        exclude: stuff/
         types:
           - python
         pass_filenames: false

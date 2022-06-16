@@ -113,10 +113,11 @@ export class SEALCommunicator extends BaseCommunicator {
     const scale = Math.pow(2, 40);
     var plaintext = encoder.encode(Float64Array.from(flatImageArray), scale);
     var ciphertext = encryptor.encrypt(plaintext);
+    // saving Galois keys can take an even longer time and the output is **very** large.
     var response = await this._makeApiRequest("/classify/encrypted/", {
       ciphertext: ciphertext.saveArray(this.seal.ComprModeType.zstd),
       relinKeys: this._relinKeys.saveArray(this.seal.ComprModeType.zstd),
-      galoisKeys: this._galoisKeys.saveArray(this.seal.ComprModeType.zstd), // saving Galois keys can take an even longer time and the output is **very** large.
+      galoisKeys: this._galoisKeys.saveArray(this.seal.ComprModeType.zstd),
     });
     console.log("Got encrypted response");
     var resultCiphertext = this.seal.CipherText();

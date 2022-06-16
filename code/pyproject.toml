@@ -21,6 +21,9 @@ invoke = "^1.7.1"
 [tool.poetry.group.dev.dependencies]
 matplotlib = "^3.5.2"
 tikzplotlib = "^0.10.1"
+black = "^22.3.0"
+pylint = "^2.14.2"
+isort = "^5.10.1"
 
 [tool.black]
 line-length = 120
@@ -42,6 +45,9 @@ output-format = "colorized"
 max-line-length = 120
 max-module-lines = 1000
 indent-after-paren = 4
+
+[tool.pylint."MESSAGES CONTROL"]
+disable = ["unnecessary-lambda-assignment"]
 
 [tool.flakeheaven]
 ignore = "D107,D202,D203,D401,E203,E402,E501,W503"
