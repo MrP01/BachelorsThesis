@@ -7,10 +7,10 @@
     \coordinate (XAxisMax) at (5,0);
     \coordinate (YAxisMin) at (0,-2);
     \coordinate (YAxisMax) at (0,5);
-    \draw [thin, gray,-latex] (XAxisMin) -- (XAxisMax);
-    \draw [thin, gray,-latex] (YAxisMin) -- (YAxisMax);
+    \draw [thin, gray, -latex] (XAxisMin) -- (XAxisMax);
+    \draw [thin, gray, -latex] (YAxisMin) -- (YAxisMax);
 
-    \clip (-3,-2) rectangle (6.5cm, 6.5cm);
+    \clip (-4,-3) rectangle (5.5, 5.5);
     \pgftransformcm{1}{0.3}{0.7}{1}{\pgfpoint{0cm}{0cm}}
     \coordinate (Bone) at (0,2);
     \coordinate (Btwo) at (2,-2);
