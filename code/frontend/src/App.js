@@ -257,7 +257,7 @@ function App() {
       ></Navbar>
       <Container>
         <h3 className={"center"}>Classify your Secret Data</h3>
-        <p>Using Fully Homomorphic Encryption, directly from within the browser.</p>
+        <p>Using state-of-the-art Fully Homomorphic Encryption, directly from within the browser using Web Assembly.</p>
         <ClassificationComponent />
       </Container>
     </div>

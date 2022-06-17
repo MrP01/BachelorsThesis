@@ -33,6 +33,13 @@ Docker-Compose will do the rest for you:
 docker-compose up
 ```
 
+Alternatively, without creating the `docker-compose.yml`:
+
+```bash
+docker run --name classifier --detach mrp001/sealed-mnist-classifier
+docker run -p 80:80 -p 443:443 --link classifier mrp001/sealed-mnist-frontend
+```
+
 ## For local development
 
 For Python, install [poetry](https://python-poetry.org/).
