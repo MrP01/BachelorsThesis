@@ -10,6 +10,8 @@
 typedef xt::xarray<double> Matrix;
 typedef xt::xarray<double> Vector;
 
+enum MatMulImplementation { MATMUL_HYBRID, MATMUL_BSGS };
+
 class Network;
 
 class Layer {
@@ -40,6 +42,8 @@ class DenseLayer : public Layer {
   virtual Vector feedforward(Vector x);
   virtual void feedforwardEncrypted(seal::Ciphertext &in_out, seal::GaloisKeys &galoisKeys, seal::RelinKeys relinKeys,
       seal::CKKSEncoder &ckksEncoder, seal::Evaluator &evaluator);
+
+  static enum MatMulImplementation matmulMethod;
 };
 
 class ActivationLayer : public Layer {

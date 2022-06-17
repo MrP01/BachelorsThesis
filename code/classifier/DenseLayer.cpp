@@ -6,12 +6,11 @@
 #include <xtensor/xmath.hpp>
 #include <xtensor/xview.hpp>
 
-#define MATMUL_IMPLEMENTATION "hybrid"
 int current_multiplication_level = 1;
 static double scale = pow(2.0, 40);
 static std::map<size_t, std::pair<size_t, size_t>> preencoded_bsgs_parameters = {{784, {28, 28}}, {128, {16, 8}}};
 
-DenseLayer::DenseLayer(Matrix weights, Vector biases) : weights(weights), biases(biases) {}
+DenseLayer::DenseLayer(Matrix weights, Vector biases) : weights(weights), biases(biases), matmulMethod(MATMUL_HYBRID) {}
 
 Vector DenseLayer::feedforward(Vector x) {
   Vector dot = xt::zeros<double>({weights.shape()[1]});
@@ -31,13 +30,13 @@ void DenseLayer::feedforwardEncrypted(seal::Ciphertext &in_out, seal::GaloisKeys
   unsigned out_dimension = weights.shape(1);
   printCiphertextInternals("DenseLayer input", in_out, parent->context);
 
-  if (MATMUL_IMPLEMENTATION == "bsgs") {
+  if (matmulMethod == MATMUL_BSGS) {
     Matrix zeroPaddedWeights = xt::zeros<double>({in_dimension, in_dimension});
     xt::view(zeroPaddedWeights, xt::range(0, out_dimension), xt::all()) = xt::transpose(weights);
     std::cout << zeroPaddedWeights << std::endl;
     assert(zeroPaddedWeights.shape(0) == zeroPaddedWeights.shape(1));
     matmulBabystepGiantstep(in_out, zeroPaddedWeights, galoisKeys, encoder, evaluator);
-  } else if (MATMUL_IMPLEMENTATION == "hybrid") {
+  } else if (matmulMethod == MATMUL_HYBRID) {
     matmulHybrid(in_out, weights, galoisKeys, encoder, evaluator);
   }
   seal::Plaintext plain_biases;
