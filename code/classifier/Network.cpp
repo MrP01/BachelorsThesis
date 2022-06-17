@@ -1,4 +1,6 @@
 #include "Network.h"
+#include <NTL/ZZ.h>
+#include <NTL/ZZ_limbs.h>
 
 #include <plog/Log.h>
 #include <xtensor/xadapt.hpp>
@@ -61,11 +63,24 @@ seal::Ciphertext Network::predictEncrypted(
   }
 
   return ciphertext;
-};
+}
 
-int Network::interpretResult(Vector result) { return xt::argmax(result)(); };
+int Network::interpretResult(Vector result) { return xt::argmax(result)(); }
 
 Vector Network::interpretResultProbabilities(Vector result) {
   Vector y = xt::exp(result);
   return y / xt::sum(y);
-};
+}
+
+std::vector<std::vector<uint8_t>> Network::interpretCiphertextAsPixels(seal::Ciphertext &ciphertext) {
+  std::vector<std::vector<uint8_t>> image;
+  std::vector<seal::Modulus> rns_moduli = context->get_context_data(ciphertext.parms_id())->parms().coeff_modulus();
+  seal::util::PolyIter polyIter(ciphertext);
+  seal::util::RNSIter rnsIter(polyIter[0]); // iterator over polynomial c0 which we are interested in
+  seal::util::CoeffIter coeffIter(rnsIter[0]);
+  SEAL_ITERATE(coeffIter, ciphertext.poly_modulus_degree(), [&](auto I) {
+    NTL::ZZ a_i(I);
+    PLOG(plog::debug) << "a_i " << NTL::ZZ_limbs_get(a_i)[0];
+  });
+  return image;
+}

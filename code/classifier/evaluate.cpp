@@ -17,7 +17,7 @@ Network neuralNet;
 auto x_test = xt::load_npy<float>("data/mnist/x-test.npy");
 auto y_test = xt::load_npy<uint8_t>("data/mnist/y-test.npy");
 
-double evaluateNetworkOnTestData(int N = 300) {
+double evaluateNetworkOnTestData(size_t N = 300) {
   int correct = 0, i = 0;
   for (auto iter = xt::axis_begin(x_test, 0); iter != xt::axis_end(x_test, 0); iter++) {
     Vector x = *iter, result = neuralNet.predict(x);
@@ -36,7 +36,7 @@ double evaluateNetworkOnTestData(int N = 300) {
   return accuracy;
 }
 
-double evaluateNetworkOnEncryptedTestData(int N = 20) {
+double evaluateNetworkOnEncryptedTestData(size_t N = 20) {
   seal::KeyGenerator keyGen(*neuralNet.context);
   seal::PublicKey publicKey;
   seal::GaloisKeys galoisKeys;
@@ -58,6 +58,7 @@ double evaluateNetworkOnEncryptedTestData(int N = 20) {
     assert(some_x_test_vector.size() == 784);
     encoder.encode(some_x_test_vector, scale, plain);
     encryptor.encrypt(plain, encrypted);
+    neuralNet.interpretCiphertextAsPixels(encrypted);
     seal::Decryptor decryptor(*neuralNet.context, keyGen.secret_key());
 
     // seal::Ciphertext result = neuralNet.predictEncrypted(encrypted, relinKeys, galoisKeys);
@@ -98,6 +99,8 @@ double evaluateNetworkOnEncryptedTestData(int N = 20) {
   PLOG(plog::info) << "Accuracy: " << (double)correct_predictions / N;
   return (double)correct_predictions / N;
 }
+
+void compareMatmulMethods(size_t N = 20) {}
 
 int main(int argc, char *argv[]) {
   static plog::ColorConsoleAppender<plog::FuncMessageFormatter> appender;

@@ -9,8 +9,9 @@
 int current_multiplication_level = 1;
 static double scale = pow(2.0, 40);
 static std::map<size_t, std::pair<size_t, size_t>> preencoded_bsgs_parameters = {{784, {28, 28}}, {128, {16, 8}}};
+enum MatMulImplementation DenseLayer::matmulMethod = MATMUL_HYBRID;
 
-DenseLayer::DenseLayer(Matrix weights, Vector biases) : weights(weights), biases(biases), matmulMethod(MATMUL_HYBRID) {}
+DenseLayer::DenseLayer(Matrix weights, Vector biases) : weights(weights), biases(biases) {}
 
 Vector DenseLayer::feedforward(Vector x) {
   Vector dot = xt::zeros<double>({weights.shape()[1]});

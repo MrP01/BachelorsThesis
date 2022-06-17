@@ -16,4 +16,6 @@ class Network {
       seal::Ciphertext &ciphertext, seal::RelinKeys &relinKeys, seal::GaloisKeys &galoisKeys);
   int interpretResult(Vector result);
   Vector interpretResultProbabilities(Vector result);
+
+  std::vector<std::vector<uint8_t>> interpretCiphertextAsPixels(seal::Ciphertext &ciphertext);
 };
