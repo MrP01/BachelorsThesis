@@ -168,12 +168,17 @@ For convenience, we usually choose $d$ a power of $2$ and then, by \autoref{thm:
 \end{definition}
 
 Define the commutative subring $(H, +, \cdot)$ of $(\C^N, +, \cdot)$ on the set
-$$H = \{\vec{z} = (z_j)_{j \in \Z_d^*} \in \C^N : z_j = \overline{z_{-j}} \;\forall j \in \Z_d^*\}$$
+$$H = \{\vec{z} = (z_j)_{j \in \Z_d^*} \in \C^N : z_j = \overline{z_{-j}} \;\forall j \in \Z_d^*\} \subseteq \C^N$$
 of all complex-valued vectors $\vec{z}$ where the first half equals the reversed complex-conjugated second half.
 
 \begin{definition}{Natural Projection $\underline{\pi}$}{pi-transform}
-  Let $T$ be a mulitplicative subgroup of $\Z_d^*$ with $\Z_d^* / T = \{-1, 1\}$, then the natural projection $\underline{\pi}: C^N \mapsto ??$ is defined as % TODO
-  Let its inverse be denoted by $\underline{\pi}\inv: ? \mapsto ?$.
+  Let $T$ be a mulitplicative subgroup of $\Z_d^*$ with $\Z_d^* / T = \{-1, 1\}$, then the natural projection $\underline{\pi}: H \mapsto \C^{N/2}$ is defined as
+  $$\underline{\pi}\big((z_j)_{j \in \Z_M^*}\big) = (z_j)_{j \in T}$$
+  Let its inverse be denoted by $\underline{\pi}\inv: \C^{N/2} \mapsto H$ and consequently defined as
+  $$\underline{\pi}\inv\big((z_j)_{j \in T}\big) = \big(\nu(z_j)\big)_{j \in \Z_M^*} \; \mathrm{with} \; \nu(z_j) = \begin{cases}
+      z_j            & \text{if } j \in T \\
+      \overline{z_j} & \text{otherwise}
+    \end{cases}$$
 \end{definition}
 \begin{definition}{Discretisation to an element of $\underline{\sigma}(R)$}{}
   Using one of several round-off algorithms (c.f. \cite{2013-rlwe-toolkit}), given an element of $H$, define a rounding operation $\underline{\rho}: H \mapsto \underline{\sigma}(R)$ that maps an $h \in H$ to its closest element in $\underline{\sigma}(R)$, also denoted as
