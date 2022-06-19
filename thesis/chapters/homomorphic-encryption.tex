@@ -172,7 +172,7 @@ $$H = \{\vec{z} = (z_j)_{j \in \Z_d^*} \in \C^N : z_j = \overline{z_{-j}} \;\for
 of all complex-valued vectors $\vec{z}$ where the first half equals the reversed complex-conjugated second half.
 
 \begin{definition}{Natural Projection $\underline{\pi}$}{pi-transform}
-  Let $T$ be a mulitplicative subgroup of $\Z_d^*$ with $\Z_d^* / T = \{-1, 1\}$, then the natural projection $\underline{\pi}: H \mapsto \C^{N/2}$ is defined as
+  Let $T$ be a mulitplicative subgroup of $\Z_d^*$ with $\Z_d^* / T = \{+1, -1\} = \{1T, -1T\}$, then the natural projection $\underline{\pi}: H \mapsto \C^{N/2}$ is defined as
   $$\underline{\pi}\big((z_j)_{j \in \Z_M^*}\big) = (z_j)_{j \in T}$$
   Let its inverse be denoted by $\underline{\pi}\inv: \C^{N/2} \mapsto H$ and consequently defined as
   $$\underline{\pi}\inv\big((z_j)_{j \in T}\big) = \big(\nu(z_j)\big)_{j \in \Z_M^*} \; \mathrm{with} \; \nu(z_j) = \begin{cases}
@@ -180,6 +180,35 @@ of all complex-valued vectors $\vec{z}$ where the first half equals the reversed
       \overline{z_j} & \text{otherwise}
     \end{cases}$$
 \end{definition}
+
+The natural projection $\underline{\pi}$ simply halves a vector $\vec{z} \in H$ to all elements where $j \in T$ to only contain its essential information (the first half), since the second half can easily be reconstructed by element-wise conjugation using $\nu$.
+The exact structure of $T$ is given by $\Z_d^* / T = \{\pm 1\}$ with $+1$ and $-1$ denoting left cosets of $T$.
+We first notice that by \name{Lagrange}'s theorem on finite groups, the number of elements in $T$ is exactly $N / 2$ since $$\frac{|\Z_d^*|}{|T|} = |\{\pm 1\}| \Leftrightarrow \frac{N}{|T|} = 2 \Leftrightarrow |T| = \frac{N}{2}$$ leading to $\underline{\pi}(H) \subseteq \C^{N/2}$.
+Rephrased, we seek a $T \subseteq \Z_d^*$ with $1 \in T$ such that we can fully construct $\Z_d^*$ by the union of the cosets $1T$ and $-1T$, i.e. $\Z_d^* = (1T) \cup (-1T)$.
+Note that $T$ is not unique, we can find multiple sets $T$ for which the above holds, for instance by brute force computation:
+
+\begin{minted}{python}
+import itertools, math, numpy as np
+d = 16; Zdstar = [z for z in range(d) if math.gcd(d, z) == 1]
+possible_T = [T for T in itertools.combinations(Zdstar, len(Zdstar) // 2)
+  if 1 in T and list(np.unique(list(T) + [(-1*t) % d for t in T])) == Zdstar]
+\end{minted}
+
+\paragraph{Example.}
+Let $d = 16$, then $\Z_d^* = \{1, 3, 5, 7, 9, 11, 13, 15\}$ and $N = |\Z_d^*| = 8$ and by \name{Lagrange}'s theorem, $|T| = 4$.
+Since $(T, \cdot)$ forms a normal subgroup under multiplication, we must have that $1 \in T$ and we can identify all possible subgroups $T$ satisfying $\Z_d^* / T = \{\pm 1T\}$ to be one of
+\begin{align*}
+  \{1, 3, 5, 7\},
+  \{1, 3, 5, 9\},
+  \{1, 3, 7, 11\},
+  \{1, 3, 9, 11\}, \\
+  \{1, 5, 7, 13\},
+  \{1, 5, 9, 13\},
+  \{1, 7, 11, 13\},
+  \{1, 9, 11, 13\}
+\end{align*}
+using the above Python code.
+
 \begin{definition}{Discretisation to an element of $\underline{\sigma}(R)$}{}
   Using one of several round-off algorithms (c.f. \cite{2013-rlwe-toolkit}), given an element of $H$, define a rounding operation $\underline{\rho}: H \mapsto \underline{\sigma}(R)$ that maps an $h \in H$ to its closest element in $\underline{\sigma}(R)$, also denoted as
   $$\underline{\rho}(h) = \lfloor h \rceil_{\underline{\sigma}(R)}\,.$$
