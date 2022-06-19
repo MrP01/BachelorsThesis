@@ -41,27 +41,29 @@ An example of a ring would be the integers modulo $t$: $\Z / t \Z$, sometimes al
 \begin{definition}{Quotient Group / Ring}{quotient-group}
   A quotient group $(G / N, +)$ (pronounced '$G$ mod $N$') over the original group $G$ and a normal subgroup $N$ of $G$
   with a standard element operation $+$ can be defined using the left cosets
-  $$gN := \{gn \,|\, n \in N\} \subseteq G$$ of $N$ in $G$.
+  $$g+N := \{g+n \,|\, n \in N\} \subseteq G$$ of $N$ in $G$.
   The corresponding set $G / N$ is defined as
-  $$G / N := \{g N \,|\, g \in G\}$$
+  $$G / N := \{g + N \,|\, g \in G\}$$
   whereas the standard operation $+: G/N \times G/N \mapsto G/N$
   can be extended from the original group $G$ as follows:
-  $$(gN) + (hN) := (gh)N$$
+  $$(g+N) + (h+N) := (g+h)N$$
 \end{definition}
+
+The quotient set $G / N$ can therefore be identified as the set of all possible left cosets $g + N$ that in union reconstruct the original group $G$.
 
 \begin{definition}{Ring of Integers Modulo $t$: $\Z / t \Z$}{integers-modulo-t}
   Using equivalence classes $\overline{x}_t$ modulo $t$ referred to as congruence classes,
   define the commutative quotient ring of integers modulo $t$ as $(\Z / t \Z, +, \cdot)$ with
   two operations $+$ and $\cdot$ and
   $$\Z / t \Z = \{\overline{x}_t \,|\, x \in \Z, 0 \leq x < t\}$$
-  where $t \Z \triangleleft \Z$ denotes the $t$\textsuperscript{th} coset\footnote{
+  where $t \Z \triangleleft \Z$ denotes the $t$\textsuperscript{th} multiplicative coset\footnote{
     from the left and from the right, therefore $t \Z$ is called a normal subgroup of $\Z$
   } of the integers and
   $$\overline{x}_t = \{y \equiv x \mod t \,|\, y \in \Z\}$$
   is the set of all multiples of $t$ with remainder $x$.
   Note that many operations that resulting groups, rings or fields are commonly equipped with,
   such as addition or multiplication, propagate to an equivalent definition in the ring of integers modulo $t$
-  by considering their result as a congruence class instead of it, which in turn is an element of $\Z / t \Z$.
+  by considering their result as a congruence class instead of it, which in turn is again an element of $\Z / t \Z$.
 \end{definition}
 
 \begin{definition}{Polynomial Ring over $\Z$}{poly-ring}

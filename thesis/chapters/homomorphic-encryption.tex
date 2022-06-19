@@ -172,7 +172,7 @@ $$H = \{\vec{z} = (z_j)_{j \in \Z_d^*} \in \C^N : z_j = \overline{z_{-j}} \;\for
 of all complex-valued vectors $\vec{z}$ where the first half equals the reversed complex-conjugated second half.
 
 \begin{definition}{Natural Projection $\underline{\pi}$}{pi-transform}
-  Let $T$ be a mulitplicative subgroup of $\Z_d^*$ with $\Z_d^* / T = \{+1, -1\} = \{1T, -1T\}$, then the natural projection $\underline{\pi}: H \mapsto \C^{N/2}$ is defined as
+  Let $T$ be a mulitplicative subgroup of $\Z_d^*$ with $\Z_d^* / T = \{\pm 1\} = \{1T, -1T\}$, then the natural projection $\underline{\pi}: H \mapsto \C^{N/2}$ is defined as
   $$\underline{\pi}\big((z_j)_{j \in \Z_M^*}\big) = (z_j)_{j \in T}$$
   Let its inverse be denoted by $\underline{\pi}\inv: \C^{N/2} \mapsto H$ and consequently defined as
   $$\underline{\pi}\inv\big((z_j)_{j \in T}\big) = \big(\nu(z_j)\big)_{j \in \Z_M^*} \; \mathrm{with} \; \nu(z_j) = \begin{cases}
@@ -182,8 +182,10 @@ of all complex-valued vectors $\vec{z}$ where the first half equals the reversed
 \end{definition}
 
 The natural projection $\underline{\pi}$ simply halves a vector $\vec{z} \in H$ to all elements where $j \in T$ to only contain its essential information (the first half), since the second half can easily be reconstructed by element-wise conjugation using $\nu$.
-The exact structure of $T$ is given by $\Z_d^* / T = \{\pm 1\}$ with $+1$ and $-1$ denoting left cosets of $T$.
-We first notice that by \name{Lagrange}'s theorem on finite groups, the number of elements in $T$ is exactly $N / 2$ since $$\frac{|\Z_d^*|}{|T|} = |\{\pm 1\}| \Leftrightarrow \frac{N}{|T|} = 2 \Leftrightarrow |T| = \frac{N}{2}$$ leading to $\underline{\pi}(H) \subseteq \C^{N/2}$.
+The exact structure of $T$ is given by $\Z_d^* / T = \{\pm 1T\}$ with $+1T$ and $-1T$ denoting multiplicative left cosets of $T$, together forming the \hyperref[def:quotient-group]{quotient group} $(\Z_d^* / T, \cdot)$ over multiplication (denoted $\cdot$ instead of $+$ as in the quotient group definition in the previous chapter).
+
+\paragraph{Further studying $T$},
+we first notice that by \name{Lagrange}'s theorem on finite groups, the number of elements in $T$ is exactly $N / 2$ since $$\frac{|\Z_d^*|}{|T|} = |\{\pm 1\}| \Leftrightarrow \frac{N}{|T|} = 2 \Leftrightarrow |T| = \frac{N}{2}$$ leading to $\underline{\pi}(H) \subseteq \C^{N/2}$.
 Rephrased, we seek a $T \subseteq \Z_d^*$ with $1 \in T$ such that we can fully construct $\Z_d^*$ by the union of the cosets $1T$ and $-1T$, i.e. $\Z_d^* = (1T) \cup (-1T)$.
 Note that $T$ is not unique, we can find multiple sets $T$ for which the above holds, for instance by brute force computation:
 
@@ -207,7 +209,15 @@ Since $(T, \cdot)$ forms a normal subgroup under multiplication, we must have th
   \{1, 7, 11, 13\},
   \{1, 9, 11, 13\}
 \end{align*}
-using the above Python code.
+using the above Python code. An example of an invalid subset $T$ that does cover the whole original set $\Z_d^*$ would be $T = \{1, 7, 9, 15\}$.
+
+For the purposes of CKKS, we simply choose a global $T$ as above that is constant for our encoding and decoding procedure and a given $d$.
+The inverse natural projection $\underline{\pi}\inv$ then uniquely constructs a vector in $H$ by filling in elements $\overline{z_j}$ for $j \notin T$ into $\vec{z}$.
+For simplicity, we commonly choose $T$ as the 'first half' of $\Z_d^*$ when sorting in an ascending manner as it is always a valid choice.
+\footnote{
+  This can be seen from the coset $-1T$ which exactly equals the 'missing' half in $\Z_d^*$ when the first half is covered by $1T = T = \{1, 3, 5, ..., N-1\}$ since $-1T = \{-1, -3, -5, ..., -(N-1)\} \equiv \{d-1, d-3, d-5, ..., d-N+1\}$ $(\text{mod}\, d)$ when $d$ a power of 2.
+  Then, $(1T) \cup (-1T) = \{1, 3, 5, ..., N-1\} \cup \{d-1, d-3, d-5, ..., d-N+1\} = \{1, 3, 5, ..., N-1, N+1, ..., d-5, d-3, d-1\} = \Z_d^*$.
+}
 
 \begin{definition}{Discretisation to an element of $\underline{\sigma}(R)$}{}
   Using one of several round-off algorithms (c.f. \cite{2013-rlwe-toolkit}), given an element of $H$, define a rounding operation $\underline{\rho}: H \mapsto \underline{\sigma}(R)$ that maps an $h \in H$ to its closest element in $\underline{\sigma}(R)$, also denoted as
