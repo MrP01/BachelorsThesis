@@ -53,3 +53,14 @@ def plot_relu_taylor(ctx):
         axis_width=r"0.7\linewidth",
         axis_height=r"0.4\linewidth",
     )
+
+
+@invoke.task()
+def plot_ciphertext(ctx):
+    """Plots a pixel representation of the ciphertext"""
+    image = np.load("plots/ciphertext-visualisation.npy")
+    fig = plt.figure()
+    axes: plt.Axes = fig.add_subplot(1, 1, 1)
+    axes.imshow(image)
+    fig.savefig(THESIS / "figures" / "ciphertext-visualisation.png")
+    plt.show()

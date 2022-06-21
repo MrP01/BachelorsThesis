@@ -58,7 +58,7 @@ double evaluateNetworkOnEncryptedTestData(size_t N = 20) {
     assert(some_x_test_vector.size() == 784);
     encoder.encode(some_x_test_vector, scale, plain);
     encryptor.encrypt(plain, encrypted);
-    neuralNet.interpretCiphertextAsPixels(encrypted);
+    xt::dump_npy("../plots/ciphertext-visualisation.npy", neuralNet.interpretCiphertextAsPixels(encrypted));
     seal::Decryptor decryptor(*neuralNet.context, keyGen.secret_key());
 
     // seal::Ciphertext result = neuralNet.predictEncrypted(encrypted, relinKeys, galoisKeys);
@@ -108,7 +108,7 @@ int main(int argc, char *argv[]) {
   xt::print_options::set_line_width(120);
   x_test.reshape({x_test.shape(0), 784});
 
-  size_t evalPlain = 1, evalEnc = 1;
+  size_t evalPlain = 0, evalEnc = 1;
   if (argc >= 2)
     evalPlain = atol(argv[1]);
   if (argc >= 3)

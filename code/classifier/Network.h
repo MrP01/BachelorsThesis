@@ -17,5 +17,5 @@ class Network {
   int interpretResult(Vector result);
   Vector interpretResultProbabilities(Vector result);
 
-  std::vector<std::vector<uint8_t>> interpretCiphertextAsPixels(seal::Ciphertext &ciphertext);
+  xt::xarray<uint8_t> interpretCiphertextAsPixels(seal::Ciphertext &ciphertext);
 };

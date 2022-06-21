@@ -72,15 +72,52 @@ Vector Network::interpretResultProbabilities(Vector result) {
   return y / xt::sum(y);
 }
 
-std::vector<std::vector<uint8_t>> Network::interpretCiphertextAsPixels(seal::Ciphertext &ciphertext) {
-  std::vector<std::vector<uint8_t>> image;
+xt::xarray<uint8_t> Network::interpretCiphertextAsPixels(seal::Ciphertext &ciphertext) {
+  size_t N = ciphertext.poly_modulus_degree(); // obviously the number of coefficients in one polynomial component
   std::vector<seal::Modulus> rns_moduli = context->get_context_data(ciphertext.parms_id())->parms().coeff_modulus();
+  NTL::ZZ full_modulus(1);
+  for (size_t i = 0; i < rns_moduli.size(); i++)
+    full_modulus *= rns_moduli[i].value();
+  PLOG(plog::debug) << "Our Full Coeff Modulus q = " << full_modulus;
+
   seal::util::PolyIter polyIter(ciphertext);
   seal::util::RNSIter rnsIter(polyIter[0]); // iterator over polynomial c0 which we are interested in
-  seal::util::CoeffIter coeffIter(rnsIter[0]);
-  SEAL_ITERATE(coeffIter, ciphertext.poly_modulus_degree(), [&](auto I) {
-    NTL::ZZ a_i(I);
-    PLOG(plog::debug) << "a_i " << NTL::ZZ_limbs_get(a_i)[0];
+
+  // because of unimplemented lambda function features in g++, we use references instead of the actual NTL::ZZ objects
+  std::vector<NTL::ZZ *> a, p; // p is the product of the moduli ==> q
+  size_t rns_component_index = 0;
+  SEAL_ITERATE(rnsIter, rns_moduli.size(), [&](auto RNS) {
+    PLOG(plog::debug) << "Evaluating RNS Component of the first polynomial";
+    seal::util::CoeffIter coeffIter(RNS);
+    NTL::ZZ P(rns_moduli[rns_component_index].value());
+
+    size_t coeff_index = 0;
+    SEAL_ITERATE(coeffIter, N, [&](auto Coeff) {
+      if (rns_component_index == 0) {
+        a.push_back(new NTL::ZZ(Coeff));
+        p.push_back(new NTL::ZZ(rns_moduli[0].value()));
+      } else
+        assert(NTL::CRT(*a[coeff_index], *p[coeff_index], NTL::ZZ(Coeff), P));
+      coeff_index++;
+    });
+    rns_component_index++;
   });
+  PLOG(plog::debug) << "a: " << *a[0] << ", p: " << *p[0];
+  PLOG(plog::debug) << "a: " << *a[1] << ", p: " << *p[1];
+
+  size_t width = sqrt(N), height = sqrt(N);
+  assert(width * height == N);
+  xt::xarray<uint8_t> image = xt::zeros<uint8_t>({width, height});
+  size_t n = 0;
+  for (size_t i = 0; i < width; i++) {
+    for (size_t j = 0; j < height; j++) {
+      // PLOG(plog::debug) << "a: " << *a[i] << ", p: " << *p[i];
+      NTL::ZZ pixel = *(a[n]) * 128 / full_modulus + 128;
+      std::cout << pixel << " ";
+      image(i, j) = NTL::ZZ_limbs_get(pixel)[0];
+      n++;
+    }
+    std::cout << std::endl;
+  }
   return image;
 }
