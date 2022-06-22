@@ -1,4 +1,15 @@
 \chapter{Results}
+In order to visually demonstrate the encryption, visualisations of the ciphertext polynomial $c_0$ (refer to \autoref{sec:ckks}) were generated using a CRT decomposition of the RNS representation of $c_0$.
+Each pixel corresponds to a coefficient $a \in \Z / q\Z$ scaled down by the modulus $q$ to obtain a brightness value between $0$ and $1$.
+
+\begin{figure}[H]
+  \centering
+  % \includegraphics[width=\linewidth]{figures/ciphertext-visualisation.png}
+  \pgfplotsset{/pgfplots/group/.cd,vertical sep=0.3cm,horizontal sep=0.3cm}
+  \input{figures/ciphertext-visualisation.tex}
+  \caption{Ciphertext Visualisation}
+\end{figure}
+
 \section{Methodology}
 \section{Performance / Runtime Benchmarks}
 \section{Communication Overhead}

@@ -1,3 +1,4 @@
+import glob
 import pathlib
 
 import invoke
@@ -48,7 +49,7 @@ def plot_relu_taylor(ctx):
     fig.savefig(THESIS / "figures" / "taylor-relu.png")
     tikzplotlib.clean_figure(fig)
     tikzplotlib.save(
-        THESIS / "figures" / "taylor-relu.tex",
+        THESIS / "figures" / "generated" / "taylor-relu.tex",
         figure=fig,
         axis_width=r"0.7\linewidth",
         axis_height=r"0.4\linewidth",
@@ -58,9 +59,28 @@ def plot_relu_taylor(ctx):
 @invoke.task()
 def plot_ciphertext(ctx):
     """Plots a pixel representation of the ciphertext"""
-    image = np.load("plots/ciphertext-visualisation.npy")
+    pairs = []
+    directory = pathlib.Path("classifier/data/ciphertext-visualisation/")
+    for file in glob.glob("*-ciphertext.npy", root_dir=str(directory)):
+        ciphertext = np.load(directory / file)
+        plain = np.load(directory / f"{file.split('-')[0]}-plain.npy").reshape((28, 28))
+        pairs.append((ciphertext, plain))
+
     fig = plt.figure()
-    axes: plt.Axes = fig.add_subplot(1, 1, 1)
-    axes.imshow(image)
-    fig.savefig(THESIS / "figures" / "ciphertext-visualisation.png")
+    for i, (ciphertext, plain) in enumerate(pairs, start=1):
+        axes: plt.Axes = fig.add_subplot(2, len(pairs), i)
+        axes.imshow(plain)
+        axes.set_axis_off()
+    for i, (ciphertext, plain) in enumerate(pairs, start=1):
+        axes: plt.Axes = fig.add_subplot(2, len(pairs), len(pairs) + i)
+        axes.imshow(ciphertext)
+        axes.set_axis_off()
+    # fig.savefig(THESIS / "figures" / "ciphertext-visualisation.png", bbox_inches="tight")
+    # tikzplotlib.clean_figure(fig)
+    # tikzplotlib.save(
+    #     THESIS / "figures" / "generated" / "ciphertext-visualisation.tex",
+    #     figure=fig,
+    #     axis_width=r"0.2\linewidth",
+    #     axis_height=r"0.2\linewidth",
+    # )
     plt.show()

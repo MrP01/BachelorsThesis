@@ -52,13 +52,16 @@ double evaluateNetworkOnEncryptedTestData(size_t N = 20) {
 
   double mre_sum = 0;
   int correct_predictions = 0;
+  std::string filename_base("data/ciphertext-visualisation/");
   for (size_t i = 0; i < N; i++) {
     auto some_x_test = xt::view(x_test, i, xt::all());
     auto some_x_test_vector = std::vector<double>(some_x_test.begin(), some_x_test.end());
+    xt::dump_npy(filename_base + std::to_string(i) + "-plain.npy", some_x_test);
     assert(some_x_test_vector.size() == 784);
     encoder.encode(some_x_test_vector, scale, plain);
     encryptor.encrypt(plain, encrypted);
-    xt::dump_npy("../plots/ciphertext-visualisation.npy", neuralNet.interpretCiphertextAsPixels(encrypted));
+    auto visualisation = neuralNet.interpretCiphertextAsPixels(encrypted);
+    xt::dump_npy(filename_base + std::to_string(i) + "-ciphertext.npy", visualisation);
     seal::Decryptor decryptor(*neuralNet.context, keyGen.secret_key());
 
     // seal::Ciphertext result = neuralNet.predictEncrypted(encrypted, relinKeys, galoisKeys);

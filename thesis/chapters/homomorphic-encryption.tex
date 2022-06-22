@@ -149,6 +149,7 @@ To summarise the parameters and variables, a brief overview of all used symbols 
 \textit{Microsoft SEAL} implements the scheme, enabled using \cpp{seal::scheme_type::bfv}.
 
 \section{The CKKS scheme}
+\label{sec:ckks}
 The CKKS scheme allows us to perform approximate arithmetic on floating point numbers.
 Essentially, the idea is to extend BFV which allows us to operate on vectors $\vec{y} \in \Z_t^n$, by an embedding approach that allows us to encode a (complex) floating point number vector $\vec{x} \in \R^n (\C^n)$ as an integer vector. A na\"ive approach would be to use a fixed-point embedding:
 \newcommand{\embed}{\mathrm{embed}}

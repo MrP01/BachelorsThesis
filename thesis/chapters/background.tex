@@ -341,6 +341,12 @@ Matrix -> Activation Function
 \label{sec:post-quantum-sec}
 \subsection{Shor's Algorithm}
 
+\begin{definition}{NP-Hardness}{np-hard}
+  A problem is referred to as \textit{NP-hard} \gls{iff} it is at least as hard as the hardest problems in the complexity class NP (nondeterministic polynomial time). Formally written,
+  $$\mathrm{NP} = \bigcup_{k \in \N} \cryptop{NTIME}(n^k)$$
+  the union of all decision problems with runtime bounded by $\mathcal{O}(n^k)$.
+\end{definition}
+
 \begin{figure}[H]
   \centering
   \input{figures/generated/taylor-relu.tex}
