@@ -62,6 +62,7 @@ double evaluateNetworkOnEncryptedTestData(size_t N = 20) {
     encryptor.encrypt(plain, encrypted);
     auto visualisation = neuralNet.interpretCiphertextAsPixels(encrypted);
     xt::dump_npy(filename_base + std::to_string(i) + "-ciphertext.npy", visualisation);
+    neuralNet.saveXArrayToPNG(filename_base + std::to_string(i) + "-ciphertext.png", visualisation);
     seal::Decryptor decryptor(*neuralNet.context, keyGen.secret_key());
 
     // seal::Ciphertext result = neuralNet.predictEncrypted(encrypted, relinKeys, galoisKeys);

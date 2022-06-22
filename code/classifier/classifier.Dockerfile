@@ -5,14 +5,18 @@ USER root
 RUN apk add --no-cache libstdc++
 
 FROM base AS cpp-build
-RUN apk add --no-cache cmake git python3 py3-pip make g++
+RUN apk add --no-cache cmake git python3 py3-pip make g++ perl
 RUN python3 -m pip install --no-cache-dir conan
+
+RUN apk add --no-cache gmp-dev
+RUN git clone --depth 1 https://github.com/libntl/ntl.git /tmp/ntl
+RUN cd /tmp/ntl/src && ./configure && make && make install
 
 # Maybe we can package SEAL into conan?
 RUN git clone --depth 1 https://github.com/microsoft/SEAL.git /tmp/seal
 RUN cd /tmp/seal \
   && cmake -S . -B build -DSEAL_THROW_ON_TRANSPARENT_CIPHERTEXT=OFF \
-  && cmake --build build -- -j 3 \
+  && cmake --build build -- -j3 \
   && cmake --install build
 
 RUN conan profile new default --detect --force \
@@ -22,18 +26,18 @@ RUN mkdir /classifier/build/
 RUN cd /classifier/build/ && conan install --build=backward-cpp --build=libdwarf --build=libelf ..
 
 COPY ./classifier/ /classifier/
-RUN cd /classifier/build/ && cmake .. && cmake --build . -- -j 3
+RUN cd /classifier/build/ && cmake .. && CMAKE_BUILD_TYPE=RelWithDebInfo cmake --build . -- -j3
 
 # Part 2: Train Neural Network
 FROM python:3.10 AS trainer
 WORKDIR /training
-RUN pip install --upgrade pip poetry==1.2.0b1
+RUN pip install --upgrade pip poetry==1.2.0b2
 COPY ./pyproject.toml /training/pyproject.toml
 COPY ./poetry.lock /training/poetry.lock
-RUN poetry config virtualenvs.create false && poetry install --no-interaction --only default
+RUN poetry config virtualenvs.create false && poetry install --no-interaction --only=main
 RUN mkdir -p /classifier/data/mnist/ /classifier/data/models/simple/
 COPY ./tasks.py /tasks.py
-RUN --mount=type=cache,target=/root/.keras/datasets/ inv fetch-training-data
+RUN --mount=type=cache,target=/root/.keras/datasets/ python -m invoke fetch-training-data
 
 COPY ./training/ /training/
 RUN --mount=type=cache,target=/root/.keras/datasets/ python /training/network.py

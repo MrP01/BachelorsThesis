@@ -3,6 +3,7 @@ xtensor/0.24.2
 nlohmann_json/3.10.5
 cpp-httplib/0.10.8
 plog/1.1.5
+lodepng/cci.20200615
 
 [generators]
 cmake

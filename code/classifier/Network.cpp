@@ -1,7 +1,7 @@
 #include "Network.h"
 #include <NTL/ZZ.h>
 #include <NTL/ZZ_limbs.h>
-
+#include <lodepng.h>
 #include <plog/Log.h>
 #include <xtensor/xadapt.hpp>
 #include <xtensor/xnpy.hpp>
@@ -121,4 +121,20 @@ xt::xarray<uint8_t> Network::interpretCiphertextAsPixels(seal::Ciphertext &ciphe
     std::cout << std::endl;
   }
   return image;
+}
+
+void Network::saveXArrayToPNG(std::string filename, xt::xarray<uint8_t> image) {
+  size_t width = image.shape(0);
+  size_t height = image.shape(1);
+  std::vector<unsigned char> pixels;
+  pixels.resize(width * height * 4);
+  for (unsigned y = 0; y < height; y++)
+    for (unsigned x = 0; x < width; x++) {
+      auto brightness = image(x, y);
+      pixels[4 * width * y + 4 * x + 0] = brightness;
+      pixels[4 * width * y + 4 * x + 1] = brightness;
+      pixels[4 * width * y + 4 * x + 2] = brightness;
+      pixels[4 * width * y + 4 * x + 3] = 255;
+    }
+  lodepng::encode(filename, pixels, width, height);
 }

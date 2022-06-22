@@ -18,4 +18,5 @@ class Network {
   Vector interpretResultProbabilities(Vector result);
 
   xt::xarray<uint8_t> interpretCiphertextAsPixels(seal::Ciphertext &ciphertext);
+  static void saveXArrayToPNG(std::string filename, xt::xarray<uint8_t> image);
 };
