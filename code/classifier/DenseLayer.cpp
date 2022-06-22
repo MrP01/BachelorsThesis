@@ -7,9 +7,9 @@
 #include <xtensor/xview.hpp>
 
 int current_multiplication_level = 1;
-static double scale = pow(2.0, 40);
+// static double scale = pow(2.0, 40);
 static std::map<size_t, std::pair<size_t, size_t>> preencoded_bsgs_parameters = {{784, {28, 28}}, {128, {16, 8}}};
-enum MatMulImplementation DenseLayer::matmulMethod = MATMUL_HYBRID;
+enum MatMulImplementation DenseLayer::matmulMethod = MATMUL_BSGS;
 
 DenseLayer::DenseLayer(Matrix weights, Vector biases) : weights(weights), biases(biases) {}
 
@@ -79,7 +79,7 @@ void DenseLayer::matmulHybrid(seal::Ciphertext &in_out, const Matrix &mat, seal:
       diag.push_back(mat.at((j + offset) % in_dim, j % out_dim));
     unencoded_diagonals.push_back(xt::adapt(diag));
     seal::Plaintext encoded;
-    encoder.encode(diag, scale, encoded);
+    encoder.encode(diag, in_out.scale(), encoded);
     if (current_multiplication_level != 0)
       evaluator.mod_switch_to_inplace(encoded, in_out.parms_id());
     diagonals.push_back(encoded);
@@ -156,7 +156,7 @@ void DenseLayer::matmulBabystepGiantstep(seal::Ciphertext &in_out, const Matrix 
     }
 
     seal::Plaintext row;
-    ckks_encoder.encode(diag, scale, row);
+    ckks_encoder.encode(diag, in_out.scale(), row);
     if (current_multiplication_level != 0)
       evaluator.mod_switch_to_inplace(row, in_out.parms_id());
     matrix.push_back(row);

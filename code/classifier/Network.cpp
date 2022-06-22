@@ -13,11 +13,12 @@ Network::Network() {}
 
 void Network::init() {
   seal::EncryptionParameters params(seal::scheme_type::ckks);
-  size_t poly_modulus_degree = 16384; // same as for node-seal
+  size_t poly_modulus_degree = 8192; // same as for node-seal
   params.set_poly_modulus_degree(poly_modulus_degree);
   PLOG(plog::debug) << "PolyModDegree: " << poly_modulus_degree << " so we need " << 2 * log2(poly_modulus_degree) - 1
                     << " Galois keys.";
-  std::vector<int> bit_sizes = {60, 40, 40, 40, 40, 40, 60};
+  std::vector<int> bit_sizes = {34, 25, 25, 25, 25, 25, 34};
+
   PLOG(plog::debug) << "sum(bit_sizes) = " << xt::sum(xt::adapt(bit_sizes, {bit_sizes.size()}))();
   params.set_coeff_modulus(seal::CoeffModulus::Create(poly_modulus_degree, bit_sizes));
   std::vector<double> log_coeff_moduli;

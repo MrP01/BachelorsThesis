@@ -48,7 +48,7 @@ double evaluateNetworkOnEncryptedTestData(size_t N = 20) {
   keyGen.create_relin_keys(relinKeys);
   seal::Encryptor encryptor(*neuralNet.context, publicKey);
   seal::CKKSEncoder encoder(*neuralNet.context);
-  double scale = pow(2.0, 40);
+  double scale = pow(2.0, 25);
 
   double mre_sum = 0;
   int correct_predictions = 0;
