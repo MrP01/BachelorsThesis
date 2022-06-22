@@ -22,7 +22,7 @@ invoke = "^1.7.1"
 matplotlib = "^3.5.2"
 tikzplotlib = "^0.10.1"
 black = "^22.3.0"
-pylint = "^2.14.2"
+pylint = "^2.14.3"
 isort = "^5.10.1"
 
 [tool.black]
