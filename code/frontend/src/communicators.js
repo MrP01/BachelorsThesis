@@ -55,8 +55,11 @@ export class SEALCommunicator extends BaseCommunicator {
     const schemeType = this.seal.SchemeType.ckks;
     const securityLevel = this.seal.SecurityLevel.tc128;
     // const securityLevel = this.seal.SecurityLevel.none;
-    const polyModulusDegree = 16384;
-    const bitSizes = [60, 40, 40, 40, 40, 40, 60];
+
+    const polyModulusDegree = 8192;
+    const bitSizes = [34, 25, 25, 25, 25, 25, 34];
+    // const polyModulusDegree = 16384;
+    // const bitSizes = [60, 40, 40, 40, 40, 40, 60];
 
     const params = this.seal.EncryptionParameters(schemeType);
     params.setPolyModulusDegree(polyModulusDegree);
@@ -110,7 +113,7 @@ export class SEALCommunicator extends BaseCommunicator {
   async classify(flatImageArray) {
     const encoder = this.seal.CKKSEncoder(this.context);
     const encryptor = this.seal.Encryptor(this.context, this._publicKey);
-    const scale = Math.pow(2, 40);
+    const scale = Math.pow(2, 25);
     var plaintext = encoder.encode(Float64Array.from(flatImageArray), scale);
     var ciphertext = encryptor.encrypt(plaintext);
     // saving Galois keys can take an even longer time and the output is **very** large.
