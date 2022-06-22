@@ -47,7 +47,7 @@ max-module-lines = 1000
 indent-after-paren = 4
 
 [tool.pylint."MESSAGES CONTROL"]
-disable = ["unnecessary-lambda-assignment"]
+disable = ["unnecessary-lambda-assignment", "invalid-name"]
 
 [tool.flakeheaven]
 ignore = "D107,D202,D203,D401,E203,E402,E501,W503"

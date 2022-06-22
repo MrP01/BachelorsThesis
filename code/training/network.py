@@ -1,3 +1,4 @@
+"""The neural network used behind the scenes"""
 import pathlib
 
 import numpy as np
@@ -13,6 +14,7 @@ def relu_taylor(x):
 
 
 def train():
+    """Design and Train the Neural Network using tensorflow, save the weights"""
     (x_train, y_train), (x_test, y_test) = tf.keras.datasets.mnist.load_data()
     x_train = x_train.astype("float32") / 255
     x_test = x_test.astype("float32") / 255

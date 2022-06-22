@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+"""Interaction with the neural network"""
 import pathlib
 
 import matplotlib.pyplot as plt
@@ -35,6 +36,7 @@ def plot_weights(w, b, filename):
 
 
 def main():
+    """Train the network and plot the layer weights"""
     w1, b1, w2, b2 = network.train()
     plot_weights(w1, b1, "layer-1.png")
     plot_weights(w2, b2, "layer-2.png")

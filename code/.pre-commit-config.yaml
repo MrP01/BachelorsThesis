@@ -45,6 +45,9 @@ repos:
         exclude: tests/
         types:
           - python
+        args:
+          - --rcfile
+          - code/pyproject.toml
   - repo: local
     hooks:
       - id: bandit
