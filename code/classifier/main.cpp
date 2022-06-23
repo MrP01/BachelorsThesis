@@ -14,10 +14,21 @@
 Network neuralNet;
 httplib::Server server;
 
+nlohmann::json handleParametersRequest() {
+  seal::EncryptionParameters parameters = *neuralNet.parameters;
+  std::vector<uint8_t> byte_buffer(static_cast<size_t>(parameters.save_size()));
+  parameters.save(reinterpret_cast<seal::seal_byte *>(byte_buffer.data()), byte_buffer.size());
+  return nlohmann::json{
+      {"security_level", SECURITY_LEVEL},
+      {"scale", SCALE},
+      {"parms", nlohmann::json::binary(byte_buffer)},
+  };
+}
+
 nlohmann::json handlePlainPredictionRequest(nlohmann::json request) {
   xt::xarray<double> input;
   xt::from_json(request["image"], input);
-  PLOG(plog::debug) << input;
+  // PLOG(plog::debug) << input;
   assert(input.dimension() == 1);
   assert(input.shape()[0] == 784);
   PLOG(plog::debug) << "Incoming data is valid, predicting ...";
@@ -77,8 +88,9 @@ void handleGetTestData(const httplib::Request &req, httplib::Response &response)
 }
 
 void runServer() {
-  server.Post("/api/classify/plain/", msgpackRequestHandler(handlePlainPredictionRequest));
-  server.Post("/api/classify/encrypted/", msgpackRequestHandler(handleEncryptedPredictionRequest));
+  server.Get("/api/parameters/", msgpackGETRequestHandler(handleParametersRequest));
+  server.Post("/api/classify/plain/", msgpackPOSTRequestHandler(handlePlainPredictionRequest));
+  server.Post("/api/classify/encrypted/", msgpackPOSTRequestHandler(handleEncryptedPredictionRequest));
   server.Get("/api/testdata/", handleGetTestData);
 
   server.set_exception_handler([](const httplib::Request &req, httplib::Response &res, std::exception &exception) {

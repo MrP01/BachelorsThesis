@@ -6,36 +6,38 @@ const API_URL = "/api";
 class BaseCommunicator {
   static _singleton = null;
 
-  async init() {}
-  static instance() {
+  async init() {
+    return this;
+  }
+
+  static async instance() {
     if (this._singleton === null) {
       this._singleton = new this();
-      this._singleton
-        .init()
-        .then(() => console.log("Communicator initialized."))
-        .catch((err) => console.log("Error!", err));
+      return this._singleton.init();
     }
-    return this._singleton;
+    return new Promise((resolve, reject) => {
+      resolve(this._singleton);
+    });
   }
-  async classify() {}
-  async _makeApiRequest(path, body) {
+
+  async _makeApiRequest(method, path, body) {
     // console.log("sending", body);
     const response = await fetch(API_URL + path, {
-      method: "POST",
+      method: method,
       headers: { "Content-Type": "application/x-msgpack" },
-      body: msgpack.encode(body),
+      body: method === "POST" ? msgpack.encode(body) : null,
     });
-    if (!response.ok) {
-      throw new Error("[API] request completion failed.");
-    }
+    if (!response.ok) throw new Error("[API] request completion failed.");
     return await msgpack.decodeAsync(response.body);
   }
+
+  async classify() {}
   delete() {}
 }
 
 export class PlainCommunicator extends BaseCommunicator {
   async classify(flatImageArray) {
-    return await this._makeApiRequest("/classify/plain/", {
+    return await this._makeApiRequest("POST", "/classify/plain/", {
       image: Array.from(flatImageArray),
     });
   }
@@ -46,33 +48,23 @@ export class SEALCommunicator extends BaseCommunicator {
     super();
     this.seal = null;
     this.context = null;
+    this.scale = null;
   }
 
   async _initContext() {
-    // Wait for the library to initialize
+    const paramsResponse = await this._makeApiRequest("GET", "/parameters/", {});
+    this.scale = paramsResponse.scale;
     this.seal = await SEAL();
-    // TODO: fetch the encryption parameters from the server (seclevel, bitSizes, polyModDegree, scale!)
-    const schemeType = this.seal.SchemeType.ckks;
-    const securityLevel = this.seal.SecurityLevel.tc128;
-    // const securityLevel = this.seal.SecurityLevel.none;
+    const params = this.seal.EncryptionParameters(this.seal.SchemeType.ckks);
+    params.loadArray(paramsResponse.parms);
 
-    const polyModulusDegree = 8192;
-    const bitSizes = [34, 25, 25, 25, 25, 25, 34];
-    // const polyModulusDegree = 16384;
-    // const bitSizes = [60, 40, 40, 40, 40, 40, 60];
-
-    const params = this.seal.EncryptionParameters(schemeType);
-    params.setPolyModulusDegree(polyModulusDegree);
-
-    // Create a suitable set of CoeffModulus primes
-    params.setCoeffModulus(this.seal.CoeffModulus.Create(polyModulusDegree, Int32Array.from(bitSizes)));
-
-    // Create a new Context
-    this.context = this.seal.Context(
-      params, // Encryption Parameters
-      true, // ExpandModChain
-      securityLevel // Enforce a security level
-    );
+    const securityLevel = {
+      none: this.seal.SecurityLevel.none,
+      128: this.seal.SecurityLevel.tc128,
+      192: this.seal.SecurityLevel.tc192,
+      256: this.seal.SecurityLevel.tc256,
+    }[paramsResponse.security_level];
+    this.context = this.seal.Context(params, true, securityLevel);
 
     if (!this.context.parametersSet()) {
       throw new Error("[SEAL] Could not set the parameters in the given context.");
@@ -86,7 +78,6 @@ export class SEALCommunicator extends BaseCommunicator {
   }
 
   _createKeys() {
-    // Create a new KeyGenerator (creates a new keypair internally)
     const keyGenerator = this.seal.KeyGenerator(this.context);
     this._secretKey = keyGenerator.secretKey();
     this._publicKey = keyGenerator.createPublicKey();
@@ -99,6 +90,7 @@ export class SEALCommunicator extends BaseCommunicator {
   async init() {
     await this._initContext();
     this._createKeys();
+    return this;
   }
 
   static argmax(array) {
@@ -113,11 +105,10 @@ export class SEALCommunicator extends BaseCommunicator {
   async classify(flatImageArray) {
     const encoder = this.seal.CKKSEncoder(this.context);
     const encryptor = this.seal.Encryptor(this.context, this._publicKey);
-    const scale = Math.pow(2, 25);
-    var plaintext = encoder.encode(Float64Array.from(flatImageArray), scale);
+    var plaintext = encoder.encode(Float64Array.from(flatImageArray), this.scale);
     var ciphertext = encryptor.encrypt(plaintext);
     // saving Galois keys can take an even longer time and the output is **very** large.
-    var response = await this._makeApiRequest("/classify/encrypted/", {
+    var response = await this._makeApiRequest("POST", "/classify/encrypted/", {
       ciphertext: ciphertext.saveArray(this.seal.ComprModeType.zstd),
       relinKeys: this._relinKeys.saveArray(this.seal.ComprModeType.zstd),
       galoisKeys: this._galoisKeys.saveArray(this.seal.ComprModeType.zstd),

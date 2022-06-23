@@ -12,20 +12,25 @@
 Network::Network() {}
 
 void Network::init() {
-  seal::EncryptionParameters params(seal::scheme_type::ckks);
-  size_t poly_modulus_degree = 8192; // same as for node-seal
-  params.set_poly_modulus_degree(poly_modulus_degree);
+  parameters = new seal::EncryptionParameters(seal::scheme_type::ckks);
+  size_t poly_modulus_degree = POLY_MOD_DEGREE; // same as for node-seal
+  parameters->set_poly_modulus_degree(poly_modulus_degree);
+  std::vector<int> bit_sizes;
+  bit_sizes.push_back(COEFF_MODULUS_START_BITS);
+  for (size_t i = 0; i < 5; i++)
+    bit_sizes.push_back(COEFF_MODULUS_MIDDLE_BITS);
+  bit_sizes.push_back(*std::max_element(bit_sizes.begin(), bit_sizes.end()));
+
   PLOG(plog::debug) << "PolyModDegree: " << poly_modulus_degree << " so we need " << 2 * log2(poly_modulus_degree) - 1
                     << " Galois keys.";
-  std::vector<int> bit_sizes = {34, 25, 25, 25, 25, 25, 34};
 
   PLOG(plog::debug) << "sum(bit_sizes) = " << xt::sum(xt::adapt(bit_sizes, {bit_sizes.size()}))();
-  params.set_coeff_modulus(seal::CoeffModulus::Create(poly_modulus_degree, bit_sizes));
+  parameters->set_coeff_modulus(seal::CoeffModulus::Create(poly_modulus_degree, bit_sizes));
   std::vector<double> log_coeff_moduli;
-  for (auto &&modulus : params.coeff_modulus())
+  for (auto &&modulus : parameters->coeff_modulus())
     log_coeff_moduli.push_back(log2(modulus.value()));
   PLOG(plog::debug) << "log2(product(moduli)) = " << xt::sum(xt::adapt(log_coeff_moduli, {log_coeff_moduli.size()}))();
-  context = new seal::SEALContext(params, true, seal::sec_level_type::tc128);
+  context = new seal::SEALContext(*parameters, true, SECURITY_LEVEL);
 }
 
 void Network::loadDefaultModel() {

@@ -34,7 +34,15 @@ inline xt::xarray<double> getCiphertextValue(
   return result;
 }
 
-inline auto msgpackRequestHandler(nlohmann::json (*handler)(nlohmann::json)) {
+inline auto msgpackGETRequestHandler(nlohmann::json (*handler)()) {
+  return [=](const httplib::Request &request, httplib::Response &response) {
+    nlohmann::json response_json = handler();
+    std::vector<uint8_t> serialized = nlohmann::json::to_msgpack(response_json);
+    response.set_content(std::string(serialized.begin(), serialized.end()), "application/x-msgpack");
+  };
+}
+
+inline auto msgpackPOSTRequestHandler(nlohmann::json (*handler)(nlohmann::json)) {
   return
       [=](const httplib::Request &request, httplib::Response &response, const httplib::ContentReader &contentReader) {
         std::string request_body;

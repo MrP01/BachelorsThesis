@@ -47,9 +47,36 @@ class DemoImageComponent extends React.Component {
   }
 }
 
-class ClassificationComponent extends React.Component {
+class ProbabilityDisplay extends React.Component {
   themecolor = [100, 149, 237]; // cornflowerblue
 
+  render() {
+    return (
+      <ul className="probabilities">
+        {this.props.probabilities.map((probability, index) => {
+          let factor = 1 - probability / Math.max.apply(Math, this.props.probabilities);
+          return (
+            <li
+              key={index}
+              style={{
+                backgroundColor: `rgb(
+                  ${factor * (255 - this.themecolor[0]) + this.themecolor[0]},
+                  ${factor * (255 - this.themecolor[1]) + this.themecolor[1]},
+                  ${factor * (255 - this.themecolor[2]) + this.themecolor[2]}
+                )`,
+              }}
+              title={probability}
+            >
+              {index}
+            </li>
+          );
+        })}
+      </ul>
+    );
+  }
+}
+
+class ClassificationComponent extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -58,7 +85,12 @@ class ClassificationComponent extends React.Component {
       calculating: false,
       testImagesAvailable: 0,
     };
-    this.communicator = PlainCommunicator.instance();
+    this.communicator = null;
+    const self = this;
+    PlainCommunicator.instance().then((comm) => {
+      self.communicator = comm;
+      console.log("Set plain comm", self.communicator);
+    });
     this.testImages = []; // outsource this from state because it is large
   }
 
@@ -149,7 +181,11 @@ class ClassificationComponent extends React.Component {
   }
 
   setCommunicator(event) {
-    this.communicator = (event.target.checked ? SEALCommunicator : PlainCommunicator).instance();
+    this.setState({ calculating: true });
+    (event.target.checked ? SEALCommunicator : PlainCommunicator).instance().then((comm) => {
+      this.communicator = comm;
+      this.setState({ calculating: false });
+    });
   }
 
   render() {
@@ -197,6 +233,7 @@ class ClassificationComponent extends React.Component {
                   onLabel="SEALCommunicator"
                   onChange={self.setCommunicator.bind(self)}
                 />
+                This will take up browser resources for a few seconds.
               </div>
             </div>
           </div>
@@ -204,26 +241,7 @@ class ClassificationComponent extends React.Component {
             Prediction: <b>{this.state.prediction}</b>
           </h3>
           <h6>Probabilities</h6>
-          <ul className="probabilities">
-            {this.state.probabilities.map((probability, index) => {
-              let factor = 1 - probability / Math.max.apply(Math, this.state.probabilities);
-              return (
-                <li
-                  key={index}
-                  style={{
-                    backgroundColor: `rgb(
-                      ${factor * (255 - this.themecolor[0]) + this.themecolor[0]},
-                      ${factor * (255 - this.themecolor[1]) + this.themecolor[1]},
-                      ${factor * (255 - this.themecolor[2]) + this.themecolor[2]}
-                  )`,
-                  }}
-                  title={probability}
-                >
-                  {index}
-                </li>
-              );
-            })}
-          </ul>
+          <ProbabilityDisplay probabilities={this.state.probabilities} />
         </Col>
         {this.state.testImagesAvailable && (
           <Col s={12}>

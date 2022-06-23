@@ -48,7 +48,6 @@ double evaluateNetworkOnEncryptedTestData(size_t N = 20) {
   keyGen.create_relin_keys(relinKeys);
   seal::Encryptor encryptor(*neuralNet.context, publicKey);
   seal::CKKSEncoder encoder(*neuralNet.context);
-  double scale = pow(2.0, 25);
 
   double mre_sum = 0;
   int correct_predictions = 0;
@@ -58,7 +57,7 @@ double evaluateNetworkOnEncryptedTestData(size_t N = 20) {
     auto some_x_test_vector = std::vector<double>(some_x_test.begin(), some_x_test.end());
     xt::dump_npy(filename_base + std::to_string(i) + "-plain.npy", some_x_test);
     assert(some_x_test_vector.size() == 784);
-    encoder.encode(some_x_test_vector, scale, plain);
+    encoder.encode(some_x_test_vector, SCALE, plain);
     encryptor.encrypt(plain, encrypted);
     auto visualisation = neuralNet.interpretCiphertextAsPixels(encrypted);
     xt::dump_npy(filename_base + std::to_string(i) + "-ciphertext.npy", visualisation);
