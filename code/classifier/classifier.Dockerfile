@@ -8,9 +8,11 @@ FROM base AS cpp-build
 RUN apk add --no-cache cmake git python3 py3-pip make g++ perl
 RUN python3 -m pip install --no-cache-dir conan
 
-RUN apk add --no-cache gmp-dev
+RUN apk add --no-cache gmp gmp-dev
 RUN git clone --depth 1 https://github.com/libntl/ntl.git /tmp/ntl
-RUN cd /tmp/ntl/src && ./configure && make && make install
+RUN cd /tmp/ntl/src \
+  && ./configure SHARED=on NTL_GMP_LIP=on NTL_THREADS=on NTL_THREAD_BOOST=on NTL_RANDOM_AES256CTR=on \
+  && make -j4 && make install && ldconfig /
 
 # Maybe we can package SEAL into conan?
 RUN git clone --depth 1 https://github.com/microsoft/SEAL.git /tmp/seal
@@ -42,7 +44,7 @@ RUN --mount=type=cache,target=/root/.keras/datasets/ python -m invoke fetch-trai
 COPY ./training/ /training/
 RUN --mount=type=cache,target=/root/.keras/datasets/ python /training/network.py
 
-# Part 3: Tiny image only containing the binary, the model and training+test data
+# Part 3: Tiny image only containing the binary, the model and test data
 FROM base
 COPY --from=cpp-build /classifier/build/bin/classifier /classifier/classifier
 COPY --from=trainer /classifier/data/models/ /classifier/data/models/
