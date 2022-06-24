@@ -2,13 +2,13 @@
 FROM alpine:edge AS base
 WORKDIR /classifier
 USER root
-RUN apk add --no-cache libstdc++
+RUN apk add --no-cache libstdc++ gmp
 
 FROM base AS cpp-build
 RUN apk add --no-cache cmake git python3 py3-pip make g++ perl
 RUN python3 -m pip install --no-cache-dir conan
 
-RUN apk add --no-cache gmp gmp-dev
+RUN apk add --no-cache gmp-dev
 RUN git clone --depth 1 https://github.com/libntl/ntl.git /tmp/ntl
 RUN cd /tmp/ntl/src \
   && ./configure SHARED=on NTL_GMP_LIP=on NTL_THREADS=on NTL_THREAD_BOOST=on NTL_RANDOM_AES256CTR=on \
@@ -46,6 +46,7 @@ RUN --mount=type=cache,target=/root/.keras/datasets/ python /training/network.py
 
 # Part 3: Tiny image only containing the binary, the model and test data
 FROM base
+COPY --from=cpp-build /usr/local/lib/libntl* /usr/local/lib/
 COPY --from=cpp-build /classifier/build/bin/classifier /classifier/classifier
 COPY --from=trainer /classifier/data/models/ /classifier/data/models/
 COPY --from=trainer /classifier/data/mnist/x-test.npy /classifier/data/mnist/x-test.npy
