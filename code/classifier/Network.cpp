@@ -111,7 +111,7 @@ xt::xarray<uint8_t> Network::interpretCiphertextAsPixels(seal::Ciphertext &ciphe
   PLOG(plog::debug) << "a: " << *a[0] << ", p: " << *p[0];
   PLOG(plog::debug) << "a: " << *a[1] << ", p: " << *p[1];
 
-  size_t width = sqrt(N), height = sqrt(N);
+  size_t width = 1 << (size_t)(log2(N) / 2), height = N / width;
   assert(width * height == N);
   xt::xarray<uint8_t> image = xt::zeros<uint8_t>({width, height});
   size_t n = 0;
