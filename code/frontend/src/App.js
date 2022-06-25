@@ -87,10 +87,7 @@ class ClassificationComponent extends React.Component {
     };
     this.communicator = null;
     const self = this;
-    PlainCommunicator.instance().then((comm) => {
-      self.communicator = comm;
-      console.log("Set plain comm", self.communicator);
-    });
+    PlainCommunicator.instance().then((comm) => (self.communicator = comm));
     this.testImages = []; // outsource this from state because it is large
   }
 
@@ -116,7 +113,6 @@ class ClassificationComponent extends React.Component {
       let alphaChannel = ctx.getImageData(0, 0, 28, 28).data.filter((value, index) => index % 4 === 3);
       // TODO: rescale from 0..255 to 0..1
       alphaChannel = alphaChannel.map((x) => (x > 127 ? 1 : 0));
-      console.log(alphaChannel);
       // give the browser one extra cycle for rendering
       setTimeout(
         () =>
@@ -165,7 +161,6 @@ class ClassificationComponent extends React.Component {
   fetchMoreTestImages() {
     const alreadyThere = this.testImages.length;
     const indices = [...Array(80).keys()].map((i) => i + alreadyThere).join("-");
-    console.log(indices, alreadyThere);
     fetch(`/api/testdata/?indices=${indices}`).then((response) => {
       response.json().then((data) => {
         this.testImages = this.testImages.concat(data);

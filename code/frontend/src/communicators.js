@@ -21,11 +21,14 @@ class BaseCommunicator {
   }
 
   async _makeApiRequest(method, path, body) {
-    // console.log("sending", body);
+    if (method === "POST") {
+      body = msgpack.encode(body);
+      console.log("Sending msgpack-encoded data of", body.byteLength, "bytes");
+    } else body = null;
     const response = await fetch(API_URL + path, {
       method: method,
       headers: { "Content-Type": "application/x-msgpack" },
-      body: method === "POST" ? msgpack.encode(body) : null,
+      body: body,
     });
     if (!response.ok) throw new Error("[API] request completion failed.");
     return await msgpack.decodeAsync(response.body);
@@ -104,15 +107,19 @@ export class SEALCommunicator extends BaseCommunicator {
 
   async classify(flatImageArray) {
     const encoder = this.seal.CKKSEncoder(this.context);
-    const encryptor = this.seal.Encryptor(this.context, this._publicKey);
     var plaintext = encoder.encode(Float64Array.from(flatImageArray), this.scale);
-    var ciphertext = encryptor.encrypt(plaintext);
+
+    // in order to use encryptSymmetric (Seal serializables in seed mode), the encryptor also requires the secret key
+    const encryptor = this.seal.Encryptor(this.context, this._publicKey, this._secretKey);
+    var ciphertext = encryptor.encryptSymmetricSerializable(plaintext);
+
     // saving Galois keys can take an even longer time and the output is **very** large.
     var response = await this._makeApiRequest("POST", "/classify/encrypted/", {
       ciphertext: ciphertext.saveArray(this.seal.ComprModeType.zstd),
       relinKeys: this._relinKeys.saveArray(this.seal.ComprModeType.zstd),
       galoisKeys: this._galoisKeys.saveArray(this.seal.ComprModeType.zstd),
     });
+
     console.log("Got encrypted response");
     var resultCiphertext = this.seal.CipherText();
     resultCiphertext.loadArray(this.context, response["result"]);
@@ -122,6 +129,7 @@ export class SEALCommunicator extends BaseCommunicator {
     var result = encoder.decode(resultPlaintext);
     window._result = result;
     result = result.slice(0, 10);
+
     console.log("Decoded result");
     return {
       prediction: SEALCommunicator.argmax(result),

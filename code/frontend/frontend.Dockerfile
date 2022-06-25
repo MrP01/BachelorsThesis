@@ -8,7 +8,6 @@ RUN yarn run build
 
 FROM nginx:alpine
 COPY nginx.conf /etc/nginx/nginx.conf
-COPY robots.txt /web/robots.txt
 COPY nginx.run.sh /etc/nginx.run.sh
 COPY demosecre[t]s /etc/demosecrets
 COPY --from=webpack-built /app/build /web/app

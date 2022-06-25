@@ -104,7 +104,9 @@ void runServer() {
   });
 
   PLOG(plog::info) << "The server is running";
-  server.listen("0.0.0.0", 8000);
+  bool success = server.listen("0.0.0.0", 8000);
+  if (!success)
+    PLOG(plog::error) << "Could not bind to port 8000";
 }
 
 void shutdown(int signum) {
