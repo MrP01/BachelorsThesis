@@ -11,9 +11,26 @@ Each pixel corresponds to a coefficient $a \in \Z / q\Z$ scaled down by the modu
 \end{figure}
 
 \section{Methodology}
-\section{Performance / Runtime Benchmarks}
-\section{Communication Overhead}
+
 \section{Accuracy, Precision, Recall}
 % Detailliertere Analyse
 % https://medium.com/analytics-vidhya/accuracy-precision-and-recall-in-machine-learning-classification-ae84004e86a1
 % https://en.wikipedia.org/wiki/Precision_and_recall
+
+\section{Performance Benchmarks}
+This chapter includes runtime and communication overhead analysis.
+
+Plain runtime: xxx
+
+\begin{table}[H]
+  \centering
+  \caption{Performance Benchmarks / Communication Overhead}
+  \begin{tabular}{lllll}
+    \textbf{Scenario} & \textbf{Parameters} & \textbf{Runtime} / \si{\second} & \textbf{Message Size} / \si{\mega\byte} &   & \textbf{MRE} \\
+    BSGS Matmul       & 60,40,...,40,60     &                                 &                                         &                  \\
+    BSGS Matmul       & 34,25,...,25,34     &                                 &                                         &                  \\
+    Hybrid Matmul     &                     &                                 &                                         &                  \\
+    Encrypt           &                     &                                 &                                         &                  \\
+    Encrypt Symmetric &                     &                                 &                                         &                  \\
+  \end{tabular}
+\end{table}

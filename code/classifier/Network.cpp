@@ -119,7 +119,7 @@ xt::xarray<uint8_t> Network::interpretCiphertextAsPixels(seal::Ciphertext &ciphe
     for (size_t j = 0; j < height; j++) {
       // PLOG(plog::debug) << "a: " << *a[i] << ", p: " << *p[i];
       NTL::ZZ pixel = *(a[n]) * 128 / full_modulus + 128;
-      std::cout << pixel << " ";
+      std::cout << pixel << "(" << *(a[n]) * 128 / full_modulus << ") ";
       image(i, j) = NTL::ZZ_limbs_get(pixel)[0];
       n++;
     }
