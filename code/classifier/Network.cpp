@@ -13,7 +13,7 @@ Network::Network() {}
 
 void Network::init() {
   parameters = new seal::EncryptionParameters(seal::scheme_type::ckks);
-  size_t poly_modulus_degree = POLY_MOD_DEGREE; // same as for node-seal
+  size_t poly_modulus_degree = POLY_MOD_DEGREE;
   parameters->set_poly_modulus_degree(poly_modulus_degree);
   std::vector<int> bit_sizes;
   bit_sizes.push_back(COEFF_MODULUS_START_BITS);
@@ -103,7 +103,7 @@ xt::xarray<uint8_t> Network::interpretCiphertextAsPixels(seal::Ciphertext &ciphe
         a.push_back(new NTL::ZZ(Coeff));
         p.push_back(new NTL::ZZ(rns_moduli[0].value()));
       } else
-        assert(NTL::CRT(*a[coeff_index], *p[coeff_index], NTL::ZZ(Coeff), P));
+        NTL::CRT(*a[coeff_index], *p[coeff_index], NTL::ZZ(Coeff), P);
       coeff_index++;
     });
     rns_component_index++;
@@ -111,7 +111,7 @@ xt::xarray<uint8_t> Network::interpretCiphertextAsPixels(seal::Ciphertext &ciphe
   PLOG(plog::debug) << "a: " << *a[0] << ", p: " << *p[0];
   PLOG(plog::debug) << "a: " << *a[1] << ", p: " << *p[1];
 
-  size_t width = 1 << (size_t)(log2(N) / 2), height = N / width;
+  size_t width = 1 << (size_t)(log2(N) / 2 + 1), height = N / width;
   assert(width * height == N);
   xt::xarray<uint8_t> image = xt::zeros<uint8_t>({width, height});
   size_t n = 0;
