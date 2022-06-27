@@ -79,7 +79,7 @@ double evaluateNetworkOnEncryptedTestData(size_t N = 20) {
       printCiphertextInternals("Intermediate result", encrypted, neuralNet.context);
       Vector enc = getCiphertextValue(encrypted, plain.shape(0), &decryptor, encoder);
       PLOG(plog::debug) << "--> diff: " << xt::sum(xt::square(enc - plain));
-      PLOG(plog::info) << "-------------------------------------------------------------------------------------------";
+      PLOG(plog::debug) << "------------------------------------------------------------------------------------------";
     }
     seal::Ciphertext result = encrypted;
 
@@ -107,7 +107,7 @@ void compareMatmulMethods(size_t N = 20) {}
 
 int main(int argc, char *argv[]) {
   static plog::ColorConsoleAppender<plog::FuncMessageFormatter> appender;
-  plog::init(plog::debug, &appender);
+  plog::init(plog::info, &appender);
   xt::print_options::set_line_width(120);
   x_test.reshape({x_test.shape(0), 784});
 

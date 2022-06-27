@@ -116,7 +116,7 @@ void shutdown(int signum) {
 
 int main() {
   static plog::ColorConsoleAppender<plog::FuncMessageFormatter> appender;
-  plog::init(plog::debug, &appender);
+  plog::init(plog::info, &appender);
   PLOG(plog::info) << "--- MNIST Neural Network Predictor ---";
   neuralNet.init();
   neuralNet.loadDefaultModel();

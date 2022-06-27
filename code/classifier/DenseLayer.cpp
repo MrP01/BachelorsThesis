@@ -34,7 +34,6 @@ void DenseLayer::feedforwardEncrypted(seal::Ciphertext &in_out, seal::GaloisKeys
   if (matmulMethod == MATMUL_BSGS) {
     Matrix zeroPaddedWeights = xt::zeros<double>({in_dimension, in_dimension});
     xt::view(zeroPaddedWeights, xt::range(0, out_dimension), xt::all()) = xt::transpose(weights);
-    std::cout << zeroPaddedWeights << std::endl;
     assert(zeroPaddedWeights.shape(0) == zeroPaddedWeights.shape(1));
     matmulBabystepGiantstep(in_out, zeroPaddedWeights, galoisKeys, encoder, evaluator);
   } else if (matmulMethod == MATMUL_HYBRID) {
