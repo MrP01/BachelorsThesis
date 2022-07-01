@@ -1,3 +1,5 @@
+"""Invoke tasks for plotting"""
+# pylint: disable=unused-argument
 import glob
 import pathlib
 
@@ -84,3 +86,21 @@ def plot_ciphertext(ctx):
     #     axis_height=r"0.2\linewidth",
     # )
     plt.show()
+
+
+@invoke.task()
+def confusion_matrix(ctx):
+    """Creates and plots the confusion matrix"""
+    fig = plt.figure()
+    axes: plt.Axes = fig.add_subplot(1, 1, 1)
+    axes.plot()
+    axes.set_xlabel("")
+    axes.set_ylabel("")
+    axes.legend()
+    fig.savefig(THESIS / "figures" / "confusion-matrix.png")
+    tikzplotlib.save(THESIS / "figures" / "generated" / "confusion-matrix.tex")
+
+
+@invoke.task()
+def training_history(ctx):
+    """Plots the training history (error, accuracy development)"""

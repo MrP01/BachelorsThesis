@@ -1,3 +1,5 @@
+"""Tasks to run using `invoke [task-name]`"""
+# pylint: disable=unused-argument
 import json
 import pathlib
 

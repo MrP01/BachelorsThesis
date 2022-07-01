@@ -3,7 +3,7 @@
 import pathlib
 
 import matplotlib.pyplot as plt
-import network
+import network  # pylint: disable=import-error
 
 THESIS = pathlib.Path(__file__).resolve().parent.parent.parent / "thesis"
 

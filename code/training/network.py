@@ -35,14 +35,13 @@ def train():
     history = model.fit(x_train, y_train, epochs=30, validation_split=0.1, callbacks=[early_stopping])
     model.evaluate(x_test, y_test)
 
-    # TODO: create and report confusion matrix
-
     freeze = pathlib.Path.cwd().parent / "classifier" / "data" / "models" / "simple"
     w1, b1, w2, b2 = model.get_weights()
     np.save(freeze / "w1.npy", w1)
     np.save(freeze / "b1.npy", b1)
     np.save(freeze / "w2.npy", w2)
     np.save(freeze / "b2.npy", b2)
+    np.save(freeze / "training-history.npy", history)
     return w1, b1, w2, b2
 
 

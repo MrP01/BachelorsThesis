@@ -1,3 +1,4 @@
+"""Arithmetic tests for the multiplications"""
 import unittest
 
 import numpy as np
@@ -5,7 +6,10 @@ from multiplications import matmul_diagonal, matmul_hybrid
 
 
 class TestArithmetic(unittest.TestCase):
+    """Test class"""
+
     def test_matmul(self, n=100):
+        """Matmul testcase for matmul_diagonal and matmul_hybrid"""
         for _ in range(n):
             a = np.random.randint(1, 40)
             b = np.random.randint(a, 50)
