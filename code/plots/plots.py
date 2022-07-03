@@ -31,6 +31,8 @@ def plot_rotation_error(ctx, layer1_csv="plots/rotdiff-layer1.csv", layer2_csv="
         figure=fig,
         axis_width=r"0.7\linewidth",
         axis_height=r"0.25\linewidth",
+        override_externals=True,
+        tex_relative_path_to_data="figures/generated/",
     )
 
 
@@ -54,6 +56,8 @@ def plot_relu_taylor(ctx):
         figure=fig,
         axis_width=r"0.7\linewidth",
         axis_height=r"0.4\linewidth",
+        override_externals=True,
+        tex_relative_path_to_data="figures/generated/",
     )
 
 
@@ -66,6 +70,7 @@ def plot_ciphertext(ctx):
         ciphertext = np.load(directory / file)
         plain = np.load(directory / f"{file.split('-')[0]}-plain.npy").reshape((28, 28))
         pairs.append((ciphertext, plain))
+    print(f"Found {len(pairs)} pairs.")
 
     fig = plt.figure()
     for i, (ciphertext, plain) in enumerate(pairs, start=1):
@@ -80,14 +85,22 @@ def plot_ciphertext(ctx):
 
 def confusion_matrix(model, x_test, y_test):
     """Creates and plots the confusion matrix"""
-    matrix = np.zeros((10, 10))
+    import tensorflow as tf
+
+    predictions = np.argmax(model.predict(x_test), axis=1)
+    matrix = tf.math.confusion_matrix(y_test, predictions)
+    print("Confusion Matrix:", matrix)
     fig = plt.figure()
     axes: plt.Axes = fig.add_subplot(1, 1, 1)
     axes.matshow(matrix)
     axes.set_xlabel("True Digit")
     axes.set_ylabel("Classification")
     fig.savefig(THESIS / "figures" / "confusion-matrix.png")
-    tikzplotlib.save(THESIS / "figures" / "generated" / "confusion-matrix.tex")
+    tikzplotlib.save(
+        THESIS / "figures" / "generated" / "confusion-matrix.tex",
+        override_externals=True,
+        tex_relative_path_to_data="figures/generated/",
+    )
 
 
 def plot_metric(history):
@@ -108,6 +121,8 @@ def plot_metric(history):
         THESIS / "figures" / "generated" / "training-history.tex",
         axis_width=r"0.7\linewidth",
         axis_height=r"0.25\linewidth",
+        override_externals=True,
+        tex_relative_path_to_data="figures/generated/",
     )
 
 
@@ -127,4 +142,8 @@ def plot_weights(ctx):
         axes.imshow(b.reshape((1, b.shape[0])), aspect="auto")
         axes.set_title("Biases")
         fig.savefig(THESIS / "figures" / f"{name}.png")
-        tikzplotlib.save(THESIS / "figures" / "generated" / f"{name}.tex")
+        tikzplotlib.save(
+            THESIS / "figures" / "generated" / f"{name}.tex",
+            override_externals=True,
+            tex_relative_path_to_data="figures/generated/",
+        )
