@@ -1,0 +1,43 @@
+% This file was created with tikzplotlib v0.10.1.
+\begin{tikzpicture}
+
+\definecolor{darkgray176}{RGB}{176,176,176}
+\definecolor{darkorange25512714}{RGB}{255,127,14}
+\definecolor{lightgray204}{RGB}{204,204,204}
+\definecolor{steelblue31119180}{RGB}{31,119,180}
+
+\begin{axis}[
+legend cell align={left},
+legend style={fill opacity=0.8, draw opacity=1, text opacity=1, draw=lightgray204},
+tick align=outside,
+tick pos=left,
+x grid style={darkgray176},
+xlabel={Epochs},
+xmin=0.8, xmax=5.2,
+xtick style={color=black},
+y grid style={darkgray176},
+ylabel={loss},
+ymin=0.0439088452607393, ymax=0.33699333332479,
+ytick style={color=black}
+]
+\addplot [semithick, steelblue31119180]
+table {%
+1 0.32367131114006
+2 0.150743260979652
+3 0.099771536886692
+4 0.073978528380394
+5 0.0572308674454689
+};
+\addlegendentry{training loss}
+\addplot [semithick, darkorange25512714]
+table {%
+1 0.157241329550743
+2 0.101790234446526
+3 0.100483752787113
+4 0.0895702391862869
+5 0.094446174800396
+};
+\addlegendentry{validation loss}
+\end{axis}
+
+\end{tikzpicture}

@@ -9,7 +9,7 @@ import numpy as np
 import tikzplotlib
 
 THESIS = pathlib.Path(__file__).resolve().parent.parent.parent / "thesis"
-# plt.style.use("ggplot")
+MODEL = pathlib.Path(__file__).resolve().parent.parent / "classifier" / "data" / "models" / "simple"
 
 
 @invoke.task()
@@ -32,13 +32,12 @@ def plot_rotation_error(ctx, layer1_csv="plots/rotdiff-layer1.csv", layer2_csv="
         axis_width=r"0.7\linewidth",
         axis_height=r"0.25\linewidth",
     )
-    plt.show()
 
 
 @invoke.task()
 def plot_relu_taylor(ctx):
     """Plots the approximated RELU function"""
-    from training.network import relu_taylor, tf
+    from network import relu_taylor, tf
 
     fig = plt.figure()
     axes: plt.Axes = fig.add_subplot(1, 1, 1)
@@ -77,30 +76,50 @@ def plot_ciphertext(ctx):
         axes: plt.Axes = fig.add_subplot(2, len(pairs), len(pairs) + i)
         axes.imshow(ciphertext)
         axes.set_axis_off()
-    # fig.savefig(THESIS / "figures" / "ciphertext-visualisation.png", bbox_inches="tight")
-    # tikzplotlib.clean_figure(fig)
-    # tikzplotlib.save(
-    #     THESIS / "figures" / "generated" / "ciphertext-visualisation.tex",
-    #     figure=fig,
-    #     axis_width=r"0.2\linewidth",
-    #     axis_height=r"0.2\linewidth",
-    # )
-    plt.show()
 
 
-@invoke.task()
-def confusion_matrix(ctx):
+def confusion_matrix(model, x_test, y_test):
     """Creates and plots the confusion matrix"""
+    matrix = np.zeros((10, 10))
     fig = plt.figure()
     axes: plt.Axes = fig.add_subplot(1, 1, 1)
-    axes.plot()
-    axes.set_xlabel("")
-    axes.set_ylabel("")
-    axes.legend()
+    axes.matshow(matrix)
+    axes.set_xlabel("True Digit")
+    axes.set_ylabel("Classification")
     fig.savefig(THESIS / "figures" / "confusion-matrix.png")
     tikzplotlib.save(THESIS / "figures" / "generated" / "confusion-matrix.tex")
 
 
-@invoke.task()
-def training_history(ctx):
+def plot_metric(history, metric):
     """Plots the training history (error, accuracy development)"""
+    train_metrics = history.history[metric]
+    val_metrics = history.history["val_" + metric]
+    epochs = range(1, len(train_metrics) + 1)
+    fig = plt.figure()
+    axes: plt.Axes = fig.add_subplot(1, 1, 1)
+    axes.plot(epochs, train_metrics, label=f"training {metric}")
+    axes.plot(epochs, val_metrics, label=f"validation {metric}")
+    axes.set_xlabel("Epochs")
+    axes.set_ylabel(metric)
+    # axes.set_title(f"Training and validation {metric}")
+    axes.legend()
+    fig.savefig(THESIS / "figures" / f"training-history-{metric}.png")
+    tikzplotlib.save(THESIS / "figures" / "generated" / f"training-history-{metric}.tex")
+
+
+@invoke.task()
+def plot_weights(ctx):
+    """Matshow of the weights and biases"""
+    for name, (w, b) in [
+        ("layer-1", (np.load(MODEL / "w1.npy"), np.load(MODEL / "b1.npy"))),
+        ("layer-2", (np.load(MODEL / "w2.npy"), np.load(MODEL / "b2.npy"))),
+    ]:
+        fig = plt.figure()
+        gs = fig.add_gridspec(2, 1, height_ratios=(5, 1))
+        axes: plt.Axes = fig.add_subplot(gs[0])
+        axes.imshow(w, aspect="auto")
+        axes.set_title("Weights")
+        axes: plt.Axes = fig.add_subplot(gs[1])
+        axes.imshow(b.reshape((1, b.shape[0])), aspect="auto")
+        axes.set_title("Biases")
+        fig.savefig(THESIS / "figures" / f"{name}.png")

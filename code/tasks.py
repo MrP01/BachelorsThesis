@@ -26,6 +26,24 @@ def fetch_training_data(ctx):
 
 
 @invoke.task()
+def train(ctx, plot_plots=False):
+    """Trains the Tensorflow Model and produces plots if asked to"""
+    import network
+
+    model, history = network.train()
+
+    if plot_plots:
+        from plots import plots
+
+        x_test = np.load(TARGET / "x-test.npy")
+        y_test = np.load(TARGET / "y-test.npy")
+
+        plots.confusion_matrix(model, x_test, y_test)
+        plots.plot_metric(history, "loss")
+        plots.plot_metric(history, "accuracy")
+
+
+@invoke.task()
 def send_test_request(ctx, index=3):
     """Sends an HTTP test request to localhost:5555"""
     x_test = np.load(TARGET / "x-test.npy")
@@ -58,10 +76,11 @@ namespace = invoke.Collection()
 namespace.add_task(fetch_training_data)
 namespace.add_task(send_test_request)
 namespace.add_task(generate_secrets)
+namespace.add_task(train)
 
 try:
-    from plots import plots
+    from plots import plots as theplots
 
-    namespace.add_collection(invoke.Collection.from_module(plots))
+    namespace.add_collection(invoke.Collection.from_module(theplots))
 except ImportError:
     print("Not adding in plots collection")

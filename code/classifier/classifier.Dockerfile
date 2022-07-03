@@ -41,8 +41,8 @@ RUN mkdir -p /classifier/data/mnist/ /classifier/data/models/simple/
 COPY ./tasks.py /tasks.py
 RUN --mount=type=cache,target=/root/.keras/datasets/ python -m invoke fetch-training-data
 
-COPY ./training/ /training/
-RUN --mount=type=cache,target=/root/.keras/datasets/ python /training/network.py
+COPY ./network.py /network.py
+RUN --mount=type=cache,target=/root/.keras/datasets/ python -m invoke train
 
 # Part 3: Tiny image only containing the binary, the model and test data
 FROM base
