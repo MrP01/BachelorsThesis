@@ -39,8 +39,7 @@ def train(ctx, plot_plots=False):
         y_test = np.load(TARGET / "y-test.npy")
 
         plots.confusion_matrix(model, x_test, y_test)
-        plots.plot_metric(history, "loss")
-        plots.plot_metric(history, "accuracy")
+        plots.plot_metric(history)
 
 
 @invoke.task()

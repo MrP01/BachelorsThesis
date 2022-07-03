@@ -254,3 +254,22 @@ The scales must be the same, but luckily they will not change.
 
 % https://github.com/microsoft/SEAL/issues/276#issuecomment-777073477
 'transparent ciphertexts (a.k.a. ciphertexts whose second polynomial is zero) are malformed and do not need the secret key to decrypt'
+
+\section{Neural Network}
+The neural network was trained using the unencrypted standard MNIST dataset of 50,000 images,
+split into \SI{90}{\percent} training and \SI{10}{\percent} validation data.
+
+\begin{figure}[H]
+  \centering
+  \input{figures/generated/layer-1.tex}
+  % \includegraphics[width=0.8\linewidth]{figures/layer-1.png}
+  \caption{First Layer Weights and Biases}
+\end{figure}
+
+\begin{figure}[H]
+  \centering
+  \pgfplotsset{/pgfplots/group/.cd,vertical sep=2.0cm}
+  \input{figures/generated/layer-2.tex}
+  % \includegraphics[width=0.8\linewidth]{figures/layer-2.png}
+  \caption{Second Layer Weights and Biases}
+\end{figure}

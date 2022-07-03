@@ -4,6 +4,19 @@ Each pixel corresponds to a coefficient $a \in \Z / q\Z$ scaled down by the modu
 
 \begin{figure}[H]
   \centering
+  \pgfplotsset{/pgfplots/group/.cd,vertical sep=1.6cm}
+  \input{figures/generated/training-history.tex}
+  \caption{Development of the classification accuracy and the mean squared error during training.}
+\end{figure}
+
+\begin{figure}[H]
+  \centering
+  \input{figures/generated/confusion-matrix.tex}
+  \caption{Confusion Matrix of the trained network.}
+\end{figure}
+
+\begin{figure}[H]
+  \centering
   % \includegraphics[width=\linewidth]{figures/ciphertext-visualisation.png}
   \pgfplotsset{/pgfplots/group/.cd,vertical sep=0.3cm,horizontal sep=0.3cm}
   \input{figures/ciphertext-visualisation.tex}
@@ -26,11 +39,11 @@ Plain runtime: xxx
   \centering
   \caption{Performance Benchmarks / Communication Overhead}
   \begin{tabular}{lllll}
-    \textbf{Scenario} & \textbf{Parameters} & \textbf{Runtime} / \si{\second} & \textbf{Message Size} / \si{\mega\byte} &   & \textbf{MRE} \\
-    BSGS Matmul       & 60,40,...,40,60     &                                 &                                         &                  \\
-    BSGS Matmul       & 34,25,...,25,34     &                                 &                                         &                  \\
-    Hybrid Matmul     &                     &                                 &                                         &                  \\
-    Encrypt           &                     &                                 &                                         &                  \\
-    Encrypt Symmetric &                     &                                 &                                         &                  \\
+    \textbf{Scenario} & \textbf{Parameters} & \textbf{Runtime} / \si{\second} & \textbf{Message Size} / \si{\mega\byte} & \textbf{MRE} \\
+    BSGS Matmul       & 60,40,...,40,60     &                                 &                                         &              \\
+    BSGS Matmul       & 34,25,...,25,34     &                                 &                                         &              \\
+    Hybrid Matmul     &                     &                                 &                                         &              \\
+    Encrypt           &                     &                                 &                                         &              \\
+    Encrypt Symmetric &                     &                                 &                                         &              \\
   \end{tabular}
 \end{table}

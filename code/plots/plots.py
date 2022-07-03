@@ -90,21 +90,25 @@ def confusion_matrix(model, x_test, y_test):
     tikzplotlib.save(THESIS / "figures" / "generated" / "confusion-matrix.tex")
 
 
-def plot_metric(history, metric):
+def plot_metric(history):
     """Plots the training history (error, accuracy development)"""
-    train_metrics = history.history[metric]
-    val_metrics = history.history["val_" + metric]
-    epochs = range(1, len(train_metrics) + 1)
     fig = plt.figure()
-    axes: plt.Axes = fig.add_subplot(1, 1, 1)
-    axes.plot(epochs, train_metrics, label=f"training {metric}")
-    axes.plot(epochs, val_metrics, label=f"validation {metric}")
-    axes.set_xlabel("Epochs")
-    axes.set_ylabel(metric)
-    # axes.set_title(f"Training and validation {metric}")
-    axes.legend()
-    fig.savefig(THESIS / "figures" / f"training-history-{metric}.png")
-    tikzplotlib.save(THESIS / "figures" / "generated" / f"training-history-{metric}.tex")
+    for i, metric in enumerate(("accuracy", "loss"), start=1):
+        train_metrics = history.history[metric]
+        val_metrics = history.history["val_" + metric]
+        epochs = range(1, len(train_metrics) + 1)
+        axes: plt.Axes = fig.add_subplot(2, 1, i)
+        axes.plot(epochs, train_metrics, label=f"training {metric}")
+        axes.plot(epochs, val_metrics, label=f"validation {metric}")
+        axes.set_xlabel("Epochs")
+        axes.set_ylabel(metric)
+        axes.legend()
+    fig.savefig(THESIS / "figures" / "training-history.png")
+    tikzplotlib.save(
+        THESIS / "figures" / "generated" / "training-history.tex",
+        axis_width=r"0.7\linewidth",
+        axis_height=r"0.25\linewidth",
+    )
 
 
 @invoke.task()
@@ -123,3 +127,4 @@ def plot_weights(ctx):
         axes.imshow(b.reshape((1, b.shape[0])), aspect="auto")
         axes.set_title("Biases")
         fig.savefig(THESIS / "figures" / f"{name}.png")
+        tikzplotlib.save(THESIS / "figures" / "generated" / f"{name}.tex")
