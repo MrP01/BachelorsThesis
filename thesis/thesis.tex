@@ -13,6 +13,8 @@
 \usepgfplotslibrary{groupplots,dateplot}
 \usetikzlibrary{patterns,shapes.arrows}
 \pgfplotsset{compat=newest}
+\setlength{\headheight}{19.53pt}
+\definecolor{darkpurple}{HTML}{5a016a}
 \addbibresource{sources.bib}
 
 \thesistitle{Secure Classification as a Service}
@@ -40,30 +42,7 @@
 \title{\@thesistitle}
 \author{\@thesisauthor}
 
-\makenoidxglossaries
-\newacronym{he}{HE}{Homomorphic Encryption}
-\newacronym{fhe}{FHE}{Fully Homomorphic Encryption}
-\newacronym{bfv}{BFV}{Brakerski-Fan-Vercauteren}
-\newacronym{bgv}{BGV}{Brakerski-Gentry-Vaikuntanathan}
-\newacronym{ckks}{CKKS}{Cheon-Kim-Kim-Song}
-\newacronym{aes}{AES}{Advanced Encryption Standard}
-\newacronym{lwe}{LWE}{Learning With Errors}
-\newacronym{dlwe}{DLWE}{Decision Learning With Errors}
-\newacronym{rlwe}{RLWE}{Learning With Errors on Rings}
-\newacronym{tls}{TLS}{Transport Layer Security}
-\newacronym{ml}{ML}{Machine Learning}
-\newacronym{dft}{DFT}{Discrete Fourier Transform}
-\newacronym{fft}{FFT}{Fast Fourier Transform}
-\newacronym{iff}{iff}{if and only if}
-
-\setlength{\headheight}{19.53pt}
-% \pgfplotsset{width=10cm,compat=1.9}
-
-\newcommand{\cpp}[1]{\mintinline{cpp}{#1}}
-\newcommand{\name}[1]{\textsc{#1}}
-\newcommand{\cryptop}[1]{\text{\textcolor{darkpurple}{#1}}}
-\newcommand{\inv}{^{-1}}
-\definecolor{darkpurple}{HTML}{5a016a}
+\input{macros.tex}
 
 \begin{document}
   \printthesistitle
@@ -79,7 +58,6 @@
 
   \pagebreak
   \thispagestyle{plain}
-  % \chapter*{List of Definitions and Theorems}
   \tcblistof[\section*]{def}{Definitions}
   \addcontentsline{toc}{chapter}{List of Definitions and Theorems}
   \tcblistof[\section*]{thm}{Theorems}
