@@ -97,3 +97,11 @@ repos:
           - --remove-unused-variables
           - --remove-duplicate-keys
           - --ignore-init-module-imports
+  - repo: local
+    hooks:
+      - id: latex-format-all
+        name: latex-format-all
+        entry: latex-format-all
+        language: system
+        types:
+          - tex

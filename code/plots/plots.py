@@ -88,18 +88,25 @@ def confusion_matrix(model, x_test, y_test):
     import tensorflow as tf
 
     predictions = np.argmax(model.predict(x_test), axis=1)
-    matrix = tf.math.confusion_matrix(y_test, predictions)
+    matrix = np.array(tf.math.confusion_matrix(y_test, predictions))
     print("Confusion Matrix:", matrix)
     fig = plt.figure()
     axes: plt.Axes = fig.add_subplot(1, 1, 1)
-    axes.matshow(matrix)
+    im = axes.matshow(np.log2(matrix + 1))
+    threshold = im.norm(matrix.max()) / 2.0
+    cbar = axes.figure.colorbar(im, ax=axes)
+    cbar.ax.set_ylabel("Accuracy", rotation=-90, va="bottom")
+    for i in range(matrix.shape[0]):
+        for j in range(matrix.shape[1]):
+            color = " black" if im.norm(matrix[i, j]) > threshold else "white"
+            im.axes.text(j, i, matrix[i, j], horizontalalignment="center", verticalalignment="center", color=color)
     axes.set_xlabel("True Digit")
     axes.set_ylabel("Classification")
     fig.savefig(THESIS / "figures" / "confusion-matrix.png")
     tikzplotlib.save(
         THESIS / "figures" / "generated" / "confusion-matrix.tex",
         override_externals=True,
-        tex_relative_path_to_data="figures/generated/",
+        # tex_relative_path_to_data="figures/generated/",
     )
 
 
