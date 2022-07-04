@@ -21,320 +21,320 @@
 
 \begin{document}
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-% TITLE
-\begin{frame}[plain]
-  \subtitle{Examples: POI with Newsline}
-  \bottext{For slideshows on digital signage widescreens (POI) across the campus (event announcements, digital posters)}
-  \makepoi
-\end{frame}
+  % TITLE
+  \begin{frame}[plain]
+    \subtitle{Examples: POI with Newsline}
+    \bottext{For slideshows on digital signage widescreens (POI) across the campus (event announcements, digital posters)}
+    \makepoi
+  \end{frame}
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-% EXAMPLE 1: default (gradient gray background, text on top and bottom)
-\begin{frame}[plain]
-  % define page content
-  \subtitle{Untertitel / Subtitle}
-  \toptext{POI-Folie mit Text oben über drei Zeilen / POI Slide with up to three lines of text on top}
-  \bottext{Zusatztext über eine Zeile / One line for additional text
-    \begin{tugitemize}
-      \small
-      \item Datum / Date
-      \item Ort / Location
-      \item[>] www.tugraz.at/eventwebsite
-    \end{tugitemize}
-  }
+  % EXAMPLE 1: default (gradient gray background, text on top and bottom)
+  \begin{frame}[plain]
+    % define page content
+    \subtitle{Untertitel / Subtitle}
+    \toptext{POI-Folie mit Text oben über drei Zeilen / POI Slide with up to three lines of text on top}
+    \bottext{Zusatztext über eine Zeile / One line for additional text
+      \begin{tugitemize}
+        \small
+        \item Datum / Date
+        \item Ort / Location
+        \item[>] www.tugraz.at/eventwebsite
+      \end{tugitemize}
+    }
 
-  % draw page
-  \makepoi
-\end{frame}
+    % draw page
+    \makepoi
+  \end{frame}
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-% EXAMPLE 2: blue variant with white text and logo
-\begin{frame}[plain]
-  % select page style
-  \setbeamertemplate{poi page top}[fill] % fill top half with solid color (default: dark blue)
-  \setbeamercolor{tuglogo}{fg=white}     % tu graz logo: white text
-  \colorlet{main}{titleblue}             % center bar: medium blue
+  % EXAMPLE 2: blue variant with white text and logo
+  \begin{frame}[plain]
+    % select page style
+    \setbeamertemplate{poi page top}[fill] % fill top half with solid color (default: dark blue)
+    \setbeamercolor{tuglogo}{fg=white}     % tu graz logo: white text
+    \colorlet{main}{titleblue}             % center bar: medium blue
 
-  % define page content
-  \toptext{\Large White text on\\dark background\\manually selected font size}
-  \subtitle{SAVE THE DATE}
-  \bottext{Datum / Date, Ort / Location, etc.\\
-           Mehr unter / See more on www.tugraz.at/go/eventwebseite}
-  \logobar{\mylongexamplelogobar}
+    % define page content
+    \toptext{\Large White text on\\dark background\\manually selected font size}
+    \subtitle{SAVE THE DATE}
+    \bottext{Datum / Date, Ort / Location, etc.\\
+      Mehr unter / See more on www.tugraz.at/go/eventwebseite}
+    \logobar{\mylongexamplelogobar}
 
-  % draw page
-  \makepoi
+    % draw page
+    \makepoi
 
-  % place additional logos, markers, etc.
-  \begin{tikzpicture}[tugtheme]
-    \draw (toptextSE) node[above left] {\includegraphics[width=5.5cm]{figures/logoexample1}};
-  \end{tikzpicture}
-\end{frame}
+    % place additional logos, markers, etc.
+    \begin{tikzpicture}[tugtheme]
+      \draw (toptextSE) node[above left] {\includegraphics[width=5.5cm]{figures/logoexample1}};
+    \end{tikzpicture}
+  \end{frame}
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-% EXAMPLE 3: default (gradient gray) with an event logo at the top center
-\begin{frame}[plain]
-  \subtitle{Einzeiliger Veranstaltungstitel / One-line event name}
-  \bottext{\footnotesize
-    Datum / Date, Ort / Location, etc.\\
-    Anmeldung bis xx. Monat 20xx unter: / Register by xx Month 20xx on:\\
-    \textbf{> www.tugraz.at/go/registration}
-  }
-  \logobar{\mylongexamplelogobar}
+  % EXAMPLE 3: default (gradient gray) with an event logo at the top center
+  \begin{frame}[plain]
+    \subtitle{Einzeiliger Veranstaltungstitel / One-line event name}
+    \bottext{\footnotesize
+      Datum / Date, Ort / Location, etc.\\
+      Anmeldung bis xx. Monat 20xx unter: / Register by xx Month 20xx on:\\
+      \textbf{> www.tugraz.at/go/registration}
+    }
+    \logobar{\mylongexamplelogobar}
 
-  \makepoi
+    \makepoi
 
-  \begin{tikzpicture}[tugtheme]
-    % event logo:
-    \draw (toptextS) node[above] {\includegraphics[width=7.0cm]{figures/logoexample1}};
-  \end{tikzpicture}
-\end{frame}
+    \begin{tikzpicture}[tugtheme]
+      % event logo:
+      \draw (toptextS) node[above] {\includegraphics[width=7.0cm]{figures/logoexample1}};
+    \end{tikzpicture}
+  \end{frame}
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-% EXAMPLE 4: with photo on the top right and text on top
-\begin{frame}[plain]
-  \toptext{\Large Event Title or\\Description}
-  \subtitle{Datum / Date}
-  \bottext{%
-    Ort / Location \\[4pt]
-    \footnotesize
-    Zusatztext mit Textlänge für zwei Zeilen / \\
-    Two lines for additional text}
-  \logobar{\mylongexamplelogobar}
-
-  \makepoi
-
-  \begin{tikzpicture}[tugtheme]
-    % event logo:
-    \draw (bottextNE) node[below left] {\includegraphics[width=3.25cm]{figures/logoexample1}};
-    % custom (flipped) image and copyright information:
-    \draw (toprightlogoSE) node[anchor=south west,xscale=-1] {\includegraphics[width=6.75cm]{figures/photoexample-169}}
-                           node[above left, copyright] {\copyright\ Lunghammer -- TU Graz};
-  \end{tikzpicture}
-\end{frame}
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-% EXAMPLE 5: with photo on the top right and logo on top
-\begin{frame}[plain]
-  \colorlet{main}{titleblue}
-  \subtitle{www.website.com}
-  \bottext{%
-    Text über eine Zeile / One line of text \\[4pt]
-    \footnotesize
-    Datum / Date\\
-    Ort / Location, etc.}
-  \logobar{\myshortexamplelogobar}
-
-  \makepoi
-
-  \begin{tikzpicture}[tugtheme]
-    % event logo:
-    \draw (toptextSW) node[above right] {\includegraphics[width=5.75cm]{figures/logoexample1}};
-    % custom image and copyright information:
-    \draw (toprightlogoSE) node[anchor=south west,xscale=-1] {\includegraphics[width=6.75cm]{figures/photoexample-169}}
-                           node[above left, copyright] {\copyright\ Lunghammer -- TU Graz};
-  \end{tikzpicture}
-\end{frame}
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-% EXAMPLE 6: with photo (Alte Technik) on top
-\begin{frame}[plain]
-  \titlefigure{figures/topfigureexample-169}
-  \setbeamercolor{tuglogo}{fg=white}
-  \subtitle{WORKSHOP}
-  \bottext{%
-    Text über zwei Zeilen /\\
-    Two lines of text
-    \begin{tugitemize}
+  % EXAMPLE 4: with photo on the top right and text on top
+  \begin{frame}[plain]
+    \toptext{\Large Event Title or\\Description}
+    \subtitle{Datum / Date}
+    \bottext{%
+      Ort / Location \\[4pt]
       \footnotesize
-      \item Datum / Date, Ort / Location, etc.
-      \item Abteilungsname / Department name, TU Graz\\
+      Zusatztext mit Textlänge für zwei Zeilen / \\
+      Two lines for additional text}
+    \logobar{\mylongexamplelogobar}
+
+    \makepoi
+
+    \begin{tikzpicture}[tugtheme]
+      % event logo:
+      \draw (bottextNE) node[below left] {\includegraphics[width=3.25cm]{figures/logoexample1}};
+      % custom (flipped) image and copyright information:
+      \draw (toprightlogoSE) node[anchor=south west,xscale=-1] {\includegraphics[width=6.75cm]{figures/photoexample-169}}
+      node[above left, copyright] {\copyright\ Lunghammer -- TU Graz};
+    \end{tikzpicture}
+  \end{frame}
+
+  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+  % EXAMPLE 5: with photo on the top right and logo on top
+  \begin{frame}[plain]
+    \colorlet{main}{titleblue}
+    \subtitle{www.website.com}
+    \bottext{%
+      Text über eine Zeile / One line of text \\[4pt]
+      \footnotesize
+      Datum / Date\\
+      Ort / Location, etc.}
+    \logobar{\myshortexamplelogobar}
+
+    \makepoi
+
+    \begin{tikzpicture}[tugtheme]
+      % event logo:
+      \draw (toptextSW) node[above right] {\includegraphics[width=5.75cm]{figures/logoexample1}};
+      % custom image and copyright information:
+      \draw (toprightlogoSE) node[anchor=south west,xscale=-1] {\includegraphics[width=6.75cm]{figures/photoexample-169}}
+      node[above left, copyright] {\copyright\ Lunghammer -- TU Graz};
+    \end{tikzpicture}
+  \end{frame}
+
+  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+  % EXAMPLE 6: with photo (Alte Technik) on top
+  \begin{frame}[plain]
+    \titlefigure{figures/topfigureexample-169}
+    \setbeamercolor{tuglogo}{fg=white}
+    \subtitle{WORKSHOP}
+    \bottext{%
+      Text über zwei Zeilen /\\
+      Two lines of text
+      \begin{tugitemize}
+        \footnotesize
+        \item Datum / Date, Ort / Location, etc.
+        \item Abteilungsname / Department name, TU Graz\\
         \textcolor{tug}{>} www.tugraz.at
-    \end{tugitemize}
-  }
+      \end{tugitemize}
+    }
 
-  \makepoi
+    \makepoi
 
-  \begin{tikzpicture}[tugtheme]
-    % event logo (bottom right):
-    \draw (bottextSE) node[above left] {\includegraphics[width=3.5cm]{figures/logoexample1}};
-    % image copyright:
-    \draw (topcopyrightSE) node[above left, copyright] {\copyright\ Lunghammer -- TU Graz};
-  \end{tikzpicture}
-\end{frame}
+    \begin{tikzpicture}[tugtheme]
+      % event logo (bottom right):
+      \draw (bottextSE) node[above left] {\includegraphics[width=3.5cm]{figures/logoexample1}};
+      % image copyright:
+      \draw (topcopyrightSE) node[above left, copyright] {\copyright\ Lunghammer -- TU Graz};
+    \end{tikzpicture}
+  \end{frame}
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-% EXAMPLE 7: with photos (montage) on top
-\begin{frame}[plain]
-  \titlefigure{figures/topfigureexample-montage2-169-poi}
-  \colorlet{main}{titleteal}
+  % EXAMPLE 7: with photos (montage) on top
+  \begin{frame}[plain]
+    \titlefigure{figures/topfigureexample-montage2-169-poi}
+    \colorlet{main}{titleteal}
 
-  \subtitle{Einzeiliger Veranstaltungstitel / One-line event name}
-  \bottext{\vspace*{-1ex}\begin{tugitemize}
+    \subtitle{Einzeiliger Veranstaltungstitel / One-line event name}
+    \bottext{\vspace*{-1ex}\begin{tugitemize}
+        \footnotesize
+        \item Eröffnungsdatum / Opening Event Date\\
+        Ort / Location
+        \item Anmeldedatum / Deadline Application
+        \item Enddatum / End Date, etc.
+      \end{tugitemize}}
+    \logobar{\myshortexamplelogobar}
+
+    \makepoi
+
+    \begin{tikzpicture}[tugtheme]
+      \draw (bottextSE) node[above left] {\includegraphics[width=3.5cm]{figures/logoexample2}};
+      \draw (topcopyrightSE) node[above left, copyright] {\copyright\ Lunghammer -- TU Graz};
+    \end{tikzpicture}
+  \end{frame}
+
+  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+  % EXAMPLE 8: with background photo and text on top
+  \begin{frame}[plain]
+    \titlefigure{figures/topfigureexample-detail-169-poi}
+    \setbeamercolor{tuglogo}{fg=white}
+    \setbeamercolor{welcome page top}{fg=white}
+    \toptext{%
+      One-line event name\\
+      \large
+      Details mit zwei Textgrößen, gesamt\\
+      vier Zeilen/With two text sizes\\
+      altogether four lines}
+    \colorlet{main}{titleblue}
+    \subtitle{> www.tugraz.at/go/events}
+    \bottext{Datum / Date \\
+      Ort / Location, etc.}
+    \logobar{\myshortexamplelogobar}
+
+    \makepoi
+
+    \begin{tikzpicture}[tugtheme]
+      \draw (bottextSE) node[above left] {\includegraphics[width=3.5cm]{figures/logoexample2}};
+      \draw (topcopyrightSE) node[above left, copyright] {\copyright\ Lunghammer -- TU Graz};
+    \end{tikzpicture}
+  \end{frame}
+
+  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+  % EXAMPLE 9: with eye-catcher URL near the bottom
+  \begin{frame}[plain]
+    \toptext{\Large Event Title or\\Description}
+    \subtitle{Datum / Date}
+    \bottext{%
+      Ort / Location \\[4pt]
       \footnotesize
-      \item Eröffnungsdatum / Opening Event Date\\
-            Ort / Location
-      \item Anmeldedatum / Deadline Application
-      \item Enddatum / End Date, etc.
-    \end{tugitemize}}
-  \logobar{\myshortexamplelogobar}
+      Zusatztext mit Textlänge für zwei Zeilen / \\
+      Two lines for additional text}
+    \logobar{\myshortexamplelogobar}
 
-  \makepoi
+    \makepoi
 
-  \begin{tikzpicture}[tugtheme]
-    \draw (bottextSE) node[above left] {\includegraphics[width=3.5cm]{figures/logoexample2}};
-    \draw (topcopyrightSE) node[above left, copyright] {\copyright\ Lunghammer -- TU Graz};
-  \end{tikzpicture}
-\end{frame}
+    \begin{tikzpicture}[tugtheme]
+      % custom image and copyright information:
+      \draw (toprightlogoSE) node[anchor=south west,xscale=-1] {\includegraphics[width=6.75cm]{figures/photoexample-169}}
+      node[above left, copyright] {\copyright\ Lunghammer -- TU Graz};
+      % bottom right marker
+      \draw (bottextSE-|current page.east) node[white, fill=main, above left, minimum width=5.5cm, text width=5.25cm, inner sep=1ex, align=left, font=\footnotesize] {%
+        > www.tugraz.at
+      };
+    \end{tikzpicture}
+  \end{frame}
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-% EXAMPLE 8: with background photo and text on top
-\begin{frame}[plain]
-  \titlefigure{figures/topfigureexample-detail-169-poi}
-  \setbeamercolor{tuglogo}{fg=white}
-  \setbeamercolor{welcome page top}{fg=white}
-  \toptext{%
-    One-line event name\\
-    \large
-    Details mit zwei Textgrößen, gesamt\\
-    vier Zeilen/With two text sizes\\
-    altogether four lines}
-  \colorlet{main}{titleblue}
-  \subtitle{> www.tugraz.at/go/events}
-  \bottext{Datum / Date \\
-           Ort / Location, etc.}
-  \logobar{\myshortexamplelogobar}
+  % EXAMPLE 10: with eye-catcher 'Save the Date' flag on the top left
+  \begin{frame}[plain]
+    \colorlet{main}{titleblue}
+    \subtitle{Einzeiliger Veranstaltungstitel / One-line event name}
+    \bottext{\footnotesize
+      Datum / Date, Ort / Location, etc.\\
+      Anmeldung bis xx. Monat 20xx unter: / Register by xx Month 20xx on:\\
+      \textbf{> www.tugraz.at/go/registration}
+    }
+    \logobar{\mylongexamplelogobar}
 
-  \makepoi
+    \makepoi
 
-  \begin{tikzpicture}[tugtheme]
-    \draw (bottextSE) node[above left] {\includegraphics[width=3.5cm]{figures/logoexample2}};
-    \draw (topcopyrightSE) node[above left, copyright] {\copyright\ Lunghammer -- TU Graz};
-  \end{tikzpicture}
-\end{frame}
+    \begin{tikzpicture}[tugtheme]
+      % event logo:
+      \draw (toptextS) node[above] {\includegraphics[width=7.0cm]{figures/logoexample1}};
+      % bottom right marker
+      \draw (tuglogo.south-|current page.west) node[white, fill=tug, below right, inner sep=1ex, align=right, font=\normalsize] {\quad%
+        SAVE\\THE\\DATE
+      };
+    \end{tikzpicture}
+  \end{frame}
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-% EXAMPLE 9: with eye-catcher URL near the bottom
-\begin{frame}[plain]
-  \toptext{\Large Event Title or\\Description}
-  \subtitle{Datum / Date}
-  \bottext{%
-    Ort / Location \\[4pt]
-    \footnotesize
-    Zusatztext mit Textlänge für zwei Zeilen / \\
-    Two lines for additional text}
-  \logobar{\myshortexamplelogobar}
-
-  \makepoi
-
-  \begin{tikzpicture}[tugtheme]
-    % custom image and copyright information:
-    \draw (toprightlogoSE) node[anchor=south west,xscale=-1] {\includegraphics[width=6.75cm]{figures/photoexample-169}}
-                           node[above left, copyright] {\copyright\ Lunghammer -- TU Graz};
-    % bottom right marker
-    \draw (bottextSE-|current page.east) node[white, fill=main, above left, minimum width=5.5cm, text width=5.25cm, inner sep=1ex, align=left, font=\footnotesize] {%
-      > www.tugraz.at
-    };
-  \end{tikzpicture}
-\end{frame}
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-% EXAMPLE 10: with eye-catcher 'Save the Date' flag on the top left
-\begin{frame}[plain]
-  \colorlet{main}{titleblue}
-  \subtitle{Einzeiliger Veranstaltungstitel / One-line event name}
-  \bottext{\footnotesize
-    Datum / Date, Ort / Location, etc.\\
-    Anmeldung bis xx. Monat 20xx unter: / Register by xx Month 20xx on:\\
-    \textbf{> www.tugraz.at/go/registration}
-  }
-  \logobar{\mylongexamplelogobar}
-
-  \makepoi
-
-  \begin{tikzpicture}[tugtheme]
-    % event logo:
-    \draw (toptextS) node[above] {\includegraphics[width=7.0cm]{figures/logoexample1}};
-    % bottom right marker
-    \draw (tuglogo.south-|current page.west) node[white, fill=tug, below right, inner sep=1ex, align=right, font=\normalsize] {\quad%
-      SAVE\\THE\\DATE
-    };
-  \end{tikzpicture}
-\end{frame}
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-% EXAMPLE 10: with eye-catcher infobox on the top left
-\begin{frame}[plain]
-  \titlefigure{figures/topfigureexample-169}
-  \setbeamercolor{tuglogo}{fg=white}
-  \colorlet{main}{titleblue}
-  \subtitle{WORKSHOP}
-  \bottext{%
-    Text über zwei Zeilen /\\
-    Two lines of text
-    \begin{tugitemize}
-      \footnotesize
-      \item Datum / Date, Ort / Location, etc.
-      \item Abteilungsname / Department name, TU Graz\\
+  % EXAMPLE 10: with eye-catcher infobox on the top left
+  \begin{frame}[plain]
+    \titlefigure{figures/topfigureexample-169}
+    \setbeamercolor{tuglogo}{fg=white}
+    \colorlet{main}{titleblue}
+    \subtitle{WORKSHOP}
+    \bottext{%
+      Text über zwei Zeilen /\\
+      Two lines of text
+      \begin{tugitemize}
+        \footnotesize
+        \item Datum / Date, Ort / Location, etc.
+        \item Abteilungsname / Department name, TU Graz\\
         \textcolor{tug}{>} www.tugraz.at
-    \end{tugitemize}
-  }
+      \end{tugitemize}
+    }
 
-  \makepoi
+    \makepoi
 
-  \begin{tikzpicture}[tugtheme]
-    % event logo (bottom right):
-    \draw (bottextSE) node[above left] {\includegraphics[width=3.75cm]{figures/logoexample2}};
-    % image copyright:
-    \draw (topcopyrightSE) node[above left, copyright] {\copyright\ Lunghammer -- TU Graz};
-    % infobox
-    \draw (topSW) node[white, fill=titleteal, above right, align=left] {\hskip1.1cm\parbox[b]{5.5cm}{\colorlet{main}{white}%
-        \begin{tugitemize}
-          \footnotesize\color{white}
-          \item Target group: TU Graz staff
-          \item Max x Participants
-          \item Register until 1 Jan 2019
-        \end{tugitemize}
-    }};
-  \end{tikzpicture}
-\end{frame}
+    \begin{tikzpicture}[tugtheme]
+      % event logo (bottom right):
+      \draw (bottextSE) node[above left] {\includegraphics[width=3.75cm]{figures/logoexample2}};
+      % image copyright:
+      \draw (topcopyrightSE) node[above left, copyright] {\copyright\ Lunghammer -- TU Graz};
+      % infobox
+      \draw (topSW) node[white, fill=titleteal, above right, align=left] {\hskip1.1cm\parbox[b]{5.5cm}{\colorlet{main}{white}%
+          \begin{tugitemize}
+            \footnotesize\color{white}
+            \item Target group: TU Graz staff
+            \item Max x Participants
+            \item Register until 1 Jan 2019
+          \end{tugitemize}
+        }};
+    \end{tikzpicture}
+  \end{frame}
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-% AVAILABLE TikZ COORDINATES
-\begin{frame}[plain]
-  \subtitle{Available Coordinates}
-  \bottext{\bigskip Rectangle corners: \texttt{NW} (labelled, e.g., \texttt{topNW}), \texttt{SW}, \texttt{NE}, \texttt{SE}}
+  % AVAILABLE TikZ COORDINATES
+  \begin{frame}[plain]
+    \subtitle{Available Coordinates}
+    \bottext{\bigskip Rectangle corners: \texttt{NW} (labelled, e.g., \texttt{topNW}), \texttt{SW}, \texttt{NE}, \texttt{SE}}
 
-  \makepoi
+    \makepoi
 
-  \begin{tikzpicture}[tugtheme,font=\ttfamily\small,thick]
-    \draw (topNW) node[below right] {top} rectangle (topSE);
-    \draw (toptextNW) node[below right] {toptext/toptextalt} rectangle (toptextSE)
-          (toptextNW) rectangle (toptextaltSE);
-    \draw (barNW) node[below right] {bar} rectangle (barSE);
-    \draw (bartextNW) node[below right] {bartext} rectangle (bartextSE);
-    \draw (botNW) node[below right] {bot} rectangle (botSE);
-    \draw (footNW) node[below right] {foot} rectangle (footSE);
-    %\draw (foottextNW) node[below right] {foottext} rectangle (foottextSE);
-    \draw (bottextNW) node[below right] {bottext/bottextalt} rectangle (bottextSE)
-          (bottextNW) rectangle (bottextaltSE);
-    \draw (toprightlogoSE) node[fill,circle,minimum size=3pt] {} node[above left] {toprightlogoSE};
-    \draw (topcopyrightSE) node[fill,circle,minimum size=3pt] {} node[above left] {topcopyrightSE};
-  \end{tikzpicture}
-\end{frame}
+    \begin{tikzpicture}[tugtheme,font=\ttfamily\small,thick]
+      \draw (topNW) node[below right] {top} rectangle (topSE);
+      \draw (toptextNW) node[below right] {toptext/toptextalt} rectangle (toptextSE)
+      (toptextNW) rectangle (toptextaltSE);
+      \draw (barNW) node[below right] {bar} rectangle (barSE);
+      \draw (bartextNW) node[below right] {bartext} rectangle (bartextSE);
+      \draw (botNW) node[below right] {bot} rectangle (botSE);
+      \draw (footNW) node[below right] {foot} rectangle (footSE);
+      %\draw (foottextNW) node[below right] {foottext} rectangle (foottextSE);
+      \draw (bottextNW) node[below right] {bottext/bottextalt} rectangle (bottextSE)
+      (bottextNW) rectangle (bottextaltSE);
+      \draw (toprightlogoSE) node[fill,circle,minimum size=3pt] {} node[above left] {toprightlogoSE};
+      \draw (topcopyrightSE) node[fill,circle,minimum size=3pt] {} node[above left] {topcopyrightSE};
+    \end{tikzpicture}
+  \end{frame}
 
 \end{document}
