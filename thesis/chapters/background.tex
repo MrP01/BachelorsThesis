@@ -216,7 +216,14 @@ It can be shown that solving SIS is at least as hard as solving GapSVP with appr
 Using the above problems, multiple cryptographic primitives can be constructed due to the proven hardness that also propagates to quantum computers.
 Examples include collision resistant hash functions, signatures, pseudorandom functions or even Regev's public-key cryptosystem \parencite{2016-decade-of-lattice}.
 
-\input{figures/lattice.tex}
+\begin{figure}
+  \centering
+  \inputtikz{figures/lattice}
+  \caption{Illustration of a standard lattice $\lat$ over the integers $\Z$
+    with two basis vectors $\vec{b}_1$ and $\vec{b}_2$, c.f. \autoref{def:lattice}.
+    The shortest vector problem in this case is solved by $\vec{x} = 0 \vec{b}_1 \pm 1 \vec{b}_2$.}
+  \label{fig:lattice}
+\end{figure}
 
 \subsection{Learning with Errors (LWE)}
 \label{subsec:lwe}
@@ -308,16 +315,7 @@ Given an input vector $\vec{x} \in \R^n$, the goal of linear regression is to pr
 \subsection{Multi-Layered Neural Networks}
 \begin{figure}[H]
   \centering
-  \begin{neuralnetwork}[height=4]
-    \newcommand{\x}[2]{$x_#2$}
-    \newcommand{\y}[2]{$\hat{y}_#2$}
-    \newcommand{\hfirst}[2]{\small $h^{(1)}_#2$}
-    \newcommand{\hsecond}[2]{\small $h^{(2)}_#2$}
-    \inputlayer[count=3, bias=true, title=Input\\layer, text=\x]
-    \hiddenlayer[count=4, bias=false, title=Hidden\\layer 1, text=\hfirst] \linklayers
-    \hiddenlayer[count=3, bias=false, title=Hidden\\layer 2, text=\hsecond] \linklayers
-    \outputlayer[count=2, title=Output\\layer, text=\y] \linklayers
-  \end{neuralnetwork}
+  \inputtikz{figures/neural-network}
   \caption{A neural network}
 \end{figure}
 
@@ -341,9 +339,21 @@ Matrix -> Activation Function
 \label{sec:post-quantum-sec}
 \begin{figure}[H]
   \centering
-  \input{figures/wave-function.tex}
-  \caption{Illustration of a wave function $\psi: \R^2 \mapsto \R$ as used in quantum mechanics.}
+  \inputtikz{figures/wave-function}
+  \caption{Illustration of a wave function $\psi: \R^2 \mapsto \R$ as commonly used in quantum mechanics.}
 \end{figure}
+
+In quantum mechanics, we seek a mathematical description of quantum phenomena, commonly building upon \name{Schrödinger}'s formalisms based on wave functions and the basic postulates of quantum mechanics.
+
+The mathematical foundation of quantum mechanics is deeply rooted in functional analysis;
+An important concept is that of function spaces and, especially, Hilbert spaces.
+Wave functions $\psi: \R^3 \mapsto \R$ are usually chosen as elements of the $\mathcal{L}^2$-space, the space of square-integrable functions:
+$$\mathcal{L}^2 = \big\{\psi: \R^3 \mapsto \R \,|\, ||\psi|| < \infty\big\} \quad \text{with} ||\psi|| = \int_{-\infty}^{\infty} |\psi(\vec{x})|^2 \,dx \,.$$
+
+The most popular interpretation / notion of a wave function is that it relates to the probability that a particle is at the current position $\vec{r}$ at time $t$ at the given time.
+Namely, this probability is given by $|\psi(\vec{r}, t)|^2$.
+
+This should be feasible.
 
 \subsection{Shor's Algorithm}
 
@@ -355,6 +365,6 @@ Matrix -> Activation Function
 
 \begin{figure}[H]
   \centering
-  \input{figures/generated/taylor-relu.tex}
+  \inputtikz{figures/generated/taylor-relu}
   \caption{Comparison of the Relu activation function vs. its Taylor expansion}
 \end{figure}

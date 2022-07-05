@@ -68,7 +68,7 @@ This 'flaw' can be mitigated by a simple zero-padding approach in order to make 
 \subsection{The Naïve Method}
 \begin{figure}[H]
   \centering
-  \input{figures/generated/matmul-naive.tex}
+  \inputtikz{figures/generated/matmul-naive}
   \caption[Image adapted from \cite{2018-gazelle}]{The naïve method to multiply a square matrix with a vector.}
 \end{figure}
 
@@ -102,7 +102,7 @@ Accordingly, a natural (or rather, naïve) way to model this multiplication in \
 \subsection{The Diagonal Method}
 \begin{figure}[H]
   \centering
-  \input{figures/generated/matmul-diagonal.tex}
+  \inputtikz{figures/generated/matmul-diagonal}
   \caption[Image adapted from \cite{2018-gazelle}]{The diagonal method to multiply a square matrix with a vector.}
 \end{figure}
 
@@ -117,14 +117,14 @@ Accordingly, a natural (or rather, naïve) way to model this multiplication in \
 \begin{figure}[H]
   \centering
   \pgfplotsset{/pgfplots/group/.cd,vertical sep=2.0cm}
-  \input{figures/generated/rotation-error.tex}
+  \inputtikz{figures/generated/rotation-error}
   \caption{Diagonal Method error development after each rotation of the input vector}
 \end{figure}
 
 \subsection{The Hybrid Method}
 \begin{figure}[H]
   \centering
-  \input{figures/generated/matmul-hybrid.tex}
+  \inputtikz{figures/generated/matmul-hybrid}
   \caption[Image adapted from \cite{2018-gazelle}]{The hybrid method to multiply an arbitrarily sized matrix with a vector.}
 \end{figure}
 To further extend the previous matrix multiplication method to solve the problem
@@ -261,7 +261,7 @@ split into \SI{90}{\percent} training and \SI{10}{\percent} validation data.
 
 \begin{figure}[H]
   \centering
-  \input{figures/generated/layer-1.tex}
+  \inputtikz{figures/generated/layer-1}
   % \includegraphics[width=0.8\linewidth]{figures/layer-1.png}
   \caption{First Layer Weights and Biases}
 \end{figure}
@@ -269,7 +269,7 @@ split into \SI{90}{\percent} training and \SI{10}{\percent} validation data.
 \begin{figure}[H]
   \centering
   \pgfplotsset{/pgfplots/group/.cd,vertical sep=2.0cm}
-  \input{figures/generated/layer-2.tex}
+  \inputtikz{figures/generated/layer-2}
   % \includegraphics[width=0.8\linewidth]{figures/layer-2.png}
   \caption{Second Layer Weights and Biases}
 \end{figure}

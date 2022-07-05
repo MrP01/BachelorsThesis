@@ -2,14 +2,14 @@
   \begin{axis}[
       % title=Quantum Mechanical Wave Function,
       hide axis,
-      colormap/cool,
+      colormap/cool
     ]
     \addplot3[
       mesh,
       samples=50,
-      domain=-8:8,
+      domain=-8:8
     ]
     {sin(deg(sqrt(x^2+y^2)))/sqrt(x^2+y^2)};
-    % \addlegendentry{\(\frac{sin(r)}{r}\)}
+    \addlegendentry{\(\psi(\vec{r})\)}
   \end{axis}
 \end{tikzpicture}

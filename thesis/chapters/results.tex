@@ -5,24 +5,25 @@ Each pixel corresponds to a coefficient $a \in \Z / q\Z$ scaled down by the modu
 \begin{figure}[H]
   \centering
   \pgfplotsset{/pgfplots/group/.cd,vertical sep=1.6cm}
-  \input{figures/generated/training-history.tex}
+  \inputtikz{figures/generated/training-history}
   \caption{Development of the classification accuracy and the mean squared error during training.}
 \end{figure}
 
 \begin{figure}[H]
   \centering
-  \input{figures/generated/confusion-matrix.tex}
+  \inputtikz{figures/generated/confusion-matrix}
   \caption{Confusion Matrix of the trained network.}
 \end{figure}
 
 \begin{figure}[H]
   \centering
   % \includegraphics[width=\linewidth]{figures/ciphertext-visualisation.png}
-  \input{figures/ciphertext-visualisation.tex}
+  \inputtikz{figures/ciphertext-visualisation}
   \caption{Ciphertext Visualisation}
 \end{figure}
 
 \section{Methodology}
+% TODO
 
 \section{Accuracy, Precision, Recall}
 % Detailliertere Analyse
