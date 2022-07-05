@@ -83,11 +83,10 @@ def plot_ciphertext(ctx):
         axes.set_axis_off()
 
 
-def confusion_matrix(model, x_test, y_test):
+def plot_confusion_matrix(predictions, y_test):
     """Creates and plots the confusion matrix"""
     import tensorflow as tf
 
-    predictions = np.argmax(model.predict(x_test), axis=1)
     matrix = np.array(tf.math.confusion_matrix(y_test, predictions))
     print("Confusion Matrix:", matrix)
     fig = plt.figure()
@@ -98,7 +97,7 @@ def confusion_matrix(model, x_test, y_test):
     cbar.ax.set_ylabel("Accuracy", rotation=-90, va="bottom")
     for i in range(matrix.shape[0]):
         for j in range(matrix.shape[1]):
-            color = " black" if im.norm(matrix[i, j]) > threshold else "white"
+            color = "black" if im.norm(matrix[i, j]) > threshold else "white"
             im.axes.text(j, i, matrix[i, j], horizontalalignment="center", verticalalignment="center", color=color)
     axes.set_xlabel("True Digit")
     axes.set_ylabel("Classification")
@@ -108,6 +107,29 @@ def confusion_matrix(model, x_test, y_test):
         override_externals=True,
         # tex_relative_path_to_data="figures/generated/",
     )
+
+
+def precision_and_recall(predictions: np.ndarray, y_test: np.ndarray):
+    """For the given predictions and true labels, analyse"""
+    precisions = []
+    recalls = []
+    for digit in range(10):
+        true_value_is = y_test == digit
+        prediction_is = predictions == digit
+        true_positives = sum(prediction_is[true_value_is])
+        false_positives = sum(prediction_is[~true_value_is])
+        true_negatives = sum(~prediction_is[~true_value_is])
+        false_negatives = sum(~prediction_is[true_value_is])
+        assert true_positives + false_positives == sum(prediction_is)
+        assert true_negatives + false_negatives == sum(~prediction_is)
+        assert true_positives + true_negatives == sum(prediction_is == true_value_is)
+        precisions.append(true_positives / (true_positives + false_positives))
+        recalls.append(true_positives / (true_positives + false_negatives))
+    print("Precision:", precisions)
+    print("Recall:", recalls)
+    print("Average Precision:", np.mean(precisions))
+    print("Average Recall:", np.mean(recalls))
+    return precisions, recalls
 
 
 def plot_metric(history):

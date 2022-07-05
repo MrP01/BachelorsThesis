@@ -26,19 +26,27 @@ def fetch_training_data(ctx):
 
 
 @invoke.task()
-def train(ctx, plot_plots=False):
+def train(ctx, analyse=False):
     """Trains the Tensorflow Model and produces plots if asked to"""
+    import tensorflow as tf
+
     import network
 
     model, history = network.train()
 
-    if plot_plots:
+    if analyse:
         from plots import plots
 
         x_test = np.load(TARGET / "x-test.npy")
         y_test = np.load(TARGET / "y-test.npy")
+        y_test_categorical = tf.keras.utils.to_categorical(y_test, 10)
 
-        plots.confusion_matrix(model, x_test, y_test)
+        test_loss, test_accuracy = model.evaluate(x_test, y_test_categorical)
+        print("Loss:", test_loss)
+        print("Accuracy:", test_accuracy)
+        predictions = np.argmax(model.predict(x_test), axis=1)
+        plots.plot_confusion_matrix(predictions, y_test)
+        plots.precision_and_recall(predictions, y_test)
         plots.plot_metric(history)
 
 

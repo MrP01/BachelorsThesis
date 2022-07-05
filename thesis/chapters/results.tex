@@ -26,9 +26,32 @@ Each pixel corresponds to a coefficient $a \in \Z / q\Z$ scaled down by the modu
 % TODO
 
 \section{Accuracy, Precision, Recall}
-% Detailliertere Analyse
-% https://medium.com/analytics-vidhya/accuracy-precision-and-recall-in-machine-learning-classification-ae84004e86a1
-% https://en.wikipedia.org/wiki/Precision_and_recall
+The network classifies \SI{97.62}{\percent} of the 10,000 test images correctly.
+
+For a binary classification, two further metrics of interest are
+$$\text{Precision} = \frac{\text{tp}}{\text{tp} + \text{fp}} \quad\quad
+  \text{Recall} = \frac{\text{tp}}{\text{tp} + \text{fn}}$$
+
+with
+$\text{tp}$ ... True Positives,
+$\text{fp}$ ... False Positives,
+$\text{fn}$ ... False Negatives.
+
+Precision (also referred to as PPV, positive predictive value) refers to the ability of the network to classify positive samples correctly, while Recall explains the completeness of the classified samples (i.e. how few true positives have been left out).
+
+\begin{table}[H]
+  \centering
+  \caption{Precision and Recall of the trained network for each digit individually}
+  \begin{tblr}{r|cccccccccc}
+    \textbf{Digit}     & 0     & 1     & 2     & 3     & 4     & 5     & 6     & 7     & 8     & 9     \\
+    \hline
+    \textbf{Precision} & 0.978 & 0.990 & 0.959 & 0.960 & 0.985 & 0.968 & 0.977 & 0.976 & 0.963 & 0.978 \\
+    \textbf{Recall}    & 0.986 & 0.989 & 0.975 & 0.977 & 0.975 & 0.964 & 0.980 & 0.964 & 0.967 & 0.955 \\
+  \end{tblr}
+\end{table}
+
+Average Precision: \SI{97.37}{\percent} \\
+Average Recall: \SI{97.36}{\percent}
 
 \section{Performance Benchmarks}
 This chapter includes runtime and communication overhead analysis.
