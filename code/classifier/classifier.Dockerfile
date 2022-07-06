@@ -32,10 +32,10 @@ RUN cd /classifier/build/ && cmake .. && CMAKE_BUILD_TYPE=RelWithDebInfo cmake -
 
 # Part 2: Train Neural Network
 FROM python:3.10 AS trainer
-WORKDIR /training
+WORKDIR /
 RUN pip install --upgrade pip poetry==1.2.0b2
-COPY ./pyproject.toml /training/pyproject.toml
-COPY ./poetry.lock /training/poetry.lock
+COPY ./pyproject.toml /pyproject.toml
+COPY ./poetry.lock /poetry.lock
 RUN poetry config virtualenvs.create false && poetry install --no-interaction --only=main
 RUN mkdir -p /classifier/data/mnist/ /classifier/data/models/simple/
 COPY ./tasks.py /tasks.py

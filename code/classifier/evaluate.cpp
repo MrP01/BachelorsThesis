@@ -116,6 +116,7 @@ class Evaluator {
     seal::Ciphertext encrypted;
     auto some_x_test = xt::view(x_test, i, xt::all());
     auto some_x_test_vector = std::vector<double>(some_x_test.begin(), some_x_test.end());
+
     std::clock_t start = clock();
     encoder.encode(some_x_test_vector, SCALE, plain);
     if (symmetric)
