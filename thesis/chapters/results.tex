@@ -56,6 +56,8 @@ Average Recall: \SI{97.36}{\percent}
 \section{Performance Benchmarks}
 This chapter includes runtime and communication overhead analysis.
 
+The following benchmarks were accumulated on an Intel \textregistered i7-5600U CPU running at \SI{2.6}{\giga\hertz} as the average over 3 individual runs with different test vectors, consistent accross different parameter runs.
+
 Plain runtime: xxx
 
 \begin{table}[H]
@@ -64,10 +66,10 @@ Plain runtime: xxx
   \caption*{
     $B_1$ ... Coefficient Moduli start bits (also equal to the last) \\
     $B_2$ ... Coefficient Moduli middle bits \\
-    $N$ ... Poly Modulus Degree \\
+    $N$ ... Polynomial Modulus Degree, found in the exponent of $p(X) = X^N + 1$ \\
     $T$ ... Runtime of encryption, classification, decryption \\
     $M$ ... Message Size \\
-    MRE ... Mean Max-Relative Error compared to the exact result
+    MRE ... Mean Max-Relative Error compared to the exact result, i.e. $\langle \rangle$
   }
   \begin{tblr}{ccrrrrrrl}
     \hline
@@ -87,3 +89,5 @@ Plain runtime: xxx
     tc128        & Hybrid     & 34         & 25         & 8192     & 13.2971                 & 132.72                     & 0.01369     & Debug    \\
   \end{tblr}
 \end{table}
+
+\todo{Multi-row table for better overview?}

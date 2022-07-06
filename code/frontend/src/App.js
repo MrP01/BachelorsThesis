@@ -238,6 +238,7 @@ class ClassificationComponent extends React.Component {
           <h6>Probabilities</h6>
           <ProbabilityDisplay probabilities={this.state.probabilities} />
         </Col>
+        <p>By clicking on one of the following test images, you can load it to the canvas directly.</p>
         {this.state.testImagesAvailable && (
           <Col s={12}>
             {this.testImages.map((img, index) => (
