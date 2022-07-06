@@ -7,9 +7,6 @@
 #include <seal/evaluator.h>
 #include <xtensor/xarray.hpp>
 
-typedef xt::xarray<double> Matrix;
-typedef xt::xarray<double> Vector;
-
 enum MatMulImplementation { MATMUL_HYBRID, MATMUL_BSGS };
 
 class Network;

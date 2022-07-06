@@ -61,12 +61,29 @@ Plain runtime: xxx
 \begin{table}[H]
   \centering
   \caption{Performance Benchmarks / Communication Overhead}
-  \begin{tabular}{lllll}
-    \textbf{Scenario} & \textbf{Parameters} & \textbf{Runtime} / \si{\second} & \textbf{Message Size} / \si{\mega\byte} & \textbf{MRE} \\
-    BSGS Matmul       & 60,40,...,40,60     &                                 &                                         &              \\
-    BSGS Matmul       & 34,25,...,25,34     &                                 &                                         &              \\
-    Hybrid Matmul     &                     &                                 &                                         &              \\
-    Encrypt           &                     &                                 &                                         &              \\
-    Encrypt Symmetric &                     &                                 &                                         &              \\
-  \end{tabular}
+  \caption*{
+    $B_1$ ... Coefficient Moduli start bits (also equal to the last) \\
+    $B_2$ ... Coefficient Moduli middle bits \\
+    $N$ ... Poly Modulus Degree \\
+    $T$ ... Runtime of encryption, classification, decryption \\
+    $M$ ... Message Size \\
+    MRE ... Mean Max-Relative Error compared to the exact result
+  }
+  \begin{tblr}{ccrrrrrrl}
+    \hline
+    \bf SecLevel & \bf MatMul & $\bm{B_1}$ & $\bm{B_2}$ & $\bm{N}$ & $\bm{T}$ / \si{\second} & $\bm{M}$ / \si{\mebi\byte} & \bf MRE / 1 & \bf Mode \\
+    \hline
+    none         & BSGS       & 34         & 25         & 8192     & 2.9197                  & 132.72                     & 0.13616     & Release  \\
+    none         & Hybrid     & 34         & 25         & 8192     & 10.6905                 & 132.72                     & 0.01408     & Release  \\
+    none         & BSGS       & 60         & 40         & 16384    & 5.9881                  & 286.50                     & 0.13328     & Release  \\
+    none         & Hybrid     & 60         & 40         & 16384    & 19.2554                 & 286.50                     & 0.00185     & Release  \\
+    tc128        & BSGS       & 34         & 25         & 8192     & 2.8693                  & 132.72                     & 0.13662     & Release  \\
+    tc128        & Hybrid     & 34         & 25         & 8192     & 9.0900                  & 132.72                     & 0.01359     & Release  \\
+    tc128        & BSGS       & 60         & 40         & 16384    & 5.9848                  & 286.50                     & 0.13328     & Release  \\
+    tc128        & Hybrid     & 60         & 40         & 16384    & 19.0962                 & 286.50                     & 0.00185     & Release  \\
+    tc256        & BSGS       & 60         & 40         & 32768    & 13.9787                 & 615.16                     & 0.13328     & Release  \\
+    tc256        & Hybrid     & 60         & 40         & 32768    & 41.8026                 & 615.16                     & 0.00185     & Release  \\
+    tc128        & BSGS       & 34         & 25         & 8192     & 7.2043                  & 132.72                     & 0.13650     & Debug    \\
+    tc128        & Hybrid     & 34         & 25         & 8192     & 13.2971                 & 132.72                     & 0.01369     & Debug    \\
+  \end{tblr}
 \end{table}

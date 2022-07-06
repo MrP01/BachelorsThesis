@@ -9,6 +9,9 @@
 #include <xtensor/xadapt.hpp>
 #include <xtensor/xio.hpp>
 
+typedef xt::xarray<double> Matrix;
+typedef xt::xarray<double> Vector;
+
 inline void printCiphertextInternals(
     std::string name, seal::Ciphertext &x, seal::SEALContext *context, bool exact_scale = false) {
   std::stringstream message;
@@ -55,4 +58,9 @@ inline auto msgpackPOSTRequestHandler(nlohmann::json (*handler)(nlohmann::json))
         std::vector<uint8_t> serialized = nlohmann::json::to_msgpack(response_json);
         response.set_content(std::string(serialized.begin(), serialized.end()), "application/x-msgpack");
       };
+}
+
+inline double meanMaxRelativeError(Vector approximative, Vector exact_result) {
+  auto mre_func = xt::mean(xt::abs(approximative - exact_result) / xt::amax(xt::abs(exact_result)));
+  return mre_func();
 }

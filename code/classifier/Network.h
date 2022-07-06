@@ -1,9 +1,12 @@
 #include "Layer.h"
-#include "vector"
+#include <vector>
 
 #define POLY_MOD_DEGREE 8192
 #define COEFF_MODULUS_START_BITS 34
 #define COEFF_MODULUS_MIDDLE_BITS 25
+// #define POLY_MOD_DEGREE 16384
+// #define COEFF_MODULUS_START_BITS 60
+// #define COEFF_MODULUS_MIDDLE_BITS 40
 #define SECURITY_LEVEL seal::sec_level_type::tc128
 #define SCALE pow(2.0, COEFF_MODULUS_MIDDLE_BITS)
 
