@@ -15,18 +15,21 @@ The \textit{levelled} homomorphic \gls{bgv} encryption scheme is implemented in 
 The \gls{bfv} scheme is very similar to it and described in a bit more detail in \autoref{sec:bfv}.
 And finally, building upon concepts introduced in the former, the \gls{ckks} scheme allows for approximative floating-point arithmetic that finally facilitates machine-learning applications.
 
-Machine Learning allows a computer to 'learn' from specifically structured data using linear regression or similar methods, and applying this 'knowledge' to new, unknown inputs.
-In its simplest form, or even using a neural network, this only requires two different operations on numbers (or even better, vectors): addition and multiplication.
+Machine Learning allows a computer to 'learn' from specifically structured data using linear regression or similar methods, and to apply this 'knowledge' to new, unknown inputs.
+In its simplest form, or even using a multi-layered neural network, this only requires two different operations on numbers (or even better, vectors): addition and multiplication.
 Using an \gls{he} scheme such as the ones mentioned above and described in \autoref{chap:homomorphic-encryption}, both are given and PPML (Privacy-Preserving Machine Learning) applications are born!
 
-Considering the implications of mass surveilance, the importance of privacy-preserving/enhancing technologies should not be forgotten.
-
 The present thesis not only focusses on theoretical remarks but also includes a publicly available implementation of an \gls{he} classification server written in C++ and a compact graphical user interface to interact with.
-The following aims to introduce most of the necessary theory to understand the homomorphic encryption schemes used in practice today, as well as the simple machine learning approaches involved in securely classifying images as a service.
 
 \begin{figure}[H]
   \centering
+  \label{fig:frontend}
   \includegraphics[width=\linewidth]{figures/frontend.pdf}
   \vspace{-1.2cm}
-  \caption{The user interface of the demonstrator.}
+  \caption{The user interface of the demonstrator, users can draw a digit by hand, select one of two communication means (plain or encrypted) and finally let the server handle the classification to obtain a prediction (including a visual of associated probabilities).}
 \end{figure}
+
+The following \autoref{chap:background} and \autoref{chap:homomorphic-encryption} aim to introduce most of the necessary theory to understand the homomorphic encryption schemes used in practice today, as well as the simple machine learning approaches involved in securely classifying images as a service.
+
+Next, \autoref{chap:implementation} then focusses on the concrete system at hand, how the classification of handwritten digits (using the MNIST dataset) works in detail and what challenges arise when dealing with a system which acts not only on plain, but also encrypted data.
+The subsequent \autoref{chap:results} analyses the neural network performance in terms of its accuracy, digit-wise precision and recall, documents benchmarks of runtime, message size and accuracy and finally includes a visualisation of the ciphertext (containing all information about the original image).

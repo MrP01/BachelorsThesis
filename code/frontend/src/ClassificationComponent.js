@@ -121,7 +121,7 @@ export class ClassificationComponent extends React.Component {
     return (
       <Row>
         <ProgressBar className={self.state.calculating ? "" : "transparent"} />
-        <Col m={6} s={6}>
+        <Col m={6} s={12}>
           <ReactPainter
             width={280}
             height={280}
@@ -148,7 +148,7 @@ export class ClassificationComponent extends React.Component {
           />
           <p className="grey-text">Each grid cell represents one pixel in the 28x28 image.</p>
         </Col>
-        <Col m={6} s={6}>
+        <Col m={6} s={12}>
           <div className="card-panel z-depth-1">
             <div className="row valign-wrapper">
               <div className="col s2">
