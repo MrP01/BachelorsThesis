@@ -16,6 +16,8 @@ To run the attached demo project, simply execute
 \end{minted}
 in the 'code' folder and point your browser to \url{https://localhost}.
 
+\todo{Hier noch mehr ins Detail gehen?}
+
 \subsection{Docker Multi-Stage Build}
 An enterprise-grade, scalable deployment is achieved by means of zero-dependency
 Alpine Linux images which contain nothing but compiled binaries and linked libraries.
@@ -58,14 +60,9 @@ For the following, define
 with all indices $i, j \in \Z_t$ member of the cyclic quotient group $\Z_t := \Z / t \Z$ of all integers modulo $t$, meaning that overflowing indices simply wrap around again starting at index $0$ to simplify notation.
 For the sake of compactness, we stick to this notation for the rest of this section.
 
-\subsection{Adapting to non-square matrices}
-\label{subsec:non-square-matrices}
-The weight matrices in the given classification setting are by no means square, on the contrary their output dimension tends to be much lower than the input dimension as the goal is to reduce it from $28^2 = 784$ to $10$ overall.
-
-However, that also means one cannot directly apply the diagonal method as described in the proceedings above.
-This 'flaw' can be mitigated by a simple zero-padding approach in order to make the matrix square, filling in zeroes until the lower dimension reaches the higher one.
-
+\pagebreak
 \subsection{The Naïve Method}
+\todo{Hier fehlt das * im Bild}
 \begin{figure}[H]
   \centering
   \inputtikz{figures/generated/matmul-naive}
@@ -98,6 +95,13 @@ Accordingly, a natural (or rather, naïve) way to model this multiplication in \
   \item Given all the 'scalar' results of each row-vector dot product,
         we can construct the resulting matrix-vector product.
 \end{enumerate}
+
+\paragraph{Adapting to non-square matrices}
+\label{subsec:non-square-matrices}
+The weight matrices in the given classification setting are by no means square, on the contrary their output dimension tends to be much lower than the input dimension as the goal is to reduce it from $28^2 = 784$ to $10$ overall.
+
+However, that also means one cannot directly apply the diagonal method as described in the proceedings above.
+This 'flaw' can be mitigated by a simple zero-padding approach in order to make the matrix square, filling in zeroes until the lower dimension reaches the higher one.
 
 \subsection{The Diagonal Method}
 \begin{figure}[H]
@@ -156,6 +160,7 @@ void DenseLayer::matmulHybrid(seal::Ciphertext &in_out, const Matrix &mat, seal:
   evaluator.rescale_to_next_inplace(in_out); // scale down once
 }
 \end{minted}
+\todo{Describe the main commands used above (sehr illustrativ denke ich..?)}
 
 \subsection{The Babystep-Giantstep Optimization}
 Since Galois rotations are the most computationally intensive operations in most cryptographic schemes used today \parencite{2021-pasta}, they take a large toll on the efficiency.
@@ -174,6 +179,7 @@ In order to reduce the number of rotations required, one can make use of the \te
 \end{theorem}
 
 A proof of the above theorem can be found in the \hyperref[chap:appendix]{Appendix}.
+\todo{Proof lieber hier oder im Appendix?}
 
 Note that the optimized matrix-vector multiplication only requires $t_1 + t_2$ as we can store the $t_1$ inner rotations of the vector $x$ for the upcoming evaluations.
 For larger matrices and vectors (larger $t$), $t_1 + t_2$ are indeed much smaller than the conventional number of required rotations in the Diagonal or Hybrid method for instance which was the point of this modification in the first place.
@@ -183,10 +189,10 @@ From the implementation perspective, there are three properties to watch out for
 
 \begin{enumerate}
   \item Scale (retrieved using \cpp{x.scale()})
-        \begin{quote}
-          Scale has nothing to do with noise. "Scale out of bounds" can appear even if noise is extremely low. Although repeated multiplication of a ciphertext by a plaintext will slowly increase the noise, it is not the reason why you see "scale out of bounds".
-          "Scale out of bounds" error specifically means that the scale of a ciphertext or plaintext is larger than the product of all elements in coeff\_modulus. If you perform multiplications without rescaling, you can quickly see this error. The more rescaling you perform, the less elements will be left in coeff\_modulus. Even if you managed to have the same scale in a ciphertext after every multiplication and rescale, eventually the coeff\_modulus can be too small to accommodate another multiplication.
-        \end{quote}
+        % \begin{quote}
+        %   Scale has nothing to do with noise. "Scale out of bounds" can appear even if noise is extremely low. Although repeated multiplication of a ciphertext by a plaintext will slowly increase the noise, it is not the reason why you see "scale out of bounds".
+        %   "Scale out of bounds" error specifically means that the scale of a ciphertext or plaintext is larger than the product of all elements in coeff\_modulus. If you perform multiplications without rescaling, you can quickly see this error. The more rescaling you perform, the less elements will be left in coeff\_modulus. Even if you managed to have the same scale in a ciphertext after every multiplication and rescale, eventually the coeff\_modulus can be too small to accommodate another multiplication.
+        % \end{quote}
         % https://github.com/microsoft/SEAL/issues/182#issuecomment-646234787
 
         Can be adjusted with: \cpp{evaluator.rescale_inplace()}
@@ -196,6 +202,8 @@ From the implementation perspective, there are three properties to watch out for
         Can be adjusted with: \cpp{evaluator.relinearize_inplace()}
 \end{enumerate}
 
+\todo{Explain the challenges of polyval}
+
 \paragraph{Multiplication}
 Each time one multiplies two ciphertexts, the scales multiply (logarithmically, they add up, i.e. the bits are added together).
 The chain index reduces by 1. The chain index of an encoded ciphertext depends on the coeff moduli.
@@ -204,22 +212,31 @@ There must be enough bits remaining to perform the multiplication, namely log2(s
 \paragraph{Addition}
 The scales must be the same, but luckily they will not change.
 
-\section{Transparent Ciphertext}
-\begin{quote}
-  The problem is that you are subtracting a ciphertext from itself.
-  This kind of operation results in a ciphertext that is identically zero; this is called a transparent ciphertext. Such a transparent ciphertext is not considered to be valid because the ciphertext reveals its underlying plaintext to anyone who sees it, even if they don't have the secret key.
-  By default SEAL throws an exception when such a situation is encountered to protect you from a problem you may not have noticed.
-  If you truly know what you are doing and want to enable the creation of transparent ciphertexts, you can configure SEAL [...].
-  \parencite{kim-laine-on-transparent-ciphertexts}
-\end{quote}
+% TODO:
+% \section{Transparent Ciphertext}
+% \begin{quote}
+%   The problem is that you are subtracting a ciphertext from itself.
+%   This kind of operation results in a ciphertext that is identically zero; this is called a transparent ciphertext. Such a transparent ciphertext is not considered to be valid because the ciphertext reveals its underlying plaintext to anyone who sees it, even if they don't have the secret key.
+%   By default SEAL throws an exception when such a situation is encountered to protect you from a problem you may not have noticed.
+%   If you truly know what you are doing and want to enable the creation of transparent ciphertexts, you can configure SEAL [...].
+%   \parencite{kim-laine-on-transparent-ciphertexts}
+% \end{quote}
 
 % https://github.com/microsoft/SEAL/issues/276#issuecomment-777073477
-'transparent ciphertexts (a.k.a. ciphertexts whose second polynomial is zero) are malformed and do not need the secret key to decrypt'
+% 'transparent ciphertexts (a.k.a. ciphertexts whose second polynomial is zero) are malformed and do not need the secret key to decrypt'
 
 \section{Neural Network}
 The neural network was trained using the unencrypted standard MNIST dataset of 50,000 images,
 split into \SI{90}{\percent} training and \SI{10}{\percent} validation data.
 
+\begin{figure}[H]
+  \centering
+  \inputtikz{figures/generated/taylor-relu}
+  \caption{Comparison of the Relu activation function vs. its Taylor expansion}
+\end{figure}
+\todo{Describe Taylor approximation of Relu function a bit}
+
+To gain some intuition on what the two layers look like internally, the following plots of weights and biases have been made:
 \begin{figure}[H]
   \centering
   \inputtikz{figures/generated/layer-1}
@@ -234,3 +251,5 @@ split into \SI{90}{\percent} training and \SI{10}{\percent} validation data.
   % \includegraphics[width=0.8\linewidth]{figures/layer-2.png}
   \caption{Second Layer Weights and Biases}
 \end{figure}
+
+\todo{Beschreibung der obigen Figures, gehen beide Plots auf eine Seite?}

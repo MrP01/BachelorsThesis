@@ -5,26 +5,31 @@ Each pixel corresponds to a coefficient $a \in \Z / q\Z$ scaled down by the modu
 
 \begin{figure}[H]
   \centering
+  % \includegraphics[width=\linewidth]{figures/ciphertext-visualisation.png}
+  \inputtikz{figures/ciphertext-visualisation}
+  \caption{Ciphertext Visualisation \todo{Eigene Subsection hierfür?}}
+\end{figure}
+
+\begin{figure}[H]
+  \centering
   \pgfplotsset{/pgfplots/group/.cd,vertical sep=1.6cm}
   \inputtikz{figures/generated/training-history}
   \caption{Development of the classification accuracy and the mean squared error during training.}
 \end{figure}
 
+The machine learning framework behind the project, Tensorflow, splits its training process into \textit{epochs}, which can be found on the x-axis in the plot above.
+For each training epoch, we find the progress that has been made in a single epoch by looking at the new accuracy (which percentage of the images has been classified correctly) and the loss function (\gls{mse} in this case).
+Per training run, we make a differentiation between training metrics and validation metrics, illustratively shown above for the given network.
+Validation data is not involved in the training process, it is used to find a point in time when training accuracy still rises while validation accuracy starts to drop.
+At this point we are very likely to find the network's learning process in an \textit{overfitting} situation, so the training process terminates.
+
 \begin{figure}[H]
   \centering
   \inputtikz{figures/generated/confusion-matrix}
-  \caption{Confusion Matrix of the trained network.}
+  \caption{Confusion Matrix of the trained network. \todo{Ein bisschen beschreiben..}}
 \end{figure}
 
-\begin{figure}[H]
-  \centering
-  % \includegraphics[width=\linewidth]{figures/ciphertext-visualisation.png}
-  \inputtikz{figures/ciphertext-visualisation}
-  \caption{Ciphertext Visualisation}
-\end{figure}
-
-\section{Methodology}
-% TODO
+% \section{Methodology}
 
 \section{Accuracy, Precision, Recall}
 The network classifies \SI{97.62}{\percent} of the 10,000 test images correctly.
@@ -51,30 +56,29 @@ Precision (also referred to as PPV, positive predictive value) refers to the abi
   \end{tblr}
 \end{table}
 
-Average Precision: \SI{97.37}{\percent} \\
-Average Recall: \SI{97.36}{\percent}
+Averaged over all digits, the mean precision amounts to \SI{97.37}{\percent} while the average recall is similarly high at \SI{97.36}{\percent}.
 
 % TODO: maybe analyse the same as above for the encrypted network as well?
 
 \section{Performance Benchmarks}
 This chapter includes runtime and communication overhead analysis.
 
-The following benchmarks were accumulated on an Intel \textregistered i7-5600U CPU running at \SI{2.6}{\giga\hertz} as the average over 3 individual runs with different test vectors, consistent accross different parameter runs.
+The following benchmarks were accumulated on an Intel\textregistered \, i7-5600U CPU running at \SI{2.6}{\giga\hertz} as the average over 3 individual runs with different test vectors, consistent accross different parameter runs.
 
 \begin{table}[H]
   \centering
   \caption{Performance Benchmarks / Communication Overhead}
   \caption*{
-    $B_1$ ... Coefficient Moduli start bits (also equal to the last) \\
-    $B_2$ ... Coefficient Moduli middle bits \\
-    $N$ ... Polynomial Modulus Degree, found in the exponent of $p(X) = X^N + 1$ \\
-    $T$ ... Runtime of encryption, classification, decryption \\
-    $M$ ... Message Size \\
-    MRE ... Mean Max-Relative Error compared to the exact result, i.e. $\langle \rangle$
+    $\bm{B_1}$ ... Coefficient Moduli start bits (also equal to the last) \\
+    $\bm{B_2}$ ... Coefficient Moduli middle bits \\
+    $\bm{N}$ ... Polynomial Modulus Degree, found in the exponent of $p(X) = X^N + 1$ \\
+    $\bm{T}$ ... Runtime of encryption, classification, decryption \\
+    $\bm{M}$ ... Message Size \\
+    $\bm{\Delta}$ ... Mean Max-Relative Error compared to the exact result, i.e. $\frac{\langle |\bm{y}_{prediction} - \bm{y}_{exact}| \rangle}{\max |\bm{y}_{exact}|}$
   }
   \begin{tblr}{ccrrrrrrl}
     \hline
-    \bf SecLevel & \bf MatMul & $\bm{B_1}$ & $\bm{B_2}$ & $\bm{N}$ & $\bm{T}$ / \si{\second} & $\bm{M}$ / \si{\mebi\byte} & \bf MRE / 1 & \bf Mode \\
+    \bf SecLevel & \bf MatMul & $\bm{B_1}$ & $\bm{B_2}$ & $\bm{N}$ & $\bm{T}$ / \si{\second} & $\bm{M}$ / \si{\mebi\byte} & $\bm{\Delta}$ / 1 & \bf Mode \\
     \hline
     none         & BSGS       & 34         & 25         & 8192     & 2.9197                  & 132.72                     & 0.13616     & Release  \\
     none         & Hybrid     & 34         & 25         & 8192     & 10.6905                 & 132.72                     & 0.01408     & Release  \\
@@ -92,5 +96,6 @@ The following benchmarks were accumulated on an Intel \textregistered i7-5600U C
 \end{table}
 
 \todo{Multi-row table for better overview?}
+\todo{Interpretation der Tabelle}
 
 Without any encryption, the neural network classifies the full 10,000 image dataset in \SI{515}{\milli\second} on the same machine.

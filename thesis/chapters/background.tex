@@ -63,7 +63,7 @@ As a highly relevant structure to cryptography and a great example of a quotient
   define the commutative quotient ring of integers modulo $q$ as $(\Z / q \Z, +, \cdot)$ with
   two operations $+$ and $\cdot$ and
   $$\Z / q \Z = \{\overline{x}_q \,|\, x \in \Z, 0 \leq x < q\}$$
-  where $q \Z = \{q x \,|\, x \in \Z\} \triangleleft \Z$ denotes the $q$\textsuperscript{th} multiplicative coset\footnote{
+  where $q \Z = \{q x \,|\, x \in \Z\} \triangleleft \Z$ (where $\triangleleft$ refers to the left being a subgroup of the right) denotes the $q$\textsuperscript{th} multiplicative coset\footnote{
     from the left and from the right, therefore $q \Z$ is called a normal subgroup of $\Z$
   } of the integers and
   $$\overline{x}_q = \{y \equiv x \mod q \,|\, y \in \Z\}$$
@@ -133,6 +133,7 @@ Its roots, found by solving $p(x) = 0$ for $x$, yielding $x^n = 1 \leftrightarro
   An $n$\textsuperscript{th} root of unity $y$ is referred to as \textit{primitive}, \glstext{iff}
   there exists no $m < n$ for which that root $y$ is also an $m$\textsuperscript{th} root of unity, i.e. $y^m \neq 1$.
   An equivalent indicator is when $\gcd(m, n) = 1$.
+  \todo{add an illustration of the unit circle?}
 \end{lemma}
 Due to the fact that for any $k, l \in \Z$, their product $x_k \cdot x_l$ is also a root of unity, and
 $x_{k+jn} = x_k \; \forall j \in \Z$, they clearly comprise a cyclic Abelian group over the complex numbers
@@ -201,7 +202,7 @@ Most notably, lattice problems are conjectured to be secure against quantum comp
 \newcommand{\lat}{\mathcal{L}}
 \begin{definition}{Lattice}{lattice}
   A lattice $(\lat, +, \cdot)$ is a vector field over the integers $(\Z, +, \cdot)$, defined using a set of $n$ basis vectors $\vec{b_1}, \vec{b_2}, ..., \vec{b_n} \in \R^n$, that can be introduced as a set
-  $$\lat = \bigg\{\sum_{i=1}^m c_i \vec{b}_i \,|\, c \in \Z\bigg\} \subseteq \R^n$$
+  $$\lat = \bigg\{\sum_{i=1}^m c_i \vec{b}_i \,\bigg|\, c \in \Z\bigg\} \subseteq \R^n$$
   equipped with at least vector addition $+: \lat \times \lat \mapsto \lat$ and scalar multiplication $\cdot: \Z \times \lat \mapsto \lat$.
   As an extension of $\R^n$, the Euclidean norm $||\cdot||$ is also defined and the standard Euclidean metric $d: \lat \times \lat \mapsto \R$, yielding a metric space $(\lat, d)$, can be obtained by the norm of a vector difference, denoted $||(\cdot) - (\cdot)||$.
 \end{definition}
@@ -332,13 +333,13 @@ Keep in mind however, that Machine Learning in this form is nothing more than gl
 \end{definition}
 
 To illustrate the concept, we will focus on a simple learning method, namely that of gradient descent.
-In supervised learning problems, this technique first requires us to introduce a loss (error) function $L: \R^n \mapsto \R$, usually MSE (mean-squared-error), which has comparably nice convergence properties due to its parabolic shape:
-$$L(\vec{w}) = \frac{1}{2} \sum_i (t_i - \vec{w}^T \vec{x_i})$$
-where $\vec{w} \in \R^n$ represents the weights.
+In supervised learning problems, this technique first requires us to introduce a loss (error) function $L: \R^n \mapsto \R$, usually \gls{mse}, which has comparably nice convergence properties due to its parabolic shape:
+$$L(\vec{w}) = \frac{1}{2} \sum_{i=1}^N (t_i - \vec{w}^T \vec{x_i}) = \frac{1}{2} (\vec{t} - \Phi \vec{w})^T (\vec{t} - \Phi \vec{w})$$
+where $\vec{w} \in \R^n$ represents the weights and $\Phi \in \R^{N \times (n+1)}$ is an auxiliary matrix introduced for sleeker notation, consisting of .., referred to as the design matrix.
 When $L(\vec{w^*}) = 0$, this means we have found the perfect weights, since our predictions exactly match the targets (labels) $t_i$.
 This is not always possible, so we aim for the minimum error between predictions and targets.
 In other words, our goal is to find
-$$\vec{w^*} = \arg\min_{\vec{w} \in \R^n} L(\vec{w})$$
+$$\vec{w^*} = \underset{\vec{w} \in \R^n}{\text{argmin}}\, L(\vec{w})$$
 given a dataset $\{\vec{x}_i, t_i\}$.
 
 \subsection{Gradient Descent}
@@ -348,13 +349,16 @@ given a dataset $\{\vec{x}_i, t_i\}$.
   \caption{Illustration of Gradient Descent, adapted from \parencite{gradient-descent-plot}.}
 \end{figure}
 
-To make up for numerical problems and potentially slow convergence, gradient descent can be replaced by more sophisticated methods such as Conjugate Gradient (with convergence guarantees within a certain boundary) or by adding in momentum to the distance travelled in each GD iteration.
+\todo{Describe going in the direction of $- \nabla L$ to find the minimum and add more details}
+
+To make up for numerical problems and potentially slow convergence, \gls{gd} can be replaced by more sophisticated methods such as Conjugate Gradient (with convergence guarantees within a certain boundary) or by adding in momentum to the distance travelled in each \gls{gd} iteration \parencite{bishop-pattern-recognition-and-ml}.
 
 \subsection{Multi-Layered Neural Networks}
+\todo{Woher kommt diese Struktur?}
 \begin{figure}[H]
   \centering
   \inputtikz{figures/neural-network}
-  \caption{A neural network}
+  \caption{A neural network \todo{Symmetrie zu unserem Netzwerk erklären}}
 \end{figure}
 
 To better understand the implications and possibilities of a large neural network, consider the following universal approximation theorem:
@@ -363,7 +367,7 @@ To better understand the implications and possibilities of a large neural networ
   If the neural network has at least one hidden layer, proper nonlinear activation functions and enough data and hidden units, it can approximate any continuous function $y(x, w): \R^n \mapsto \R$ arbitrarily well on a compact domain \parencite{1989-HornikMultilayerFN}.
 \end{theorem}
 
-Matrix -> Activation Function
+\todo{Quickly describe common types of layers in NNs?}
 \begin{itemize}
   \item Matrix Multiplication (Dense Layer)
   \item Convolutional Layer
@@ -371,26 +375,26 @@ Matrix -> Activation Function
   \item Max Pooling
 \end{itemize}
 
-% \subsection{The Backpropagation Algorithm}
-
 \pagebreak
 \section{Post-Quantum Security}
 \label{sec:post-quantum-sec}
 \begin{figure}[H]
   \centering
   \inputtikz{figures/wave-function}
-  \caption{Illustration of a wave function $\psi: \R^2 \mapsto \R$ as commonly used in quantum mechanics.}
+  \caption{Illustration of a wave function $\tilde{\psi}: \R^2 \mapsto \R$ as commonly used in quantum mechanics.}
 \end{figure}
 
 In quantum mechanics, we seek a mathematical description of quantum phenomena, commonly building upon \name{Schrödinger}'s formalisms based on wave functions and the basic postulates of quantum mechanics.
 
 The mathematical foundation of quantum mechanics is deeply rooted in functional analysis;
 An important concept is that of function spaces and, especially, Hilbert spaces.
-Wave functions $\psi: \R^3 \mapsto \R$ are usually chosen as elements of the $\mathcal{L}^2$-space, the space of square-integrable functions:
-$$\mathcal{L}^2 = \big\{\psi: \R^3 \mapsto \R \,|\, ||\psi|| < \infty\big\} \quad \text{with} ||\psi|| = \int_{-\infty}^{\infty} |\psi(\vec{x})|^2 \,dx \,.$$
+Wave functions $\psi: \C^3 \mapsto \R$ are usually chosen as elements of the $\mathcal{L}^2$-space, the space of square-integrable functions:
+$$\mathcal{L}^2 = \big\{\psi: \C^3 \mapsto \C \,\big|\, ||\psi|| < \infty\big\} \quad \text{with} \; ||\psi|| = \int_{-\infty}^{\infty} \psi^*(\vec{x}) \psi(\vec{x}) \,dx \,.$$
 
 The most popular interpretation / notion of a wave function is that it relates to the probability that a particle is at the current position $\vec{r}$ at time $t$ at the given time.
 Namely, this probability is given by $|\psi(\vec{r}, t)|^2$.
+
+\todo{Explain quantum entanglement on a high level, Qubits, mention Shor's (and Grover's) algorithm and why they are fast, intuitively}
 
 % TODO: what is a Qubit
 % TODO: what are Shor's and Grover's Algorithms, only mention
@@ -400,9 +404,4 @@ Namely, this probability is given by $|\psi(\vec{r}, t)|^2$.
   $$\mathrm{NP} = \bigcup_{k \in \N} \cryptop{NTIME}(n^k)$$
   the union of all decision problems with runtime bounded by $\mathcal{O}(n^k)$.
 \end{definition}
-
-\begin{figure}[H]
-  \centering
-  \inputtikz{figures/generated/taylor-relu}
-  \caption{Comparison of the Relu activation function vs. its Taylor expansion}
-\end{figure}
+\todo{This is needed in the introduction and other places too, where to put it?}

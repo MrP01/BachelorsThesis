@@ -21,6 +21,7 @@ Due to the inherent applications, this thesis will focus on the CKKS scheme to p
 \section{Homomorphic Encryption using RSA}
 In order to illustrate the basic idea behind \Gls{he}, without distancing ourselves too far from the original goal of introducing basic \gls{he} operations used in practice, this short section aims to motivate the definition of ring homomorphisms (cf. \autoref{def:ring-homomorphism}) behind a cryptographic background.
 
+% TODO: exaktere Einführung von \mathcal{E} (Definition)
 With unpadded RSA \parencite{1983-rsa}, some arithmetic can be performed on the ciphertext - looking at the encrypted ciphertext $\mathcal{E}(m_1) = (m_1)^r \mod n$ of the message $m_1$ and $m_2$ respectively, the following holds:
 \begin{align*}
   \mathcal{E}(m_1) \cdot \mathcal{E}(m_2)
@@ -36,18 +37,20 @@ The encryption therefore partially fulfills the properties of a ring homomorphis
   $$\forall a, b \in R: \varphi(a + b) = \varphi(a) \oplus \varphi(b) \wedge \varphi(a \cdot b) = \varphi(a) \otimes \varphi(b)$$
 \end{definition}
 
+As we can see, the term homomorphic encryption stems from the ability to perform computations on encrypted data while ensuring the same results are obtained when the same operations are applied to the original data.
+
 \section{Gentry's FHE-Scheme and BGV}
 \cite{2009-gentry-fhe-original}
-% TODO: historical introduction
+\todo{Eine kleine historical introduction hierzu? Bootstrapping erwähnen..?}
 
 \pagebreak
 \section{The BFV scheme}
 \label{sec:bfv}
-\cite{2012-fv-original}
-\cite{2012-brakerski}
+This scheme was developed in two separate publications, whose authors initials it is named after, \cite{2012-brakerski} and \cite{2012-fv-original}.
 BFV is based on BGV and they are very similar in their core ideas, one can even convert a BFV ciphertext to an equivalent BGV ciphertext \parencite{2021-he-revisiting}.
+In this section, we will focus on a slightly altered implementation introduced in \cite{2014-fv-comparison}, yet the main aspects are identical to their definitions in the original papers.
 
-In this section, we will focus on a slightly altered implementation introduced in \cite{2014-fv-comparison}.
+\todo{Ausführlichere Beschreibung..?}
 
 For two tuples $(\cdot, \cdot)$ defined over the same ring, denote their element-wise addition as $(\cdot, \cdot) + (\cdot, \cdot)$, element-wise multiplication by a scalar $u$ as $u \cdot (\cdot, \cdot)$ and element-wise rounding as $\lfloor (\cdot, \cdot) \rceil$.
 
@@ -137,12 +140,16 @@ To summarise the parameters and variables, a brief overview of all used symbols 
   \end{tblr}
   \label{tab:bfv-symbols}
 \end{table}
+\todo{Etwas mehr Kontext...?}
 
 \inputtikz{figures/bfv-schematic}
+\todo{Schematik an Notation anpassen}
 
 \begin{theorem}{BFV encryption is homomorphic with respect to addition}{bfv-enc-is-homomorphic}
   \cryptop{BFV.Encrypt} should encrypt in such a way that the addition algebra can be retained even in the transformed space, showing that we can indeed refer to it as \hyperref[def:ring-homomorphism]{homomorphic} encryption.
 \end{theorem}
+
+\todo{Obiges Theorem kurz zeigen (ausrechnen)}
 
 \textit{Microsoft SEAL} implements the scheme, enabled using \cpp{seal::scheme_type::bfv}.
 
@@ -153,6 +160,9 @@ Essentially, the idea is to extend BFV which allows us to operate on vectors $\v
 $$\cryptop{Embed}(\vec{x}) = \vec{x} \cdot F$$
 with $F \in \Z$. In decimal form, for instance with $F = 1000$, we could effectively encode three decimal places of the original vector $\vec{x}$.
 % ... TODO: scale explodes, confer Roman's PETS lecture -> motivation for CKKS.
+
+\todo{Obiges ist als eine kleine Überleitung gedacht um \\
+  die Motivation hinter CKKS zu zeigen.. fertig schreiben}
 
 Introduce $d, R, R/qR$ as in \autoref{def:bfv-scheme} and further define $S = \R[X] / \Phi_d(X)$ a similar polynomial ring to $R$, but over the reals instead of the integers.
 Let $N = \varphi(d)$ be the degree of the reducing cyclotomic polynomial of $S$, confer \autoref{def:bounded-polynomials}.
@@ -229,6 +239,7 @@ For simplicity, we commonly choose $T$ as the 'first half' of $\Z_d^*$ when sort
 Because it is not essential to understanding the encryption scheme, we will skip over concrete implementations of the rounding procedure $\underline{\rho}$.
 Note that for choosing a 'close' element $g \in H$, we must first introduce a sense of proximity, in this case done by the $l_\infty$-norm $||g - h||_\infty$ of the difference between $h \in H$ and $g$.
 
+\pagebreak
 \begin{definition}{The CKKS Scheme}{ckks-scheme}
   Define $R, R/q_L R$ as in \autoref{def:bfv-scheme}.
   \vspace{0.2cm}
@@ -301,7 +312,7 @@ To summarise the parameters and variables, a brief overview of all used symbols 
     \hline
     $\lambda$ & $\in \R$ & Security parameter \\
     $d$ & $\in \N$ & Index of the cyclotomic polynomial used in $R$ \\
-    $P$ & $\in \Z$ & Hmm... \\ % TODO
+    $P$ & $\in \Z$ & \todo{Hmmm... wie sieht das genau aus?} \\ % TODO
     $h$ & $\in \Z$ & Hamming weight of the secret key (used by $\chi_{key}$) \\
     $\sigma$ & $\in \R$ & Standard deviation of the Gaussian $\chi_{error}$ \\
     $q_L$ & $\in \N$ & Modulus of $R/q_L R$ at level $L$ \\
@@ -316,11 +327,15 @@ To summarise the parameters and variables, a brief overview of all used symbols 
   \end{tblr}
   \label{tab:ckks-symbols}
 \end{table}
+\todo{Etwas mehr Kontext...?}
 
 \inputtikz{figures/ckks-schematic}
+\todo{Schematik an CKKS anpassen}
 
 \begin{theorem}{CKKS encryption is homomorphic with respect to addition}{ckks-enc-is-homomorphic}
   \cryptop{CKKS.Encrypt} should encrypt in such a way that the addition algebra can be retained even in the transformed space, showing that we can indeed refer to it as \hyperref[def:ring-homomorphism]{homomorphic} encryption.
 \end{theorem}
+
+\todo{Obiges Theorem kurz zeigen (ausrechnen)}
 
 \textit{Microsoft SEAL} implements the scheme, enabled using \cpp{seal::scheme_type::ckks}.
