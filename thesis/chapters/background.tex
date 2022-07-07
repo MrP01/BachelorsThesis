@@ -1,15 +1,19 @@
 \chapter{Background}
 \label{chap:background}
 
-\section{Mathematical Foundation}
-The following discussion of the homomorphic encryption schemes requires some mathematical background that
-will (at least partially) be introduced here.
+The discussion of the homomorphic encryption schemes following in \autoref{chap:homomorphic-encryption} requires some mathematical background that will be introduced here, aiming for a consistent overview rather than full completeness.
+The last two sections introduce same background on Machine Learning and provide an outlook on Quantum Computation and why it affects cryptography today.
 
+% \section{Spicy Math for Homomorphic Encryption}
+\paragraph{Notational Conventions}
 Let $\N$ denote the natural numbers without $0$, i.e. $\N = \{n \in \Z \,|\, n > 0\}$.
 For a probability distribution $\chi$ over a set $R$, let sampling a value $x \in R$ from the probability distribution be denoted by $x \leftarrow \chi$.
 For $a \in \R$ a real number, denote rounding down (floor) $a$ by $\lfloor a \rfloor \in \Z$,
 rounding up (ceil) by $\lceil a \rceil \in \Z$ and rounding to the nearest integer by
 $\lfloor a \rceil \in \Z$.
+
+\section{Polynomial Rings and Modular Arithmetic}
+As the algebraic structure underlying almost every single symbol following in the next chapters, we recall the definition of a ring:
 
 \begin{definition}{Ring}{ring}
   A tuple $(R, +, \cdot)$ consisting of a set $R$, an addition operation $+$ and a multiplication operation $\cdot$
@@ -29,14 +33,15 @@ $\lfloor a \rceil \in \Z$.
           i.e. $(b+c) \cdot a = (b \cdot a) + (c \cdot a) \quad\forall a, b, c \in R$ from the right.
   \end{itemize}
   Where the first 5 properties can be summarised as $(R, +)$ forming an Abelian group.
-  If multiplication is additionally commutative, we refer to the ring as commutative:
+  If multiplication is additionally commutative, we refer to the ring as \textit{commutative}:
   \begin{itemize}
     \item Multiplication is commutative: $a \cdot b = b \cdot a \quad\forall a, b \in R$.
   \end{itemize}
 \end{definition}
-Acting as a logical extension of a group, a ring can be considered the intermediary step towards a field
-(which also defines subtraction and division).
-An example of a ring would be the integers modulo $t$: $\Z / t \Z$, sometimes also denoted as $\Z_t$.
+Acting as the logical extension of a group, a ring can be considered the intermediary step towards a field (which also defines subtraction and division).
+An example of a ring would be the integers themselves, or the integers modulo $t$: $\Z / t \Z$, sometimes also denoted as $\Z_t$.
+
+Given two groups $(G, +)$ and a subgroup $(N, +)$, we can construct another group $G / N$ as follows, referred to as a quotient group, or factor group:
 
 \begin{definition}{Quotient Group / Ring}{quotient-group}
   A quotient group $(G / N, +)$ (pronounced '$G$ mod $N$') over the original group $G$ and a normal subgroup $N$ of $G$
@@ -51,27 +56,31 @@ An example of a ring would be the integers modulo $t$: $\Z / t \Z$, sometimes al
 
 The quotient set $G / N$ can therefore be identified as the set of all possible left cosets $g + N$ that in union reconstruct the original group $G$.
 
-\begin{definition}{Ring of Integers Modulo $t$: $\Z / t \Z$}{integers-modulo-t}
-  Using equivalence classes $\overline{x}_t$ modulo $t$ referred to as congruence classes,
-  define the commutative quotient ring of integers modulo $t$ as $(\Z / t \Z, +, \cdot)$ with
+As a highly relevant structure to cryptography and a great example of a quotient group, we would like to consider the ring of integers modulo a given modulus $q \in \N$.
+
+\begin{lemma}{Ring of Integers Modulo $q$: $\Z / q \Z$}{integers-modulo-q}
+  Using equivalence classes $\overline{x}_q$ modulo $q$ referred to as congruence classes,
+  define the commutative quotient ring of integers modulo $q$ as $(\Z / q \Z, +, \cdot)$ with
   two operations $+$ and $\cdot$ and
-  $$\Z / t \Z = \{\overline{x}_t \,|\, x \in \Z, 0 \leq x < t\}$$
-  where $t \Z \triangleleft \Z$ denotes the $t$\textsuperscript{th} multiplicative coset\footnote{
-    from the left and from the right, therefore $t \Z$ is called a normal subgroup of $\Z$
+  $$\Z / q \Z = \{\overline{x}_q \,|\, x \in \Z, 0 \leq x < q\}$$
+  where $q \Z = \{q x \,|\, x \in \Z\} \triangleleft \Z$ denotes the $q$\textsuperscript{th} multiplicative coset\footnote{
+    from the left and from the right, therefore $q \Z$ is called a normal subgroup of $\Z$
   } of the integers and
-  $$\overline{x}_t = \{y \equiv x \mod t \,|\, y \in \Z\}$$
-  is the set of all multiples of $t$ with remainder $x$.
+  $$\overline{x}_q = \{y \equiv x \mod q \,|\, y \in \Z\}$$
+  is the set of all multiples of $q$ with remainder $x$.
   Note that many operations that resulting groups, rings or fields are commonly equipped with,
-  such as addition or multiplication, propagate to an equivalent definition in the ring of integers modulo $t$
-  by considering their result as a congruence class instead of it, which in turn is again an element of $\Z / t \Z$.
-\end{definition}
+  such as addition or multiplication, propagate to an equivalent definition in the ring of integers modulo $q$
+  by considering their result as a congruence class instead of it, which in turn is again an element of $\Z / q \Z$.
+\end{lemma}
+
+This ring is of specific importance in discrete mathematics and can be regarded as a formalisation of modular arithmetic, much of which we will require at a later point in this chapter.
+
+As a first step towards the first central result, \autoref{corollary:bounded-polynomials-mod-q}, we formally introduce polynomial rings and how to carry out addition and multiplication between them.
 
 \begin{definition}{Polynomial Ring over $\Z$}{poly-ring}
   On the set of all complex-valued polynomials with integer coefficients (a function space)
-  $$\Z[X] = \big\{p: \C \mapsto \C \,, p(X) = \sum_{k=0}^\infty a_k X^k, a_k \in \Z \;\forall k \geq 0\big\},$$
-  we can define a commutative ring $(\Z[X], +, \cdot)$ equipped with the
-  standard addition $+$ and multiplication $\cdot$ operations (as an extension over the field $\C$)
-  of polynomials.
+  $$\Z[X] = \big\{p: \C \mapsto \C \,, p(x) = \sum_{k=0}^\infty a_k x^k, a_k \in \Z \;\forall k \geq 0\big\},$$
+  we can define a commutative ring $(\Z[X], +, \cdot)$ equipped with the standard addition $+$ and multiplication $\cdot$ operations (as an extension over the field $\C$) of polynomials.
 \end{definition}
 
 To further elaborate on the polynomial ring operations:
@@ -135,21 +144,21 @@ $\C$ under multiplication with (for instance) the first root $x_1 = e^{2\pi i \f
   $$\Phi_n(x) = \prod_{\stackrel{k=1}{x_k \mathrm{primitive}}}^{n} (x - x_k)$$
   It is unique for each given $n \in \N$.
 \end{definition}
-The number of primitive roots of unity is given by $\varphi(n)$, denoting Euler's totient function which counts the
-natural numbers $m$ less than $n$ who do not share a common divisor $\neq 1$, i.e. $\gcd(m, n) = 1$.
-$\varphi(n)$ therefore also counts the number of primitive roots of unity for $n$,
-consequently also yielding the degree of the $n$\textsuperscript{th} cyclotomic polynomial.
+The number of primitive roots of unity is given by $\varphi(n)$, denoting Euler's totient function which counts the natural numbers $m$ less than $n$ who do not share a common divisor $\neq 1$, i.e. $\gcd(m, n) = 1$.
+$\varphi(n)$ therefore also counts the number of primitive roots of unity for $n$, consequently also yielding the degree of the $n$\textsuperscript{th} cyclotomic polynomial.
 
+An important aspect of cyclotomic polynomials is that they are irreducible over their coefficient space, the integers $\Z$.
 \begin{remark}{Irreducibility of Cyclotomic Polynomials}{cyclotomic-irreducibility}
   Cyclotomic polynomials are always irreducible.
 \end{remark}
+This enables us to \textit{uniquely} define a quotient ring with cyclotomic polynomials as moduli, later.
+In theory, there are multiple equivalent definitions of said ring, but by convention we choose the cyclotomic polynomial because it cannot be simplified further.
 The proof for \autoref{remark:cyclotomic-irreducibility} is quite cumbersome, but can be found in \cite{2002-serge-algebra}.
 
 \begin{theorem}{$2^k$\textsuperscript{th} cyclotomic polynomial}{power-of-2-cyclo-poly}
-  The $n$\textsuperscript{th} cyclotomic polynomial, where $n = 2^k$ ($k \in \N$) is a power of $2$,
-  can be identified as
-  $$\Phi_{n}(x) = x^{n/2} + 1\,.$$
-  Its degree is $n/2$, consistent with $\varphi(2^k) = 2^{k-1} \; \forall k \in \N$.
+  The $m$\textsuperscript{th} cyclotomic polynomial, where $m = 2n = 2^k$ ($k \in \N$) is a power of $2$, can be identified as
+  $$\Phi_{m}(x) = x^{n} + 1\,.$$
+  Its degree is $n$, consistent with $\varphi(2^k) = 2^{k-1} \; \forall k \in \N$.
 \end{theorem}
 Find a short but illustrative proof of \autoref{thm:power-of-2-cyclo-poly} in the \hyperref[chap:appendix]{Appendix}.
 
@@ -168,16 +177,20 @@ $$R = \Z[X] / \Phi_d(X) = \Z[X] / (X^N + 1)\,.$$
 Since every cyclotomic polynomial is irreducible, this is a unique representation of $R$
 without any further possible simplifications.
 
+As promised above, we will require \autoref{lemma:integers-modulo-q} for the fundamental structure underlying the \gls{he} schemes described in the next chapter, defining ourselves a ring with coefficients in said quotient ring $\Z/q\Z$.
+
 \begin{corollary}{Polynomial Ring modulo $q$}{bounded-polynomials-mod-q}
-  Further modifying $R = \Z[X] / (X^N+1)$ to only take coefficients mod $q$, we obtain two equivalent definitions
-  for the same ring:
+  Further modifying $R = \Z[X] / (X^N+1)$ to only take coefficients mod $q$, we obtain two equivalent definitions for the same ring:
   $$R_q = R/qR = (\Z/q\Z)[X] / (X^N+1)$$
   which contains polynomials with integer coefficients modulo $q$ of degree $N-1$.
   Explicitly stated, the set can be written as:
   $$R/qR = \{p: \C \mapsto \C,\; p(x) = \sum_{k=0}^{N-1} a_k x^k \;|\; a_k \in \Z/q\Z\}$$
 \end{corollary}
 
-\subsection{Lattice Cryptography}
+This bounded polynomial ring is central to understanding objects in the next chapter and \autoref{corollary:bounded-polynomials-mod-q} can be regarded as the central result of this section.
+
+\pagebreak
+\section{Lattice Cryptography}
 \label{subsec:lattice-crypto}
 To illustrate the connection of these problems to lattices, we take a closer look at them before considering further details of LWE.
 Most notably, lattice problems are conjectured to be secure against quantum computers \parencite{2018-lattice-problems}.
@@ -313,6 +326,12 @@ Much media attention was earned in the 2000-2010 decade when larger image classi
 Given an input vector $\vec{x} \in \R^n$, the goal of linear regression is to predict the value of a target $t \in \R$, according to some model $M$.
 
 \subsection{Gradient Descent}
+\begin{figure}[H]
+  \centering
+  \inputtikz{figures/gradient-descent}
+  \caption{Illustration of Gradient Descent by \cite{gradient-descent-plot}.}
+\end{figure}
+
 \subsection{Multi-Layered Neural Networks}
 \begin{figure}[H]
   \centering

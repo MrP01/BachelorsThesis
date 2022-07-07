@@ -18,12 +18,10 @@ For \Gls{fhe}, there exist a few schemes in use today with existing implementati
 We will first introduce the BFV scheme (integer arithmetic) as it represents a fundamental building block behind CKKS.
 Due to the inherent applications, this thesis will focus on the CKKS scheme to perform homomorphic operations on (complex-valued) floating point numbers and vectors.
 
-\section{HE using RSA}
+\section{Homomorphic Encryption using RSA}
 In order to illustrate the basic idea behind \Gls{he}, without distancing ourselves too far from the original goal of introducing basic \gls{he} operations used in practice, this short section aims to motivate the definition of ring homomorphisms (cf. \autoref{def:ring-homomorphism}) behind a cryptographic background.
 
-With unpadded RSA, some arithmetic can be performed on the ciphertext - % TODO: find RSA citation
-looking at the encrypted ciphertext $\mathcal{E}(m_1) = (m_1)^r \mod n$
-of the message $m_1$ and $m_2$ respectively, the following holds:
+With unpadded RSA \parencite{1983-rsa}, some arithmetic can be performed on the ciphertext - looking at the encrypted ciphertext $\mathcal{E}(m_1) = (m_1)^r \mod n$ of the message $m_1$ and $m_2$ respectively, the following holds:
 \begin{align*}
   \mathcal{E}(m_1) \cdot \mathcal{E}(m_2)
    & \equiv (m_1)^r (m_2)^r \mod n     \\
@@ -34,10 +32,8 @@ of the message $m_1$ and $m_2$ respectively, the following holds:
 The encryption therefore partially fulfills the properties of a ring homomorphism, which in general terms is defined as follows:
 
 \begin{definition}{Ring Homomorphism}{ring-homomorphism}
-  Given two \hyperref[def:ring]{rings} $(R, +, \cdot)$ and $(S, \oplus, \otimes)$, we call a mapping $\varphi: R \rightarrow S$
-  a ring homomorphism when it satisfies the following conditions:
-  $$\forall a, b \in R: \varphi(a + b) = \varphi(a) \oplus \varphi(b) \wedge \varphi(a \cdot b) =
-    \varphi(a) \otimes \varphi(b)$$
+  Given two \hyperref[def:ring]{rings} $(R, +, \cdot)$ and $(S, \oplus, \otimes)$, we call a mapping $\varphi: R \rightarrow S$ a ring homomorphism when it satisfies the following conditions:
+  $$\forall a, b \in R: \varphi(a + b) = \varphi(a) \oplus \varphi(b) \wedge \varphi(a \cdot b) = \varphi(a) \otimes \varphi(b)$$
 \end{definition}
 
 \section{Gentry's FHE-Scheme and BGV}
@@ -154,8 +150,7 @@ To summarise the parameters and variables, a brief overview of all used symbols 
 \label{sec:ckks}
 The CKKS scheme allows us to perform approximate arithmetic on floating point numbers.
 Essentially, the idea is to extend BFV which allows us to operate on vectors $\vec{y} \in \Z_t^n$, by an embedding approach that allows us to encode a (complex) floating point number vector $\vec{x} \in \R^n (\C^n)$ as an integer vector. A na\"ive approach would be to use a fixed-point embedding:
-\newcommand{\embed}{\mathrm{embed}}
-$$\embed(\vec{x}) = \vec{x} \cdot F$$
+$$\cryptop{Embed}(\vec{x}) = \vec{x} \cdot F$$
 with $F \in \Z$. In decimal form, for instance with $F = 1000$, we could effectively encode three decimal places of the original vector $\vec{x}$.
 % ... TODO: scale explodes, confer Roman's PETS lecture -> motivation for CKKS.
 

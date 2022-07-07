@@ -54,12 +54,12 @@ Precision (also referred to as PPV, positive predictive value) refers to the abi
 Average Precision: \SI{97.37}{\percent} \\
 Average Recall: \SI{97.36}{\percent}
 
+% TODO: maybe analyse the same as above for the encrypted network as well?
+
 \section{Performance Benchmarks}
 This chapter includes runtime and communication overhead analysis.
 
 The following benchmarks were accumulated on an Intel \textregistered i7-5600U CPU running at \SI{2.6}{\giga\hertz} as the average over 3 individual runs with different test vectors, consistent accross different parameter runs.
-
-Plain runtime: xxx
 
 \begin{table}[H]
   \centering
@@ -92,3 +92,5 @@ Plain runtime: xxx
 \end{table}
 
 \todo{Multi-row table for better overview?}
+
+Without any encryption, the neural network classifies the full 10,000 image dataset in \SI{515}{\milli\second} on the same machine.
