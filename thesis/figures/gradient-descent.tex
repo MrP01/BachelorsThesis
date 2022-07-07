@@ -3,7 +3,7 @@
       decoration={show path construction,
           moveto code={},
           lineto code={
-              \draw[#1] (\tikzinputsegmentfirst) --  (\tikzinputsegmentlast);
+              \draw[#1, black, line width=3pt] (\tikzinputsegmentfirst) --  (\tikzinputsegmentlast);
             },
           curveto code={},
           closepath code={},
@@ -29,9 +29,13 @@
 }%
 
 \begin{tikzpicture}
-  \begin{axis}[width=12cm, declare function={f(\x,\y)=cos(deg(\x)*0.8)*cos(deg(\y)*0.6)*exp(0.1*\x);}]
-    \addplot3[surf,shader=interp,domain=-4:4,%samples=81
-    ]{f(x,y)};
+  \begin{axis}[
+      hide axis,
+      width=12cm,
+      declare function={f(\x,\y)=cos(deg(\x)*0.8)*cos(deg(\y)*0.6)*exp(0.1*\x);},
+      colormap/cool
+    ]
+    \addplot3[mesh,shader=interp,domain=-4:4,samples=50]{f(x,y)};
     \edef\myx{0.15} % first x coordinate
     \edef\myy{-0.15} % first y coordinate
     \edef\mystep{-2}% negative values mean descending
@@ -44,6 +48,6 @@
         \pgfmathsetmacro{\myf}{f(\myx,\myy)}
         \edef\lstCoords{\lstCoords\space (\myx,\myy,\myf)}
       }
-    \addplot3[samples y=0,arrowed] coordinates \lstCoords;
+    \addplot3[samples y=0, arrowed] coordinates \lstCoords;
   \end{axis}
 \end{tikzpicture}
