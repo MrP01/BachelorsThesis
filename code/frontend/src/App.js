@@ -188,7 +188,7 @@ class ClassificationComponent extends React.Component {
     return (
       <Row>
         <ProgressBar className={self.state.calculating ? "" : "transparent"} />
-        <Col m={6} s={12}>
+        <Col m={6} s={6}>
           <ReactPainter
             width={280}
             height={280}
@@ -215,7 +215,7 @@ class ClassificationComponent extends React.Component {
           />
           <p className="grey-text">Each grid cell represents one pixel in the 28x28 image.</p>
         </Col>
-        <Col m={6}>
+        <Col m={6} s={6}>
           <div className="card-panel z-depth-1">
             <div className="row valign-wrapper">
               <div className="col s2">
@@ -238,9 +238,11 @@ class ClassificationComponent extends React.Component {
           <h6>Probabilities</h6>
           <ProbabilityDisplay probabilities={this.state.probabilities} />
         </Col>
-        <p>By clicking on one of the following test images, you can load it to the canvas directly.</p>
         {this.state.testImagesAvailable && (
           <Col s={12}>
+            <p style={{ marginTop: 0, marginBottom: 4 }} className={"center"}>
+              By clicking on one of the following test images, you can load it to the canvas directly:
+            </p>
             {this.testImages.map((img, index) => (
               <DemoImageComponent imageData={img} key={index} onClick={self.loadTestImage.bind(self)} />
             ))}
@@ -270,8 +272,12 @@ function App() {
         style={{ backgroundColor: "cornflowerblue" }}
       ></Navbar>
       <Container>
-        <h3 className={"center"}>Classify your Secret Data</h3>
-        <p>Using state-of-the-art Fully Homomorphic Encryption, directly from within the browser using Web Assembly.</p>
+        <h3 className={"center"} style={{ marginTop: 48 }}>
+          Classify your Secret Data
+        </h3>
+        <p className={"center"}>
+          Using state-of-the-art Fully Homomorphic Encryption, directly from within the browser, based on Web Assembly.
+        </p>
         <ClassificationComponent />
       </Container>
     </div>
