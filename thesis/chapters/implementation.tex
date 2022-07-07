@@ -110,6 +110,8 @@ This 'flaw' can be mitigated by a simple zero-padding approach in order to make 
   \caption[Image adapted from \cite{2018-gazelle}]{The diagonal method to multiply a square matrix with a vector.}
 \end{figure}
 
+\todo{Kontext einfügen}
+
 \begin{theorem}{Diagonal Method}{diagonal-method}
   Given a matrix $M \in \R^{t \times t}$ and a vector $\vec{x} \in \R^t$,
   the dot product between the two can be expressed as
@@ -124,6 +126,8 @@ This 'flaw' can be mitigated by a simple zero-padding approach in order to make 
   \inputtikz{figures/generated/rotation-error}
   \caption{Diagonal Method error development after each rotation of the input vector}
 \end{figure}
+
+\todo{Interpretation des Obigen}
 
 \subsection{The Hybrid Method}
 \begin{figure}[H]
@@ -179,6 +183,7 @@ In order to reduce the number of rotations required, one can make use of the \te
 \end{theorem}
 
 A proof of the above theorem can be found in the \hyperref[chap:appendix]{Appendix}.
+
 \todo{Proof lieber hier oder im Appendix?}
 
 Note that the optimized matrix-vector multiplication only requires $t_1 + t_2$ as we can store the $t_1$ inner rotations of the vector $x$ for the upcoming evaluations.
