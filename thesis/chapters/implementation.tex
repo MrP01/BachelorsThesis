@@ -186,8 +186,8 @@ A proof of the above theorem can be found in the \hyperref[chap:appendix]{Append
 
 \todo{Proof lieber hier oder im Appendix?}
 
-Note that the optimized matrix-vector multiplication only requires $t_1 + t_2$ as we can store the $t_1$ inner rotations of the vector $x$ for the upcoming evaluations.
-For larger matrices and vectors (larger $t$), $t_1 + t_2$ are indeed much smaller than the conventional number of required rotations in the Diagonal or Hybrid method for instance which was the point of this modification in the first place.
+Note that the optimized matrix-vector multiplication only requires $t_1 + t_2$ as we can store the $t_1$ inner rotations of the vector $\vec{x}$ for the upcoming evaluations.
+For larger matrices and vectors (larger $t$), $t_1 + t_2$ are indeed much smaller than the conventional number of required rotations $t = t_1 \cdot t_2$ in the diagonal or hybrid method for instance, which was the point of this modification in the first place.
 
 \section{Polynomial Evaluation}
 From the implementation perspective, there are three properties to watch out for when working with SEAL ciphertexts:

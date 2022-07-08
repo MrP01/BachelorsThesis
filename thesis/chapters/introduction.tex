@@ -1,7 +1,7 @@
 \chapter{Introduction}
 \label{chap:introduction}
 The most well-known and widely used asymmetric ('public-key') cryptographic scheme, published by the trio \name{Rivest}-\name{Shamir}-\name{Adleman} in 1977 and known as \textit{RSA}, is based on the hardness assumption of the integer factorisation problem (factorising a large 2-composite number into its two prime factors $p$ and $q$ is hard).
-As of today, this factorisation problem has not been proven to be in NP, yet it is suspected that it might indeed be NP-complete (i.e. \hyperref[def:np-hard]{NP-hard} while still being in NP) when modelled using a traditional Turing machine.
+As of today, this factorisation problem has not been proven to be in the \gls{np} complexity class, yet it is suspected that it might indeed be \gls{np}-complete (i.e. \hyperref[def:np-hard]{NP-hard} while still being in \gls{np}) when modelled using a traditional Turing machine.
 Since the advent of quantum computation, this situation changed as a whole with Peter \name{Shor}'s algorithm, threatening the security of many cryptosystems, for instance RSA which is still widely used today despite its known problems.
 
 As it stands, lattice-based cryptography presents a solution to a politically and socially problematic situation in which few parties world-wide, with access to a sufficiently powerful quantum computer, may be able to decrypt most of today's digital communication.
@@ -17,7 +17,7 @@ And finally, building upon concepts introduced in the former, the \gls{ckks} sch
 
 Machine Learning allows a computer to 'learn' from specifically structured data using linear regression or similar methods, and to apply this 'knowledge' to new, unknown inputs.
 In its simplest form, or even using a multi-layered neural network, this only requires two different operations on numbers (or even better, vectors): addition and multiplication.
-Using an \gls{he} scheme such as the ones mentioned above and described in \autoref{chap:homomorphic-encryption}, both are given and PPML (Privacy-Preserving Machine Learning) applications are born!
+Using an \gls{he} scheme such as the ones mentioned above and described in \autoref{chap:homomorphic-encryption}, both are given and \gls{ppml} applications are born!
 
 The present thesis not only focusses on theoretical remarks but also includes a publicly available implementation of an \gls{he} classification server written in C++ and a compact graphical user interface to interact with.
 
@@ -31,5 +31,5 @@ The present thesis not only focusses on theoretical remarks but also includes a 
 
 The following \autoref{chap:background} and \autoref{chap:homomorphic-encryption} aim to introduce most of the necessary theory to understand the homomorphic encryption schemes used in practice today, as well as the simple machine learning approaches involved in securely classifying images as a service.
 
-Next, \autoref{chap:implementation} then focusses on the concrete system at hand, how the classification of handwritten digits (using the MNIST dataset) works in detail and what challenges arise when dealing with a system which acts not only on plain, but also encrypted data.
+Next, \autoref{chap:implementation} then focusses on the concrete system at hand, how the classification of handwritten digits (using the \glstext{mnist} dataset) works in detail and what challenges arise when dealing with a system which acts not only on plain, but also encrypted data.
 The subsequent \autoref{chap:results} analyses the neural network performance in terms of its accuracy, digit-wise precision and recall, documents benchmarks of runtime, message size and accuracy and finally includes a visualisation of the ciphertext (containing all information about the original image).
