@@ -229,14 +229,14 @@ For simplicity, we commonly choose $T$ as the 'first half' of $\Z_d^*$ when sort
 }
 
 \begin{definition}{Discretisation to an element of $\underline{\sigma}(R)$}{}
-  Using one of several round-off algorithms (c.f. \cite{2013-rlwe-toolkit}), given an element of $H$, define a rounding operation $\underline{\rho}: H \mapsto \underline{\sigma}(R)$ that maps an $h \in H$ to its closest element in $\underline{\sigma}(R)$, also denoted as
-  $$\underline{\rho}(h) = \lfloor h \rceil_{\underline{\sigma}(R)}\,.$$
-  Further let $\underline{\rho_\delta}(h) = \lfloor \delta \cdot h \rceil_{\underline{\sigma}(R)}$ denote the same rounding operation but with prior scaling by a scalar factor $\delta$.
+  Using one of several round-off algorithms (c.f. \cite{2013-rlwe-toolkit}), given an element of $H$, define a rounding operation $\underline{\rho}: H \mapsto \underline{\sigma}(R)$ that maps an $\vec{h} \in H$ to its closest element in $\underline{\sigma}(R)$, also denoted as
+  $$\underline{\rho}(\vec{h}) = \lfloor \vec{h} \rceil_{\underline{\sigma}(R)}\,.$$
+  Further let $\underline{\rho_\delta}(\vec{h}) = \lfloor \delta \cdot \vec{h} \rceil_{\underline{\sigma}(R)}$ denote the same rounding operation but with prior scaling by a scalar factor $\delta$.
   Note that $\underline{\rho}\inv$ is given directly as the identity operation because all elements of its domain are already elements of its image. Similarly, $\underline{\rho_\delta}\inv(\vec{y}) = \delta\inv \cdot \vec{y}$.
 \end{definition}
 
 Because it is not essential to understanding the encryption scheme, we will skip over concrete implementations of the rounding procedure $\underline{\rho}$.
-Note that for choosing a 'close' element $g \in H$, we must first introduce a sense of proximity, in this case done by the $l_\infty$-norm $||g - h||_\infty$ of the difference between $h \in H$ and $g$.
+Note that for choosing a 'close' element $\vec{g} \in H$, we must first introduce a sense of proximity, in this case done by the $l_\infty$-norm $||\vec{g} - \vec{h}||_\infty$ of the difference between $\vec{h} \in H$ and $\vec{g}$.
 
 \pagebreak
 \begin{definition}{The CKKS Scheme}{ckks-scheme}

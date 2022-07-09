@@ -1,0 +1,16 @@
+\def\nroots{5}
+\definecolor{grey}{HTML}{aaaaaa}
+\definecolor{arrowcolor}{HTML}{00A8FF}
+\begin{tikzpicture}[dot/.style={draw,fill,circle,inner sep=1pt},scale=2]
+  \draw[->, draw=grey] (-1.5,0) -- (1.5,0) node[above] {$\Re$};
+  \draw[->, draw=grey] (0,-1.5) -- (0,1.5) node[left] {$\Im$};
+  \draw[help lines] (0,0) circle (1);
+
+  \node[dot,label={below right:$(0+0i)$}] (O) at (0,0) {};
+  \foreach \i in {1,...,\nroots} {
+      \node[dot,label={\i*360/\nroots-(\i==\n)*45:$\xi_{\i} = e^{2\pi i \frac{\i}{\nroots}}$}] (w\i) at (\i*360/\nroots:1) {};
+      \draw[->, draw=arrowcolor, opacity={1 - \i/(\nroots+2)}] (O) -- (w\i);
+    }
+  \draw[->, draw=grey] (0:.3) arc (0:360/\nroots:.3);
+  \node at (360/\nroots/2:.5) {$\frac{2\pi}{\nroots}$};
+\end{tikzpicture}

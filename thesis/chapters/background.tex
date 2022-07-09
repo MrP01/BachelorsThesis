@@ -85,14 +85,12 @@ As a first step towards the first central result, \autoref{corollary:bounded-pol
 
 To further elaborate on the polynomial ring operations:
 \begin{itemize}
-  \item In their coefficient representations $\vec{p} = (p_j)_{j\in\N} = (p_0, p_1, p_2, ...)$ (which are sequences) and $\vec{q} = (q_j)_{j\in\N} = (q_0, q_1, q_2, ...)$,
-        an addition of two polynomials $p, q \in \Z[X]$ is equivalent to the element-wise addition of their coefficient sequences
+  \item In their coefficient representations $\vec{p} = (p_j)_{j\in\N} = (p_0, p_1, p_2, ...)$ (which are sequences) and $\vec{q} = (q_j)_{j\in\N} = (q_0, q_1, q_2, ...)$, an addition of two polynomials $p, q \in \Z[X]$ is equivalent to the element-wise addition of their coefficient sequences
         \begin{align*}
           (p + q)(X) & = \sum_{k=0}^\infty p_k X^k + \sum_{k=0}^\infty q_k X^k = \sum_{k=0}^\infty (p_k + q_k) X^k \\
                      & = \langle (\vec{p} + \vec{q}), \{X^0, X^1, X^2, ...\}^T \rangle
         \end{align*}
-        which indeed satisfies the additive \hyperref[def:ring]{ring axioms}
-        due to the existing structure of the underlying field $\C$.
+        which indeed satisfies the additive \hyperref[def:ring]{ring axioms} due to the existing structure of the underlying field $\C$.
   \item The multiplication operation can be defined using a discrete convolution of the coefficient vectors
         $$r(X) = (p \cdot q)(X) = (\sum_{k=0}^\infty p_k X^k) \cdot (\sum_{l=0}^\infty q_l X^l)
           = \sum_{k=0}^\infty \sum_{l=0}^\infty p_k q_l X^{k+l}
@@ -101,9 +99,7 @@ To further elaborate on the polynomial ring operations:
         $$r_k = \sum_{l=0}^k p_l q_{k-l} \;\Leftrightarrow\; \vec{r} = \vec{p} * \vec{q}$$
         in this context also referred to as the \name{Cauchy}-product. Therefore,
         $$(p \cdot q)(X) = \langle (\vec{p} * \vec{q}), \{X^0, X^1, X^2, ...\}^T \rangle.$$
-        Again, this generally applicable approach satisfies the multiplicative \hyperref[def:ring]{ring axioms}
-        and even satisfies commutativity due to the existing structure of the underlying field $\C$
-        and the symmetry of convolutions.
+        Again, this generally applicable approach satisfies the multiplicative \hyperref[def:ring]{ring axioms} and even satisfies commutativity due to the existing structure of the underlying field $\C$ and the symmetry of convolutions.
 \end{itemize}
 
 Where $\langle \cdot, \cdot \rangle$ denotes the dot (scalar) product between two vectors.
@@ -112,8 +108,7 @@ Polynomials with degree $\geq 1$ over the complex numbers can always be factoris
 Polynomials over the integers however, cannot always be factorised further, yielding the definition of an irreducible polynomial.
 
 \begin{definition}{Irreducible Polynomials}{irreducible-polys}
-  A polynomial is called irreducible \glstext{iff} it cannot be written as a product of other polynomials
-  \textsl{while staying in the same coefficient space}.
+  A polynomial is called irreducible \glstext{iff} it cannot be written as a product of other polynomials \textsl{while staying in the same coefficient space}.
 \end{definition}
 
 \subsection{Cyclotomic Polynomials}
@@ -138,6 +133,12 @@ Its roots, found by solving $p(x) = 0$ for $x$, yielding $x^n = 1 \leftrightarro
 Due to the fact that for any $k, l \in \Z$, their product $x_k \cdot x_l$ is also a root of unity, and
 $x_{k+jn} = x_k \; \forall j \in \Z$, they clearly comprise a cyclic Abelian group over the complex numbers
 $\C$ under multiplication with (for instance) the first root $x_1 = e^{2\pi i \frac{1}{n}}$ as its generator.
+
+\begin{figure}
+  \centering
+  \inputtikz{figures/nth-roots-of-unity}
+  \caption[]{The 5\textsuperscript{th} roots of unity visualised on the complex plane. Obviously, they all lie on the unit circle $|z| = 1$.}
+\end{figure}
 
 \begin{definition}{Cyclotomic Polynomial}{cyclotomic-poly}
   Given the $n$\textsuperscript{th} roots of unity $\{x_k\}$, we can define the $n$\textsuperscript{th}
