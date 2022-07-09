@@ -62,7 +62,6 @@ For the sake of compactness, we stick to this notation for the rest of this sect
 
 \pagebreak
 \subsection{The Naïve Method}
-\todo{Hier fehlt das * im Bild}
 \begin{figure}[H]
   \centering
   \inputtikz{figures/generated/matmul-naive}
@@ -212,7 +211,7 @@ From the implementation perspective, there are three properties to watch out for
 \paragraph{Multiplication}
 Each time one multiplies two ciphertexts, the scales multiply (logarithmically, they add up, i.e. the bits are added together).
 The chain index reduces by 1. The chain index of an encoded ciphertext depends on the coeff moduli.
-There must be enough bits remaining to perform the multiplication, namely log2(scale) bits.
+There must be enough bits remaining to perform the multiplication, namely $\log2(scale)$ bits.
 
 \paragraph{Addition}
 The scales must be the same, but luckily they will not change.
@@ -231,8 +230,7 @@ The scales must be the same, but luckily they will not change.
 % 'transparent ciphertexts (a.k.a. ciphertexts whose second polynomial is zero) are malformed and do not need the secret key to decrypt'
 
 \section{Neural Network}
-The neural network was trained using the unencrypted standard MNIST dataset of 50,000 images,
-split into \SI{90}{\percent} training and \SI{10}{\percent} validation data.
+The neural network was trained using the unencrypted standard \gls{mnist} dataset of 50,000 images, split into \SI{90}{\percent} training and \SI{10}{\percent} validation data.
 
 \begin{figure}[H]
   \centering
