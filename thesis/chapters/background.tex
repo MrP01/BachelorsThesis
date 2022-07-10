@@ -108,45 +108,40 @@ Polynomials with degree $\geq 1$ over the complex numbers can always be factoris
 Polynomials over the integers however, cannot always be factorised further, yielding the definition of an irreducible polynomial.
 
 \begin{definition}{Irreducible Polynomials}{irreducible-polys}
-  A polynomial is called irreducible \glstext{iff} it cannot be written as a product of other polynomials \textsl{while staying in the same coefficient space}.
+  A polynomial is called irreducible \gls{iff} it cannot be written as a product of other polynomials \textsl{while staying in the same coefficient space}.
 \end{definition}
 
 \subsection{Cyclotomic Polynomials}
 Due to their interesting structure and efficient computability, in the schemes introduced in the following chapter, certain polynomials (\autoref{corollary:bounded-polynomials-mod-q}) are chosen as representations of plaintexts and ciphertexts.
 An important concept is that of cyclotomic ('circle-cutting') polynomials, which we will discuss in a bit more detail here.
 
-An important polynomial is $$p: \C \mapsto \C, \; p(x) = x^n - 1$$.
+An important polynomial is $$p: \C \mapsto \C, \; p(x) = x^n - 1 \,.$$
 Its roots, found by solving $p(x) = 0$ for $x$, yielding $x^n = 1 \leftrightarrow x_k = \sqrt[n]{1}$ are referred to as the $n$\textsuperscript{th} roots of unity, of which there are multiple for each $n \in \N$.
 
 \begin{lemma}{The $n$\textsuperscript{th} roots of unity}{nth-roots-of-unity}
-  For some integer $n \in \N$, the $n$ complex roots $x_1, x_2, ..., x_n \in \C$ of unity
-  can be found as $$x_k = e^{2\pi i \frac{k}{n}} \quad k \in \{1, 2, ..., n\}$$
-  with $i$ the imaginary unit.
-  Using \name{Euler}'s identity, their real and imaginary components can be explicitly found as
-  $x_k = \cos(2\pi \frac{k}{n}) + i \sin(2\pi \frac{k}{n})$.
+  For some integer $n \in \N$, the $n$ complex roots $x_1, x_2, ..., x_n \in \C$ of unity can be found as $$x_k = e^{2\pi i \frac{k}{n}} \quad k \in \{1, 2, ..., n\}$$ with $i$ the imaginary unit.
+  Confer \autoref{fig:nth-roots-of-unity}.
+  Using \name{Euler}'s identity, their real and imaginary components can be explicitly found as $x_k = \cos(2\pi \frac{k}{n}) + i \sin(2\pi \frac{k}{n})$.
 
-  An $n$\textsuperscript{th} root of unity $y$ is referred to as \textit{primitive}, \glstext{iff}
-  there exists no $m < n$ for which that root $y$ is also an $m$\textsuperscript{th} root of unity, i.e. $y^m \neq 1$.
-  An equivalent indicator is when $\gcd(m, n) = 1$.
-  \todo{add an illustration of the unit circle?}
+  An $n$\textsuperscript{th} root of unity $y$ is referred to as \textit{primitive}, \gls{iff} there exists no $m < n$ for which that root $y$ is also an $m$\textsuperscript{th} root of unity, i.e. $y^m \neq 1$.
+  An equivalent indicator of a primitive root is $\gcd(m, n) = 1$, referring to the greatest common divisor between $m$ and $n$ which is $1$ \gls{iff} they are mutually prime.
 \end{lemma}
-Due to the fact that for any $k, l \in \Z$, their product $x_k \cdot x_l$ is also a root of unity, and
-$x_{k+jn} = x_k \; \forall j \in \Z$, they clearly comprise a cyclic Abelian group over the complex numbers
-$\C$ under multiplication with (for instance) the first root $x_1 = e^{2\pi i \frac{1}{n}}$ as its generator.
+Due to the fact that for any $k, l \in \Z$, their product $x_k \cdot x_l$ is also a root of unity, and $x_{k+jn} = x_k \; \forall j \in \Z$, they clearly comprise a cyclic Abelian group over the complex numbers $\C$ under multiplication with (for instance) the first root $x_1 = e^{2\pi i \frac{1}{n}}$ as its generator.
 
 \begin{figure}
   \centering
   \inputtikz{figures/nth-roots-of-unity}
-  \caption[]{The 5\textsuperscript{th} roots of unity visualised on the complex plane. Obviously, they all lie on the unit circle $|z| = 1$.}
+  \caption[]{The 5\textsuperscript{th} roots of unity visualised on the complex plane. Obviously, they all lie on the unit circle $|z| = 1$, motivating the name of cyclotomic, 'circle-cutting', polynomials, whose roots cut the unit circle into multiple sectors.}
+  \label{fig:nth-roots-of-unity}
 \end{figure}
 
 \begin{definition}{Cyclotomic Polynomial}{cyclotomic-poly}
   Given the $n$\textsuperscript{th} roots of unity $\{x_k\}$, we can define the $n$\textsuperscript{th}
   cyclotomic polynomial $\Phi_n \in \Z[X]$ as the product over all primitive roots of unity
-  $$\Phi_n(x) = \prod_{\stackrel{k=1}{x_k \mathrm{primitive}}}^{n} (x - x_k)$$
+  $$\Phi_n(x) = \prod_{\stackrel{k=1}{x_k \mathrm{primitive}}}^{n} (x - x_k) \,.$$
   It is unique for each given $n \in \N$.
 \end{definition}
-The number of primitive roots of unity is given by $\varphi(n)$, denoting Euler's totient function which counts the natural numbers $m$ less than $n$ who do not share a common divisor $\neq 1$, i.e. $\gcd(m, n) = 1$.
+The number of primitive roots of unity is given by $\varphi(n)$, denoting \name{Euler}'s totient function which counts the natural numbers $m$ less than $n$ who do not share a common divisor $\neq 1$, i.e. $\gcd(m, n) = 1$.
 $\varphi(n)$ therefore also counts the number of primitive roots of unity for $n$, consequently also yielding the degree of the $n$\textsuperscript{th} cyclotomic polynomial.
 
 An important aspect of cyclotomic polynomials is that they are irreducible over their coefficient space, the integers $\Z$.
