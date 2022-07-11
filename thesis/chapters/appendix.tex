@@ -44,7 +44,7 @@
   \parencite{power-of-2-cyclo-poly}
 \end{proof}
 
-\begin{proof}{Proof of \autoref{thm:bsgs}}
+\begin{proof}[Proof of \autoref{thm:bsgs}]
   Starting from the adapted matrix-multiplication expression $P = (P_1, P_2, ..., P_t)^T \in \R^t$, we want to show that we indeed end up with an authentic matrix-vector product.
   \begin{align*}
     P = \bigg\{\sum_{k=0}^{t_2-1} \rot_{(kt_1)} \big(
@@ -67,9 +67,9 @@
   leading to
   \begin{align*}
     P_i = \sum_{k=0}^{t_2-1} \sum_{j=0}^{t_1-1} m'_{kt_1+j,(i+kt_1)} x_{(i+kt_1)+j}
-    = \sum_{k=0}^{t_2-1} \sum_{j=0}^{t_1-1} M_{i-\lfloor\frac{j}{t_1}\rfloor t_1, i+kt_1+j-\lfloor\frac{j}{t_1}\rfloor t_1} x_{(i+kt_1)+j}
+    = \sum_{k=0}^{t_2-1} \sum_{j=0}^{t_1-1} M_{i-\lfloor\frac{j}{t_1}\rfloor t_1, i+kt_1+j-\lfloor\frac{j}{t_1}\rfloor t_1} x_{(i+kt_1)+j} \,.
   \end{align*}
-  . Noticing that the downward rounded fraction $\lfloor\frac{j}{t_1}\rfloor$ vanishes
+  Noticing that the downward rounded fraction $\lfloor\frac{j}{t_1}\rfloor$ vanishes
   in a sum with $j$ running from $0$ to $t_1-1$, we can simplify to
   \begin{align*}
     P_i = \sum_{k=0}^{t_2-1} \sum_{j=0}^{t_1-1} M_{i,i+kt_1+j} x_{i+kt_1+j}

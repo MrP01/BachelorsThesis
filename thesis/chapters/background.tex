@@ -1,10 +1,10 @@
 \chapter{Background}
 \label{chap:background}
 
-The discussion of the homomorphic encryption schemes following in \autoref{chap:homomorphic-encryption} requires some mathematical background that will be introduced here, aiming for a consistent overview rather than full completeness.
+The discussion of the \gls{he} schemes following in \autoref{chap:homomorphic-encryption} requires some mathematical background that will be introduced here, aiming for a consistent overview rather than full completeness.
 The last two sections introduce same background on Machine Learning and provide an outlook on Quantum Computation and why it affects cryptography today.
 
-% \section{Spicy Math for Homomorphic Encryption}
+% \section{Spicy Math for \gls{he}}
 \paragraph{Notational Conventions}
 Let $\N$ denote the natural numbers without $0$, i.e. $\N = \{n \in \Z \,|\, n > 0\}$.
 For a probability distribution $\chi$ over a set $R$, let sampling a value $x \in R$ from the probability distribution be denoted by $x \leftarrow \chi$.
@@ -163,13 +163,11 @@ Find a short but illustrative proof of \autoref{thm:power-of-2-cyclo-poly} in th
   One can construct the quotient ring $(R, +, \cdot)$ as
   $$R = \Z[X] / (X^N + 1)$$
   where $(X^N + 1)$ denotes the set of all polynomial multiples of the polynomial $p \in \Z[X], p(x) = x^N + 1$, so
-  $$(X^N+1) = \{q: \C \mapsto \C,\; q(x) = r(x) \cdot (x^N+1) \;|\; r \in \Z[X]\}$$
+  $$(X^N+1) = \{q: \C \mapsto \C,\; q(x) = r(x) \cdot (x^N+1) \;|\; r \in \Z[X]\} \,.$$
   The elements of $R$ are then polynomials with integer coefficients of maximum degree $N-1$.
 \end{definition}
 
-If $N$ is a power of $2$, according to \autoref{thm:power-of-2-cyclo-poly},
-$R$ is the set of integer-coefficient polynomials reduced modulo $\Phi_d(X)$
-the $d$\textsuperscript{th} cyclotomic polynomial with $N = \varphi(d) = \frac{d}{2}$.
+If $N$ is a power of $2$, according to \autoref{thm:power-of-2-cyclo-poly}, $R$ is the set of integer-coefficient polynomials reduced modulo $\Phi_d(X)$ the $d$\textsuperscript{th} cyclotomic polynomial with $N = \varphi(d) = \frac{d}{2}$, where $R$ is % TODO
 $$R = \Z[X] / \Phi_d(X) = \Z[X] / (X^N + 1)\,.$$
 Since every cyclotomic polynomial is irreducible, this is a unique representation of $R$
 without any possible further simplifications.
@@ -238,14 +236,14 @@ Examples include collision resistant hash functions, signatures, pseudorandom fu
   \centering
   \inputtikz{figures/lattice}
   \caption{Illustration of a standard lattice $\lat$ over the integers $\Z$
-    with two basis vectors $\vec{b}_1$ and $\vec{b}_2$, c.f. \autoref{def:lattice}.
+    with two basis vectors $\vec{b}_1$ and $\vec{b}_2$, cf. \autoref{def:lattice}.
     The shortest vector problem in this case is solved by $\vec{x} = 0 \vec{b}_1 \pm 1 \vec{b}_2$.}
   \label{fig:lattice}
 \end{figure}
 
 \subsection{Learning with Errors (LWE)}
 \label{subsec:lwe}
-Next, we would like to consider \Gls{lwe}, a computing problem that is believed to be sufficiently hard to be used in cryptography and, most notably, is not yet solvable in linear time by a quantum algorithm (c.f. \autoref{sec:post-quantum-sec}).
+Next, we would like to consider \Gls{lwe}, a computing problem that is believed to be sufficiently hard to be used in cryptography and, most notably, is not yet solvable in linear time by a quantum algorithm (cf. \autoref{sec:post-quantum-sec}).
 Its hardness assumptions are related to GapSVP and were first formally proven by \citeauthor{2005-lwe-original}, for which he received the 2018 Gödel price.
 
 \begin{definition}{LWE-Distribution $A_{\vec{s}, \chi_{error}}$}{lwe-dist}
@@ -312,7 +310,7 @@ The main advantage of RLWE over LWE is that is conceptually similar and yet simp
 \pagebreak
 \section{Machine Learning}
 Undoubtedly one of the most prevalent concepts in todays computing world, \gls{ml} has shaped how computers think and how we interact with them significantly.
-As Shafi \name{Goldwasser} puts it, 'Machine Learning is somewhere in the intersection of Artificial Intelligence, Statistics and Theoretical Computer Science' \parencite{goldwasserTalk2018}.
+As Shafi \name{Goldwasser} puts it, \textquote[\cite{goldwasserTalk2018}]{\textit{Machine Learning is somewhere in the intersection of Artificial Intelligence, Statistics and Theoretical Computer Science}}.
 
 Within the scope of this thesis, the basics of neural networks and associated learning methods shall be covered, limited to the category of supervised learning problems (as opposed to unsupervised learning problems).
 Supervised learning refers to the machine \textit{training} an algorithm to match some input data (features) with corresponding output data (targets), often related to pattern recognition.

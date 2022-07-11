@@ -1,4 +1,4 @@
-\chapter{Homorphic Encryption}
+\chapter{Homomorphic Encryption}
 \label{chap:homomorphic-encryption}
 
 \section{Basics of Fully Homomorphic Encryption}
@@ -7,12 +7,11 @@ One can distinguish three flavors of it, Partial-, Somewhat- and \gls{fhe}.
 
 For \Gls{fhe}, there exist a few schemes in use today with existing implementations.
 \begin{itemize}
-  \item \gls{bfv} scheme for integer arithmetic
-        (\cite{2012-fv-original}, \cite{2012-brakerski}).
+  \item \gls{bfv} scheme for integer arithmetic \parencite{2012-fv-original, 2012-brakerski}.
   \item \gls{bgv} scheme for integer arithmetic \parencite{2012-bgv-original}.
   \item \gls{ckks} scheme for (complex) floating point arithmetic \parencite{2017-ckks-original}.
-  \item Ducas-Micciancio (FHEW) and Chillotti-Gama-Georgieva-Izabachene (TFHE) schemes for Boolean circuit evaluation
-        \parencite{2019-tfhe-original}.
+  \item \gls{fhew} scheme for Boolean circuit evaluation \parencite{2015-fhew-original}.
+  \item \gls{tfhe} scheme for Boolean circuit evaluation \parencite{2019-tfhe-original}.
 \end{itemize}
 
 We will first introduce the BFV scheme (integer arithmetic) as it represents a fundamental building block behind CKKS.
@@ -37,7 +36,7 @@ The encryption therefore partially fulfills the properties of a ring homomorphis
   $$\forall a, b \in R: \varphi(a + b) = \varphi(a) \oplus \varphi(b) \wedge \varphi(a \cdot b) = \varphi(a) \otimes \varphi(b)$$
 \end{definition}
 
-As we can see, the term homomorphic encryption stems from the ability to perform computations on encrypted data while ensuring the same results are obtained when the same operations are applied to the original data.
+As we can see, the term \gls{he} stems from the ability to perform computations on encrypted data while ensuring the same results are obtained when the same operations are applied to the original data.
 
 \section{Gentry's FHE-Scheme and BGV}
 \cite{2009-gentry-fhe-original}
@@ -220,6 +219,7 @@ Since $(T, \cdot)$ forms a normal subgroup under multiplication, we must have th
 \end{align*}
 using the above Python code. An example of an invalid subset $T$ that does cover the whole original set $\Z_d^*$ would be $T = \{1, 7, 9, 15\}$.
 
+% TODO: as above -> ref
 For the purposes of CKKS, we simply choose a global $T$ as above that is constant for our encoding and decoding procedure and a given $d$.
 The inverse natural projection $\underline{\pi}\inv$ then uniquely constructs a vector in $H$ by filling in elements $\overline{z_j}$ for $j \notin T$ into $\vec{z}$.
 For simplicity, we commonly choose $T$ as the 'first half' of $\Z_d^*$ when sorting in an ascending manner as it is always a valid choice.
@@ -229,7 +229,7 @@ For simplicity, we commonly choose $T$ as the 'first half' of $\Z_d^*$ when sort
 }
 
 \begin{definition}{Discretisation to an element of $\underline{\sigma}(R)$}{}
-  Using one of several round-off algorithms (c.f. \cite{2013-rlwe-toolkit}), given an element of $H$, define a rounding operation $\underline{\rho}: H \mapsto \underline{\sigma}(R)$ that maps an $\vec{h} \in H$ to its closest element in $\underline{\sigma}(R)$, also denoted as
+  Using one of several round-off algorithms (cf. \cite{2013-rlwe-toolkit}), given an element of $H$, define a rounding operation $\underline{\rho}: H \mapsto \underline{\sigma}(R)$ that maps an $\vec{h} \in H$ to its closest element in $\underline{\sigma}(R)$, also denoted as
   $$\underline{\rho}(\vec{h}) = \lfloor \vec{h} \rceil_{\underline{\sigma}(R)}\,.$$
   Further let $\underline{\rho_\delta}(\vec{h}) = \lfloor \delta \cdot \vec{h} \rceil_{\underline{\sigma}(R)}$ denote the same rounding operation but with prior scaling by a scalar factor $\delta$.
   Note that $\underline{\rho}\inv$ is given directly as the identity operation because all elements of its domain are already elements of its image. Similarly, $\underline{\rho_\delta}\inv(\vec{y}) = \delta\inv \cdot \vec{y}$.

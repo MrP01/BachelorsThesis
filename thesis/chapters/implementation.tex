@@ -27,6 +27,8 @@ The MNIST dataset \parencite{mnist-original} contains X train and Y test images 
 In order to stick to the traditional feedforward technique with data represented in vector format, therefore it is common to reshape data from $(28, 28)$ images (represented as grayscale values in a matrix)
 into a $784$ element vector.
 
+\todo{Ein paar Samples einfügen, oder auf ciphertext visual referenzieren}
+
 \section{Matrix-Vector Multiplication}
 The dot product that is required as part of the neural network evaluation process needs to be implemented on SEAL ciphertexts as well.
 
@@ -70,7 +72,7 @@ For the sake of compactness, we stick to this notation for the rest of this sect
 
 Term by term, one can express a matrix-vector product of $M \in \R^{s \times t}$ and
 $\vec{x} \in \R^s$ as follows:
-$$\{M \vec{x}\}_i = \sum_{j=1}^{t} M_{ij} x_j$$
+$$\{M \vec{x}\}_i = \sum_{j=1}^{t} M_{ij} x_j \,.$$
 
 Accordingly, a natural (or rather, naïve) way to model this multiplication in \textit{Microsoft SEAL} would be to
 \begin{enumerate}
@@ -114,9 +116,9 @@ This 'flaw' can be mitigated by a simple zero-padding approach in order to make 
 \begin{theorem}{Diagonal Method}{diagonal-method}
   Given a matrix $M \in \R^{t \times t}$ and a vector $\vec{x} \in \R^t$,
   the dot product between the two can be expressed as
-  \begin{equation}
+  \begin{equation*}
     M \vec{x} = \sum_{i=0}^t \diag_i(M) \rot_i(\vec{x})
-  \end{equation}
+  \end{equation*}
 \end{theorem}
 
 \begin{figure}[H]
@@ -173,11 +175,11 @@ In order to reduce the number of rotations required, one can make use of the \te
   Given a matrix $M \in \R^{t \times t}$ and a vector $\vec{x} \in \R^t$, with $t = t_1 \cdot t_2$ split into two BSGS parameters $t_1, t_2 \in \N$ and
   $$\diag'_p(M) = \rot_{-\lfloor p/t_1 \rfloor \cdot t_1}(\diag_p(M))\,,$$
   one can express a matrix-vector multiplication as follows:
-  \begin{equation}
+  \begin{equation*}
     M \vec{x} = \sum_{k=0}^{t_2-1} \rot_{(kt_1)} \bigg(
     \sum_{j=0}^{t_1-1} \diag'_{(kt_1+j)}(M) \cdot \rot_j(\vec{x})
     \bigg)
-  \end{equation}
+  \end{equation*}
   where $\cdot$ denotes an element-wise multiplication of two vectors.
 \end{theorem}
 
