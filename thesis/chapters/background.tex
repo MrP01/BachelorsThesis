@@ -39,9 +39,9 @@ As the algebraic structure underlying almost every single symbol following in th
   \end{itemize}
 \end{definition}
 Acting as the logical extension of a group, a ring can be considered the intermediary step towards a field (which also defines subtraction and division).
-An example of a ring would be the integers themselves, or the integers modulo $t$: $\Z / t \Z$, sometimes also denoted as $\Z_t$.
+An example of a ring would be the integers themselves, or the integers modulo $q$: $\Z / q \Z$, sometimes also denoted as $\Z_q$.
 
-Given two groups $(G, +)$ and a subgroup $(N, +)$, we can construct another group $G / N$ as follows, referred to as a quotient group, or factor group:
+Given two groups $(G, +)$ and a subgroup $(N, +)$, we can construct another group $G / N$ as follows, referred to as a quotient group or factor group:
 
 \begin{definition}{Quotient Group / Ring}{quotient-group}
   A quotient group $(G / N, +)$ (pronounced '$G$ mod $N$') over the original group $G$ and a normal subgroup $N$ of $G$
@@ -50,7 +50,7 @@ Given two groups $(G, +)$ and a subgroup $(N, +)$, we can construct another grou
   The corresponding set $G / N$ is defined as
   $$G / N := \{g + N \,|\, g \in G\}$$
   whereas the standard operation $+: G/N \times G/N \mapsto G/N$
-  can be extended from the original group $G$ as follows:
+  can be extended from the original group $G$ as follows ($g, h \in G$):
   $$(g+N) + (h+N) := (g+h)N$$
 \end{definition}
 
@@ -152,30 +152,29 @@ This enables us to \textit{uniquely} define a quotient ring with cyclotomic poly
 In theory, there are multiple equivalent definitions of said ring, but by convention we choose the cyclotomic polynomial because it cannot be simplified further.
 The proof for \autoref{remark:cyclotomic-irreducibility} is quite cumbersome, but can be found in \cite{2002-serge-algebra}.
 
-\begin{theorem}{$2^k$\textsuperscript{th} cyclotomic polynomial}{power-of-2-cyclo-poly}
-  The $m$\textsuperscript{th} cyclotomic polynomial, where $m = 2n = 2^k$ ($k \in \N$) is a power of $2$, can be identified as
-  $$\Phi_{m}(x) = x^{n} + 1\,.$$
-  Its degree is $n$, consistent with $\varphi(2^k) = 2^{k-1} \; \forall k \in \N$.
+\begin{theorem}{$2^k$\textsuperscript{th} Cyclotomic Polynomial}{power-of-2-cyclo-poly}
+  The $N$\textsuperscript{th} cyclotomic polynomial, where $M = 2N = 2^k$ ($k \in \N$) is a power of $2$, can be identified as
+  $$\Phi_{M}(x) = x^{N} + 1\,.$$
+  Its degree is $N$, consistent with $\varphi(2^k) = 2^{k-1} \; \forall k \in \N$.
 \end{theorem}
 Find a short but illustrative proof of \autoref{thm:power-of-2-cyclo-poly} in the \hyperref[chap:appendix]{Appendix}.
 
 \begin{definition}{Ring of Polynomials of highest degree $N-1$}{bounded-polynomials}
-  One can construct the quotient ring $(R, +, \cdot)$ as
+  For a power-of-2 $N$, one can construct the quotient ring $(R, +, \cdot)$ as
   $$R = \Z[X] / (X^N + 1)$$
   where $(X^N + 1)$ denotes the set of all polynomial multiples of the polynomial $p \in \Z[X], p(x) = x^N + 1$, so
   $$(X^N+1) = \{q: \C \mapsto \C,\; q(x) = r(x) \cdot (x^N+1) \;|\; r \in \Z[X]\} \,.$$
   The elements of $R$ are then polynomials with integer coefficients of maximum degree $N-1$.
 \end{definition}
 
-If $N$ is a power of $2$, according to \autoref{thm:power-of-2-cyclo-poly}, $R$ is the set of integer-coefficient polynomials reduced modulo $\Phi_d(X)$ the $d$\textsuperscript{th} cyclotomic polynomial with $N = \varphi(d) = \frac{d}{2}$, where $R$ is % TODO
-$$R = \Z[X] / \Phi_d(X) = \Z[X] / (X^N + 1)\,.$$
-Since every cyclotomic polynomial is irreducible, this is a unique representation of $R$
-without any possible further simplifications.
+If $N$ is a power of $2$, according to \autoref{thm:power-of-2-cyclo-poly}, $$R = \Z[X] / \Phi_d(X) = \Z[X] / (X^N + 1)$$ is the set of integer-coefficient polynomials reduced modulo $\Phi_d(X)$, the $d$\textsuperscript{th} cyclotomic polynomial with $N = \varphi(d) = \frac{d}{2}$.
+Since every cyclotomic polynomial is irreducible, this is a unique representation of $R$ without any possible further simplifications.
+Therefore, in the following we will focus on power-of-2 cyclotomic polynomials, which turn out to be even more useful when defining FFT-optimized operations on them.
 
 As promised above, we will require \autoref{lemma:integers-modulo-q} for the fundamental structure underlying the \gls{he} schemes described in the next chapter, defining ourselves a ring with coefficients in said quotient ring $\Z/q\Z$.
 
 \begin{corollary}{Polynomial Ring modulo $q$}{bounded-polynomials-mod-q}
-  Further modifying $R = \Z[X] / (X^N+1)$ to only take coefficients mod $q$, we obtain two equivalent definitions for the same ring:
+  Further modifying $R = \Z[X] / (X^N+1)$ for $N$ a power of $2$ to only take coefficients mod $q$, we obtain two equivalent definitions for the same ring:
   $$R_q = R/qR = (\Z/q\Z)[X] / (X^N+1)$$
   which contains polynomials with integer coefficients modulo $q$ of degree $N-1$.
   Explicitly stated, the set can be written as:
