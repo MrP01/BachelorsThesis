@@ -116,17 +116,17 @@ Due to their interesting structure and efficient computability, in the schemes i
 An important concept is that of cyclotomic ('circle-cutting') polynomials, which we will discuss in a bit more detail here.
 
 An important polynomial is $$p: \C \mapsto \C, \; p(x) = x^n - 1 \,.$$
-Its roots, found by solving $p(x) = 0$ for $x$, yielding $x^n = 1 \leftrightarrow x_k = \sqrt[n]{1}$ are referred to as the $n$\textsuperscript{th} roots of unity, of which there are multiple for each $n \in \N$.
+Its roots, found by solving $p(\xi) = 0$ for $\xi$, yielding $\xi^n = 1 \leftrightarrow \xi_k = \sqrt[n]{1}$ are referred to as the $n$\textsuperscript{th} roots of unity, of which there are multiple for each $n \in \N$.
 
 \begin{lemma}{The $n$\textsuperscript{th} roots of unity}{nth-roots-of-unity}
-  For some integer $n \in \N$, the $n$ complex roots $x_1, x_2, ..., x_n \in \C$ of unity can be found as $$x_k = e^{2\pi i \frac{k}{n}} \quad k \in \{1, 2, ..., n\}$$ with $i$ being the imaginary unit.
+  For some integer $n \in \N$, the $n$ complex roots $\xi_1, \xi_2, ..., \xi_n \in \C$ of unity can be found as $$\xi_k = e^{2\pi i \frac{k}{n}} \quad k \in \{1, 2, ..., n\}$$ with $i$ being the imaginary unit.
   Confer \autoref{fig:nth-roots-of-unity}.
-  Using \name{Euler}'s identity, their real and imaginary components can be explicitly found as $x_k = \cos(2\pi \frac{k}{n}) + i \sin(2\pi \frac{k}{n})$.
+  Using \name{Euler}'s identity, their real and imaginary components can be explicitly found as $\xi_k = \cos(2\pi \frac{k}{n}) + i \sin(2\pi \frac{k}{n})$.
 
   An $n$\textsuperscript{th} root of unity $y$ is referred to as \textit{primitive}, \gls{iff} there exists no $m < n$ for which that root $y$ is also an $m$\textsuperscript{th} root of unity, i.e. $y^m \neq 1$.
   An equivalent indicator of a primitive root is $\gcd(m, n) = 1$, referring to the greatest common divisor between $m$ and $n$ which is $1$ \gls{iff} they are mutually prime.
 \end{lemma}
-Due to the fact that for any $k, l \in \Z$, their product $x_k \cdot x_l$ is also a root of unity, and $x_{k+jn} = x_k \; \forall j \in \Z$, they clearly comprise a cyclic Abelian group over the complex numbers $\C$ under multiplication with (for instance) the first root $x_1 = e^{2\pi i \frac{1}{n}}$ as its generator.
+Due to the fact that for any $k, l \in \Z$, their product $\xi_k \cdot x_l$ is also a root of unity, and $\xi_{k+jn} = \xi_k \; \forall j \in \Z$, they clearly comprise a cyclic Abelian group over the complex numbers $\C$ under multiplication with (for instance) the first root $\xi_1 = e^{2\pi i \frac{1}{n}}$ as its generator.
 
 \begin{figure}
   \centering
@@ -136,9 +136,9 @@ Due to the fact that for any $k, l \in \Z$, their product $x_k \cdot x_l$ is als
 \end{figure}
 
 \begin{definition}{Cyclotomic Polynomial}{cyclotomic-poly}
-  Given the $n$\textsuperscript{th} roots of unity $\{x_k\}$, we can define the $n$\textsuperscript{th}
+  Given the $n$\textsuperscript{th} roots of unity $\{\xi_k\}$, we can define the $n$\textsuperscript{th}
   cyclotomic polynomial $\Phi_n \in \Z[X]$ as the product over all primitive roots of unity
-  $$\Phi_n(x) = \prod_{\stackrel{k=1}{x_k \mathrm{primitive}}}^{n} (x - x_k) \,.$$
+  $$\Phi_n(x) = \prod_{\stackrel{k=1}{\xi_k \mathrm{primitive}}}^{n} (x - \xi_k) \,.$$
   It is unique for each given $n \in \N$.
 \end{definition}
 The number of primitive roots of unity is given by $\varphi(n)$, denoting \name{Euler}'s totient function which counts the natural numbers $m$ less than $n$ who do not share a common divisor $\neq 1$, i.e. $\gcd(m, n) = 1$.
@@ -308,7 +308,7 @@ In the exact same manner as in \autoref{subsec:lwe}, the search and decision pro
 The main advantage of RLWE over LWE is that is conceptually similar and yet simple to formalise over an arbitrarily chosen \hyperref[def:ring]{ring} $(R, +, \cdot)$ which allows for a vast amount of applications and interesting constructions.
 
 \todo{LWE and RLWE comparison}
-% TODO: maybe mention here, that in LWE based cryptosystems, the public key is m LWE samples, i.e., (A, b) where A is a m x m matrix and b a m vector. For RLWE it is then just (a,b) where a and b have b coefficients. Hence, keys are smaller in RLWE.
+% Roman: maybe mention here, that in LWE based cryptosystems, the public key is m LWE samples, i.e., (A, b) where A is a m x m matrix and b a m vector. For RLWE it is then just (a,b) where a and b have b coefficients. Hence, keys are smaller in RLWE.
 % Futhermore, RLWE samples can be translated into equivalent LWE samples. in the case above, the matrix A is build from the polynomial a and then LWE = RLWE. When we derive security for RLWE we take secure parameters for this equivalent LWE representation. Thereby we "hope" that building A from the poly a does not introduce any security flaw :)
 
 \pagebreak
@@ -350,6 +350,7 @@ given a dataset $\{\vec{x}_i, t_i\}$.
 \end{figure}
 
 \todo{Describe going in the direction of $- \nabla L$ to find the minimum and add more details}
+% Roman: a small description should be here, but don't go into too much details. Just an explanation of the concept with a referal to Figure 2.2 is enough.
 
 To make up for numerical problems and potentially slow convergence, \gls{gd} can be replaced by more sophisticated methods such as Conjugate Gradient (with convergence guarantees within a certain boundary) or by adding in momentum to the distance travelled in each \gls{gd} iteration \parencite{bishop-pattern-recognition-and-ml}.
 
@@ -358,7 +359,7 @@ To make up for numerical problems and potentially slow convergence, \gls{gd} can
 \begin{figure}[H]
   \centering
   \inputtikz{figures/neural-network}
-  \caption{A neural network \todo{Symmetrie zu unserem Netzwerk erklären}.}
+  \caption{A simple neural network resembling the structure we use in our demonstrator, the input (a 784 entry vector) is forwarded to the second layer using $\vec{h} = \cryptop{relu}(M_1 \vec{x} + \vec{b_1})$, resulting in a vector of 128 entries, and finally forwarded to the output layer with $\vec{y} = \cryptop{softmax}(M_2 \vec{h} + \vec{b_2})$. Each of the 10 outputs in $\vec{y}$ corresponds to a 'probability' associated with each digit from 0 to 9.}
   \label{fig:neural-network}
 \end{figure}
 
@@ -375,6 +376,7 @@ To better understand the implications and possibilities of a large neural networ
   \item Sigmoid Activation
   \item Max Pooling
 \end{itemize}
+% Roman: Maybe just mention them and say that in our case we use dense layers (essentially a matrix-vector mult) followed by ReLU(x) = max(x,0) activiation functions.
 
 \pagebreak
 \section{Post-Quantum Security}
@@ -402,6 +404,8 @@ Namely, this probability is given by $|\psi(\vec{r}, t)|^2$.
 
 % TODO: what is a Qubit
 % TODO: what are Shor's and Grover's Algorithms, only mention
+% Roman: For shor and grover, just give the mathematical expression of the concept and then say: A quantum fft solves this :) So no need for a full quantum circuit.
+% Don't go into too much details on entanglement and qbits, just say that we can describe a qbit as a vector of its collapsing probability, and if two qbits are entangled, a collapsed qbit_1 forces qbit_2 to take a value.
 
 \begin{definition}{NP-Hardness}{np-hard}
   A problem is referred to as \textit{NP-hard} \gls{iff} it is at least as hard as the hardest problems in the complexity class NP (nondeterministic polynomial time). Formally written,
@@ -409,3 +413,4 @@ Namely, this probability is given by $|\psi(\vec{r}, t)|^2$.
   the union of all decision problems with runtime bounded by $\mathcal{O}(n^k)$.
 \end{definition}
 \todo{This is needed in the introduction and other places too, where to put it?}
+% Roman: Put it where you first mention NP
