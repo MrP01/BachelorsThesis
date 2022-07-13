@@ -7,7 +7,8 @@ Each pixel corresponds to a coefficient $a \in \Z / q\Z$ scaled down by the modu
   \centering
   % \includegraphics[width=\linewidth]{figures/ciphertext-visualisation.png}
   \inputtikz{figures/ciphertext-visualisation}
-  \caption{Ciphertext Visualisation \todo{Eigene Subsection hierfür?}}
+  \caption{Ciphertext Visualisation \todo{Eigene Subsection hierfür?}.}
+  \label{fig:ciphertext-visualisation}
 \end{figure}
 
 \begin{figure}[H]
@@ -15,6 +16,7 @@ Each pixel corresponds to a coefficient $a \in \Z / q\Z$ scaled down by the modu
   \pgfplotsset{/pgfplots/group/.cd,vertical sep=1.6cm}
   \inputtikz{figures/generated/training-history}
   \caption{Development of the classification accuracy and the mean squared error during training.}
+  \label{fig:training-history}
 \end{figure}
 
 The machine learning framework behind the project, Tensorflow, splits its training process into \textit{epochs}, which can be found on the x-axis in the plot above.
@@ -27,6 +29,7 @@ At this point we are very likely to find the network's learning process in an \t
   \centering
   \inputtikz{figures/generated/confusion-matrix}
   \caption{Confusion Matrix of the trained network. \todo{Ein bisschen beschreiben..}}
+  \label{fig:confusion-matrix}
 \end{figure}
 
 % \section{Methodology}

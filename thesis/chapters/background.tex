@@ -186,7 +186,7 @@ This bounded polynomial ring is central to understanding objects in the next cha
 \pagebreak
 \section{Lattice Cryptography}
 \label{subsec:lattice-crypto}
-Lattice-based cryptography takes a different approach to encryption than classical factorisation or the discrete logarithm problem, as it is based on different problems, namely ones on \hyperref[def:lattice]{lattices}.
+Lattice-based cryptography takes a different approach to encryption than classical factorisation or the discrete logarithm problem, as it is based on different hardness assumptions, namely ones on \hyperref[def:lattice]{lattice} problems.
 The goal of any mathematical encryption scheme is to leave a potential attacker with a computationally hard, at best infeasible, problem to solve when attempting to decrypt messages without a secret key.
 This section will start with three basic problems, SVP, GapSVP and SIS and move on to \gls{lwe} and \gls{rlwe}.
 To illustrate the connection of these problems to lattices, we take a closer look at them before considering further details of LWE.
@@ -200,6 +200,7 @@ Most notably, lattice problems are conjectured to be secure against quantum comp
   As an extension of $\R^n$, the Euclidean norm $||\cdot||$ is also defined and the standard Euclidean metric $d: \lat \times \lat \mapsto \R$, yielding a metric space $(\lat, d)$, can be obtained by the norm of a vector difference, denoted $||(\cdot) - (\cdot)||$.
 \end{definition}
 
+Lattices are a common concept appearing in many areas of mathematics and physics, related to their effective representation as data structures and also geometric intuition (cf. \autoref{fig:lattice}).
 Its \textit{minimum distance} $\lambda_{min}$ is defined as the smallest Euclidean distance between two points $\vec{p_1}$ and $\vec{p_2} \in \lat$
 $$\lambda_{min} = \min_{\vec{p_1}, \vec{p_2} \in \lat} d(\vec{p_1}, \vec{p_2}) =
   \min_{\vec{p_1}, \vec{p_2} \in \lat} ||\vec{p_1} - \vec{p_2}|| \,,$$
@@ -229,7 +230,7 @@ Note that without the last requirement $||\vec{z}|| \leq \beta$, the SIS problem
 It can be shown that solving SIS is at least as hard as solving GapSVP with appropriate parameters \parencite{1996-hard-lattice-problems}.
 
 Using the above problems, multiple cryptographic primitives can be constructed due to the proven hardness that also propagates to quantum computers.
-Examples include collision resistant hash functions, signatures, pseudorandom functions or even Regev's public-key cryptosystem \parencite{2016-decade-of-lattice}.
+Examples include collision resistant hash functions, signatures, pseudorandom functions or even Regev's public-key cryptosystem that is based on LWE (which is reduced to the other lattice problems) \parencite{2016-decade-of-lattice}.
 
 \begin{figure}
   \centering
@@ -242,7 +243,7 @@ Examples include collision resistant hash functions, signatures, pseudorandom fu
 
 \subsection{Learning with Errors (LWE)}
 \label{subsec:lwe}
-Next, we would like to consider \Gls{lwe}, a computing problem that is believed to be sufficiently hard to be used in cryptography and, most notably, is not yet solvable in linear time by a quantum algorithm (cf. \autoref{sec:post-quantum-sec}).
+Next, we would like to consider \Gls{lwe}, a computing problem that is believed to be sufficiently hard to be used in cryptography and, most notably, is not yet solvable in linear time by a quantum algorithm (cf. \autoref{sec:post-quantum-sec}), like any other cryptographic lattice problem so far.
 Its hardness assumptions are related to GapSVP and were first formally proven by \citeauthor{2005-lwe-original}, for which he received the 2018 Gödel price.
 
 \begin{definition}{LWE-Distribution $A_{\vec{s}, \chi_{error}}$}{lwe-dist}
@@ -252,7 +253,7 @@ Its hardness assumptions are related to GapSVP and were first formally proven by
     \item Draw a random vector $a \in (\Z/p\Z)^n$ from the multivariate uniform distribution
           with its domain in the integers up to $p$.
     \item Given another probability distribution $\chi_{error}$ over the integers modulo $p$,
-          sample a scalar 'error term' $\mu \in \Z / p \Z$ from it.
+          sample a scalar 'error term' $\mu \in \Z / p \Z$ from it, often also referred to as noise.
     \item Set $b = \vec{s} \cdot \vec{a} + \mu$, with $\cdot$ denoting the standard vector product.
     \item Output the pair $(\vec{a}, b) \in (\Z / p \Z)^n \times (\Z / p \Z)$.
   \end{itemize}
@@ -270,7 +271,7 @@ The general approach useful to cryptography is to sample an element from the LWE
 In their above definitions, \citeauthor{2005-lwe-original} showed that the two problems are equivalent.
 
 \begin{theorem}{Hardness of LWE}{lwe-hardness}
-  If there exists an efficient algorithm that solves either search-LWE or decision-LWE then there exists an efficient quantum algorithm that approximates the decision version of the shortest vector problem (GapSVP) in the worst case \parencite{2010-lwe-survey}.
+  If there exists an efficient algorithm that solves either search-LWE or decision-LWE then there exists an efficient algorithm that approximates the decision version of the shortest vector problem (GapSVP) in the worst case \parencite{2010-lwe-survey}.
 \end{theorem}
 
 He also provided a construction of a public-key cryptosystem based on them, i.e. an asymmetric cryptographic system for at least two parties that includes a public and corresponding private key.
@@ -287,7 +288,7 @@ Very similar to \autoref{def:lwe-dist}, the Ring-LWE distribution is derived as 
   \begin{itemize}
     \item Uniformly randomly draw an element $a \in R/qR$
     \item Given another probability distribution $\chi_{error}$ over the ring elements,
-          sample an 'error term' $\mu \in R/qR$ from it.
+          sample an 'error term' $\mu \in R/qR$ from it, also referred to as noise.
     \item Set $b = s \cdot a + \mu$, with $\cdot$ denoting the ring multiplication operation.
     \item Output the pair $(a, b) \in R/qR \times R/qR$.
   \end{itemize}
@@ -306,6 +307,10 @@ In the exact same manner as \hyperref[subsec:lwe]{above}, the search and decisio
 
 The main advantage of RLWE over LWE is that is conceptually similar and yet simple to formalise over an arbitrarily chosen \hyperref[def:ring]{ring} $(R, +, \cdot)$ which allows for a vast amount of applications and interesting constructions.
 
+\todo{LWE and RLWE comparison}
+% TODO: maybe mention here, that in LWE based cryptosystems, the public key is m LWE samples, i.e., (A, b) where A is a m x m matrix and b a m vector. For RLWE it is then just (a,b) where a and b have b coefficients. Hence, keys are smaller in RLWE.
+% Futhermore, RLWE samples can be translated into equivalent LWE samples. in the case above, the matrix A is build from the polynomial a and then LWE = RLWE. When we derive security for RLWE we take secure parameters for this equivalent LWE representation. Thereby we "hope" that building A from the poly a does not introduce any security flaw :)
+
 \pagebreak
 \section{Machine Learning}
 Undoubtedly one of the most prevalent concepts in todays computing world, \gls{ml} has shaped how computers think and how we interact with them significantly.
@@ -319,16 +324,16 @@ A popular subset of applications to \gls{ml} are classification problems, predom
 Classification problems can be formulated quickly, the goal is to computationally categorize input data (for instance, images) into a predefined set of classes (for instance, cats and dogs).
 The primary concept behind \acrlong{ml} is not at all new, linear regression was already employed by \name{Gauß} and \name{Legendre} in the early 19\textsuperscript{th} century; the term 'Neural Network' was coined by \name{McCulloch} and \name{Pitts} in 1943.
 Much media attention was earned in the 2000-2010 decade when larger image classification problems became feasible with the increasing computational power of modern computers, up until the advent of Deep Learning \parencite{bishop-pattern-recognition-and-ml}.
-Keep in mind however, that Machine Learning in this form is nothing more than glorified statistical regression.
+% Keep in mind however, that Machine Learning in this form is nothing more than glorified statistical regression.
 
 \begin{definition}{Linear Regression}{linear-regression}
-  Given an input vector $\vec{x} \in \R^n$, the goal of linear regression is to predict the value of a target $t \in \R$, according to some model $M$.
+  Given an input vector $\vec{x} \in \R^n$, the goal of linear regression is to predict the value of a target $t \in \R$, according to some linear model $M$.
 \end{definition}
 
 To illustrate the concept, we will focus on a simple learning method, namely that of gradient descent.
 In supervised learning problems, this technique first requires us to introduce a loss (error) function $L: \R^n \mapsto \R$, usually \gls{mse}, which has comparably nice convergence properties due to its parabolic shape:
 $$L(\vec{w}) = \frac{1}{2} \sum_{i=1}^N (t_i - \vec{w}^T \vec{x_i}) = \frac{1}{2} (\vec{t} - \Phi \vec{w})^T (\vec{t} - \Phi \vec{w})$$
-where $\vec{w} \in \R^n$ represents the weights and $\Phi \in \R^{N \times (n+1)}$ is an auxiliary matrix introduced for sleeker notation, consisting of .., referred to as the design matrix.
+where $\vec{w} \in \R^n$ represents the weights and $\Phi \in \R^{N \times (n+1)}$ is an auxiliary matrix introduced for compact notation, consisting of basis functions $\phi: \R^N \mapsto \R^N$ applied to the inputs $\vec{x}$, referred to as the design matrix.
 When $L(\vec{w^*}) = 0$, this means we have found the perfect weights, since our predictions exactly match the targets (labels) $t_i$.
 This is not always possible, so we aim for the minimum error between predictions and targets.
 In other words, our goal is to find
@@ -340,6 +345,7 @@ given a dataset $\{\vec{x}_i, t_i\}$.
   \centering
   \inputtikz{figures/gradient-descent}
   \caption{Illustration of Gradient Descent, adapted from \parencite{gradient-descent-plot}.}
+  \label{fig:gradient-descent}
 \end{figure}
 
 \todo{Describe going in the direction of $- \nabla L$ to find the minimum and add more details}
@@ -351,7 +357,8 @@ To make up for numerical problems and potentially slow convergence, \gls{gd} can
 \begin{figure}[H]
   \centering
   \inputtikz{figures/neural-network}
-  \caption{A neural network \todo{Symmetrie zu unserem Netzwerk erklären}}
+  \caption{A neural network \todo{Symmetrie zu unserem Netzwerk erklären}.}
+  \label{fig:neural-network}
 \end{figure}
 
 To better understand the implications and possibilities of a large neural network, consider the following universal approximation theorem:
@@ -375,6 +382,7 @@ To better understand the implications and possibilities of a large neural networ
   \centering
   \inputtikz{figures/wave-function}
   \caption{Illustration of a wave function $\tilde{\psi}: \R^2 \mapsto \R$ as commonly used in quantum mechanics.}
+  \label{fig:wave-function}
 \end{figure}
 
 In quantum mechanics, we seek a mathematical description of quantum phenomena, commonly building upon \name{Schrödinger}'s formalisms based on wave functions and the basic postulates of quantum mechanics.

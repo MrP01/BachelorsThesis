@@ -67,7 +67,7 @@ For the sake of compactness, we stick to this notation for the rest of this sect
 \begin{figure}[H]
   \centering
   \inputtikz{figures/generated/matmul-naive}
-  \caption[Image adapted from \cite{2018-gazelle}]{The naïve method to multiply a square matrix with a vector.}
+  \caption{The naïve method to multiply a square matrix with a vector (adapted from \cite{2018-gazelle}).}
 \end{figure}
 
 Term by term, one can express a matrix-vector product of $M \in \R^{s \times t}$ and
@@ -108,7 +108,7 @@ This 'flaw' can be mitigated by a simple zero-padding approach in order to make 
 \begin{figure}[H]
   \centering
   \inputtikz{figures/generated/matmul-diagonal}
-  \caption[Image adapted from \cite{2018-gazelle}]{The diagonal method to multiply a square matrix with a vector.}
+  \caption{The diagonal method to multiply a square matrix with a vector (adapted from \cite{2018-gazelle}).}
 \end{figure}
 
 \todo{Kontext einfügen}
@@ -125,7 +125,8 @@ This 'flaw' can be mitigated by a simple zero-padding approach in order to make 
   \centering
   \pgfplotsset{/pgfplots/group/.cd,vertical sep=2.0cm}
   \inputtikz{figures/generated/rotation-error}
-  \caption{Diagonal Method error development after each rotation of the input vector}
+  \caption{Diagonal Method error development after each rotation of the input vector.}
+  \label{fig:rotation-error}
 \end{figure}
 
 \todo{Interpretation des Obigen}
@@ -134,7 +135,7 @@ This 'flaw' can be mitigated by a simple zero-padding approach in order to make 
 \begin{figure}[H]
   \centering
   \inputtikz{figures/generated/matmul-hybrid}
-  \caption[Image adapted from \cite{2018-gazelle}]{The hybrid method to multiply an arbitrarily sized matrix with a vector.}
+  \caption{The hybrid method to multiply an arbitrarily sized matrix with a vector (adapted from \cite{2018-gazelle}).}
 \end{figure}
 To further extend the previous matrix multiplication method to solve the problem
 (cf. \autoref{subsec:non-square-matrices}), it is first necessary to extend the definition of the $\diag$ operator to non-square matrices $M \in \R^{s \times t}$.
@@ -237,7 +238,8 @@ The neural network was trained using the unencrypted standard \gls{mnist} datase
 \begin{figure}[H]
   \centering
   \inputtikz{figures/generated/taylor-relu}
-  \caption{Comparison of the Relu activation function vs. its Taylor expansion}
+  \caption{Comparison of the Relu activation function vs. its Taylor expansion.}
+  \label{fig:taylor-relu}
 \end{figure}
 \todo{Describe Taylor approximation of Relu function a bit}
 
@@ -246,7 +248,8 @@ To gain some intuition on what the two layers look like internally, the followin
   \centering
   \inputtikz{figures/generated/layer-1}
   % \includegraphics[width=0.8\linewidth]{figures/layer-1.png}
-  \caption{First Layer Weights and Biases}
+  \caption{First Layer Weights and Biases.}
+  \label{fig:layer-1}
 \end{figure}
 
 \begin{figure}[H]
@@ -254,7 +257,8 @@ To gain some intuition on what the two layers look like internally, the followin
   \pgfplotsset{/pgfplots/group/.cd,vertical sep=2.0cm}
   \inputtikz{figures/generated/layer-2}
   % \includegraphics[width=0.8\linewidth]{figures/layer-2.png}
-  \caption{Second Layer Weights and Biases}
+  \caption{Second Layer Weights and Biases.}
+  \label{fig:layer-2}
 \end{figure}
 
 \todo{Beschreibung der obigen Figures, gehen beide Plots auf eine Seite?}
