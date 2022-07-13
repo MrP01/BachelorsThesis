@@ -8,8 +8,10 @@ import matplotlib.pyplot as plt
 import numpy as np
 import tikzplotlib
 
-THESIS = pathlib.Path(__file__).resolve().parent.parent.parent / "thesis"
-MODEL = pathlib.Path(__file__).resolve().parent.parent / "classifier" / "data" / "models" / "simple"
+CODE = pathlib.Path(__file__).resolve().parent.parent
+THESIS = CODE.parent / "thesis"
+MODEL = CODE / "classifier" / "data" / "models" / "simple"
+MNIST = CODE / "classifier" / "data" / "mnist"
 
 
 @invoke.task()
@@ -176,3 +178,16 @@ def plot_weights(ctx):
             override_externals=True,
             tex_relative_path_to_data="figures/generated/",
         )
+
+
+@invoke.task()
+def export_mnist_images(ctx):
+    """Export some MNIST images"""
+    from PIL import Image
+
+    x_test = np.load(MNIST / "x-test.npy")
+    y_test = list(np.load(MNIST / "y-test.npy"))
+    for number in range(10):
+        i = y_test.index(number)  # finds first image of this value
+        img = Image.fromarray(x_test[i] * 255).convert("P")
+        img.save(THESIS / "figures" / "generated" / f"mnist-test-{number}.png")

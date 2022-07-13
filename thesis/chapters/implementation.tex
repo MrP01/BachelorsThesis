@@ -27,7 +27,11 @@ The MNIST dataset of handwritten digits \parencite{mnist-original} contains 60,0
 In order to stick to the traditional feedforward technique with data represented in vector format, therefore it is common to reshape data from $(28, 28)$ images (represented as grayscale values in a matrix)
 into a $784$ element vector.
 
-\todo{Ein paar Samples einfügen, oder auf ciphertext visual referenzieren}
+\begin{figure}[H]
+  \centering
+  \inputtikz{figures/mnist}
+  \caption{Sample images of the MNIST dataset of handwritten digits \parencite{mnist-original}.}
+\end{figure}
 
 \section{Matrix-Vector Multiplication}
 The dot product that is required as part of the neural network evaluation process needs to be implemented on SEAL ciphertexts as well.
