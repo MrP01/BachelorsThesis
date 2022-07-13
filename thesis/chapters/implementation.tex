@@ -195,13 +195,12 @@ For larger matrices and vectors (larger $t$), $t_1 + t_2$ are indeed much smalle
 From the implementation perspective, there are three properties to watch out for when working with SEAL ciphertexts:
 
 \begin{enumerate}
-  \item Scale (retrieved using \cpp{x.scale()})
+  \item Scale (retrieved using \cpp{x.scale()}) \\
         % \begin{quote}
         %   Scale has nothing to do with noise. "Scale out of bounds" can appear even if noise is extremely low. Although repeated multiplication of a ciphertext by a plaintext will slowly increase the noise, it is not the reason why you see "scale out of bounds".
         %   "Scale out of bounds" error specifically means that the scale of a ciphertext or plaintext is larger than the product of all elements in coeff\_modulus. If you perform multiplications without rescaling, you can quickly see this error. The more rescaling you perform, the less elements will be left in coeff\_modulus. Even if you managed to have the same scale in a ciphertext after every multiplication and rescale, eventually the coeff\_modulus can be too small to accommodate another multiplication.
         % \end{quote}
         % https://github.com/microsoft/SEAL/issues/182#issuecomment-646234787
-
         Can be adjusted with: \cpp{evaluator.rescale_inplace()}
   \item Encryption Parameters (retrieved using \cpp{x.parms_id()}) \\
         Can be adjusted with: \cpp{evaluator.mod_switch_to_inplace()}
