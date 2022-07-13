@@ -2,7 +2,7 @@
 \pgfplotsset{/pgfplots/group/.cd,vertical sep=1.6cm}
 \begin{tikzpicture}
   \definecolor{darkgray176}{RGB}{176,176,176}
-  \begin{groupplot}[group style={group size=1 by 2},width=0.7\textwidth]
+  \begin{groupplot}[group style={group size=2 by 2},width=0.45\textwidth]
     \nextgroupplot[
       tick align=outside,
       tick pos=left,
@@ -20,6 +20,20 @@
     \nextgroupplot[
       tick align=outside,
       tick pos=left,
+      title={Weights},
+      x grid style={darkgray176},
+      xmin=-0.5, xmax=9.5,
+      xtick style={color=black},
+      y dir=reverse,
+      y grid style={darkgray176},
+      ymin=-0.5, ymax=127.5,
+      ytick style={color=black}
+    ]
+    \addplot graphics [includegraphics cmd=\pgfimage,xmin=-0.5, xmax=9.5, ymin=127.5, ymax=-0.5] {figures/generated/layer-2-000.png};
+
+    \nextgroupplot[
+      tick align=outside,
+      tick pos=left,
       title={Biases},
       x grid style={darkgray176},
       xmin=-0.5, xmax=127.5,
@@ -32,5 +46,21 @@
       height=0.15\textwidth
     ]
     \addplot graphics [includegraphics cmd=\pgfimage,xmin=-0.5, xmax=127.5, ymin=0.5, ymax=-0.5] {figures/generated/layer-1-001.png};
+
+    \nextgroupplot[
+      tick align=outside,
+      tick pos=left,
+      title={Biases},
+      x grid style={darkgray176},
+      xmin=-0.5, xmax=9.5,
+      xtick style={color=black},
+      y dir=reverse,
+      y grid style={darkgray176},
+      ymin=-0.5, ymax=0.5,
+      ytick={0,1},
+      ytick style={color=black},
+      height=0.15\textwidth
+    ]
+    \addplot graphics [includegraphics cmd=\pgfimage,xmin=-0.5, xmax=9.5, ymin=0.5, ymax=-0.5] {figures/generated/layer-2-001.png};
   \end{groupplot}
 \end{tikzpicture}

@@ -197,8 +197,8 @@ of all complex-valued vectors $\vec{z}$ where the first half equals the reversed
 The natural projection $\underline{\pi}$ simply halves a vector $\vec{z} \in H$ to all elements where $j \in T$ to only contain its essential information (the first half), since the second half can easily be reconstructed by element-wise conjugation using $\nu$.
 The exact structure of $T$ is given by $\Z_d^* / T = \{\pm 1T\}$ with $+1T$ and $-1T$ denoting multiplicative left cosets of $T$, together forming the \hyperref[def:quotient-group]{quotient group} $(\Z_d^* / T, \cdot)$ over multiplication (denoted $\cdot$ instead of $+$ as in the quotient group definition in the previous chapter).
 
-\paragraph{Further studying $T$},
-we first notice that by \name{Lagrange}'s theorem on finite groups, the number of elements in $T$ is exactly $N / 2$ since $$\frac{|\Z_d^*|}{|T|} = |\{\pm 1\}| \Leftrightarrow \frac{N}{|T|} = 2 \Leftrightarrow |T| = \frac{N}{2}$$ leading to $\underline{\pi}(H) \subseteq \C^{N/2}$.
+\paragraph{Further studying $T$.}
+We first notice that by \name{Lagrange}'s theorem on finite groups, the number of elements in $T$ is exactly $N / 2$ since $$\frac{|\Z_d^*|}{|T|} = |\{\pm 1\}| \Leftrightarrow \frac{N}{|T|} = 2 \Leftrightarrow |T| = \frac{N}{2}$$ leading to $\underline{\pi}(H) \subseteq \C^{N/2}$.
 Rephrased, we seek a $T \subseteq \Z_d^*$ with $1 \in T$ such that we can fully construct $\Z_d^*$ by the union of the cosets $1T$ and $-1T$, i.e. $\Z_d^* = (1T) \cup (-1T)$.
 Note that $T$ is not unique, we can find multiple sets $T$ for which the above holds, for instance by brute force computation:
 
@@ -316,7 +316,7 @@ To summarise the parameters and variables, a brief overview of all used symbols 
     \hline
     $\lambda$ & $\in \R$ & Security parameter \\
     $d$ & $\in \N$ & Index of the cyclotomic polynomial used in $R$ \\
-    $P$ & $\in \Z$ & \todo{Hmmm... wie sieht das genau aus?} \\ % TODO
+    $P$ & $\in \Z$ & Factor used during relinearization \\
     $h$ & $\in \Z$ & Hamming weight of the secret key (used by $\chi_{key}$) \\
     $\sigma$ & $\in \R$ & Standard deviation of the Gaussian $\chi_{error}$ \\
     $q_L$ & $\in \N$ & Modulus of $R/q_L R$ at level $L$ \\
