@@ -44,6 +44,8 @@ As we can see, the term \gls{he} stems from the ability to perform computations 
 % Roman: Just mention it shortly as I do in my papers:
 % The first fully HE scheme was introduced by gentry, based on lattices, encryption introduces noise, he operations increase noise, bootstrapping is evaluating the decryption circuit homomorphically -> resets noise. Followup schemes improve his blueprint
 
+\cite{seal-4.0} implements the scheme, enabled using \cpp{seal::scheme_type::bgv}.
+
 \pagebreak
 \section{The BFV scheme}
 \label{sec:bfv}
@@ -159,7 +161,7 @@ To summarise the parameters and variables, a brief overview of all used symbols 
 
 \todo{Obiges Theorem kurz zeigen (ausrechnen)}
 
-\textit{Microsoft SEAL} \parencite{seal-4.0} implements the scheme, enabled using \cpp{seal::scheme_type::bfv}.
+\cite{seal-4.0} implements the scheme, enabled using \cpp{seal::scheme_type::bfv}.
 
 \section{The CKKS scheme}
 \label{sec:ckks}
@@ -172,38 +174,44 @@ with $F \in \Z$. In decimal form, for instance with $F = 1000$, we could effecti
 \todo{Obiges soll Motivation hinter CKKS zeigen.. fertig schreiben}
 % Roman: The main motivitaion behind CKKS is that we have a homomorphic rounding operation which allows to reduce the scaling factors after mulitplication
 
-Introduce $d, R, R/qR$ as in \autoref{def:bfv-scheme} and further define $S = \R[X] / \Phi_d(X)$ a similar polynomial ring to $R$, but over the reals instead of the integers.
-Let $N = \varphi(d)$ be the degree of the reducing cyclotomic polynomial of $S$, confer \autoref{def:bounded-polynomials}.
+Introduce $d, R, R/qR$ as in \autoref{def:bfv-scheme} and further define $\mathcal{S} = \R[X] / \Phi_d(X) \subset R$ a similar polynomial ring to $R$, but over the reals instead of the integers.
+Let $N = \varphi(d)$ be the degree of the reducing cyclotomic polynomial of $\mathcal{S}$, confer \autoref{def:bounded-polynomials}.
 For convenience, we usually choose $d$ a power of $2$ and then, by \autoref{thm:power-of-2-cyclo-poly}, $N = \varphi(d) = \frac{d}{2}$ which yields very efficiently multipliable polynomials because the homomorphic multiplication operation can be performed using a \gls{dft} and further optimized using the \gls{fft}, which in its unmodified form only accepts power-of-2 vector sizes \parencite{2017-ckks-original}.
 
+\subsection{Encoding and Decoding}
+In addition to encryption and decryption, the \gls{ckks} scheme also defines the \cryptop{CKKS.Encode} and \cryptop{CKKS.Decode} operations, extending possible plain inputs from polynomials $m \in R$ (as in BFV) to complex-valued vectors $\vec{z} \in \C^{N/2}$
+\footnote{Many implementations of \gls{bfv} provide similar encoding and decoding procedures, extending the original BFV scheme \parencite{2012-fv-original}.}.
+In total, the encoding and decoding steps consist of three transformations, $\underline{\pi}$, $\underline{\rho}$ and $\underline{\sigma}$.
+
 \begin{definition}{Canonical Embedding $\underline{\sigma}$}{sigma-transform}
-  For a real-valued polynomial $p \in S$, define the canonical embedding of $S$ in $\C^N$ as a mapping $\underline{\sigma}: S \mapsto \C^N$ with $$\underline{\sigma}(p) := \big(p(e^{-2\pi i j / N})\big)_{j \in \Z_d^*}$$
+  For a real-valued polynomial $p \in \mathcal{S}$, define the canonical embedding of $\mathcal{S}$ in $\C^N$ as a mapping $\underline{\sigma}: \mathcal{S} \mapsto \C^N$ with $$\underline{\sigma}(p) := \big(p(e^{-2\pi i j / N})\big)_{j \in \Z_d^*}$$
   with $\Z_d^* := \{x \in \Z / d\Z \,|\, \gcd(x, d) = 1\}$ the set of all integers smaller than $d$ that do not share a factor $> 1$ with $d$.
   The image of $\underline{\sigma}$ given a set of inputs $R$ shall be denoted as $\underline{\sigma}(R) \subseteq \C^N$.
-  Let the inverse of $\underline{\sigma}$ be denoted by $\underline{\sigma}\inv: \C^N \mapsto S$.
+  Let the inverse of $\underline{\sigma}$ be denoted by $\underline{\sigma}\inv: \C^N \mapsto \mathcal{S}$.
 \end{definition}
 
-Note that evaluating a polynomial on the $n$\textsuperscript{th} roots of unity corresponds to performing a \name{Fourier}-Transform.
+All elements of $R$ are also elements of $\mathcal{S}$ since $\Z \subset \mathcal{S}$ which results in $\underline{\sigma}(R) \subset \underline{\sigma}(\mathcal{S})$, every plaintext polynomial $m \in R$ can be encoded into $\underline{\sigma}(R)$.
+Also note that evaluating a polynomial on the $n$\textsuperscript{th} roots of unity corresponds to performing a \name{Fourier}-Transform.
 
-Define the commutative subring $(H, +, \cdot)$ of $(\C^N, +, \cdot)$ on the set
-$$H = \{\vec{z} = (z_j)_{j \in \Z_d^*} \in \C^N : z_j = \overline{z_{-j}} \;\forall j \in \Z_d^*\} \subseteq \C^N$$
+Define the commutative subring $(\mathcal{H}, +, \cdot)$ of $(\C^N, +, \cdot)$ on the set
+$$\mathcal{H} := \{\vec{z} = (z_j)_{j \in \Z_d^*} \in \C^N : z_j = \overline{z_{-j}} \;\forall j \in \Z_d^*\} \subseteq \C^N$$
 of all complex-valued vectors $\vec{z}$ where the first half equals the reversed complex-conjugated second half.
 
 \begin{definition}{Natural Projection $\underline{\pi}$}{pi-transform}
-  Let $T$ be a mulitplicative subgroup of $\Z_d^*$ with $\Z_d^* / T = \{\pm 1\} = \{1T, -1T\}$, then the natural projection $\underline{\pi}: H \mapsto \C^{N/2}$ is defined as
-  $$\underline{\pi}\big((z_j)_{j \in \Z_M^*}\big) = (z_j)_{j \in T}$$
-  Let its inverse be denoted by $\underline{\pi}\inv: \C^{N/2} \mapsto H$ and consequently defined as
-  $$\underline{\pi}\inv\big((z_j)_{j \in T}\big) = \big(\nu(z_j)\big)_{j \in \Z_M^*} \; \mathrm{with} \; \nu(z_j) = \begin{cases}
+  Let $T$ be a mulitplicative subgroup of $\Z_d^*$ with $\Z_d^* / T = \{\pm 1\} = \{1T, -1T\}$, then the natural projection $\underline{\pi}: \mathcal{H} \mapsto \C^{N/2}$ is defined as
+  $$\underline{\pi}\big((z_j)_{j \in \Z_M^*}\big) := (z_j)_{j \in T}$$
+  Let its inverse be denoted by $\underline{\pi}\inv: \C^{N/2} \mapsto \mathcal{H}$ and consequently defined as
+  $$\underline{\pi}\inv\big((z_j)_{j \in T}\big) := \big(\nu(z_j)\big)_{j \in \Z_M^*} \; \mathrm{with} \; \nu(z_j) = \begin{cases}
       z_j            & \text{if } j \in T \\
       \overline{z_j} & \text{otherwise}
     \end{cases}$$
 \end{definition}
 
-The natural projection $\underline{\pi}$ simply halves a vector $\vec{z} \in H$ to all elements where $j \in T$ to only contain its essential information (the first half), since the second half can easily be reconstructed by element-wise conjugation using $\nu$.
+The natural projection $\underline{\pi}$ simply halves a vector $\vec{z} \in \mathcal{H}$ to all elements where $j \in T$ to only contain its essential information (the first half), since the second half can easily be reconstructed by element-wise conjugation using $\nu$.
 The exact structure of $T$ is given by $\Z_d^* / T = \{\pm 1T\}$ with $+1T$ and $-1T$ denoting multiplicative left cosets of $T$, together forming the \hyperref[def:quotient-group]{quotient group} $(\Z_d^* / T, \cdot)$ over multiplication (denoted $\cdot$ instead of $+$ as in the quotient group definition in the previous chapter).
 
 \paragraph{Further studying $T$.}
-We first notice that by \name{Lagrange}'s theorem on finite groups, the number of elements in $T$ is exactly $N / 2$ since $$\frac{|\Z_d^*|}{|T|} = |\{\pm 1\}| \Leftrightarrow \frac{N}{|T|} = 2 \Leftrightarrow |T| = \frac{N}{2}$$ leading to $\underline{\pi}(H) \subseteq \C^{N/2}$.
+We first notice that by \name{Lagrange}'s theorem on finite groups, the number of elements in $T$ is exactly $N / 2$ since $$\frac{|\Z_d^*|}{|T|} = |\{\pm 1\}| \Leftrightarrow \frac{N}{|T|} = 2 \Leftrightarrow |T| = \frac{N}{2}$$ leading to $\underline{\pi}(\mathcal{H}) \subseteq \C^{N/2}$.
 Rephrased, we seek a $T \subseteq \Z_d^*$ with $1 \in T$ such that we can fully construct $\Z_d^*$ by the union of the cosets $1T$ and $-1T$, i.e. $\Z_d^* = (1T) \cup (-1T)$.
 Note that $T$ is not unique, we can find multiple sets $T$ for which the above holds, for instance by brute force computation:
 
@@ -230,23 +238,29 @@ Since $(T, \cdot)$ forms a normal subgroup under multiplication, we must have th
 using the above Python code. An example of an invalid subset $T$ that does cover the whole original set $\Z_d^*$ would be $T = \{1, 7, 9, 15\}$.
 
 % TODO: as above -> ref
-For the purposes of CKKS, we simply choose a global $T$ as above that is constant for our encoding and decoding procedure and a given $d$.
-The inverse natural projection $\underline{\pi}\inv$ then uniquely constructs a vector in $H$ by filling in elements $\overline{z_j}$ for $j \notin T$ into $\vec{z}$.
-For simplicity, we commonly choose $T$ as the 'first half' of $\Z_d^*$ when sorting in an ascending manner as it is always a valid choice.
+For the purposes of \gls{ckks}, we simply choose a global $T$ as above that is constant for our encoding and decoding procedure and a given $d$.
+The inverse natural projection $\underline{\pi}\inv$ then uniquely constructs a vector in $\mathcal{H}$ by filling in elements $\overline{z_j}$ for $j \notin T$ into $\vec{z}$.
+For simplicity, we commonly choose $T$ as the 'first half' of $\Z_d^*$ when sorting in an ascending manner as it is always a valid choice
 \footnote{
   This can be seen from the coset $-1T$ which exactly equals the 'missing' half in $\Z_d^*$ when the first half is covered by $1T = T = \{1, 3, 5, ..., N-1\}$ since $-1T = \{-1, -3, -5, ..., -(N-1)\} \equiv \{d-1, d-3, d-5, ..., d-N+1\}$ $(\text{mod}\, d)$ when $d$ a power of 2.
   Then, $(1T) \cup (-1T) = \{1, 3, 5, ..., N-1\} \cup \{d-1, d-3, d-5, ..., d-N+1\} = \{1, 3, 5, ..., N-1, N+1, ..., d-5, d-3, d-1\} = \Z_d^*$.
-}
+}.
 
 \begin{definition}{Discretisation to an element of $\underline{\sigma}(R)$}{}
-  Using one of several round-off algorithms (cf. \cite{2013-rlwe-toolkit}), given an element of $H$, define a rounding operation $\underline{\rho}: H \mapsto \underline{\sigma}(R)$ that maps an $\vec{h} \in H$ to its closest element in $\underline{\sigma}(R)$, also denoted as
-  $$\underline{\rho}(\vec{h}) = \lfloor \vec{h} \rceil_{\underline{\sigma}(R)}\,.$$
-  Further let $\underline{\rho_\delta}(\vec{h}) = \lfloor \delta \cdot \vec{h} \rceil_{\underline{\sigma}(R)}$ denote the same rounding operation but with prior scaling by a scalar factor $\delta$.
-  Note that $\underline{\rho}\inv$ is given directly as the identity operation because all elements of its domain are already elements of its image. Similarly, $\underline{\rho_\delta}\inv(\vec{y}) = \delta\inv \cdot \vec{y}$.
+  Using one of several round-off algorithms (cf. \cite{2013-rlwe-toolkit}), given an element of $\mathcal{H}$, define a rounding operation $\underline{\rho}\inv: \mathcal{H} \mapsto \underline{\sigma}(R)$ that maps an $\vec{h} \in \mathcal{H}$ to its closest element in $\underline{\sigma}(R)$, also denoted as
+  $$\underline{\rho}\inv(\vec{h}) := \lfloor \vec{h} \rceil_{\underline{\sigma}(R)}\,.$$
+  Further let $\underline{\rho_\delta}\inv(\vec{h}) = \lfloor \delta \cdot \vec{h} \rceil_{\underline{\sigma}(R)}$ denote the same rounding operation but with prior scaling by a scalar factor $\delta$.
+  Note that $\underline{\rho}$ is given directly as the identity operation because all elements of its domain are already elements of its image. Similarly, $\underline{\rho_\delta}\inv(\vec{y}) = \delta\inv \cdot \vec{y}$.
 \end{definition}
 
-Because it is not essential to understanding the encryption scheme, we will skip over concrete implementations of the rounding procedure $\underline{\rho}$.
-Note that for choosing a 'close' element $\vec{g} \in H$, we must first introduce a sense of proximity, in this case done by the $l_\infty$-norm $||\vec{g} - \vec{h}||_\infty$ of the difference between $\vec{h} \in H$ and $\vec{g}$.
+Because it is not essential to understanding the encryption scheme, we will skip over concrete implementations of the rounding procedure $\underline{\rho}\inv$.
+Note that for choosing a 'close' element $\vec{g} \in \mathcal{H}$, we must first introduce a sense of proximity, in this case done by the $l_\infty$-norm $||\vec{g} - \vec{h}||_\infty$ of the difference between $\vec{h} \in \mathcal{H}$ and $\vec{g}$.
+
+All in all, $m = \cryptop{CKKS.Encode}(\vec{z}),\, \vec{z} \in \C^{N/2}$ applies all inverse transformations $\underline{\pi}\inv$ (first), $\underline{\rho}\inv$ (second) and $\underline{\sigma}\inv$ (third) to an input vector $\vec{z}$ in order to finally arrive at a plaintext polynomial $m \in R/q_L R$ (equally stated as $m \in \Z_{q_L} / (X^N + 1)$ as long as $N$ is a power of 2).
+Although $\underline{\sigma}$ is defined over $\mathcal{S}$ instead of $\mathcal{R}$, all elements of $\underline{\sigma}(R)$ can indeed be mapped back to an element in $R$ using $\underline{\sigma}\inv$.
+Summarised,
+$$\C^{N/2} \xlongrightarrow{\;\underline{\pi}\inv\;} \mathcal{H} \xlongrightarrow{\;\underline{\rho}\inv\;} \sigma(R) \xlongrightarrow{\;\underline{\sigma}\inv\;} R \,.$$
+The decoding procedure $\vec{z} = \cryptop{CKKS.Decode}(m),\, m \in R$ does the exact opposite to reobtain the input vector $\vec{z} \in \C^{N/2}$.
 
 \pagebreak
 \begin{definition}{The CKKS Scheme}{ckks-scheme}
@@ -266,9 +280,9 @@ Note that for choosing a 'close' element $\vec{g} \in H$, we must first introduc
         with $b' = -a' \cdot s + \mu' + Ps^2$.
         $\quad\rightarrow \vec{p}, s, \vec{\gamma}$} \\
     \cryptop{Encode}$(\vec{z})$ & {For a given input vector $\vec{z}$, output
-        $m = (\underline{\sigma}\inv \circ \underline{\rho_\delta} \circ \underline{\pi}\inv)(\vec{z}) = \underline{\sigma}\inv(\lfloor \delta \cdot \underline{\pi}\inv(\vec{z})\rceil_{\underline{\sigma}(R)})$ $\quad\rightarrow m$} \\
+        $m = (\underline{\sigma}\inv \circ \underline{\rho_\delta}\inv \circ \underline{\pi}\inv)(\vec{z}) = \underline{\sigma}\inv(\lfloor \delta \cdot \underline{\pi}\inv(\vec{z})\rceil_{\underline{\sigma}(R)})$ $\quad\rightarrow m$} \\
     \cryptop{Decode}$(m)$ & {Decode plaintext $m$ as
-        $\vec{z} = (\underline{\pi} \circ \underline{\rho_\delta}\inv \circ \underline{\sigma})(m) = (\underline{\pi} \circ \underline{\sigma})(\delta\inv m)$
+        $\vec{z} = (\underline{\pi} \circ \underline{\rho_\delta} \circ \underline{\sigma})(m) = (\underline{\pi} \circ \underline{\sigma})(\delta\inv m)$
         $\quad\rightarrow \vec{z}$} \\
     \cryptop{Encrypt}$(\vec{p}, m)$ & {
         Let $(b,a) = \vec{p}$, $u \leftarrow \chi_{enc}$, $\mu_1, \mu_2 \leftarrow \chi_{error}$,
@@ -328,11 +342,12 @@ To summarise the parameters and variables, a brief overview of all used symbols 
     $\delta$ & $\in \N$ & Scaling factor used when encoding \\
     $\delta\inv$ & $\in \R$ & Inversion coefficient of the effect of $\delta$ \\
     $s$ & $\in \{0,\pm 1\}^N$ & Secret Key \\
-    $\vec{p}$ & $\in R/q_L R \times R/q_L R$ & Public Key $(b, a)$ \\
-    $\vec{\gamma}$ & $\in R/(P \cdot q_L)R \times R/(P \cdot q_L)R$ & Relinearization Key \\
+    $\vec{p}$ & $\in (R/q_L R)^2$ & Public Key $(b, a)$ \\
+    $\vec{\gamma}$ & $\in (R/(P \cdot q_L)R)^2$ & Relinearization Key \\
+    $\vec{z}$ & $\in \C^{N/2}$ & Plain input vector \\
     $m$ & $\in R$ & Plaintext Message \\
-    $\vec{c}$ & $\in R/q_L R \times R/q_L R$ & Ciphertext Message \\
-    $\overline{\vec{c}}$ & $\in R/q_L R \times R/q_L R \times R/q_L R$ & Slightly larger ciphertext from multiplication \\
+    $\vec{c}$ & $\in (R/q_L R)^2$ & Ciphertext Message \\
+    $\overline{\vec{c}}$ & $\in (R/q_L R)^3$ & Slightly larger ciphertext from multiplication \\
   \end{tblr}
   \label{tab:ckks-symbols}
 \end{table}
@@ -352,4 +367,4 @@ To summarise the parameters and variables, a brief overview of all used symbols 
 
 \todo{Obiges Theorem kurz zeigen (ausrechnen)}
 
-\textit{Microsoft SEAL} \parencite{seal-4.0} implements the scheme, enabled using \cpp{seal::scheme_type::ckks}.
+\cite{seal-4.0} implements the scheme, enabled using \cpp{seal::scheme_type::ckks}.
