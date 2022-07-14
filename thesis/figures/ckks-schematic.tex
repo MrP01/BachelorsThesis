@@ -4,13 +4,13 @@
 \tikzstyle{arrow} = [thick,->,>=stealth]
 
 \begin{tikzpicture}
-  \node[cleartext, align = center] (m) at (0,0) {message \\ $m$};
-  \node[plaintext, align = center] (p) at (6,0) {plaintext \\ $p(X)$};
-  \node[ciphertext, align = center] (c) at (12,0) {ciphertext \\ $c = (c_0(X), c_1(X))$};
+  \node[cleartext, align = center] (m) at (0,0) {message \\ $\vec{z}$};
+  \node[plaintext, align = center] (p) at (6,0) {plaintext \\ $m(X)$};
+  \node[ciphertext, align = center] (c) at (12,0) {ciphertext \\ $\vec{c} = (c_0(X), c_1(X))$};
 
-  \node[cleartext, align = center] (m2) at (0,-2.5) {message \\ $\tilde{m}=f(m)$};
-  \node[plaintext, align = center] (p2) at (6,-2.5) {plaintext \\ $\tilde{p}(X) = f(p(X))$};
-  \node[ciphertext, align = center] (c2) at (12,-2.5) {ciphertext \\ $\tilde{c} = f(c)$};
+  \node[cleartext, align = center] (m2) at (0,-2.5) {message \\ $\tilde{\vec{z}}=f(\vec{z})$};
+  \node[plaintext, align = center] (p2) at (6,-2.5) {plaintext \\ $\tilde{m}(X) = f(m(X))$};
+  \node[ciphertext, align = center] (c2) at (12,-2.5) {ciphertext \\ $\tilde{\vec{c}} = f(\vec{c})$};
 
   \draw (m.north) node[above]{$\C^{N/2}$};
   \draw (m2.south) node[below]{$\C^{N/2}$};

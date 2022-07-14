@@ -137,11 +137,11 @@ To summarise the parameters and variables, a brief overview of all used symbols 
     $w$ & $\in \N$ & Word size used as basis, e.g. $w = 2$ for bits \\
     $l$ & $\in \N$ & Number of words of size $w$ required to encode $q$ \\
     $s$ & $\in R$ & Secret Key \\
-    $\vec{p}$ & $\in R/qR \times R/qR$ & Public Key $(b, a)$ \\
-    $\vec{\gamma}$ & $\in (R/qR)^l \times (R/qR)^l$ & Relinearization Key \\
+    $\vec{p}$ & $\in (R/qR)^2$ & Public Key $(b, a)$ \\
+    $\vec{\gamma}$ & $\in [(R/qR)^l]^2$ & Relinearization Key \\
     $m$ & $\in R/tR$ & Plaintext Message\\
-    $\vec{c}$ & $\in R \times R$ & Ciphertext \\
-    $\overline{\vec{c}}$ & $\in R \times R \times R$ & Slightly larger ciphertext resulting from multiplication \\
+    $\vec{c}$ & $\in R^2$ & Ciphertext \\
+    $\overline{\vec{c}}$ & $\in R^3$ & Slightly larger ciphertext resulting from multiplication \\
   \end{tblr}
   \label{tab:bfv-symbols}
 \end{table}
@@ -180,7 +180,7 @@ For convenience, we usually choose $d$ a power of $2$ and then, by \autoref{thm:
 
 \subsection{Encoding and Decoding}
 In addition to encryption and decryption, the \gls{ckks} scheme also defines the \cryptop{CKKS.Encode} and \cryptop{CKKS.Decode} operations, extending possible plain inputs from polynomials $m \in R$ (as in BFV) to complex-valued vectors $\vec{z} \in \C^{N/2}$
-\footnote{Many implementations of \gls{bfv} provide similar encoding and decoding procedures, extending the original BFV scheme \parencite{2012-fv-original}.}.
+\footnote{Many implementations of \gls{bfv} provide similar encoding and decoding procedures, extending the original BFV scheme \parencite{2012-fv-original} to facilitate encrypted vector arithmetic.}.
 In total, the encoding and decoding steps consist of three transformations, $\underline{\pi}$, $\underline{\rho}$ and $\underline{\sigma}$.
 
 \begin{definition}{Canonical Embedding $\underline{\sigma}$}{sigma-transform}
@@ -343,7 +343,7 @@ To summarise the parameters and variables, a brief overview of all used symbols 
     $\delta\inv$ & $\in \R$ & Inversion coefficient of the effect of $\delta$ \\
     $s$ & $\in \{0,\pm 1\}^N$ & Secret Key \\
     $\vec{p}$ & $\in (R/q_L R)^2$ & Public Key $(b, a)$ \\
-    $\vec{\gamma}$ & $\in (R/(P \cdot q_L)R)^2$ & Relinearization Key \\
+    $\vec{\gamma}$ & $\in (R/(P q_L)R)^2$ & Relinearization Key \\
     $\vec{z}$ & $\in \C^{N/2}$ & Plain input vector \\
     $m$ & $\in R$ & Plaintext Message \\
     $\vec{c}$ & $\in (R/q_L R)^2$ & Ciphertext Message \\
@@ -356,10 +356,9 @@ To summarise the parameters and variables, a brief overview of all used symbols 
 \begin{figure}[H]
   \centering
   \inputtikz{figures/ckks-schematic}
-  \caption{Overview of CKKS, adapted from \cite{2020-cryptotree}.}
+  \caption{Schematic overview of CKKS, adapted from \cite{2020-cryptotree}. Plain vectors $\vec{z} \in \C^{N/2}$ are encoded into plaintext polynomials $m = \cryptop{CKKS.Encode}(\vec{z})$, encrypted to the ciphertext $\vec{c} = \cryptop{CKKS.Encrypt}(\vec{p}, m)$ using the public key, operated on using a combination of \cryptop{CKKS.{Add, Mult, ReLin, ReScale}} ciphertext operations and finally decrypted and decoded to a new $\tilde{\vec{z}} = \cryptop{CKKS.Decode}(\cryptop{CKKS.Decrypt})(\tilde{\vec{c}})$ using the secret key.}
   \label{fig:ckks-overview}
 \end{figure}
-\todo{Schematik an CKKS anpassen}
 
 \begin{theorem}{CKKS encryption is homomorphic with respect to addition}{ckks-enc-is-homomorphic}
   \cryptop{CKKS.Encrypt} should encrypt in such a way that the addition algebra can be retained even in the transformed space, showing that we can indeed refer to it as \hyperref[def:ring-homomorphism]{homomorphic} encryption.
