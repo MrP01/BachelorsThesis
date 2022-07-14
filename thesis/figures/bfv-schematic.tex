@@ -10,8 +10,8 @@
   \node[plaintext, align = center] (p2) at (6,-2.5) {plaintext \\ $\tilde{m}(X) = f(m(X))$};
   \node[ciphertext, align = center] (c2) at (12,-2.5) {ciphertext \\ $\tilde{\vec{c}} = f(\vec{c})$};
 
-  \draw (p.north) node[above]{$\Z[X]/(X^N + 1)$};
-  \draw (p2.south) node[below]{$\Z[X]/(X^N + 1)$};
+  \draw (p.north) node[above]{$\Z_t[X]/(X^N + 1)$};
+  \draw (p2.south) node[below]{$\Z_t[X]/(X^N + 1)$};
   \draw (c.north) node[above]{$(\Z_q[X]/(X^N + 1))^2$};
   \draw (c2.south) node[below]{$(\Z_q[X]/(X^N + 1))^2$};
 
