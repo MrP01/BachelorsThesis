@@ -150,10 +150,12 @@ To summarise the parameters and variables, a brief overview of all used symbols 
 \begin{figure}[H]
   \centering
   \inputtikz{figures/bfv-schematic}
-  \caption{Overview of BFV, adapted from \cite{2020-cryptotree}.}
+  \caption{
+    Schematic overview of the BFV scheme, adapted from \cite{2020-cryptotree}.
+    A plaintext polynomial $m(X)$ is encrypted to the ciphertext $\vec{c} = \cryptop{BFV.Encrypt}(\vec{p}, m)$ using the public key $\vec{p}$, operated on using a combination of \cryptop{BFV.\{Add, Mult, ReLin\}} ciphertext operations and finally decrypted to a new $\tilde{m} = \cryptop{BFV.Decrypt}(s, \tilde{\vec{c}})$ using the secret key $s$.
+  }
   \label{fig:bfv-overview}
 \end{figure}
-\todo{Schematik an Notation anpassen}
 
 \begin{theorem}{BFV encryption is homomorphic with respect to addition}{bfv-enc-is-homomorphic}
   \cryptop{BFV.Encrypt} should encrypt in such a way that the addition algebra can be retained even in the transformed space, showing that we can indeed refer to it as \hyperref[def:ring-homomorphism]{homomorphic} encryption.
@@ -307,11 +309,9 @@ The decoding procedure $\vec{z} = \cryptop{CKKS.Decode}(m),\, m \in R$ does the 
         $\vec{c} = (c_0, c_1) + \lfloor P\inv c_2 \vec{\gamma} \rceil$
         $\quad\rightarrow \vec{c}$} \\
     \cryptop{ReScale}$(\vec{c})$ & {
-    In order to rescale a ciphertext from level $l_{old}$ to $l_{new}$,
-    multiply by a factor $\frac{q_{l_{new}}}{q_{l_{old}}} \in \Q$ and round to the nearest
-    element of $(R/q_{l_{new}} R) \times (R/q_{l_{new}} R)$:
-    $\vec{c}_{new} = \big\lfloor \frac{q_{l_{new}}}{q_{l_{old}}} \vec{c} \big\rceil$
-    $\quad\rightarrow \vec{c_{new}}$} \\
+    In order to rescale a ciphertext from level $l_{old}$ to $l_{new}$, multiply by a factor $\frac{q_{l_{new}}}{q_{l_{old}}} \in \Q$ and round to the nearest element of $(R/q_{l_{new}} R) \times (R/q_{l_{new}} R)$:
+    $\vec{c}_{new} = \big\lfloor \frac{q_{l_{new}}}{q_{l_{old}}} \vec{c} \big\rceil$ $\quad\rightarrow \vec{c_{new}}$
+    } \\
   \end{tblr}
 
   \parencite{2017-ckks-original}
@@ -356,7 +356,10 @@ To summarise the parameters and variables, a brief overview of all used symbols 
 \begin{figure}[H]
   \centering
   \inputtikz{figures/ckks-schematic}
-  \caption{Schematic overview of CKKS, adapted from \cite{2020-cryptotree}. Plain vectors $\vec{z} \in \C^{N/2}$ are encoded into plaintext polynomials $m = \cryptop{CKKS.Encode}(\vec{z})$, encrypted to the ciphertext $\vec{c} = \cryptop{CKKS.Encrypt}(\vec{p}, m)$ using the public key, operated on using a combination of \cryptop{CKKS.{Add, Mult, ReLin, ReScale}} ciphertext operations and finally decrypted and decoded to a new $\tilde{\vec{z}} = \cryptop{CKKS.Decode}(\cryptop{CKKS.Decrypt})(\tilde{\vec{c}})$ using the secret key.}
+  \caption{
+    Schematic overview of CKKS, adapted from \cite{2020-cryptotree}.
+    A plain vector $\vec{z} \in \C^{N/2}$ is encoded to a plaintext polynomial $m = \cryptop{CKKS.Encode}(\vec{z})$, encrypted to the ciphertext $\vec{c} = \cryptop{CKKS.Encrypt}(\vec{p}, m)$ using the public key $\vec{p}$, operated on using a combination of \cryptop{CKKS.\{Add, Mult, ReLin, ReScale\}} ciphertext operations and finally decrypted and decoded to a new $\tilde{\vec{z}} = \cryptop{CKKS.Decode}(\cryptop{CKKS.Decrypt}(s, \tilde{\vec{c}}))$ using the secret key $s$.
+  }
   \label{fig:ckks-overview}
 \end{figure}
 
