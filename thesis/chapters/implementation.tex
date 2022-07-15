@@ -3,7 +3,7 @@
 
 \section{Chosen Software Architecture}
 In the given setting, the most accessible frontend is commonly a JavaScript web application.
-A web-based demonstrator to show how to classify handwritten digits when using \glslink{he}{homomorphic encryption} was implemented, comprised of a C++ server and a React\footnote{https://reactjs.org/} frontend, confer \autoref{fig:frontend}.
+A web-based demonstrator to show how to classify handwritten digits when using \glslink{he}{homomorphic encryption} was implemented, comprised of a C++ server and a React\footnote{\url{https://reactjs.org/}} frontend, confer \autoref{fig:frontend}.
 
 To still make the classification run as quickly and efficiently as possible, a C++ binary runs in the backend providing an HTTP API to the frontend application.
 In order to allow for more flexibility of the HTTP server, the initial approach was to pipe requests through a dedicated web application framework with database access that would allow, for instance, user management next to the basic classification.
