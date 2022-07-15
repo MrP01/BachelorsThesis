@@ -125,7 +125,7 @@ For two tuples $(\cdot, \cdot)$ defined over the same ring, denote their element
 To summarise the parameters and variables, a brief overview of all used symbols is provided in \autoref{tab:bfv-symbols}.
 \begin{table}[H]
   \centering
-  \caption{Summary of the parameters and symbols in BFV.}
+  \caption[Summary of the parameters and symbols in BFV]{Summary of the parameters and symbols in BFV.}
   \begin{tblr}{rll}
     \hline
     \textbf{Symbol} & \textbf{Space} & \textbf{Explanation} \\
@@ -152,7 +152,7 @@ To summarise the parameters and variables, a brief overview of all used symbols 
 \begin{figure}[H]
   \centering
   \inputtikz{figures/bfv-schematic}
-  \caption{
+  \caption[Schematic overview of the BFV scheme]{
     Schematic overview of the BFV scheme, adapted from \cite{2020-cryptotree}.
     A plaintext polynomial $m(X)$ is encrypted to the ciphertext $\vec{c} = \cryptop{BFV.Encrypt}(\vec{p}, m)$ using the public key $\vec{p}$, operated on using a combination of \cryptop{BFV.\{Add, Mult, ReLin\}} ciphertext operations and finally decrypted to a new $\tilde{m} = \cryptop{BFV.Decrypt}(s, \tilde{\vec{c}})$ using the secret key $s$.
   }
@@ -330,7 +330,7 @@ This reflects in the observation that the plaintext sizes and errors are preserv
 To summarise the parameters and variables, a brief overview of all used symbols is provided in \autoref{tab:ckks-symbols}.
 \begin{table}[H]
   \centering
-  \caption{Summary of the parameters and symbols in CKKS.}
+  \caption[Summary of the parameters and symbols in CKKS]{Summary of the parameters and symbols in CKKS.}
   \begin{tblr}{rll}
     \hline
     \textbf{Symbol} & \textbf{Space} & \textbf{Explanation} \\
@@ -358,7 +358,7 @@ To summarise the parameters and variables, a brief overview of all used symbols 
 \begin{figure}[H]
   \centering
   \inputtikz{figures/ckks-schematic}
-  \caption{
+  \caption[Schematic overview of the CKKS scheme]{
     Schematic overview of CKKS, adapted from \cite{2020-cryptotree}.
     A plain vector $\vec{z} \in \C^{N/2}$ is encoded to a plaintext polynomial $m = \cryptop{CKKS.Encode}(\vec{z})$, encrypted to the ciphertext $\vec{c} = \cryptop{CKKS.Encrypt}(\vec{p}, m)$ using the public key $\vec{p}$, operated on using a combination of \cryptop{CKKS.\{Add, Mult, ReLin, ReScale\}} ciphertext operations and finally decrypted and decoded to a new $\tilde{\vec{z}} = \cryptop{CKKS.Decode}(\cryptop{CKKS.Decrypt}(s, \tilde{\vec{c}}))$ using the secret key $s$.
   }

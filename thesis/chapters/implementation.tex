@@ -31,7 +31,7 @@ into a $784$ element vector.
 \begin{figure}[H]
   \centering
   \inputtikz{figures/mnist}
-  \caption{Sample images of the MNIST dataset of handwritten digits \parencite{mnist-original}.}
+  \caption[Sample images of the MNIST dataset]{Sample images of the MNIST dataset of handwritten digits \parencite{mnist-original}. The dataset contains 70,000 images of 28x28 grayscale pixels valued from 0 to 255 as well as assoicated labels (as required for supervised learning).}
 \end{figure}
 
 \section{Matrix-Vector Multiplication}
@@ -72,7 +72,7 @@ For the sake of compactness, we stick to this notation for the rest of this sect
 \begin{figure}[H]
   \centering
   \inputtikz{figures/generated/matmul-naive}
-  \caption{The naïve method to multiply a square matrix with a vector (adapted from \cite{2018-gazelle}).}
+  \caption[Naïve matrix multiplication method]{The naïve method to multiply a square matrix with a vector (adapted from \cite{2018-gazelle}).}
 \end{figure}
 
 Term by term, one can express a matrix-vector product of $M \in \R^{s \times t}$ and
@@ -113,7 +113,7 @@ This 'flaw' can be mitigated by a simple zero-padding approach in order to make 
 \begin{figure}[H]
   \centering
   \inputtikz{figures/generated/matmul-diagonal}
-  \caption{The diagonal method to multiply a square matrix with a vector (adapted from \cite{2018-gazelle}).}
+  \caption[Diagonal matrix multiplication method]{The diagonal method to multiply a square matrix with a vector (adapted from \cite{2018-gazelle}).}
 \end{figure}
 
 \todo{Kontext einfügen}
@@ -130,7 +130,7 @@ This 'flaw' can be mitigated by a simple zero-padding approach in order to make 
   \centering
   \pgfplotsset{/pgfplots/group/.cd,vertical sep=2.0cm}
   \inputtikz{figures/generated/rotation-error}
-  \caption{Diagonal Method error development after each rotation of the input vector.}
+  \caption[Error development after rotations of the diagonal method]{Diagonal Method error development after each rotation of the input vector.}
   \label{fig:rotation-error}
 \end{figure}
 
@@ -140,7 +140,7 @@ This 'flaw' can be mitigated by a simple zero-padding approach in order to make 
 \begin{figure}[H]
   \centering
   \inputtikz{figures/generated/matmul-hybrid}
-  \caption{The hybrid method to multiply an arbitrarily sized matrix with a vector (adapted from \cite{2018-gazelle}).}
+  \caption[Hybrid matrix multiplication method]{The hybrid method to multiply an arbitrarily sized matrix with a vector (adapted from \cite{2018-gazelle}).}
 \end{figure}
 To further extend the previous matrix multiplication method to solve the problem
 (cf. \autoref{subsec:non-square-matrices}), it is first necessary to extend the definition of the $\diag$ operator to non-square matrices $M \in \R^{s \times t}$.
@@ -240,7 +240,7 @@ The neural network was trained using the unencrypted standard \gls{mnist} datase
 \begin{figure}[H]
   \centering
   \inputtikz{figures/generated/taylor-relu}
-  \caption{Comparison of the Relu activation function vs. its Taylor expansion.}
+  \caption[Comparison of the Relu activation function vs. its Taylor expansion]{Comparison of the Relu activation function vs. its Taylor expansion.}
   \label{fig:taylor-relu}
 \end{figure}
 \todo{Describe Taylor approximation of Relu function a bit}
@@ -249,7 +249,7 @@ To gain some intuition on what the two layers look like internally, the followin
 \begin{figure}[H]
   \centering
   \inputtikz{figures/layer-1-and-2}
-  \caption{First and Second Layer Weights and Biases.}
+  \caption[Weights and biases of our neural network]{First and Second Layer Weights and Biases.}
   \label{fig:layer-1-and-2}
 \end{figure}
 

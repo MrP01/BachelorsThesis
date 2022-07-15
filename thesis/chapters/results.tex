@@ -7,7 +7,7 @@ Each pixel corresponds to a coefficient $a \in \Z / q\Z$ scaled down by the modu
   \centering
   % \includegraphics[width=\linewidth]{figures/ciphertext-visualisation.png}
   \inputtikz{figures/ciphertext-visualisation}
-  \caption{Ciphertext Visualisation: The first row corresponds to the images in plain, the second row depicts an encrypted version, namely the reconstructed polynomial coefficients $a_k$ of the ciphertext polynomial.}
+  \caption[Visualisation of the plain input images compared to their ciphertext]{Ciphertext Visualisation: The first row corresponds to the images in plain, the second row depicts an encrypted version, namely the reconstructed polynomial coefficients $a_k$ of the ciphertext polynomial.}
   \label{fig:ciphertext-visualisation}
 \end{figure}
 
@@ -15,7 +15,7 @@ Each pixel corresponds to a coefficient $a \in \Z / q\Z$ scaled down by the modu
   \centering
   \pgfplotsset{/pgfplots/group/.cd,vertical sep=1.6cm}
   \inputtikz{figures/generated/training-history}
-  \caption{Development of the classification accuracy and the mean squared error during training.}
+  \caption[Classification accuracy and loss development during training]{Development of the classification accuracy and the mean squared error during training.}
   \label{fig:training-history}
 \end{figure}
 
@@ -28,7 +28,7 @@ At this point we are very likely to find the network's learning process in an \t
 \begin{figure}[H]
   \centering
   \inputtikz{figures/generated/confusion-matrix}
-  \caption{Confusion Matrix of the trained network. \todo{Ein bisschen beschreiben..}}
+  \caption[Confusion Matrix of the trained network]{Confusion Matrix of the trained network. \todo{Ein bisschen beschreiben..}}
   \label{fig:confusion-matrix}
 \end{figure}
 
@@ -50,7 +50,7 @@ Precision (also referred to as PPV, positive predictive value) refers to the abi
 
 \begin{table}[H]
   \centering
-  \caption{Precision and Recall of the trained network for each digit individually}
+  \caption[Precision and recall of each digit]{Precision and Recall of the trained network for each digit individually}
   \begin{tblr}{r|cccccccccc}
     \textbf{Digit}     & 0     & 1     & 2     & 3     & 4     & 5     & 6     & 7     & 8     & 9     \\
     \hline
@@ -70,7 +70,7 @@ The following benchmarks were accumulated on an Intel\textregistered \, i7-5600U
 
 \begin{table}[H]
   \centering
-  \caption{Performance Benchmarks / Communication Overhead}
+  \caption[Performance Benchmarks / Communication Overhead]{Performance Benchmarks / Communication Overhead}
   \caption*{
     $\bm{B_1}$ ... Coefficient Moduli start bits (also equal to the last) \\
     $\bm{B_2}$ ... Coefficient Moduli middle bits \\

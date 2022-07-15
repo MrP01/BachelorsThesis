@@ -131,7 +131,7 @@ Due to the fact that for any $k, l \in \Z$, their product $\xi_k \cdot x_l$ is a
 \begin{figure}
   \centering
   \inputtikz{figures/nth-roots-of-unity}
-  \caption[]{The 5\textsuperscript{th} roots of unity visualised on the complex plane. Obviously, they all lie on the unit circle $|z| = 1$, motivating the name of cyclotomic, 'circle-cutting', polynomials, whose roots cut the unit circle into multiple sectors.}
+  \caption[The 5th roots of unity]{The 5\textsuperscript{th} roots of unity visualised on the complex plane. Obviously, they all lie on the unit circle $|z| = 1$, motivating the name of cyclotomic, 'circle-cutting', polynomials, whose roots cut the unit circle into multiple sectors.}
   \label{fig:nth-roots-of-unity}
 \end{figure}
 
@@ -235,8 +235,7 @@ Examples include collision resistant hash functions, signatures, pseudorandom fu
 \begin{figure}
   \centering
   \inputtikz{figures/lattice}
-  \caption{Illustration of a standard lattice $\lat$ over the integers $\Z$
-    with two basis vectors $\vec{b}_1$ and $\vec{b}_2$ (cf. \autoref{def:lattice}).
+  \caption[Illustration of a standard lattice]{Illustration of a standard lattice $\lat$ over the integers $\Z$ with two basis vectors $\vec{b}_1$ and $\vec{b}_2$ (cf. \autoref{def:lattice}).
     The shortest vector problem in this case is solved by $\vec{x} = 0 \vec{b}_1 \pm 1 \vec{b}_2$.}
   \label{fig:lattice}
 \end{figure}
@@ -345,7 +344,7 @@ given a dataset $\{\vec{x}_i, t_i\}$.
 \begin{figure}[H]
   \centering
   \inputtikz{figures/gradient-descent}
-  \caption{Illustration of Gradient Descent, adapted from \parencite{gradient-descent-plot}.}
+  \caption[Illustration of Gradient Descent]{Illustration of Gradient Descent, adapted from \parencite{gradient-descent-plot}.}
   \label{fig:gradient-descent}
 \end{figure}
 
@@ -361,7 +360,7 @@ To make up for numerical problems and potentially slow convergence, \gls{gd} can
 \begin{figure}[H]
   \centering
   \inputtikz{figures/neural-network}
-  \caption{A simple neural network resembling the structure we use in our demonstrator, the input (a 784 entry vector) is forwarded to the second layer using $\vec{h} = \cryptop{relu}(M_1 \vec{x} + \vec{b_1})$, resulting in a vector of 128 entries, and finally forwarded to the output layer with $\vec{y} = \cryptop{softmax}(M_2 \vec{h} + \vec{b_2})$. Each of the 10 outputs in $\vec{y}$ corresponds to a 'probability' associated with each digit from 0 to 9.}
+  \caption[Neural Network illustration resembling the one used in our demonstrator]{A simple neural network resembling the structure we use in our demonstrator, the input (a 784 entry vector) is forwarded to the second layer using $\vec{h} = \cryptop{relu}(M_1 \vec{x} + \vec{b_1})$, resulting in a vector of 128 entries, and finally forwarded to the output layer with $\vec{y} = \cryptop{softmax}(M_2 \vec{h} + \vec{b_2})$. Each of the 10 outputs in $\vec{y}$ corresponds to a 'probability' associated with each digit from 0 to 9.}
   \label{fig:neural-network}
 \end{figure}
 
@@ -386,7 +385,7 @@ To better understand the implications and possibilities of a large neural networ
 \begin{figure}[H]
   \centering
   \inputtikz{figures/wave-function}
-  \caption{Illustration of a wave function $\tilde{\psi}: \R^2 \mapsto \R$ as commonly used in quantum mechanics.}
+  \caption[Illustration of a wave function]{Illustration of a wave function $\tilde{\psi}: \R^2 \mapsto \R$ as commonly used in quantum mechanics.}
   \label{fig:wave-function}
 \end{figure}
 
@@ -400,7 +399,7 @@ $$\mathcal{L}^2 = \big\{\psi: \C^3 \mapsto \C \,\big|\, ||\psi|| < \infty\big\} 
 The most popular interpretation / notion of a wave function is that it relates to the probability that a particle is at the current position $\vec{r}$ at time $t$ at the given time.
 Namely, this probability is given by $|\psi(\vec{r}, t)|^2$.
 
-\todo{Explain quantum entanglement on a high level, Qubits}
+\todo{Explain quantum entanglement on a high level, Qubits} \\
 \todo{Mention Shor's (and Grover's) algorithm and why they are fast, intuitively}
 % Roman: For shor and grover, just give the mathematical expression of the concept and then say: A quantum fft solves this :) So no need for a full quantum circuit.
 % Don't go into too much details on entanglement and qbits, just say that we can describe a qbit as a vector of its collapsing probability, and if two qbits are entangled, a collapsed qbit_1 forces qbit_2 to take a value.
