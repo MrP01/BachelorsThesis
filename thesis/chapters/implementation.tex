@@ -3,6 +3,7 @@
 
 \section{Chosen Software Architecture}
 In the given setting, the most accessible frontend is commonly a JavaScript web application.
+A web-based demonstrator to show how to classify handwritten digits when using \glslink{he}{homomorphic encryption} was implemented, comprised of a C++ server and a React\footnote{https://reactjs.org/} frontend, confer \autoref{fig:frontend}.
 
 To still make the classification run as quickly and efficiently as possible, a C++ binary runs in the backend providing an HTTP API to the frontend application.
 In order to allow for more flexibility of the HTTP server, the initial approach was to pipe requests through a dedicated web application framework with database access that would allow, for instance, user management next to the basic classification.
@@ -188,11 +189,9 @@ In order to reduce the number of rotations required, one can make use of the \te
   where $\cdot$ denotes an element-wise multiplication of two vectors.
 \end{theorem}
 
-A proof of the above theorem can be found in the \hyperref[chap:appendix]{Appendix}.
+A proof of the above theorem can be found in the \hyperref[chap:appendix]{Appendix}, confer \autoref{proof:bsgs-matmul}.
 
-\todo{Proof lieber hier oder im Appendix?}
-
-Note that the optimized matrix-vector multiplication only requires $t_1 + t_2$ as we can store the $t_1$ inner rotations of the vector $\vec{x}$ for the upcoming evaluations.
+Note that the optimized matrix-vector multiplication only requires $t_1 + t_2$ rotations as we can store the $t_1$ inner rotations of the vector $\vec{x}$ for the upcoming evaluations.
 For larger matrices and vectors (larger $t$), $t_1 + t_2$ are indeed much smaller than the conventional number of required rotations $t = t_1 \cdot t_2$ in the diagonal or hybrid method for instance, which was the point of this modification in the first place.
 
 \section{Polynomial Evaluation}
@@ -217,7 +216,7 @@ From the implementation perspective, there are three properties to watch out for
 \paragraph{Multiplication}
 Each time one multiplies two ciphertexts, the scales multiply (logarithmically, they add up, i.e. the bits are added together).
 The chain index reduces by 1. The chain index of an encoded ciphertext depends on the coeff moduli.
-There must be enough bits remaining to perform the multiplication, namely $\log2(scale)$ bits.
+There must be enough bits remaining to perform the multiplication, namely $\log_2(scale)$ bits.
 
 \paragraph{Addition}
 The scales must be the same, but luckily they will not change.

@@ -1,19 +1,21 @@
-\chapter*{Appendix}
-\label{chap:appendix}
-\addcontentsline{toc}{chapter}{Appendix}
+\appendix
+\titleformat{\chapter}[block]{\normalfont\LARGE\bfseries}{Appendix \thechapter \;\textendash\;}{0ex}{\vspace{-4cm}}[\vspace{4.5cm}]
+\titlespacing{\chapter}{0cm}{0cm}{0cm}
 
+\chapter{Missing Proofs}
+\label{chap:appendix}
+
+\section{Power-of-2 Cyclotomic Polynomials}
+\label{proof:power-of-2-cyclo-poly}
 \begin{proof}[Proof of \autoref{thm:power-of-2-cyclo-poly}]
   With $k \in \N$ a positive integer, we want to show that
   $$\Phi_{2^k} (x) = x^{2^{k-1}} + 1\,.$$
 
   A polynomial $p \in \Z[X]$ with $$p(x) = x^n - a$$ of degree $n$ has $n$ roots
   $$\{x_j\} = \{a^\frac{1}{n} e^{2\pi i \frac{j}{n}} \,|\, j \in \N, j \leq n\}$$
-  related by a factor $a^\frac{1}{n}$ to the
-  \hyperref[lemma:nth-roots-of-unity]{$n$\textsuperscript{th} roots of unity} given by powers of
-  $\xi = e^{2\pi i \frac{1}{n}}$.
+  related by a factor $a^\frac{1}{n}$ to the \hyperref[lemma:nth-roots-of-unity]{$n$\textsuperscript{th} roots of unity} given by powers of $\xi = e^{2\pi i \frac{1}{n}}$.
 
-  It is clear from the fundamental theorem of algebra that the polynomial $p$ with roots $\{x_j\}$
-  can be factorised as
+  It is clear from the fundamental theorem of algebra that the polynomial $p$ with roots $\{x_j\}$ can be factorised as
   $$p(x) = \prod_{j=1}^{n} (x - x_j) = \prod_{j=1}^{n} (x - a^\frac{1}{n} e^{2\pi i \frac{j}{n}})\,.$$
 
   Fixing $a = -1$, we obtain $p(x) = x^n + 1$ with roots given by
@@ -30,8 +32,7 @@
     \end{cases} \quad l, k \in \N$$
   since a number $2^k$ that can only be decomposed into multiples of $2$
   never shares a factor with an odd number, in accordance with \autoref{lemma:nth-roots-of-unity}
-  we can conclude that the set of all odd roots of unity is exactly the set of all primitive roots
-  (satisfying $\gcd(2^k, l) = 1$).
+  we can conclude that the set of all odd roots of unity is exactly the set of all primitive roots (satisfying $\gcd(2^k, l) = 1$).
 
   Following from above,
   \begin{align*}
@@ -44,6 +45,8 @@
   \parencite{power-of-2-cyclo-poly}
 \end{proof}
 
+\section{Babystep-Giantstep Multiplication}
+\label{proof:bsgs-matmul}
 \begin{proof}[Proof of \autoref{thm:bsgs}]
   Starting from the adapted matrix-multiplication expression $P = (P_1, P_2, ..., P_t)^T \in \R^t$, we want to show that we indeed end up with an authentic matrix-vector product.
   \begin{align*}

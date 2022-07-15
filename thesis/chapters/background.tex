@@ -157,7 +157,7 @@ The proof for \autoref{remark:cyclotomic-irreducibility} is quite cumbersome, bu
   $$\Phi_{M}(x) = x^{N} + 1\,.$$
   Its degree is $N$, consistent with $\varphi(2^k) = 2^{k-1} \; \forall k \in \N$.
 \end{theorem}
-Find a short but illustrative proof of \autoref{thm:power-of-2-cyclo-poly} in the \hyperref[chap:appendix]{Appendix}.
+Find a short but illustrative proof of \autoref{thm:power-of-2-cyclo-poly} in the \hyperref[chap:appendix]{Appendix}, confer \autoref{proof:power-of-2-cyclo-poly}.
 
 \begin{definition}{Ring of Polynomials of highest degree $N-1$}{bounded-polynomials}
   For a power-of-2 $N$, one can construct the quotient ring $(R, +, \cdot)$ as
@@ -230,7 +230,7 @@ Note that without the last requirement $||\vec{z}|| \leq \beta$, the \gls{sis} p
 It can be shown that solving \gls{sis} is at least as hard as solving \gls{gapsvp} with appropriate parameters \parencite{1996-hard-lattice-problems}.
 
 Using the above problems, multiple cryptographic primitives can be constructed due to the proven hardness that also propagates to quantum computers.
-Examples include collision resistant hash functions, signatures, pseudorandom functions or even Regev's public-key cryptosystem that is based on \gls{lwe} (which is reduced to the other lattice problems) \parencite{2016-decade-of-lattice}.
+Examples include collision resistant hash functions, signatures, pseudorandom functions or even Regev's public-key cryptosystem that is based on \gls{lwe}, which is reduced to the other lattice problems \parencite{2016-decade-of-lattice}.
 
 \begin{figure}
   \centering
@@ -356,6 +356,8 @@ To make up for numerical problems and potentially slow convergence, \gls{gd} can
 
 \subsection{Multi-Layered Neural Networks}
 \todo{Woher kommt diese Struktur?}
+% Roman: Also do not go into too much details
+
 \begin{figure}[H]
   \centering
   \inputtikz{figures/neural-network}
@@ -399,11 +401,7 @@ The most popular interpretation / notion of a wave function is that it relates t
 Namely, this probability is given by $|\psi(\vec{r}, t)|^2$.
 
 \todo{Explain quantum entanglement on a high level, Qubits}
-
 \todo{Mention Shor's (and Grover's) algorithm and why they are fast, intuitively}
-
-% TODO: what is a Qubit
-% TODO: what are Shor's and Grover's Algorithms, only mention
 % Roman: For shor and grover, just give the mathematical expression of the concept and then say: A quantum fft solves this :) So no need for a full quantum circuit.
 % Don't go into too much details on entanglement and qbits, just say that we can describe a qbit as a vector of its collapsing probability, and if two qbits are entangled, a collapsed qbit_1 forces qbit_2 to take a value.
 
