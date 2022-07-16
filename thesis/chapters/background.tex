@@ -1,11 +1,12 @@
 \chapter{Background}
 \label{chap:background}
+\vspace{-1cm}
 
 The discussion of the \gls{he} schemes following in \autoref{chap:homomorphic-encryption} requires some mathematical background that will be introduced here, aiming for a consistent overview rather than full completeness.
 The last two sections \ref{sec:machine-learning} and \ref{sec:post-quantum-sec} introduce some background on \glsdesc{ml} and provide an outlook on Quantum Computation and why it affects cryptography today.
 
 % \section{Spicy Math for \gls{he}}
-\paragraph{Notational Conventions}
+\paragraph{Notational Conventions:}
 Let $\N$ denote the natural numbers without $0$, i.e. $\N = \{n \in \Z \,|\, n > 0\}$.
 For a probability distribution $\chi$ over a set $R$, let sampling a value $x \in R$ from the probability distribution be denoted by $x \leftarrow \chi$.
 For $a \in \R$ a real number, denote rounding down (floor) $a$ by $\lfloor a \rfloor \in \Z$,
@@ -32,13 +33,14 @@ As the algebraic structure underlying almost every single symbol following in th
           i.e. $a \cdot (b+c) = (a \cdot b) + (a \cdot c) \quad\forall a, b, c \in R$ from the left and \\
           i.e. $(b+c) \cdot a = (b \cdot a) + (c \cdot a) \quad\forall a, b, c \in R$ from the right.
   \end{itemize}
-  Where the first 5 properties can be summarised as $(R, +)$ forming an Abelian group.
   If multiplication is additionally commutative, we refer to the ring as \textit{commutative}:
   \begin{itemize}
     \item Multiplication is commutative: $a \cdot b = b \cdot a \quad\forall a, b \in R$.
   \end{itemize}
 \end{definition}
+
 Acting as the logical extension of a group, a ring can be considered the intermediary step towards a field (which also defines subtraction and division).
+Recall that the first 5 properties can be summarised as $(R, +)$ forming an Abelian group.
 An example of a ring would be the integers themselves, or the integers modulo $q$: $\Z / q \Z$, sometimes also denoted as $\Z_q$.
 
 Given two groups $(G, +)$ and a subgroup $(N, +)$, we can construct another group $G / N$ as follows, referred to as a quotient group or factor group:
@@ -306,9 +308,17 @@ In the exact same manner as in \autoref{subsec:lwe}, the search and decision pro
 
 The main advantage of RLWE over LWE is that is conceptually similar and yet simple to formalise over an arbitrarily chosen \hyperref[def:ring]{ring} $(R, +, \cdot)$ which allows for a vast amount of applications and interesting constructions.
 
-\todo{LWE and RLWE comparison}
-% Roman: maybe mention here, that in LWE based cryptosystems, the public key is m LWE samples, i.e., (A, b) where A is a m x m matrix and b a m vector. For RLWE it is then just (a,b) where a and b have b coefficients. Hence, keys are smaller in RLWE.
-% Futhermore, RLWE samples can be translated into equivalent LWE samples. in the case above, the matrix A is build from the polynomial a and then LWE = RLWE. When we derive security for RLWE we take secure parameters for this equivalent LWE representation. Thereby we "hope" that building A from the poly a does not introduce any security flaw :)
+In \gls{lwe}-based cryptosystems, the public key consists of $m$ LWE-distribution (\autoref{def:lwe-dist}) samples of $A_{\vec{s},\chi_{error}}$ hiding the secret $\vec{s}$.
+An attacker would thereby need to solve the LWE-Problem (\autoref{def:lwe-search-problem}) in order to retrieve the secret key from the public key, which is highly undesirable for a solid cryptosystem of course, but also hardly feasible with well-chosen parameters, assuming the hardness of the LWE problem (cf. \autoref{thm:lwe-hardness}).
+For RLWE, the public key consists of $m$ RLWE-distribution samples (\autoref{corollary:rlwe-dist}) which are usually smaller since they are only comprised of elements in $R/qR$.
+The size of the secret key in LWE therefore scales with $n \cdot m$, the public key with $nm + n$, while in RLWE the secret key is only a single element in $R/qR$ and the public key only scales with $2m$.
+Keys are usually smaller in RLWE, depending on the choices of $p$, $q$, $n$ and $m$.
+
+Due to their similarity, RLWE samples can even be translated into equivalent LWE samples.
+In the case above, a straightforward way is to encode the polynomial coefficients of the RLWE public and secret key into a matrix $A \in (\Z/p\Z)^{m \times n}$, vector $\vec{b} \in (\Z/p\Z)^m$ and vector $\vec{s} \in (\Z/p\Z)^n$ to arrive at the corresponding LWE keys.
+A similar approach may be chosen for the relinearization (and possibly, Galois) keys.
+
+This translation can be used to infer security requirements from LWE (a well-studied problem) over to RLWE to find secure parameters of the cryptosystem.
 
 \pagebreak
 \section{Machine Learning}

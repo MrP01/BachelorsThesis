@@ -17,6 +17,8 @@ For \Gls{fhe}, there exist a few schemes in use today with existing implementati
 We will first introduce the BFV scheme (integer arithmetic) as it represents a fundamental building block behind CKKS.
 Due to the inherent applications, this thesis will focus on the CKKS scheme to perform homomorphic operations on (complex-valued) floating point numbers and vectors.
 
+To alleviate upcoming notation, for two tuples $(\cdot, \cdot)$ defined over the same ring, denote their element-wise addition as $(\cdot, \cdot) + (\cdot, \cdot)$, element-wise multiplication by a scalar $u$ as $u \cdot (\cdot, \cdot)$ and element-wise rounding as $\lfloor (\cdot, \cdot) \rceil$.
+
 \section{Homomorphic Encryption using RSA}
 In order to illustrate the basic idea behind \Gls{he}, without distancing ourselves too far from the original goal of introducing basic \gls{he} operations used in practice, this short section aims to motivate the definition of ring homomorphisms (cf. \autoref{def:ring-homomorphism}) behind a cryptographic background.
 
@@ -47,20 +49,19 @@ As we can see, the term \gls{he} stems from the ability to perform computations 
 \cite{seal-4.0} implements the scheme, enabled using \cpp{seal::scheme_type::bgv}.
 
 \pagebreak
-\section{The BFV scheme}
+\section{The BFV Scheme}
 \label{sec:bfv}
 This scheme was developed in two separate publications, whose authors initials it is named after, \cite{2012-brakerski} and \cite{2012-fv-original}.
 \gls{bfv} is based on \gls{bgv} and they are very similar in their core ideas, one can even convert a BFV ciphertext to an equivalent BGV ciphertext \parencite{2021-he-revisiting}.
 In this section, we will focus on a slightly altered implementation introduced in \cite{2014-fv-comparison}, yet the main aspects are identical to their definitions in the original papers.
 
-\todo{Ausführlichere Beschreibung..?}
+% \todo{Ausführlichere Beschreibung..?}
 % Roman: Passt so
 
 % Roman: I think you have never mentioned Galois rotations before...
 % Maybe start this section with mentioning that in CKKS one can encode a vector of n/2 elements into one polynomial and addition/multiplication then correspond to elementwise vector addition/multiplications. Furthermore, these vectors can be rotated using galois automorphism.
 
-For two tuples $(\cdot, \cdot)$ defined over the same ring, denote their element-wise addition as $(\cdot, \cdot) + (\cdot, \cdot)$, element-wise multiplication by a scalar $u$ as $u \cdot (\cdot, \cdot)$ and element-wise rounding as $\lfloor (\cdot, \cdot) \rceil$.
-
+\subsection{Scheme Definition}
 \begin{definition}{The BFV-Scheme}{bfv-scheme}
   Let $R = \Z[X] / \Phi_d(X)$ be a polynomial ring with $\Phi_d(X)$ the $d$\textsuperscript{th} \hyperref[def:cyclotomic-poly]{cyclotomic polynomial}
   ($\rightarrow d \in \N$) for ciphertexts $c \in R \times R$.
@@ -126,6 +127,7 @@ To summarise the parameters and variables, a brief overview of all used symbols 
 \begin{table}[H]
   \centering
   \caption[Summary of the parameters and symbols in BFV]{Summary of the parameters and symbols in BFV.}
+  \SetTblrInner{rowsep=0pt}
   \begin{tblr}{rll}
     \hline
     \textbf{Symbol} & \textbf{Space} & \textbf{Explanation} \\
@@ -161,6 +163,7 @@ Parameters in $\mathbb{P}$ described above need to be carefully chosen in order 
   \label{fig:bfv-overview}
 \end{figure}
 
+\subsection{Verification of the Additive Homomorphism}
 \begin{theorem}{BFV encryption is homomorphic with respect to addition}{bfv-enc-is-homomorphic}
   \cryptop{BFV.Encrypt} should encrypt in such a way that the addition algebra can be retained even in the transformed space, showing that we can indeed refer to it as \hyperref[def:ring-homomorphism]{homomorphic} encryption.
 \end{theorem}
@@ -204,7 +207,8 @@ Parameters in $\mathbb{P}$ described above need to be carefully chosen in order 
 
 \cite{seal-4.0} implements the scheme, enabled using \cpp{seal::scheme_type::bfv}.
 
-\section{The CKKS scheme}
+\pagebreak
+\section{The CKKS Scheme}
 \label{sec:ckks}
 The \gls{ckks} scheme allows us to perform approximate arithmetic on floating point numbers.
 Essentially, the idea is to extend \gls{bfv} which allows us to operate on vectors $\vec{y} \in \Z_t^n$, by an embedding approach that allows us to encode a (complex) floating point number vector $\vec{x} \in \R^n (\C^n)$ as an integer vector. A na\"ive approach would be to use a fixed-point embedding:
@@ -303,9 +307,10 @@ Summarised,
 $$\C^{N/2} \xlongrightarrow{\;\underline{\pi}\inv\;} \mathbb{H} \xlongrightarrow{\;\underline{\rho}\inv\;} \sigma(R) \xlongrightarrow{\;\underline{\sigma}\inv\;} R \,.$$
 The decoding procedure $\vec{z} = \cryptop{CKKS.Decode}(m),\, m \in R$ does the exact opposite to reobtain the input vector $\vec{z} \in \C^{N/2}$.
 
-\pagebreak
+\subsection{Scheme Definition}
 \begin{definition}{The CKKS Scheme}{ckks-scheme}
   Define $R, R/q_L R$ as in \autoref{def:bfv-scheme}.
+  Introduce three bounded discrete probability distributions $\chi_{key}$, $\chi_{enc}$ and $\chi_{error}$ over $R/q_L R$.
   \vspace{0.2cm}
 
   \cryptop{CKKS.} \\
@@ -368,6 +373,7 @@ To summarise the parameters and variables, a brief overview of all used symbols 
 \begin{table}[H]
   \centering
   \caption[Summary of the parameters and symbols in CKKS]{Summary of the parameters and symbols in CKKS.}
+  \SetTblrInner{rowsep=0pt}
   \begin{tblr}{rll}
     \hline
     \textbf{Symbol} & \textbf{Space} & \textbf{Explanation} \\
@@ -402,6 +408,7 @@ To summarise the parameters and variables, a brief overview of all used symbols 
   \label{fig:ckks-overview}
 \end{figure}
 
+\subsection{Verification of the Additive Homomorphism}
 \begin{theorem}{CKKS encryption is homomorphic with respect to addition}{ckks-enc-is-homomorphic}
   \cryptop{CKKS.Encode} and \cryptop{CKKS.Encrypt} should encrypt in such a way that the addition algebra can be retained even in the transformed space, showing that we can indeed refer to it as \hyperref[def:ring-homomorphism]{homomorphic} encryption.
 \end{theorem}
@@ -441,7 +448,7 @@ To summarise the parameters and variables, a brief overview of all used symbols 
   \cryptop{CKKS.Decode} on the other hand is only approximately additive due to the rounding operation required in between.
 
   The rest follows from \autoref{thm:bfv-enc-is-homomorphic} as encryption and addition of the BFV scheme are identical.
-  All in all for \cryptop{CKKS},
+  All in all for \cryptop{CKKS}, using the secret key $s$ and public key $\vec{p}$,
   $$\cryptop{Decode}(
     \cryptop{Decrypt}(s,
     \cryptop{Add}(
