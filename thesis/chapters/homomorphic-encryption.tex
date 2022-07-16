@@ -234,25 +234,25 @@ In total, the encoding and decoding steps consist of three transformations, $\un
 All elements of $R$ are also elements of $\mathcal{S}$ since $\Z \subset \mathcal{S}$ which results in $\underline{\sigma}(R) \subset \underline{\sigma}(\mathcal{S})$, every plaintext polynomial $m \in R$ can be encoded into $\underline{\sigma}(R)$.
 Also note that evaluating a polynomial on the $n$\textsuperscript{th} roots of unity corresponds to performing a \name{Fourier}-Transform.
 
-Define the commutative subring $(\mathcal{H}, +, \cdot)$ of $(\C^N, +, \cdot)$ on the set
-$$\mathcal{H} := \{\vec{z} = (z_j)_{j \in \Z_d^*} \in \C^N : z_j = \overline{z_{-j}} \;\forall j \in \Z_d^*\} \subseteq \C^N$$
+Define the commutative subring $(\mathbb{H}, +, \cdot)$ of $(\C^N, +, \cdot)$ on the set
+$$\mathbb{H} := \{\vec{z} = (z_j)_{j \in \Z_d^*} \in \C^N : z_j = \overline{z_{-j}} \;\forall j \in \Z_d^*\} \subseteq \C^N$$
 of all complex-valued vectors $\vec{z}$ where the first half equals the reversed complex-conjugated second half.
 
 \begin{definition}{Natural Projection $\underline{\pi}$}{pi-transform}
-  Let $T$ be a mulitplicative subgroup of $\Z_d^*$ with $\Z_d^* / T = \{\pm 1\} = \{1T, -1T\}$, then the natural projection $\underline{\pi}: \mathcal{H} \mapsto \C^{N/2}$ is defined as
+  Let $T$ be a mulitplicative subgroup of $\Z_d^*$ with $\Z_d^* / T = \{\pm 1\} = \{1T, -1T\}$, then the natural projection $\underline{\pi}: \mathbb{H} \mapsto \C^{N/2}$ is defined as
   $$\underline{\pi}\big((z_j)_{j \in \Z_M^*}\big) := (z_j)_{j \in T}$$
-  Let its inverse be denoted by $\underline{\pi}\inv: \C^{N/2} \mapsto \mathcal{H}$ and consequently defined as
+  Let its inverse be denoted by $\underline{\pi}\inv: \C^{N/2} \mapsto \mathbb{H}$ and consequently defined as
   $$\underline{\pi}\inv\big((z_j)_{j \in T}\big) := \big(\nu(z_j)\big)_{j \in \Z_M^*} \; \mathrm{with} \; \nu(z_j) = \begin{cases}
       z_j            & \text{if } j \in T \\
       \overline{z_j} & \text{otherwise}
     \end{cases}$$
 \end{definition}
 
-The natural projection $\underline{\pi}$ simply halves a vector $\vec{z} \in \mathcal{H}$ to all elements where $j \in T$ to only contain its essential information (the first half), since the second half can easily be reconstructed by element-wise conjugation using $\nu$.
+The natural projection $\underline{\pi}$ simply halves a vector $\vec{z} \in \mathbb{H}$ to all elements where $j \in T$ to only contain its essential information (the first half), since the second half can easily be reconstructed by element-wise conjugation using $\nu$.
 The exact structure of $T$ is given by $\Z_d^* / T = \{\pm 1T\}$ with $+1T$ and $-1T$ denoting multiplicative left cosets of $T$, together forming the \hyperref[def:quotient-group]{quotient group} $(\Z_d^* / T, \cdot)$ over multiplication (denoted $\cdot$ instead of $+$ as in the quotient group definition in the previous chapter).
 
 \paragraph{Further studying $T$.}
-We first notice that by \name{Lagrange}'s theorem on finite groups, the number of elements in $T$ is exactly $N / 2$ since $$\frac{|\Z_d^*|}{|T|} = |\{\pm 1\}| \Leftrightarrow \frac{N}{|T|} = 2 \Leftrightarrow |T| = \frac{N}{2}$$ leading to $\underline{\pi}(\mathcal{H}) \subseteq \C^{N/2}$.
+We first notice that by \name{Lagrange}'s theorem on finite groups, the number of elements in $T$ is exactly $N / 2$ since $$\frac{|\Z_d^*|}{|T|} = |\{\pm 1\}| \Leftrightarrow \frac{N}{|T|} = 2 \Leftrightarrow |T| = \frac{N}{2}$$ leading to $\underline{\pi}(\mathbb{H}) \subseteq \C^{N/2}$.
 Rephrased, we seek a $T \subseteq \Z_d^*$ with $1 \in T$ such that we can fully construct $\Z_d^*$ by the union of the cosets $1T$ and $-1T$, i.e. $\Z_d^* = (1T) \cup (-1T)$.
 Note that $T$ is not unique, we can find multiple sets $T$ for which the above holds, for instance by brute force computation:
 
@@ -280,7 +280,7 @@ using the above Python code. An example of an invalid subset $T$ that does cover
 
 % TODO: as above -> ref
 For the purposes of \gls{ckks}, we simply choose a global $T$ as above that is constant for our encoding and decoding procedure and a given $d$.
-The inverse natural projection $\underline{\pi}\inv$ then uniquely constructs a vector in $\mathcal{H}$ by filling in elements $\overline{z_j}$ for $j \notin T$ into $\vec{z}$.
+The inverse natural projection $\underline{\pi}\inv$ then uniquely constructs a vector in $\mathbb{H}$ by filling in elements $\overline{z_j}$ for $j \notin T$ into $\vec{z}$.
 For simplicity, we commonly choose $T$ as the 'first half' of $\Z_d^*$ when sorting in an ascending manner as it is always a valid choice
 \footnote{
   This can be seen from the coset $-1T$ which exactly equals the 'missing' half in $\Z_d^*$ when the first half is covered by $1T = T = \{1, 3, 5, ..., N-1\}$ since $-1T = \{-1, -3, -5, ..., -(N-1)\} \equiv \{d-1, d-3, d-5, ..., d-N+1\}$ $(\text{mod}\, d)$ when $d$ a power of 2.
@@ -288,19 +288,19 @@ For simplicity, we commonly choose $T$ as the 'first half' of $\Z_d^*$ when sort
 }.
 
 \begin{definition}{Discretisation to an element of $\underline{\sigma}(R)$}{}
-  Using one of several round-off algorithms (cf. \cite{2013-rlwe-toolkit}), given an element of $\mathcal{H}$, define a rounding operation $\underline{\rho}\inv: \mathcal{H} \mapsto \underline{\sigma}(R)$ that maps an $\vec{h} \in \mathcal{H}$ to its closest element in $\underline{\sigma}(R)$, also denoted as
+  Using one of several round-off algorithms (cf. \cite{2013-rlwe-toolkit}), given an element of $\mathbb{H}$, define a rounding operation $\underline{\rho}\inv: \mathbb{H} \mapsto \underline{\sigma}(R)$ that maps an $\vec{h} \in \mathbb{H}$ to its closest element in $\underline{\sigma}(R) \subset \mathbb{H}$, also denoted as
   $$\underline{\rho}\inv(\vec{h}) := \lfloor \vec{h} \rceil_{\underline{\sigma}(R)}\,.$$
   Further let $\underline{\rho_\delta}\inv(\vec{h}) = \lfloor \delta \cdot \vec{h} \rceil_{\underline{\sigma}(R)}$ denote the same rounding operation but with prior scaling by a scalar factor $\delta$.
   Note that $\underline{\rho}$ is given directly as the identity operation because all elements of its domain are already elements of its image. Similarly, $\underline{\rho_\delta}\inv(\vec{y}) = \delta\inv \cdot \vec{y}$.
 \end{definition}
 
 Because it is not essential to understanding the encryption scheme, we will skip over concrete implementations of the rounding procedure $\underline{\rho}\inv$.
-Note that for choosing a 'close' element $\vec{g} \in \mathcal{H}$, we must first introduce a sense of proximity, in this case done by the $l_\infty$-norm $||\vec{g} - \vec{h}||_\infty$ of the difference between $\vec{h} \in \mathcal{H}$ and $\vec{g}$.
+Note that for choosing a 'close' element $\vec{g} \in \mathbb{H}$, we must first introduce a sense of proximity, in this case done by the $l_\infty$-norm $||\vec{g} - \vec{h}||_\infty$ of the difference between $\vec{h} \in \mathbb{H}$ and $\vec{g}$.
 
 All in all, $m = \cryptop{CKKS.Encode}(\vec{z}),\, \vec{z} \in \C^{N/2}$ applies all inverse transformations $\underline{\pi}\inv$ (first), $\underline{\rho}\inv$ (second) and $\underline{\sigma}\inv$ (third) to an input vector $\vec{z}$ in order to finally arrive at a plaintext polynomial $m \in R/q_L R$ (equally stated as $m \in \Z_{q_L} / (X^N + 1)$ as long as $N$ is a power of 2).
 Although $\underline{\sigma}$ is defined over $\mathcal{S}$ instead of $\mathcal{R}$, all elements of $\underline{\sigma}(R)$ can indeed be mapped back to an element in $R$ using $\underline{\sigma}\inv$.
 Summarised,
-$$\C^{N/2} \xlongrightarrow{\;\underline{\pi}\inv\;} \mathcal{H} \xlongrightarrow{\;\underline{\rho}\inv\;} \sigma(R) \xlongrightarrow{\;\underline{\sigma}\inv\;} R \,.$$
+$$\C^{N/2} \xlongrightarrow{\;\underline{\pi}\inv\;} \mathbb{H} \xlongrightarrow{\;\underline{\rho}\inv\;} \sigma(R) \xlongrightarrow{\;\underline{\sigma}\inv\;} R \,.$$
 The decoding procedure $\vec{z} = \cryptop{CKKS.Decode}(m),\, m \in R$ does the exact opposite to reobtain the input vector $\vec{z} \in \C^{N/2}$.
 
 \pagebreak
@@ -361,7 +361,7 @@ $\chi_{key} = \mathcal{H}WT(h)$ over $\{0,\pm 1\}^N$,
 $\chi_{error} = \mathcal{DG}(\sigma^2)$ over $\Z^N$ and
 $\chi_{enc} = \mathcal{ZO}(0.5)$ another distribution over $\{0,\pm 1\}^N$.
 
-It should also be noted that the encoding procedure represents an isometric ring isomorphism between its domain and image, as does the decoding procedure.
+It should also be noted that the encoding procedure represents an isometric ring isomorphism (a linear bijection that preserves distance) between its domain and image, as does the decoding procedure.
 This reflects in the observation that the plaintext sizes and errors are preserved under the transformations \parencite{2017-ckks-original}.
 
 To summarise the parameters and variables, a brief overview of all used symbols is provided in \autoref{tab:ckks-symbols}.
@@ -403,9 +403,52 @@ To summarise the parameters and variables, a brief overview of all used symbols 
 \end{figure}
 
 \begin{theorem}{CKKS encryption is homomorphic with respect to addition}{ckks-enc-is-homomorphic}
-  \cryptop{CKKS.Encrypt} should encrypt in such a way that the addition algebra can be retained even in the transformed space, showing that we can indeed refer to it as \hyperref[def:ring-homomorphism]{homomorphic} encryption.
+  \cryptop{CKKS.Encode} and \cryptop{CKKS.Encrypt} should encrypt in such a way that the addition algebra can be retained even in the transformed space, showing that we can indeed refer to it as \hyperref[def:ring-homomorphism]{homomorphic} encryption.
 \end{theorem}
 
-\todo{Obiges Theorem kurz zeigen (ausrechnen)}
+\begin{proof}
+  Similar to the BFV scheme proof (\autoref{thm:bfv-enc-is-homomorphic}), we aim show that two input vectors $\vec{z}, \vec{z}' \in \C^{N/2}$ can be encoded, encrypted and added - and finally decrypted back to $\overline{\vec{z}} = \vec{z} + \vec{z}'$.
+
+  Due to the extremely high similarity of the BFV and CKKS schemes, they are even identical in their encryption, decryption and adding procedures, the only thing that remains to be shown is the additivity (or even linearity) of \cryptop{CKKS.Encode}.
+
+  % As a first step, the client generates the secret key $s$ and public key $\vec{p} = (b, a)$ with $b = -(as + \overline{\mu})$ using $\cryptop{CKKS.ParamGen}(\lambda)$ and $\cryptop{CKKS.KeyGen}(\mathbb{P})$.
+  Encoding $\vec{z}$ and $\vec{z}'$ into $m$ and $m'$, we obtain
+  $$m := \cryptop{CKKS.Encode}(\vec{z}) = (\underline{\sigma}\inv \circ \underline{\rho_\delta}\inv \circ \underline{\pi}\inv)(\vec{z})$$
+  comprised of three transformations $\underline{\sigma}\inv$, $\underline{\rho_\delta}\inv$ and $\underline{\pi}\inv$ which can be studied separately for their approximate additivity.
+  If a function is linear and bijective (turning it into an isomorphism), its inverse will also be linear.
+  We will utilize this below by only showing the additivity of $\underline{\sigma}$, $\underline{\rho_\delta}$ and $\underline{\pi}$, assuming their (approximate) bijectivity.
+  Especially the bijectivity of $\underline{\sigma}$ is cumbersome to show and for more details we refer the reader to \cite{2017-ckks-original}.
+
+  \begin{itemize}
+    \item The canonical embedding $\underline{\sigma}$ evaluates an input polynomial on the $N$\textsuperscript{th} roots of unity $\{\xi_j\}_{j \in \Z_d^*}$.
+          For any two polynomials $p_1, p_2 \in \mathcal{S}$, $$\underline{\sigma}(p_1 + p_2) = \big((p_1 + p_2)(\xi_j)\big)_{j \in \Z_d^*} = \big(p_1(\xi_j) + p_2(\xi_j)\big)_{j \in \Z_d^*} = \underline{\sigma}(p_1) + \underline{\sigma}(p_2) \,.$$
+    \item The rounding operation $\underline{\rho_\delta}\inv$ is only approximately additive due to its nature \footnote{For an illustrative counterexample of the additivity of rounding, refer to \url{https://math.stackexchange.com/questions/58239/linear-functions-with-rounding}.}.
+          For any two vectors $\vec{h_1}, \vec{h_2} \in \mathbb{H}$,
+          \begin{align*}
+            \underline{\rho_\delta}\inv(\vec{h_1} + \vec{h_2})
+             & = \lfloor \delta \cdot (\vec{h_1} + \vec{h_2}) \rceil_{\underline{\sigma}(R)}
+            = \lfloor \delta \vec{h_1} + \delta\vec{h_2} \rceil_{\underline{\sigma}(R)}
+            \approx \lfloor \delta \vec{h_1} \rceil_{\underline{\sigma}(R)} + \lfloor \delta\vec{h_2} \rceil_{\underline{\sigma}(R)} \\
+             & \approx \underline{\rho_\delta}\inv(\vec{h_1}) + \underline{\rho_\delta}\inv(\vec{h_2})\,.
+          \end{align*}
+          Its inverse $\underline{\rho_\delta}$ is fully additive nevertheless, since it acts as the identity (up to a scalar factor) of the subset $\underline{\sigma}(R)$ back to an element of $\mathbb{H}$.
+    \item The natural projection $\underline{\pi}$ halves a vector in $\mathbb{H}$ to an element of $\C^{N/2}$ which is naturally linear.
+          Consider any $\vec{h_1}, \vec{h_2} \in \mathbb{H}$, then
+          $$\underline{\pi}(\vec{h_1} + \vec{h_2}) = ({h_1}_j + {h_2}_j)_{j \in T} = ({h_1}_j)_{j \in T} + ({h_2}_j)_{j \in T} = \underline{\pi}(\vec{h_1}) + \underline{\pi}(\vec{h_2})\,.$$
+  \end{itemize}
+
+  As every step in the full encoding process $\underline{\sigma}\inv \circ \underline{\rho_\delta}\inv \circ \underline{\pi}\inv$ is additive, \cryptop{CKKS.Encode} indeed acts additively.
+  \cryptop{CKKS.Decode} on the other hand is only approximately additive due to the rounding operation required in between.
+
+  The rest follows from \autoref{thm:bfv-enc-is-homomorphic} as encryption and addition of the BFV scheme are identical.
+  All in all for \cryptop{CKKS},
+  $$\cryptop{Decode}(
+    \cryptop{Decrypt}(s,
+    \cryptop{Add}(
+    \cryptop{Encrypt}(\vec{p}, \cryptop{Encode}(\vec{z})),
+    \cryptop{Encrypt}(\vec{p}, \cryptop{Encode}(\vec{z}'))
+    ))) \approx \vec{z} + \vec{z}' \,.$$
+  We can conclude that encoding \textit{and} encryption in CKKS are indeed homomorphic with respect to addition.
+\end{proof}
 
 \cite{seal-4.0} implements the scheme, enabled using \cpp{seal::scheme_type::ckks}.
