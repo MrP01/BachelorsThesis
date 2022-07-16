@@ -342,8 +342,9 @@ Much media attention was earned in the 2000-2010 decade when larger image classi
 
 To illustrate the concept, we will focus on a simple learning method, namely that of gradient descent.
 In supervised learning problems, this technique first requires us to introduce a loss (error) function $L: \R^n \mapsto \R$, usually \gls{mse}, which has comparably nice convergence properties due to its parabolic shape:
-$$L(\vec{w}) = \frac{1}{2} \sum_{i=1}^N (t_i - \vec{w}^T \vec{x_i}) = \frac{1}{2} (\vec{t} - \Phi \vec{w})^T (\vec{t} - \Phi \vec{w})$$
-where $\vec{w} \in \R^n$ represents the weights and $\Phi \in \R^{N \times (n+1)}$ is an auxiliary matrix introduced for compact notation, consisting of basis functions $\phi: \R^N \mapsto \R^N$ applied to the inputs $\vec{x}$, referred to as the design matrix.
+$$L(\vec{w}) = \frac{1}{2} \sum_{i=1}^N (t_i - \vec{w}^T \phi(\vec{x_i})) = \frac{1}{2} (\vec{t} - \Phi \vec{w})^T (\vec{t} - \Phi \vec{w})$$
+where $\vec{w} \in \R^n$ represents the weights and $\Phi \in \R^{N \times (n+1)}$ is an auxiliary matrix introduced for compact notation, consisting of basis functions $\phi: \R^N \mapsto \R^N$ applied to the inputs $\vec{x_i}$, referred to as the design matrix.
+This approach allows for a great deal of flexibility when working with more complicated datasets, simply choosing a suitable basis often reduces the problem to a perfectly linear one, easing the fitting process.
 When $L(\vec{w^*}) = 0$, this means we have found the perfect weights, since our predictions exactly match the targets (labels) $t_i$.
 This is not always possible, so we aim for the minimum error between predictions and targets.
 In other words, our goal is to find
@@ -354,14 +355,26 @@ given a dataset $\{\vec{x}_i, t_i\}$.
 \begin{figure}[H]
   \centering
   \inputtikz{figures/gradient-descent}
-  \caption[Illustration of Gradient Descent]{Illustration of Gradient Descent, adapted from \parencite{gradient-descent-plot}.}
+  \caption[Illustration of Gradient Descent]{
+    An illustration of Gradient Descent on a given loss function $L(x, y)$ in state space $(x, y)$, adapted from \cite{gradient-descent-plot}.
+    At each iteration, gradient descent advances in the opposite direction of the gradient $-\nabla L$ to approach a local minimum.
+  }
   \label{fig:gradient-descent}
 \end{figure}
 
-\todo{Describe going in the direction of $- \nabla L$ to find the minimum and add more details}
-% Roman: a small description should be here, but don't go into too much details. Just an explanation of the concept with a referal to Figure 2.2 is enough.
+A very common method to find such a minimum is \gls{gd}, a straightforward iterative technique to find nearby minima, given a starting position $\vec{x_0}$ in 'state space'.
+In its simplest form, \gls{gd} simply evaluates the \textit{gradient} of the loss function $L$ at the starting point $\vec{x_0}$, yielding a direction in state space in which the loss will increase the most at this given point.
+Therefore, we advance in the opposite direction given by $-\nabla L$, by a distance $\eta$.
+In the next iteration, our subsequent guess for the local minimum is then given by $$\vec{x_{i+1}} = \vec{x_i} - \eta \nabla L$$
+which we choose as the next starting point to repeat the same process as can be seen in \autoref{fig:gradient-descent}.
+The iteration finishes when $||\nabla L|| = 0$ (and hopefully the Hessian at $\vec{x_i}$ is positive definite) or when a recurring loop in the iteration sequence is detected, or when the loss variation $|L(\vec{x_{i+1}}) - L(\vec{x_i})|$ deceeds a given threshold.
 
-To make up for numerical problems and potentially slow convergence, \gls{gd} can be replaced by more sophisticated methods such as Conjugate Gradient (with convergence guarantees within a certain boundary) or by adding in momentum to the distance travelled in each \gls{gd} iteration \parencite{bishop-pattern-recognition-and-ml}.
+Note that without modification, \gls{gd} is not a reliable method to find global minima, only local ones.
+An effective optimization would be mixing \gls{gd} with Monte-Carlo Markov Chain methods, traversing through state space given some probability distribution, and performing \gls{gd} subsequently at multiple locations.
+Another useful optimization is to make the distance $\eta$ dependent on the iteration step, causing larger jumps in the beginning and smaller ones towards the end - effectively preventing ineffective jump loops around the minimum without approaching the minimum any further.
+
+One of the biggest advantages of \glsdesc{gd} is its versatility, given any differentiable loss function, no matter how complicated, at least some progress can be made with \gls{gd}.
+If the loss function has a simpler form (if it can be written as a quadratic form for instance), and to make up for numerical problems and potentially slow convergence, \gls{gd} can be replaced by more sophisticated methods such as Conjugate Gradient (with convergence guarantees within a certain boundary) or by adding in momentum to the distance travelled in each \gls{gd} iteration \parencite{bishop-pattern-recognition-and-ml}.
 
 \subsection{Multi-Layered Neural Networks}
 \todo{Woher kommt diese Struktur?}
