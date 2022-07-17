@@ -380,7 +380,7 @@ If the loss function has a simpler form (if it can be written as a quadratic for
 As the relations behind data become more and more complicated, the demand for more sophisticated modelling methods increases.
 Frank \name{Rosenblatt} first implemented the \textit{Perceptron} function invented by \name{McCulloch} and \name{Pitts}, an object that closely resembles the neural network structures still in use today.
 The perceptron is a function $\cryptop{Perceptron}_{\vec{w}, b}: \R^n \mapsto {0, 1}$ defined as follows:
-$$\cryptop{Perceptron}(\vec{x})={\begin{cases}
+$$\cryptop{Perceptron}_{\vec{w}, b}(\vec{x})={\begin{cases}
     1 & {\text{if }}\ \vec{w} \cdot \vec{x} +b>0, \\
     0 & {\text{otherwise}}
   \end{cases}}$$
@@ -391,7 +391,7 @@ When given a binary target dataset $\{\vec{x_i}, t_i\}$, the goal of the trainin
 \name{McCulloch} and \name{Pitts} further employed multiple consecutively connected perceptrons to form a larger 'network', each one referred to as a layer.
 Neural networks used today are very similar in their structure (cf. \autoref{fig:neural-network}).
 A neural network usually consists of multiple layers of potentially different types, commonly used ones include \textit{Dense ('Fully Connected') Layers} (essentially, matrix multiplication + bias), \textit{Convolutional Layers} (given a kernel, they perform a discrete multivariate convolution over the dataset) and mixtures of non-linear, differentiable, activation functions, max-pooling, etc. in between.
-Each Dense Layer is usually followed by an activation function such as $$\cryptop{relu}(\vec{x}) := \max(\vec{x}, 0) \,,$$ $$\cryptop{softmax}(\vec{x}) := \frac{e^{\vec{x}}}{\sum_{i=1}^{n} e^{x_i}}$$, $\cryptop{tanh}(\vec{x})$ or $\cryptop{sigmoid}(\vec{x})$.
+Each Dense Layer is usually followed by an activation function such as $$\cryptop{relu}(\vec{x}) := \max(\vec{x}, 0) \,,$$ $$\cryptop{softmax}(\vec{x}) := \frac{e^{\vec{x}}}{\sum_{i=1}^{n} e^{x_i}} \,,$$ $\cryptop{tanh}(\vec{x})$ or $\cryptop{sigmoid}(\vec{x})$.
 They usually play the role of keeping the output bounded and/or sorting for 'activated' values
 \parencite{bishop-pattern-recognition-and-ml}.
 
@@ -431,22 +431,48 @@ The mathematical structure behind the model is a multivariate Gaussian distribut
 
 In quantum mechanics, we seek a mathematical description of quantum phenomena, commonly building upon \name{Schrödinger}'s formalisms based on wave functions and the basic postulates of quantum mechanics.
 
-The mathematical foundation of quantum mechanics is deeply rooted in functional analysis;
+The mathematical foundation of quantum mechanics is deeply rooted in linear algebra and functional analysis.
 An important concept is that of function spaces and, especially, Hilbert spaces.
-Wave functions $\psi: \C^3 \mapsto \R$ are usually chosen as elements of the $\mathcal{L}^2$-space, the space of square-integrable functions:
-$$\mathcal{L}^2 = \big\{\psi: \C^3 \mapsto \C \,\big|\, ||\psi|| < \infty\big\} \quad \text{with} \; ||\psi|| = \int_{-\infty}^{\infty} \psi^*(\vec{x}) \psi(\vec{x}) \,dx \,.$$
+Function spaces are a widely useful concept, polynomial rings are a great example too (confer \autoref{corollary:bounded-polynomials-mod-q}).
+Wave functions $\psi: \C^3 \mapsto \R$ are usually chosen as elements of the $\mathcal{L}^2$-space, the space of square-integrable\footnote{Mathematicians usually formalise these using \name{Lebesgue}-integrals instead of the commonly used \name{Riemann} formulation of an integral. \name{Lebesgue} integration allows for a much broader class of integrable functions and is usually the preferred method in this context.} functions:
+$$\mathcal{L}^2 = \big\{\psi: \C^3 \mapsto \C \,\big|\, ||\psi|| < \infty\big\} \quad \text{with} \; ||\psi|| = \int_{-\infty}^{\infty} \psi^*(\vec{x}) \psi(\vec{x}) \,d^3x$$
+with $||\psi||$ referred to as the $l_2$-norm of the function $\psi$.
+By far not all functions are square integrable though, first and foremost, polynomials do not decrease in their absolute value towards $-\infty$ and $\infty$ leading to $||\psi|| \rightarrow \infty$, they are clearly not square integrable.
+An example that does work would be a normal distribution, or any function of the \name{Schwartz} space.
 
-The most popular interpretation / notion of a wave function is that it relates to the probability that a particle is at the current position $\vec{r}$ at time $t$ at the given time.
+The traditional Copenhagen interpretation relates a wave function to the probability that a particle is at the current position $\vec{r}$ at time $t$ at the given time.
 Namely, this probability is given by $|\psi(\vec{r}, t)|^2$.
+The square-integrability requirement is imposed on the wave function $\psi$ in order to make it normalizable, i.e. ensure that the total probability of presence is finite (or exactly $1$) when integrated over all possible states the system might be in.
 
-\todo{Explain quantum entanglement on a high level, Qubits} \\
+When describing a quantum particle or system, physicists usually work with mathematical objects in three different spaces:
+\begin{itemize}
+  \item Position space inhibited by the wave function $\psi(\vec{r}, t) = \braket{r | s_1, s_2, ..., s_n} \in \mathcal{L}^2$ (a function space),
+  \item Momentum space given by the Fourier-transformed wave function $\overline{\psi}(\vec{p}, t) = \braket{p | s_1, s_2, ..., s_n}$ $\in \mathcal{L}^2$ (also a function space) and
+  \item State space, encompassing all possible basis states in which a system might currently be, a description that is usually highly specific to the problem we aim to solve with it.
+        In the discrete, finite-dimensional case, represented by $\ket{s_1, s_2, ..., s_n} \in \mathbb{S}$.
+\end{itemize}
+
+The electrons orbiting an atomic nucleus for instance, can be uniquely described by four quantum numbers (and corresponding Hermitian operators) forming a discrete state space: $n$, $l$, $m_l$ and $m_s$ with wave function $\braket{r | n, l, m_l, m_s}$ and momentum function $\braket{p | n, l, m_l, m_s}$.
+
+Consider the following system of two base states $\ket{0}$ and $\ket{1}$, together forming an orthonormal basis.
+Due to \textit{Quantum Superposition}, the measured system can be in any linear combination of the two,
+$$\ket{Q} = \alpha \ket{0} + \beta \ket{1},\; \alpha, \beta \in \C\,,$$
+while enforcing that the scalar product of $\bra{Q}$ with $\ket{Q}$ is normalized to $1$ by the second axiom of probability theory, i.e. $$\braket{Q | Q} = \big(\alpha^* \bra{0} + \beta^* \bra{1}\big)\big(\alpha \ket{0} + \beta \ket{1}\big) = |\alpha|^2 + |\beta|^2 \overset{!}{=} 1 \,.$$
+Here we use that $\{\ket{0}, \ket{1}\}$ comprise an orthonormal basis and therefore $\braket{0|1} = 0$, $\braket{1|0} = 0$, $\braket{0|0} = 1$ and $\braket{1|1} = 1$.
+This seemingly simple system is referred to as a \textit{Qubit}, the basic unit of quantum information theory.
+
+Said to be 'at the heart of the disparity between classical and quantum physics', \textit{Quantum Entanglement}, which Einstein once referred to as "spooky action at a distance", breaks the physical principle of locality but is yet a fundamental part of most quantum theories \parencite{1989-unspeakable-qm}.
+This phenomenon describes the connection between two or more quantum particles related to each other through the mutual dependence of their quantum states $\ket{s_1, s_2, ..., s_n}$.
+Phrased differently, their states cannot be described independently of the rest of the particle group.
+For instance, two antisymmetrically entangled fermions never expose the same spin when measured simultaneously, even when they are far apart from each other - this has also been shown experimentally \parencite{2013-entanglement-proof}.
+
 \todo{Mention Shor's (and Grover's) algorithm and why they are fast, intuitively}
 % Roman: For shor and grover, just give the mathematical expression of the concept and then say: A quantum fft solves this :) So no need for a full quantum circuit.
 % Don't go into too much details on entanglement and qbits, just say that we can describe a qbit as a vector of its collapsing probability, and if two qbits are entangled, a collapsed qbit_1 forces qbit_2 to take a value.
 
 \begin{definition}{NP-Hardness}{np-hard}
-  A problem is referred to as \textit{NP-hard} \gls{iff} it is at least as hard as the hardest problems in the complexity class NP (nondeterministic polynomial time). Formally written,
-  $$\mathrm{NP} = \bigcup_{k \in \N} \cryptop{NTIME}(n^k)$$
+  A problem is referred to as \textit{NP-hard} \gls{iff} it is at least as hard as the hardest problems in the complexity class \glstext{np} (nondeterministic polynomial time). Formally written,
+  $$\mathrm{NP} := \bigcup_{k \in \N} \cryptop{NTIME}(n^k)$$
   the union of all decision problems with runtime bounded by $\mathcal{O}(n^k)$.
 \end{definition}
 \todo{This is needed in the introduction and other places too, where to put it?}
