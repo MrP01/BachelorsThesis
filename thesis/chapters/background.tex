@@ -459,16 +459,70 @@ Due to \textit{Quantum Superposition}, the measured system can be in any linear 
 $$\ket{Q} = \alpha \ket{0} + \beta \ket{1},\; \alpha, \beta \in \C\,,$$
 while enforcing that the scalar product of $\bra{Q}$ with $\ket{Q}$ is normalized to $1$ by the second axiom of probability theory, i.e. $$\braket{Q | Q} = \big(\alpha^* \bra{0} + \beta^* \bra{1}\big)\big(\alpha \ket{0} + \beta \ket{1}\big) = |\alpha|^2 + |\beta|^2 \overset{!}{=} 1 \,.$$
 Here we use that $\{\ket{0}, \ket{1}\}$ comprise an orthonormal basis and therefore $\braket{0|1} = 0$, $\braket{1|0} = 0$, $\braket{0|0} = 1$ and $\braket{1|1} = 1$.
-This seemingly simple system is referred to as a \textit{Qubit}, the basic unit of quantum information theory.
+This seemingly simple system is referred to as a \textit{Qubit}, the basic unit of quantum information theory, uniquely represented by $\alpha$ and $\beta$.
 
 Said to be 'at the heart of the disparity between classical and quantum physics', \textit{Quantum Entanglement}, which Einstein once referred to as "spooky action at a distance", breaks the physical principle of locality but is yet a fundamental part of most quantum theories \parencite{1989-unspeakable-qm}.
 This phenomenon describes the connection between two or more quantum particles related to each other through the mutual dependence of their quantum states $\ket{s_1, s_2, ..., s_n}$.
 Phrased differently, their states cannot be described independently of the rest of the particle group.
 For instance, two antisymmetrically entangled fermions never expose the same spin when measured simultaneously, even when they are far apart from each other - this has also been shown experimentally \parencite{2013-entanglement-proof}.
 
-\todo{Mention Shor's (and Grover's) algorithm and why they are fast, intuitively}
-% Roman: For shor and grover, just give the mathematical expression of the concept and then say: A quantum fft solves this :) So no need for a full quantum circuit.
-% Don't go into too much details on entanglement and qbits, just say that we can describe a qbit as a vector of its collapsing probability, and if two qbits are entangled, a collapsed qbit_1 forces qbit_2 to take a value.
+Quantum computers exploit the physical properties of quantum systems such as superposition and entanglement in order to speed up computations.
+One of the first major algorithms in this context is \name{Shor}'s algorithm, discovered before the first working quantum computer was built.
+
+\subsection{Shor's Algorithm}
+In the \gls{rsa} scheme, but also other cryptographic schemes such as the \name{Diffie}-\name{Hellman} key exchange, the whole scheme's security is based on the hardness assumption of the integer factorisation problem.
+As of today, the cryptographic community still lacks a proof that the factorisation problem is in \gls{np}, yet it is widely believed to be.
+What we do know however, is that \gls{rsa} encryptions can be broken and signatures forged, as soon as a sufficiently powerful quantum computer (with enough Qubits of memory) is built, in part explaining the global interest of governments and security organisations in the topic.
+
+The algorithm enabling this was invented by Peter \name{Shor} in 1994 and will be outlined here shortly as it is a core element to security considerations of modern cryptosystems.
+The core structure of the algorithm is
+\begin{enumerate}
+  \item randomly selecting a guess $g \in \N$ that we hope shares a factor with a large $N = p \cdot q$ ($p, q, N \in \N$),
+  \item improving that guess by a quantum subroutine and
+  \item applying \name{Euclid}'s algorithm to find $p$ and $q$ the factors of $N$.
+\end{enumerate}
+As soon as we found a guess $g$ that satisfies $\gcd(N, g) \neq 1$, the algorithm finishes and we are done \parencite{1997-shors-algorithm}.
+
+The core factorisation idea is the following, not specific to quantum computation: We know that for a pair $g, N \in \N$, we can always find some $r \in \N$ such that
+$$g^r = m N + 1,\, m \in \N\,,$$
+we are looking for a $g^r$ that is exactly one more than a multiple of $N$.
+Rearranging,
+$$g^r - 1 = m N \;\Longleftrightarrow\; (g^\frac{r}{2} + 1)(g^\frac{r}{2} - 1) = m N$$
+we have found two factors $g^\frac{r}{2} + 1$ and $g^\frac{r}{2} - 1$ (for even $r$) that share a common factor with $N$ and apply Euclid's algorithm to get $p$ and $q$.
+These two factors $g^\frac{r}{2} + 1$, $g^\frac{r}{2} - 1$ might themselves be multiples of $N$, or $r$ might be odd, rendering the guess useless and we need to start over with a new $g \in \N$.
+According to \cite{1997-shors-algorithm}, we find 'good' factors roughly \SI{35.7}{\percent} of the time with just one guess, with only ten tries we arrive at a success rate $> \SI{99}{\percent}$.
+The plain guessing process can be done by any common computer, but is even more inefficient for large $N$ (and resulting large $r$) than just factoring $N$ using a general number field sieve (the state-of-the-art method of plain factorisation).
+
+This is where the quantum component comes in, efficiently \textit{improving} the guess $g$, therefore finding $r$.
+Using a quantum superposition, a quantum computer can calculate the output of a function for multiple superpositioned inputs \textit{simultaneously}, which is what makes them so incredibly fast in some applications.
+When measuring the output state, the key idea of a quantum computation is to arrange the inputs in such a way that only useful output remains, while the other terms cancel each other out by destructive interference.
+
+Thereby, we instruct the quantum computer to raise our guess $g$ by all possible powers $\in \N$ up to some boundary in order to obtain
+$$\ket{1, g^1} + \ket{2, g^2} + \ket{3, g^3}, ...$$
+which we then take modulo $N$, resulting in a superposition of remainders
+$$\ket{1, [g^1]_N} + \ket{2, [g^2]_N} + \ket{3, [g^3]_N} + ... \,.$$
+
+Here is where \name{Shor}'s key idea came in:
+The remainders in the above superposition expose repetitions at a period of exactly $r$ (which, by our definition fulfills $g^r \equiv 1 \mod N$) because for any $a \in \Z$,
+$$g^x \equiv g^{x + r} \equiv g^{x + 2r} \equiv ... \equiv g^{x + ar} \mod N$$
+the remainders are periodic with frequency $\frac{1}{r}$.
+The above can be quickly derived from $g^r = mN + 1$, therefore $$g^{x+r} = g^x g^r = (\tilde{m} N + [g^x]_N) (m N + 1) = (m \tilde{m} N + [g^x]_N m + \tilde{m}) N + [g^x]_N$$ is indeed congruent to $g^x \mod N$.
+
+And therefore, we can use a \gls{qft}, discovered by Don \name{Coppersmith} in \citeyear{1994-qft}, on the superposition of remainders of powers of $g$ to find the period $r$ which is exactly what we were looking for.
+From the output of
+$$\cryptop{QFT}\big(\ket{1, [g^1]_N} + \ket{2, [g^2]_N} + \ket{3, [g^3]_N} + ...\big)$$
+we obtain the dominant frequency $\frac{1}{r}$ yielding us our desired improved guess \parencite{1997-shors-algorithm}.
+Which again, can be evaluated extremely quickly on the given superpositioned inputs using a quantum computer, at least in theory.
+From here, we obtain $g^\frac{r}{2} + 1$ and $g^\frac{r}{2} - 1$ in order to finally find the factors $p$ and $q$ of $N$ using \name{Euclid}'s algorithm on $g^\frac{r}{2} \pm 1$ and $N$.
+
+For large numbers $N$ however, today's quantum computers' performance is still far off from factoring $N$ into $p \cdot q$ effectively, for relatively small $N$ however, it is already possible.
+
+\subsection{Outlook}
+Another important advancement in quantum computing related to cryptography is Grover's algorithm which provides an asymptotic quadratic speedup for performing function inversion \parencite{1996-grovers-algorithm}.
+It could be used to perform certain key recovery, collision or pre-image attacks on cryptographic schemes, essentially halving the bit security of many schemes (128 bit security would be reduced down to 64 bits), suggesting to double the involved key size bits in many encryption schemes in order to be safe against potential future quantum attacks.
+
+Lattice-based cryptosystems are still safe against quantum computation, i.e. quantum computers have a negligible advantage compared to traditional computers when attempting to break lattice-based encryptions, performing key-recovery attacks, etc.
+Two of these schemes will be presented in the next chapter, in \autoref{sec:bfv} and \autoref{sec:ckks}.
 
 \begin{definition}{NP-Hardness}{np-hard}
   A problem is referred to as \textit{NP-hard} \gls{iff} it is at least as hard as the hardest problems in the complexity class \glstext{np} (nondeterministic polynomial time). Formally written,
