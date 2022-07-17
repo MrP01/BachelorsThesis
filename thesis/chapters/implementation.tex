@@ -34,6 +34,25 @@ into a $784$ element vector.
   \caption[Sample images of the MNIST dataset]{Sample images of the MNIST dataset of handwritten digits \parencite{mnist-original}. The dataset contains 70,000 images of 28x28 grayscale pixels valued from 0 to 255 as well as assoicated labels (as required for supervised learning).}
 \end{figure}
 
+\section{Our Neural Network}
+The network implemented in our demonstrator, trained using the \textit{Tensorflow} machine learning framework in Python \footnote{\url{https://www.tensorflow.org/}}, has the following layer structure (also confer \autoref{fig:neural-network}):
+\begin{align*}
+  \text{Layer 1:}\; & \vec{h} = \cryptop{relu}(M_1 \vec{x} + \vec{b_1})    \\
+  \text{Layer 2:}\; & \vec{y} = \cryptop{softmax}(M_2 \vec{h} + \vec{b_2})
+\end{align*}
+
+Expressed in Python code, using the \textit{Keras} extension of Tensorflow,
+\begin{minted}{python}
+import tensorflow as tf
+
+model = tf.keras.Sequential([
+  tf.keras.layers.Flatten(input_shape=(28, 28)),
+  tf.keras.layers.Dense(128, activation=relu_taylor),
+  tf.keras.layers.Dense(10),
+  tf.keras.layers.Activation(tf.keras.activations.softmax),
+])
+\end{minted}
+
 \section{Matrix-Vector Multiplication}
 The dot product that is required as part of the neural network evaluation process needs to be implemented on SEAL ciphertexts as well.
 
@@ -173,11 +192,11 @@ void DenseLayer::matmulHybrid(seal::Ciphertext &in_out, const Matrix &mat, seal:
 \end{minted}
 \todo{Describe the main commands used above (sehr illustrativ denke ich..?)}
 
-\subsection{The Babystep-Giantstep Optimization}
+\subsection{The Babystep-Giantstep Optimisation}
 Since Galois rotations are the most computationally intensive operations in most cryptographic schemes used today \parencite{2021-pasta}, they take a large toll on the efficiency.
-In order to reduce the number of rotations required, one can make use of the \textit{Babystep-Giantstep} optimization as described in \cite{2018-faster-helib}, which works as follows:
+In order to reduce the number of rotations required, one can make use of the \textit{Babystep-Giantstep} optimisation as described in \cite{2018-faster-helib}, which works as follows:
 
-\begin{theorem}{Babystep-Giantstep Optimization}{bsgs}
+\begin{theorem}{Babystep-Giantstep Optimisation}{bsgs}
   Given a matrix $M \in \R^{t \times t}$ and a vector $\vec{x} \in \R^t$, with $t = t_1 \cdot t_2$ split into two BSGS parameters $t_1, t_2 \in \N$ and
   $$\diag'_p(M) = \rot_{-\lfloor p/t_1 \rfloor \cdot t_1}(\diag_p(M))\,,$$
   one can express a matrix-vector multiplication as follows:

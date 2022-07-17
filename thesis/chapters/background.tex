@@ -316,7 +316,7 @@ Keys are usually smaller in RLWE, depending on the choices of $p$, $q$, $n$ and 
 
 Due to their similarity, RLWE samples can even be translated into equivalent LWE samples.
 In the case above, a straightforward way is to encode the polynomial coefficients of the RLWE public and secret key into a matrix $A \in (\Z/p\Z)^{m \times n}$, vector $\vec{b} \in (\Z/p\Z)^m$ and vector $\vec{s} \in (\Z/p\Z)^n$ to arrive at the corresponding LWE keys.
-A similar approach may be chosen for the relinearization (and possibly, Galois) keys.
+A similar approach may be chosen for the relinearisation (and possibly, Galois) keys.
 
 This translation can be used to infer security requirements from LWE (a well-studied problem) over to RLWE to find secure parameters of the cryptosystem.
 
@@ -356,29 +356,44 @@ given a dataset $\{\vec{x}_i, t_i\}$.
   \centering
   \inputtikz{figures/gradient-descent}
   \caption[Illustration of Gradient Descent]{
-    An illustration of Gradient Descent on a given loss function $L(x, y)$ in state space $(x, y)$, adapted from \cite{gradient-descent-plot}.
+    An illustration of Gradient Descent on a given loss function $L(w_x, w_y)$ in parameter space $(w_x, w_y)$, adapted from \cite{gradient-descent-plot}.
     At each iteration, gradient descent advances in the opposite direction of the gradient $-\nabla L$ to approach a local minimum.
   }
   \label{fig:gradient-descent}
 \end{figure}
 
-A very common method to find such a minimum is \gls{gd}, a straightforward iterative technique to find nearby minima, given a starting position $\vec{x_0}$ in 'state space'.
-In its simplest form, \gls{gd} simply evaluates the \textit{gradient} of the loss function $L$ at the starting point $\vec{x_0}$, yielding a direction in state space in which the loss will increase the most at this given point.
+A very common method to find such a minimum is \gls{gd}, a straightforward iterative technique to find nearby minima, given a starting position $\vec{w_0}$ in 'parameter space'.
+In its simplest form, \gls{gd} simply evaluates the \textit{gradient} of the loss function $L$ at the starting point $\vec{w_0}$, yielding a direction in parameter space in which the loss will increase the most at this given point.
 Therefore, we advance in the opposite direction given by $-\nabla L$, by a distance $\eta$.
-In the next iteration, our subsequent guess for the local minimum is then given by $$\vec{x_{i+1}} = \vec{x_i} - \eta \nabla L$$
+In the next iteration, our subsequent guess for the local minimum is then given by $$\vec{w_{i+1}} = \vec{w_i} - \eta \nabla L$$
 which we choose as the next starting point to repeat the same process as can be seen in \autoref{fig:gradient-descent}.
-The iteration finishes when $||\nabla L|| = 0$ (and hopefully the Hessian at $\vec{x_i}$ is positive definite) or when a recurring loop in the iteration sequence is detected, or when the loss variation $|L(\vec{x_{i+1}}) - L(\vec{x_i})|$ deceeds a given threshold.
+The iteration finishes when $||\nabla L|| = 0$ (and hopefully the Hessian at $\vec{w_i}$ is positive definite) or when a recurring loop in the iteration sequence is detected, or when the loss variation $|L(\vec{w_{i+1}}) - L(\vec{w_i})|$ deceeds a given threshold \parencite{bishop-pattern-recognition-and-ml}.
 
 Note that without modification, \gls{gd} is not a reliable method to find global minima, only local ones.
-An effective optimization would be mixing \gls{gd} with Monte-Carlo Markov Chain methods, traversing through state space given some probability distribution, and performing \gls{gd} subsequently at multiple locations.
-Another useful optimization is to make the distance $\eta$ dependent on the iteration step, causing larger jumps in the beginning and smaller ones towards the end - effectively preventing ineffective jump loops around the minimum without approaching the minimum any further.
+An effective optimisation would be mixing \gls{gd} with Monte-Carlo Markov Chain methods, traversing through parameter space given some probability distribution, and performing \gls{gd} subsequently at multiple locations, thereby escaping the local minima's wells to possibly reach a global minimum.
+Another useful optimisation is to make the distance $\eta$ dependent on the iteration step, causing larger jumps in the beginning and smaller ones towards the end - effectively preventing ineffective jump loops around the minimum without approaching the minimum any further.
 
 One of the biggest advantages of \glsdesc{gd} is its versatility, given any differentiable loss function, no matter how complicated, at least some progress can be made with \gls{gd}.
 If the loss function has a simpler form (if it can be written as a quadratic form for instance), and to make up for numerical problems and potentially slow convergence, \gls{gd} can be replaced by more sophisticated methods such as Conjugate Gradient (with convergence guarantees within a certain boundary) or by adding in momentum to the distance travelled in each \gls{gd} iteration \parencite{bishop-pattern-recognition-and-ml}.
 
 \subsection{Multi-Layered Neural Networks}
-\todo{Woher kommt diese Struktur?}
-% Roman: Also do not go into too much details
+As the relations behind data become more and more complicated, the demand for more sophisticated modelling methods increases.
+Frank \name{Rosenblatt} first implemented the \textit{Perceptron} function invented by \name{McCulloch} and \name{Pitts}, an object that closely resembles the neural network structures still in use today.
+The perceptron is a function $\cryptop{Perceptron}_{\vec{w}, b}: \R^n \mapsto {0, 1}$ defined as follows:
+$$\cryptop{Perceptron}(\vec{x})={\begin{cases}
+    1 & {\text{if }}\ \vec{w} \cdot \vec{x} +b>0, \\
+    0 & {\text{otherwise}}
+  \end{cases}}$$
+
+It only has binary output, on which it decides by performing a dot product between the weights vector $\vec{w} \in \R^n$ and the input, before adding a bias $b \in \R$ to it.
+When given a binary target dataset $\{\vec{x_i}, t_i\}$, the goal of the training process is to determine the weights $\vec{w}$ and bias $b$ such that $\cryptop{Perceptron}_{\vec{w}, b}(\vec{x_i}) = t_i$ for as many samples as possible.
+
+\name{McCulloch} and \name{Pitts} further employed multiple consecutively connected perceptrons to form a larger 'network', each one referred to as a layer.
+Neural networks used today are very similar in their structure (cf. \autoref{fig:neural-network}).
+A neural network usually consists of multiple layers of potentially different types, commonly used ones include \textit{Dense ('Fully Connected') Layers} (essentially, matrix multiplication + bias), \textit{Convolutional Layers} (given a kernel, they perform a discrete multivariate convolution over the dataset) and mixtures of non-linear, differentiable, activation functions, max-pooling, etc. in between.
+Each Dense Layer is usually followed by an activation function such as $$\cryptop{relu}(\vec{x}) := \max(\vec{x}, 0) \,,$$ $$\cryptop{softmax}(\vec{x}) := \frac{e^{\vec{x}}}{\sum_{i=1}^{n} e^{x_i}}$$, $\cryptop{tanh}(\vec{x})$ or $\cryptop{sigmoid}(\vec{x})$.
+They usually play the role of keeping the output bounded and/or sorting for 'activated' values
+\parencite{bishop-pattern-recognition-and-ml}.
 
 \begin{figure}[H]
   \centering
@@ -387,20 +402,22 @@ If the loss function has a simpler form (if it can be written as a quadratic for
   \label{fig:neural-network}
 \end{figure}
 
-To better understand the implications and possibilities of a large neural network, consider the following universal approximation theorem:
+The training process is more complicated in the case of a layered network, especially with non-linear activation functions in between.
+Yet, the basic principle behind the training process stays the same: Evaluating the loss function $L$ (depending on all weights, biases, convolutional kernels and other parameters in the network) and finding the direction in parameter space in which the loss shrinks, formalised by the layer-wise gradient (for which we require the activation functions to be differentiable).
+The \textit{Backpropagation Algorithm}, an interative process similar to \gls{gd}, does exactly that: Evaluating the gradient of the loss function on the last layer and inversely forwarding the changes to the layer before it, and so on.
+From there, inferences on the weights, biases and other parameters can be made in order to update them for the next iteration and start over, hopefully working ourselves towards the minimal loss possible \parencite{bishop-pattern-recognition-and-ml}.
+
+As a final note to better understand the implications and possibilities of a large neural network, consider the following universal approximation theorem:
 
 \begin{theorem}{Universal Approximation}{universal-approx}
   If the neural network has at least one hidden layer, proper nonlinear activation functions and enough data and hidden units, it can approximate any continuous function $y(x, w): \R^n \mapsto \R$ arbitrarily well on a compact domain \parencite{1989-HornikMultilayerFN}.
 \end{theorem}
 
-\todo{Quickly describe common types of layers in NNs?}
-\begin{itemize}
-  \item Matrix Multiplication (Dense Layer)
-  \item Convolutional Layer
-  \item Sigmoid Activation
-  \item Max Pooling
-\end{itemize}
-% Roman: Maybe just mention them and say that in our case we use dense layers (essentially a matrix-vector mult) followed by ReLU(x) = max(x,0) activiation functions.
+In the case of our demonstrator, the network consists of two fully connected layers with a Taylor-approximated \cryptop{relu} activation function in between.
+For more details on the implemented neural networks' structure, code and performance, refer to \autoref{chap:implementation} and \autoref{chap:results}.
+
+An alternative approach to modelling higher dimensional data would be \textit{Gaussian Processes}, a \glsdesc{ml} technique with a focus on different applications than neural networks', but just as powerful \parencite[Chapter 45]{2005-mackay-information-theory}.
+The mathematical structure behind the model is a multivariate Gaussian distribution $$p: \R^n \mapsto \R,\, p(\vec{x}) = \frac{1}{\sqrt{(2\pi)^n |\Sigma|}} e^{-\frac{1}{2} (\vec{x}-\vec{\mu})^T \Sigma\inv (\vec{x}-\vec{\mu})} \,,$$ in many cases allowing for explicit analytical expressions and calculations as compared to multi-layered neural networks.
 
 \pagebreak
 \section{Post-Quantum Security}

@@ -88,7 +88,7 @@ In this section, we will focus on a slightly altered implementation introduced i
     \cryptop{KeyGen}$(\mathbb{P})$ & {
         Generate the secret key $s \leftarrow \chi_{key}$, sample $\vec{\mu} \in (R/qR)^l$
         from $\chi_{error}$ and choose some $\vec{a} \in (R/qR)^l$ uniformly
-        at random, compute the relinearization key
+        at random, compute the relinearisation key
         $\vec{\gamma} = (\cryptop{PowersOf}(s^2) - (\vec{\mu} + \vec{a} \cdot s), \vec{a})$
         and finally output the public key for uniformly random
         $a \in (R/qR)$ and $\mu \leftarrow \chi_{error}$ with $b =-(a \cdot s + \mu)$
@@ -142,7 +142,7 @@ To summarise the parameters and variables, a brief overview of all used symbols 
     $l$ & $\in \N$ & Number of words of size $w$ required to encode $q$ \\
     $s$ & $\in R$ & Secret Key \\
     $\vec{p}$ & $\in (R/qR)^2$ & Public Key $(b, a)$ \\
-    $\vec{\gamma}$ & $\in [(R/qR)^l]^2$ & Relinearization Key \\
+    $\vec{\gamma}$ & $\in [(R/qR)^l]^2$ & Relinearisation Key \\
     $m$ & $\in R/tR$ & Plaintext Message\\
     $\vec{c}$ & $\in (R/qR)^2$ & Ciphertext \\
     $\overline{\vec{c}}$ & $\in (R/qR)^3$ & Slightly larger ciphertext resulting from multiplication \\
@@ -380,7 +380,7 @@ To summarise the parameters and variables, a brief overview of all used symbols 
     \hline
     $\lambda$ & $\in \R$ & Security parameter \\
     $d$ & $\in \N$ & Index of the cyclotomic polynomial used in $R$ \\
-    $P$ & $\in \Z$ & Factor used during relinearization \\
+    $P$ & $\in \Z$ & Factor used during relinearisation \\
     $h$ & $\in \Z$ & Hamming weight of the secret key (used by $\chi_{key}$) \\
     $\sigma$ & $\in \R$ & Standard deviation of the Gaussian $\chi_{error}$ \\
     $q_L$ & $\in \N$ & Modulus of $R/q_L R$ at level $L$ \\
@@ -388,7 +388,7 @@ To summarise the parameters and variables, a brief overview of all used symbols 
     $\delta\inv$ & $\in \R$ & Inversion coefficient of the effect of $\delta$ \\
     $s$ & $\in \{0,\pm 1\}^N$ & Secret Key \\
     $\vec{p}$ & $\in (R/q_L R)^2$ & Public Key $(b, a)$ \\
-    $\vec{\gamma}$ & $\in (R/(P q_L)R)^2$ & Relinearization Key \\
+    $\vec{\gamma}$ & $\in (R/(P q_L)R)^2$ & Relinearisation Key \\
     $\vec{z}$ & $\in \C^{N/2}$ & Plain input vector \\
     $m$ & $\in R$ & Plaintext Message \\
     $\vec{c}$ & $\in (R/q_L R)^2$ & Ciphertext Message \\
