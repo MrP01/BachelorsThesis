@@ -467,6 +467,27 @@ Phrased differently, their states cannot be described independently of the rest 
 For instance, two antisymmetrically entangled fermions never expose the same spin when measured simultaneously, even when they are far apart from each other - this has also been shown experimentally \parencite{2013-entanglement-proof}.
 
 Quantum computers exploit the physical properties of quantum systems such as superposition and entanglement in order to speed up computations.
+They facilitate up to exponential speedups when algorithms are available, compared to problems on traditional computers.
+In conventional complexity theory, problems are filed into different complexity classes when analyzing their runtime and memory usage.
+There exist
+\begin{enumerate}[noitemsep,topsep=0pt,parsep=0pt,partopsep=0pt]
+  \item NL (Nondeterministic Logarithmic space)
+  \item P (Polynomial time)
+  \item NP (Nondeterministic Polynomial time)
+  \item PSPACE (Polynomial space)
+  \item EXPTIME (Exponential time)
+  \item EXPSPACE (Exponential space)
+\end{enumerate}
+computational complexity classes, sorted by the amount of problems contained in them (NL $\subseteq$ P $\subseteq$ NP $\subseteq$ PSPACE $\subseteq$ EXPTIME $\subseteq$ EXPSPACE).
+A particularly interesting open problem is whether P = NP, one of the millenium prize problems.
+The \gls{np} class of problems is very useful in cryptography, it is especially important for the hardness assumptions of cryptographic schemes, problems should be at least as hard as the hardest problems in \gls{np}.
+
+\begin{definition}{NP-Hardness}{np-hard}
+  A problem is referred to as \textit{NP-hard} \gls{iff} it is at least as hard as the hardest problems in the complexity class \glstext{np} (nondeterministic polynomial time). Formally written,
+  $$\mathrm{NP} := \bigcup_{k \in \N} \cryptop{NTIME}(n^k)$$
+  the union of all decision problems with runtime bounded by $\mathcal{O}(n^k)$.
+\end{definition}
+
 One of the first major algorithms in this context is \name{Shor}'s algorithm, discovered before the first working quantum computer was built.
 
 \subsection{Shor's Algorithm}
@@ -523,11 +544,3 @@ It could be used to perform certain key recovery, collision or pre-image attacks
 
 Lattice-based cryptosystems are still safe against quantum computation, i.e. quantum computers have a negligible advantage compared to traditional computers when attempting to break lattice-based encryptions, performing key-recovery attacks, etc.
 Two of these schemes will be presented in the next chapter, in \autoref{sec:bfv} and \autoref{sec:ckks}.
-
-\begin{definition}{NP-Hardness}{np-hard}
-  A problem is referred to as \textit{NP-hard} \gls{iff} it is at least as hard as the hardest problems in the complexity class \glstext{np} (nondeterministic polynomial time). Formally written,
-  $$\mathrm{NP} := \bigcup_{k \in \N} \cryptop{NTIME}(n^k)$$
-  the union of all decision problems with runtime bounded by $\mathcal{O}(n^k)$.
-\end{definition}
-\todo{This is needed in the introduction and other places too, where to put it?}
-% Roman: Put it where you first mention NP
