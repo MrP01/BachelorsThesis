@@ -2,7 +2,7 @@
 \label{chap:background}
 \vspace{-1cm}
 
-The discussion of the \gls{he} schemes following in \autoref{chap:homomorphic-encryption} requires some mathematical background that will be introduced here, aiming for a consistent overview rather than full completeness.
+The discussion of the \gls{he} schemes following in \cref{chap:homomorphic-encryption} requires some mathematical background that will be introduced here, aiming for a consistent overview rather than full completeness.
 The last two sections \ref{sec:machine-learning} and \ref{sec:post-quantum-sec} introduce some background on \glsdesc{ml} and provide an outlook on Quantum Computation and why it affects cryptography today.
 
 % \section{Spicy Math for \gls{he}}
@@ -77,7 +77,7 @@ As a highly relevant structure to cryptography and a great example of a quotient
 
 This ring is of specific importance in discrete mathematics and can be regarded as a formalisation of modular arithmetic, much of which we will require at a later point in this chapter.
 
-As a first step towards the first central result, \autoref{corollary:bounded-polynomials-mod-q}, we formally introduce polynomial rings and how to carry out addition and multiplication between them.
+As a first step towards the first central result, \cref{corollary:bounded-polynomials-mod-q}, we formally introduce polynomial rings and how to carry out addition and multiplication between them.
 
 \begin{definition}{Polynomial Ring over $\Z$}{poly-ring}
   On the set of all complex-valued polynomials with integer coefficients (a function space)
@@ -92,7 +92,7 @@ To further elaborate on the polynomial ring operations:
           (p + q)(X) & = \sum_{k=0}^\infty p_k X^k + \sum_{k=0}^\infty q_k X^k = \sum_{k=0}^\infty (p_k + q_k) X^k \\
                      & = \langle (\vec{p} + \vec{q}), \{X^0, X^1, X^2, ...\}^T \rangle
         \end{align*}
-        which indeed satisfies the additive ring axioms (cf. \autoref{def:ring}) due to the existing structure of the underlying field $\C$.
+        which indeed satisfies the additive ring axioms (cf. \cref{def:ring}) due to the existing structure of the underlying field $\C$.
   \item The multiplication operation can be defined using a discrete convolution of the coefficient vectors
         $$r(X) = (p \cdot q)(X) = (\sum_{k=0}^\infty p_k X^k) \cdot (\sum_{l=0}^\infty q_l X^l)
           = \sum_{k=0}^\infty \sum_{l=0}^\infty p_k q_l X^{k+l}
@@ -114,7 +114,7 @@ Polynomials over the integers however, cannot always be factorised further, yiel
 \end{definition}
 
 \subsection{Cyclotomic Polynomials}
-Due to their interesting structure and efficient computability, in the schemes introduced in the following chapter, certain polynomials (\autoref{corollary:bounded-polynomials-mod-q}) are chosen as representations of plaintexts and ciphertexts.
+Due to their interesting structure and efficient computability, in the schemes introduced in the following chapter, certain polynomials (\cref{corollary:bounded-polynomials-mod-q}) are chosen as representations of plaintexts and ciphertexts.
 An important concept is that of cyclotomic ('circle-cutting') polynomials, which we will discuss in a bit more detail here.
 
 An important polynomial is $$p: \C \mapsto \C, \; p(x) = x^n - 1 \,.$$
@@ -122,7 +122,7 @@ Its roots, found by solving $p(\xi) = 0$ for $\xi$, yielding $\xi^n = 1 \leftrig
 
 \begin{lemma}{The $n$\textsuperscript{th} roots of unity}{nth-roots-of-unity}
   For some integer $n \in \N$, the $n$ complex roots $\xi_1, \xi_2, ..., \xi_n \in \C$ of unity can be found as $$\xi_k = e^{2\pi i \frac{k}{n}} \quad k \in \{1, 2, ..., n\}$$ with $i$ being the imaginary unit.
-  Confer \autoref{fig:nth-roots-of-unity}.
+  Confer \cref{fig:nth-roots-of-unity}.
   Using \name{Euler}'s identity, their real and imaginary components can be explicitly found as $\xi_k = \cos(2\pi \frac{k}{n}) + i \sin(2\pi \frac{k}{n})$.
 
   An $n$\textsuperscript{th} root of unity $y$ is referred to as \textit{primitive}, \gls{iff} there exists no $m < n$ for which that root $y$ is also an $m$\textsuperscript{th} root of unity, i.e. $y^m \neq 1$.
@@ -152,14 +152,14 @@ An important aspect of cyclotomic polynomials is that they are irreducible over 
 \end{remark}
 This enables us to \textit{uniquely} define a quotient ring with cyclotomic polynomials as moduli, later.
 In theory, there are multiple equivalent definitions of said ring, but by convention we choose the cyclotomic polynomial because it cannot be simplified further.
-The proof for \autoref{remark:cyclotomic-irreducibility} is quite cumbersome, but can be found in \cite{2002-serge-algebra}.
+The proof for \cref{remark:cyclotomic-irreducibility} is quite cumbersome, but can be found in \cite{2002-serge-algebra}.
 
 \begin{theorem}{$2^k$\textsuperscript{th} Cyclotomic Polynomial}{power-of-2-cyclo-poly}
   The $N$\textsuperscript{th} cyclotomic polynomial, where $M = 2N = 2^k$ ($k \in \N$) is a power of $2$, can be identified as
   $$\Phi_{M}(x) = x^{N} + 1\,.$$
   Its degree is $N$, consistent with $\varphi(2^k) = 2^{k-1} \; \forall k \in \N$.
 \end{theorem}
-Find a short but illustrative proof of \autoref{thm:power-of-2-cyclo-poly} in the \hyperref[chap:appendix]{Appendix}, confer \autoref{proof:power-of-2-cyclo-poly}.
+Find a short but illustrative proof of \cref{thm:power-of-2-cyclo-poly} in \cref{proof:power-of-2-cyclo-poly}.
 
 \begin{definition}{Ring of Polynomials of highest degree $N-1$}{bounded-polynomials}
   For a power-of-2 $N$, one can construct the quotient ring $(R, +, \cdot)$ as
@@ -169,11 +169,11 @@ Find a short but illustrative proof of \autoref{thm:power-of-2-cyclo-poly} in th
   The elements of $R$ are then polynomials with integer coefficients of maximum degree $N-1$.
 \end{definition}
 
-If $N$ is a power of $2$, according to \autoref{thm:power-of-2-cyclo-poly}, $$R = \Z[X] / \Phi_d(X) = \Z[X] / (X^N + 1)$$ is the set of integer-coefficient polynomials reduced modulo $\Phi_d(X)$, the $d$\textsuperscript{th} cyclotomic polynomial with $N = \varphi(d) = \frac{d}{2}$.
+If $N$ is a power of $2$, according to \cref{thm:power-of-2-cyclo-poly}, $$R = \Z[X] / \Phi_d(X) = \Z[X] / (X^N + 1)$$ is the set of integer-coefficient polynomials reduced modulo $\Phi_d(X)$, the $d$\textsuperscript{th} cyclotomic polynomial with $N = \varphi(d) = \frac{d}{2}$.
 Since every cyclotomic polynomial is irreducible, this is a unique representation of $R$ without any possible further simplifications.
 Therefore, in the following we will focus on power-of-2 cyclotomic polynomials, which turn out to be even more useful when defining FFT-optimized operations on them.
 
-As promised above, we will require \autoref{lemma:integers-modulo-q} for the fundamental structure underlying the \gls{he} schemes described in the next chapter, defining ourselves a ring with coefficients in said quotient ring $\Z/q\Z$.
+As promised above, we will require \cref{lemma:integers-modulo-q} for the fundamental structure underlying the \gls{he} schemes described in the next chapter, defining ourselves a ring with coefficients in said quotient ring $\Z/q\Z$.
 
 \begin{corollary}{Polynomial Ring modulo $q$}{bounded-polynomials-mod-q}
   Further modifying $R = \Z[X] / (X^N+1)$ for $N$ a power of $2$ to only take coefficients mod $q$, we obtain two equivalent definitions for the same ring:
@@ -183,7 +183,7 @@ As promised above, we will require \autoref{lemma:integers-modulo-q} for the fun
   $$R/qR = \{p: \C \mapsto \C,\; p(x) = \sum_{k=0}^{N-1} a_k x^k \;|\; a_k \in \Z/q\Z\}$$
 \end{corollary}
 
-This bounded polynomial ring is central to understanding objects in the next chapter and \autoref{corollary:bounded-polynomials-mod-q} can be regarded as the central result of this section.
+This bounded polynomial ring is central to understanding objects in the next chapter and \cref{corollary:bounded-polynomials-mod-q} can be regarded as the central result of this section.
 
 \pagebreak
 \section{Lattice Cryptography}
@@ -202,7 +202,7 @@ Most notably, lattice problems are conjectured to be secure against quantum comp
   As an extension of $\R^n$, the Euclidean norm $||\cdot||$ is also defined and the standard Euclidean metric $d: \lat \times \lat \mapsto \R$, yielding a metric space $(\lat, d)$, can be obtained by the norm of a vector difference, denoted $||(\cdot) - (\cdot)||$.
 \end{definition}
 
-Lattices are a common concept appearing in many areas of mathematics and physics, related to their effective representation as data structures and also geometric intuition (cf. \autoref{fig:lattice}).
+Lattices are a common concept appearing in many areas of mathematics and physics, related to their effective representation as data structures and also geometric intuition (cf. \cref{fig:lattice}).
 Its \textit{minimum distance} $\lambda_{min}$ is defined as the smallest Euclidean distance between two points $\vec{p_1}, \vec{p_2} \in \lat$
 $$\lambda_{min} = \min_{\vec{p_1}, \vec{p_2} \in \lat} d(\vec{p_1}, \vec{p_2}) =
   \min_{\vec{p_1}, \vec{p_2} \in \lat} ||\vec{p_1} - \vec{p_2}|| \,,$$
@@ -237,14 +237,14 @@ Examples include collision resistant hash functions, signatures, pseudorandom fu
 \begin{figure}
   \centering
   \inputtikz{figures/lattice}
-  \caption[Illustration of a standard lattice]{Illustration of a standard lattice $\lat$ over the integers $\Z$ with two basis vectors $\vec{b}_1$ and $\vec{b}_2$ (cf. \autoref{def:lattice}).
+  \caption[Illustration of a standard lattice]{Illustration of a standard lattice $\lat$ over the integers $\Z$ with two basis vectors $\vec{b}_1$ and $\vec{b}_2$ (cf. \cref{def:lattice}).
     The shortest vector problem in this case is solved by $\vec{x} = 0 \vec{b}_1 \pm 1 \vec{b}_2$.}
   \label{fig:lattice}
 \end{figure}
 
 \subsection{Learning with Errors (LWE)}
 \label{subsec:lwe}
-Next, we would like to consider \gls{lwe}, a computing problem that is believed to be sufficiently hard to be used in cryptography and, most notably, is not yet solvable in linear time by a quantum algorithm (cf. \autoref{sec:post-quantum-sec}), like any other cryptographic lattice problem so far.
+Next, we would like to consider \gls{lwe}, a computing problem that is believed to be sufficiently hard to be used in cryptography and, most notably, is not yet solvable in linear time by a quantum algorithm (cf. \cref{sec:post-quantum-sec}), like any other cryptographic lattice problem so far.
 Its hardness assumptions are related to GapSVP and were first formally proven by \citeauthor{2005-lwe-original}, for which he received the 2018 Gödel price.
 
 \begin{definition}{LWE-Distribution $A_{\vec{s}, \chi_{error}}$}{lwe-dist}
@@ -281,7 +281,7 @@ Public-key cryptosystems are fundamentally different from symmetric systems, whi
 Often times, public-key schemes (rather slow) are used to exchange keys for subsequent symmetric encryption (rather fast) of large plaintexts, for instance in the \gls{tls} protocol \parencite{rfc8446}.
 
 \subsection{Learning with Errors on Rings (RLWE)}
-Very similar to \autoref{def:lwe-dist}, the Ring-LWE distribution is derived as follows \parencite{2010-rlwe-original}:
+Very similar to \cref{def:lwe-dist}, the Ring-LWE distribution is derived as follows \parencite{2010-rlwe-original}:
 
 \begin{corollary}{RLWE-Distribution $B_{\vec{s}, \chi_{error}}$}{rlwe-dist}
   Given a quotient \hyperref[def:ring]{ring} $(R/qR, +, \cdot)$, we choose some secret $s \in R/qR$.
@@ -295,7 +295,7 @@ Very similar to \autoref{def:lwe-dist}, the Ring-LWE distribution is derived as 
   \end{itemize}
 \end{corollary}
 
-In the exact same manner as in \autoref{subsec:lwe}, the search and decision problems can be constructed.
+In the exact same manner as in \cref{subsec:lwe}, the search and decision problems can be constructed.
 
 \begin{corollary}{RLWE-Search Problem}{search-rlwe}
   Given $m$ independent samples $(a_i, b_i)_{0 < i \leq m}$ from $B_{s, \chi_{error}}$, find the secret $s$.
@@ -308,9 +308,9 @@ In the exact same manner as in \autoref{subsec:lwe}, the search and decision pro
 
 The main advantage of RLWE over LWE is that is conceptually similar and yet simple to formalise over an arbitrarily chosen \hyperref[def:ring]{ring} $(R, +, \cdot)$ which allows for a vast amount of applications and interesting constructions.
 
-In \gls{lwe}-based cryptosystems, the public key consists of $m$ LWE-distribution (\autoref{def:lwe-dist}) samples of $A_{\vec{s},\chi_{error}}$ hiding the secret $\vec{s}$.
-An attacker would thereby need to solve the LWE-Problem (\autoref{def:lwe-search-problem}) in order to retrieve the secret key from the public key, which is highly undesirable for a solid cryptosystem of course, but also hardly feasible with well-chosen parameters, assuming the hardness of the LWE problem (cf. \autoref{thm:lwe-hardness}).
-For RLWE, the public key consists of $m$ RLWE-distribution samples (\autoref{corollary:rlwe-dist}) which are usually smaller since they are only comprised of elements in $R/qR$.
+In \gls{lwe}-based cryptosystems, the public key consists of $m$ LWE-distribution (\cref{def:lwe-dist}) samples of $A_{\vec{s},\chi_{error}}$ hiding the secret $\vec{s}$.
+An attacker would thereby need to solve the LWE-Problem (\cref{def:lwe-search-problem}) in order to retrieve the secret key from the public key, which is highly undesirable for a solid cryptosystem of course, but also hardly feasible with well-chosen parameters, assuming the hardness of the LWE problem (cf. \cref{thm:lwe-hardness}).
+For RLWE, the public key consists of $m$ RLWE-distribution samples (\cref{corollary:rlwe-dist}) which are usually smaller since they are only comprised of elements in $R/qR$.
 The size of the secret key in LWE therefore scales with $n \cdot m$, the public key with $nm + n$, while in RLWE the secret key is only a single element in $R/qR$ and the public key only scales with $2m$.
 Keys are usually smaller in RLWE, depending on the choices of $p$, $q$, $n$ and $m$.
 
@@ -366,7 +366,7 @@ A very common method to find such a minimum is \gls{gd}, a straightforward itera
 In its simplest form, \gls{gd} simply evaluates the \textit{gradient} of the loss function $L$ at the starting point $\vec{w_0}$, yielding a direction in parameter space in which the loss will increase the most at this given point.
 Therefore, we advance in the opposite direction given by $-\nabla L$, by a distance $\eta$.
 In the next iteration, our subsequent guess for the local minimum is then given by $$\vec{w_{i+1}} = \vec{w_i} - \eta \nabla L$$
-which we choose as the next starting point to repeat the same process as can be seen in \autoref{fig:gradient-descent}.
+which we choose as the next starting point to repeat the same process as can be seen in \cref{fig:gradient-descent}.
 The iteration finishes when $||\nabla L|| = 0$ (and hopefully the Hessian at $\vec{w_i}$ is positive definite) or when a recurring loop in the iteration sequence is detected, or when the loss variation $|L(\vec{w_{i+1}}) - L(\vec{w_i})|$ deceeds a given threshold \parencite{bishop-pattern-recognition-and-ml}.
 
 Note that without modification, \gls{gd} is not a reliable method to find global minima, only local ones.
@@ -389,7 +389,7 @@ It only has binary output, on which it decides by performing a dot product betwe
 When given a binary target dataset $\{\vec{x_i}, t_i\}$, the goal of the training process is to determine the weights $\vec{w}$ and bias $b$ such that $\cryptop{Perceptron}_{\vec{w}, b}(\vec{x_i}) = t_i$ for as many samples as possible.
 
 \name{McCulloch} and \name{Pitts} further employed multiple consecutively connected perceptrons to form a larger 'network', each one referred to as a layer.
-Neural networks used today are very similar in their structure (cf. \autoref{fig:neural-network}).
+Neural networks used today are very similar in their structure (cf. \cref{fig:neural-network}).
 A neural network usually consists of multiple layers of potentially different types, commonly used ones include \textit{Dense ('Fully Connected') Layers} (essentially, matrix multiplication + bias), \textit{Convolutional Layers} (given a kernel, they perform a discrete multivariate convolution over the dataset) and mixtures of non-linear, differentiable, activation functions, max-pooling, etc. in between.
 Each Dense Layer is usually followed by an activation function such as $$\cryptop{relu}(\vec{x}) := \max(\vec{x}, 0) \,,$$ $$\cryptop{softmax}(\vec{x}) := \frac{e^{\vec{x}}}{\sum_{i=1}^{n} e^{x_i}} \,,$$ $\cryptop{tanh}(\vec{x})$ or $\cryptop{sigmoid}(\vec{x})$.
 They usually play the role of keeping the output bounded and/or sorting for 'activated' values
@@ -414,7 +414,7 @@ As a final note to better understand the implications and possibilities of a lar
 \end{theorem}
 
 In the case of our demonstrator, the network consists of two fully connected layers with a Taylor-approximated \cryptop{relu} activation function in between.
-For more details on the implemented neural networks' structure, code and performance, refer to \autoref{chap:implementation} and \autoref{chap:results}.
+For more details on the implemented neural networks' structure, code and performance, refer to \cref{chap:implementation} and \cref{chap:results}.
 
 An alternative approach to modelling higher dimensional data would be \textit{Gaussian Processes}, a \glsdesc{ml} technique with a focus on different applications than neural networks', but just as powerful \parencite[Chapter 45]{2005-mackay-information-theory}.
 The mathematical structure behind the model is a multivariate Gaussian distribution $$p: \R^n \mapsto \R,\, p(\vec{x}) = \frac{1}{\sqrt{(2\pi)^n |\Sigma|}} e^{-\frac{1}{2} (\vec{x}-\vec{\mu})^T \Sigma\inv (\vec{x}-\vec{\mu})} \,,$$ in many cases allowing for explicit analytical expressions and calculations as compared to multi-layered neural networks.
@@ -433,7 +433,7 @@ In quantum mechanics, we seek a mathematical description of quantum phenomena, c
 
 The mathematical foundation of quantum mechanics is deeply rooted in linear algebra and functional analysis.
 An important concept is that of function spaces and, especially, Hilbert spaces.
-Function spaces are a widely useful concept, polynomial rings are a great example too (confer \autoref{corollary:bounded-polynomials-mod-q}).
+Function spaces are a widely useful concept, polynomial rings are a great example too (confer \cref{corollary:bounded-polynomials-mod-q}).
 Wave functions $\psi: \C^3 \mapsto \R$ are usually chosen as elements of the $\mathcal{L}^2$-space, the space of square-integrable\footnote{Mathematicians usually formalise these using \name{Lebesgue}-integrals instead of the commonly used \name{Riemann} formulation of an integral. \name{Lebesgue} integration allows for a much broader class of integrable functions and is usually the preferred method in this context.} functions:
 $$\mathcal{L}^2 = \big\{\psi: \C^3 \mapsto \C \,\big|\, ||\psi|| < \infty\big\} \quad \text{with} \; ||\psi|| = \int_{-\infty}^{\infty} \psi^*(\vec{x}) \psi(\vec{x}) \,d^3x$$
 with $||\psi||$ referred to as the $l_2$-norm of the function $\psi$.
@@ -543,4 +543,4 @@ Another important advancement in quantum computing related to cryptography is Gr
 It could be used to perform certain key recovery, collision or pre-image attacks on cryptographic schemes, essentially halving the bit security of many schemes (128 bit security would be reduced down to 64 bits), suggesting to double the involved key size bits in many encryption schemes in order to be safe against potential future quantum attacks.
 
 Lattice-based cryptosystems are still safe against quantum computation, i.e. quantum computers have a negligible advantage compared to traditional computers when attempting to break lattice-based encryptions, performing key-recovery attacks, etc.
-Two of these schemes will be presented in the next chapter, in \autoref{sec:bfv} and \autoref{sec:ckks}.
+Two of these schemes will be presented in the next chapter, in \cref{sec:bfv} and \cref{sec:ckks}.

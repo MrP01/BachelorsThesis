@@ -3,7 +3,7 @@
 
 \section{Chosen Software Architecture}
 In the given setting, the most accessible frontend is commonly a JavaScript web application.
-A web-based demonstrator to show how to classify handwritten digits when using \glslink{he}{homomorphic encryption} was implemented, comprised of a C++ server and a React\footnote{\url{https://reactjs.org/}} frontend, confer \autoref{fig:frontend}.
+A web-based demonstrator to show how to classify handwritten digits when using \glslink{he}{homomorphic encryption} was implemented, comprised of a C++ server and a React\footnote{\url{https://reactjs.org/}} frontend, confer \cref{fig:frontend}.
 
 To still make the classification run as quickly and efficiently as possible, a C++ binary runs in the backend providing an HTTP API to the frontend application.
 In order to allow for more flexibility of the HTTP server, the initial approach was to pipe requests through a dedicated web application framework with database access that would allow, for instance, user management next to the basic classification.
@@ -35,7 +35,7 @@ into a $784$ element vector.
 \end{figure}
 
 \section{Our Neural Network}
-The network implemented in our demonstrator, trained using the \textit{Tensorflow} machine learning framework in Python \footnote{\url{https://www.tensorflow.org/}}, has the following layer structure (also confer \autoref{fig:neural-network}):
+The network implemented in our demonstrator, trained using the \textit{Tensorflow} machine learning framework in Python \footnote{\url{https://www.tensorflow.org/}}, has the following layer structure (also confer \cref{fig:neural-network}):
 \begin{align*}
   \text{Layer 1:}\; & \vec{h} = \cryptop{relu}(M_1 \vec{x} + \vec{b_1})    \\
   \text{Layer 2:}\; & \vec{y} = \cryptop{softmax}(M_2 \vec{h} + \vec{b_2})
@@ -162,7 +162,7 @@ This 'flaw' can be mitigated by a simple zero-padding approach in order to make 
   \caption[Hybrid matrix multiplication method]{The hybrid method to multiply an arbitrarily sized matrix with a vector (adapted from \cite{2018-gazelle}).}
 \end{figure}
 To further extend the previous matrix multiplication method to solve the problem
-(cf. \autoref{subsec:non-square-matrices}), it is first necessary to extend the definition of the $\diag$ operator to non-square matrices $M \in \R^{s \times t}$.
+(cf. \cref{subsec:non-square-matrices}), it is first necessary to extend the definition of the $\diag$ operator to non-square matrices $M \in \R^{s \times t}$.
 For the following, extending the above definition:
 $$\diag_j: \R^{s \times t} \mapsto \R^t, \; \{\diag_j(M)\}_i = M_{i, (i+j)}$$
 
@@ -194,10 +194,10 @@ void DenseLayer::matmulHybrid(seal::Ciphertext &in_out, const Matrix &mat, seal:
 
 \subsection{The Babystep-Giantstep Optimisation}
 Since Galois rotations are the most computationally intensive operations in most cryptographic schemes used today \parencite{2021-pasta}, they take a large toll on the efficiency.
-In order to reduce the number of rotations required, one can make use of the \textit{Babystep-Giantstep} optimisation as described in \cite{2018-faster-helib}, which works as follows:
+In order to reduce the number of rotations required, one can make use of the \gls{bsgs} optimisation as described in \cite{2018-faster-helib}, which works as follows:
 
 \begin{theorem}{Babystep-Giantstep Optimisation}{bsgs}
-  Given a matrix $M \in \R^{t \times t}$ and a vector $\vec{x} \in \R^t$, with $t = t_1 \cdot t_2$ split into two BSGS parameters $t_1, t_2 \in \N$ and
+  Given a matrix $M \in \R^{t \times t}$ and a vector $\vec{x} \in \R^t$, with $t = t_1 \cdot t_2$ split into two \gls{bsgs} parameters $t_1, t_2 \in \N$ and
   $$\diag'_p(M) = \rot_{-\lfloor p/t_1 \rfloor \cdot t_1}(\diag_p(M))\,,$$
   one can express a matrix-vector multiplication as follows:
   \begin{equation*}
@@ -208,7 +208,7 @@ In order to reduce the number of rotations required, one can make use of the \te
   where $\cdot$ denotes an element-wise multiplication of two vectors.
 \end{theorem}
 
-A proof of the above theorem can be found in the \hyperref[chap:appendix]{Appendix}, confer \autoref{proof:bsgs-matmul}.
+A proof of the above theorem can be found in \cref{proof:bsgs-matmul}.
 
 Note that the optimized matrix-vector multiplication only requires $t_1 + t_2$ rotations as we can store the $t_1$ inner rotations of the vector $\vec{x}$ for the upcoming evaluations.
 For larger matrices and vectors (larger $t$), $t_1 + t_2$ are indeed much smaller than the conventional number of required rotations $t = t_1 \cdot t_2$ in the diagonal or hybrid method for instance, which was the point of this modification in the first place.

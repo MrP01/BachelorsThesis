@@ -20,7 +20,7 @@ Due to the inherent applications, this thesis will focus on the CKKS scheme to p
 To alleviate upcoming notation, for two tuples $(\cdot, \cdot)$ defined over the same ring, denote their element-wise addition as $(\cdot, \cdot) + (\cdot, \cdot)$, element-wise multiplication by a scalar $u$ as $u \cdot (\cdot, \cdot)$ and element-wise rounding as $\lfloor (\cdot, \cdot) \rceil$.
 
 \section{Homomorphic Encryption using RSA}
-In order to illustrate the basic idea behind \Gls{he}, without distancing ourselves too far from the original goal of introducing basic \gls{he} operations used in practice, this short section aims to motivate the definition of ring homomorphisms (cf. \autoref{def:ring-homomorphism}) behind a cryptographic background.
+In order to illustrate the basic idea behind \Gls{he}, without distancing ourselves too far from the original goal of introducing basic \gls{he} operations used in practice, this short section aims to motivate the definition of ring homomorphisms (cf. \cref{def:ring-homomorphism}) behind a cryptographic background.
 
 % TODO: exaktere Einführung von \mathcal{E} (Definition)
 With unpadded RSA \parencite{1983-rsa}, some arithmetic can be performed on the ciphertext - looking at the encrypted ciphertext $\mathcal{E}(m_1) = (m_1)^r \mod n$ of the message $m_1$ and $m_2$ respectively, the following holds:
@@ -123,7 +123,7 @@ In this section, we will focus on a slightly altered implementation introduced i
   \parencite{2012-fv-original, 2012-brakerski}
 \end{definition}
 
-To summarise the parameters and variables, a brief overview of all used symbols is provided in \autoref{tab:bfv-symbols}.
+To summarise the parameters and variables, a brief overview of all used symbols is provided in \cref{tab:bfv-symbols}.
 \begin{table}[H]
   \centering
   \caption[Summary of the parameters and symbols in BFV]{Summary of the parameters and symbols in BFV.}
@@ -201,7 +201,7 @@ Parameters in $\mathbb{P}$ described above need to be carefully chosen in order 
     \approx \big\lfloor [\overline{m}]_t \big\rceil = \lfloor \overline{m} \rceil \approx \overline{m}
   \end{align*}
   we arrive at the desired result $\overline{m} = m + m'$ after rounding ($\lfloor \cdot \rceil$) the (real) polynomial to a close element in $R/tR$ using one of several round-off algorithms  (cf. \cite{2013-rlwe-toolkit}).
-  Of course, the influx of $\epsilon$ is only neglible if all parameters are carefully chosen as described in \autoref{def:bfv-scheme} and the error terms are sufficiently small.
+  Of course, the influx of $\epsilon$ is only neglible if all parameters are carefully chosen as described in \cref{def:bfv-scheme} and the error terms are sufficiently small.
   $$t \ll q \Longrightarrow \delta\inv = t/q \ll 1$$ should be given while also ensuring that the spread of the distributions $\chi_{key}$, $\chi_{enc}$ and $\chi_{error}$ is not too large so that $\overline{\mu_{1,2}}, \overline{u}$ and $\tilde{\mu}$ do not lead to a large $\epsilon$ distorting our final result.
 \end{proof}
 
@@ -219,9 +219,9 @@ with $F \in \Z$. In decimal form, for instance with $F = 1000$, we could effecti
 \todo{Obiges soll Motivation hinter CKKS zeigen.. fertig schreiben}
 % Roman: The main motivitaion behind CKKS is that we have a homomorphic rounding operation which allows to reduce the scaling factors after mulitplication
 
-Introduce $d, R, R/qR$ as in \autoref{def:bfv-scheme} and further define $\mathcal{S} = \R[X] / \Phi_d(X) \subset R$ a similar polynomial ring to $R$, but over the reals instead of the integers.
-Let $N = \varphi(d)$ be the degree of the reducing cyclotomic polynomial of $\mathcal{S}$, confer \autoref{def:bounded-polynomials}.
-For convenience, we usually choose $d$ a power of $2$ and then, by \autoref{thm:power-of-2-cyclo-poly}, $N = \varphi(d) = \frac{d}{2}$ which yields very efficiently multipliable polynomials because the homomorphic multiplication operation can be performed using a \gls{dft} and further optimized using the \gls{fft}, which in its unmodified form only accepts power-of-2 vector sizes \parencite{2017-ckks-original}.
+Introduce $d, R, R/qR$ as in \cref{def:bfv-scheme} and further define $\mathcal{S} = \R[X] / \Phi_d(X) \subset R$ a similar polynomial ring to $R$, but over the reals instead of the integers.
+Let $N = \varphi(d)$ be the degree of the reducing cyclotomic polynomial of $\mathcal{S}$, confer \cref{def:bounded-polynomials}.
+For convenience, we usually choose $d$ a power of $2$ and then, by \cref{thm:power-of-2-cyclo-poly}, $N = \varphi(d) = \frac{d}{2}$ which yields very efficiently multipliable polynomials because the homomorphic multiplication operation can be performed using a \gls{dft} and further optimized using the \gls{fft}, which in its unmodified form only accepts power-of-2 vector sizes \parencite{2017-ckks-original}.
 
 \subsection{Encoding and Decoding}
 In addition to encryption and decryption, the \gls{ckks} scheme also defines the \cryptop{CKKS.Encode} and \cryptop{CKKS.Decode} operations, extending possible plain inputs from polynomials $m \in R$ (as in BFV) to complex-valued vectors $\vec{z} \in \C^{N/2}$
@@ -309,7 +309,7 @@ The decoding procedure $\vec{z} = \cryptop{CKKS.Decode}(m),\, m \in R$ does the 
 
 \subsection{Scheme Definition}
 \begin{definition}{The CKKS Scheme}{ckks-scheme}
-  Define $R, R/q_L R$ as in \autoref{def:bfv-scheme}.
+  Define $R, R/q_L R$ as in \cref{def:bfv-scheme}.
   Introduce three bounded discrete probability distributions $\chi_{key}$, $\chi_{enc}$ and $\chi_{error}$ over $R/q_L R$.
   \vspace{0.2cm}
 
@@ -369,7 +369,7 @@ $\chi_{enc} = \mathcal{ZO}(0.5)$ another distribution over $\{0,\pm 1\}^N$.
 It should also be noted that the encoding procedure represents an isometric ring isomorphism (a linear bijection that preserves distance) between its domain and image, as does the decoding procedure.
 This reflects in the observation that the plaintext sizes and errors are preserved under the transformations \parencite{2017-ckks-original}.
 
-To summarise the parameters and variables, a brief overview of all used symbols is provided in \autoref{tab:ckks-symbols}.
+To summarise the parameters and variables, a brief overview of all used symbols is provided in \cref{tab:ckks-symbols}.
 \begin{table}[H]
   \centering
   \caption[Summary of the parameters and symbols in CKKS]{Summary of the parameters and symbols in CKKS.}
@@ -414,7 +414,7 @@ To summarise the parameters and variables, a brief overview of all used symbols 
 \end{theorem}
 
 \begin{proof}
-  Similar to the BFV scheme proof (\autoref{thm:bfv-enc-is-homomorphic}), we aim show that two input vectors $\vec{z}, \vec{z}' \in \C^{N/2}$ can be encoded, encrypted and added - and finally decrypted back to $\overline{\vec{z}} = \vec{z} + \vec{z}'$.
+  Similar to the BFV scheme proof (\cref{thm:bfv-enc-is-homomorphic}), we aim show that two input vectors $\vec{z}, \vec{z}' \in \C^{N/2}$ can be encoded, encrypted and added - and finally decrypted back to $\overline{\vec{z}} = \vec{z} + \vec{z}'$.
 
   Due to the extremely high similarity of the BFV and CKKS schemes, they are even identical in their encryption, decryption and adding procedures, the only thing that remains to be shown is the additivity (or even linearity) of \cryptop{CKKS.Encode}.
 
@@ -447,7 +447,7 @@ To summarise the parameters and variables, a brief overview of all used symbols 
   As every step in the full encoding process $\underline{\sigma}\inv \circ \underline{\rho_\delta}\inv \circ \underline{\pi}\inv$ is additive, \cryptop{CKKS.Encode} indeed acts additively.
   \cryptop{CKKS.Decode} on the other hand is only approximately additive due to the rounding operation required in between.
 
-  The rest follows from \autoref{thm:bfv-enc-is-homomorphic} as encryption and addition of the BFV scheme are identical.
+  The rest follows from \cref{thm:bfv-enc-is-homomorphic} as encryption and addition of the BFV scheme are identical.
   All in all for \cryptop{CKKS}, using the secret key $s$ and public key $\vec{p}$,
   $$\cryptop{Decode}(
     \cryptop{Decrypt}(s,
