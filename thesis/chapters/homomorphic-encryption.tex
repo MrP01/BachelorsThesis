@@ -1,9 +1,8 @@
 \chapter{Homomorphic Encryption}
 \label{chap:homomorphic-encryption}
 
-\section{Basics of Fully Homomorphic Encryption}
 \gls{he} makes it possible to operate on data without knowing it.
-One can distinguish three flavors of it, Partial-, Somewhat- and \gls{fhe}.
+One can distinguish three flavors of it, Partial-, Somewhat-, Levelled- and \gls{fhe}.
 
 For \Gls{fhe}, there exist a few schemes in use today with existing implementations.
 \begin{itemize}
@@ -22,30 +21,32 @@ To alleviate upcoming notation, for two tuples $(\cdot, \cdot)$ defined over the
 \section{Homomorphic Encryption using RSA}
 In order to illustrate the basic idea behind \Gls{he}, without distancing ourselves too far from the original goal of introducing basic \gls{he} operations used in practice, this short section aims to motivate the definition of ring homomorphisms (cf. \cref{def:ring-homomorphism}) behind a cryptographic background.
 
-% TODO: exaktere Einführung von \mathcal{E} (Definition)
-With unpadded RSA \parencite{1983-rsa}, some arithmetic can be performed on the ciphertext - looking at the encrypted ciphertext $\mathcal{E}(m_1) = (m_1)^r \mod n$ of the message $m_1$ and $m_2$ respectively, the following holds:
+With unpadded RSA \parencite{1983-rsa}, some arithmetic can be performed on the ciphertext - looking at the encrypted ciphertext $\mathcal{E}: \Z/q\Z \mapsto \Z/q\Z,\, \mathcal{E}(m) := m^r \mod q$ ($r, q \in \N$) of the message $m_1, m_2 \in \Z/q\Z$ respectively, the following holds:
 \begin{align*}
   \mathcal{E}(m_1) \cdot \mathcal{E}(m_2)
-   & \equiv (m_1)^r (m_2)^r \mod n     \\
-   & \equiv (m_1 m_2)^r \mod n         \\
-   & \equiv \mathcal{E}(m_1 \cdot m_2)
+   & \equiv (m_1)^r (m_2)^r \mod q            \\
+   & \equiv (m_1 m_2)^r \mod q                \\
+   & \equiv \mathcal{E}(m_1 \cdot m_2) \mod q
 \end{align*}
 
-The encryption therefore partially fulfills the properties of a ring homomorphism, which in general terms is defined as follows:
+\gls{rsa} encryption (even supporting an unbounded number of modular multiplications) therefore fulfills the properties of a multiplicative ring homomorphism, which in general terms is defined as follows:
 
 \begin{definition}{Ring Homomorphism}{ring-homomorphism}
   Given two \hyperref[def:ring]{rings} $(R, +, \cdot)$ and $(S, \oplus, \otimes)$, we call a mapping $\varphi: R \rightarrow S$ a ring homomorphism when it satisfies the following conditions:
   $$\forall a, b \in R: \varphi(a + b) = \varphi(a) \oplus \varphi(b) \wedge \varphi(a \cdot b) = \varphi(a) \otimes \varphi(b)$$
 \end{definition}
 
-As we can see, the term \gls{he} stems from the ability to perform computations on encrypted data while ensuring the same results are obtained when the same operations are applied to the original data.
+As we can see, the term \glsdesc{he} originates from the ability to perform computations on encrypted data while ensuring the same results are obtained when the same operations are applied to the original data.
 
 \section{Gentry's FHE-Scheme and BGV}
-\cite{2009-gentry-fhe-original}
-\todo{Eine kleine historical introduction hierzu? Bootstrapping erwähnen..?}
-% Roman: Just mention it shortly as I do in my papers:
-% The first fully HE scheme was introduced by gentry, based on lattices, encryption introduces noise, he operations increase noise, bootstrapping is evaluating the decryption circuit homomorphically -> resets noise. Followup schemes improve his blueprint
+Homomorphic encryption was envisioned by \citeauthor{1978-he-envisioned} as early as the 70's but remained a phantasm for almost three decades and was since referred to as the 'holy grail' of cryptography.
+The first fully homomorphic encryption scheme was introduced in Craig \name{Gentry}'s PhD thesis, based on lattice problems \parencite{2009-gentry-fhe-original}.
+In earlier schemes, each \gls{he} operation increases noise, making it partially homomorphic instead of fully homomorphic encryption.
+\name{Gentry} devised a technique called \textit{bootstrapping} that evaluates the \textit{decryption} circuit homomorphically and thereby resets the noise introduced by previous operations, enabling true fully homomorphic encryption (\gls{fhe}).
+Followup schemes improved his blueprint, Gentry's work is clearly a landmark achievement \parencite{2010-first-glimpse-of-fhe}.
 
+\cite{2012-bgv-original} developed a generalisation of \gls{rlwe} that enables interpolation between \gls{lwe} and \gls{rlwe}, allowing for many improvements on earlier schemes, though mainly relying on \cite{2009-gentry-fhe-original}.
+The resulting scheme, referred to as \gls{bgv}, allows for integer arithmetic. It also employs a modulus reduction technique, greatly extending the homomorphic capacity to a broader class of homomorphic circuits.
 \cite{seal-4.0} implements the scheme, enabled using \cpp{seal::scheme_type::bgv}.
 
 \pagebreak
@@ -282,8 +283,7 @@ Since $(T, \cdot)$ forms a normal subgroup under multiplication, we must have th
 \end{align*}
 using the above Python code. An example of an invalid subset $T$ that does cover the whole original set $\Z_d^*$ would be $T = \{1, 7, 9, 15\}$.
 
-% TODO: as above -> ref
-For the purposes of \gls{ckks}, we simply choose a global $T$ as above that is constant for our encoding and decoding procedure and a given $d$.
+For the purposes of \gls{ckks}, we simply choose a global $T$ that is constant for our encoding and decoding procedure and a given $d$.
 The inverse natural projection $\underline{\pi}\inv$ then uniquely constructs a vector in $\mathbb{H}$ by filling in elements $\overline{z_j}$ for $j \notin T$ into $\vec{z}$.
 For simplicity, we commonly choose $T$ as the 'first half' of $\Z_d^*$ when sorting in an ascending manner as it is always a valid choice
 \footnote{
