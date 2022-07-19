@@ -46,7 +46,7 @@ In earlier schemes, each \gls{he} operation increases noise, making it partially
 Followup schemes improved his blueprint, Gentry's work is clearly a landmark achievement \parencite{2010-first-glimpse-of-fhe}.
 
 \cite{2012-bgv-original} developed a generalisation of \gls{rlwe} that enables interpolation between \gls{lwe} and \gls{rlwe}, allowing for many improvements on earlier schemes, though mainly relying on \cite{2009-gentry-fhe-original}.
-The resulting scheme, referred to as \gls{bgv}, allows for integer arithmetic. It also employs a modulus reduction technique, greatly extending the homomorphic capacity to a broader class of homomorphic circuits.
+The resulting scheme, referred to as \gls{bgv}, allows for integer arithmetic (addition and multiplication on $\Z/q\Z$). It also employs a modulus reduction technique, greatly extending the homomorphic capacity to a broader class of homomorphic circuits.
 \cite{seal-4.0} implements the scheme, enabled using \cpp{seal::scheme_type::bgv}.
 
 \pagebreak
@@ -55,12 +55,6 @@ The resulting scheme, referred to as \gls{bgv}, allows for integer arithmetic. I
 This scheme was developed in two separate publications, whose authors initials it is named after, \cite{2012-brakerski} and \cite{2012-fv-original}.
 \gls{bfv} is based on \gls{bgv} and they are very similar in their core ideas, one can even convert a BFV ciphertext to an equivalent BGV ciphertext \parencite{2021-he-revisiting}.
 In this section, we will focus on a slightly altered implementation introduced in \cite{2014-fv-comparison}, yet the main aspects are identical to their definitions in the original papers.
-
-% \todo{Ausführlichere Beschreibung..?}
-% Roman: Passt so
-
-% Roman: I think you have never mentioned Galois rotations before...
-% Maybe start this section with mentioning that in CKKS one can encode a vector of n/2 elements into one polynomial and addition/multiplication then correspond to elementwise vector addition/multiplications. Furthermore, these vectors can be rotated using galois automorphism.
 
 \subsection{Scheme Definition}
 \begin{definition}{The BFV-Scheme}{bfv-scheme}
@@ -150,6 +144,7 @@ To summarise the parameters and variables, a brief overview of all used symbols 
   \end{tblr}
   \label{tab:bfv-symbols}
 \end{table}
+
 \todo{Etwas mehr Kontext...?}
 
 Parameters in $\mathbb{P}$ described above need to be carefully chosen in order to provide for a certain security level $\lambda$ \footnote{for example, using \url{https://github.com/malb/lattice-estimator}}.
@@ -227,6 +222,9 @@ For convenience, we usually choose $d$ a power of $2$ and then, by \cref{thm:pow
 \subsection{Encoding and Decoding}
 In addition to encryption and decryption, the \gls{ckks} scheme also defines the \cryptop{CKKS.Encode} and \cryptop{CKKS.Decode} operations, extending possible plain inputs from polynomials $m \in R$ (as in BFV) to complex-valued vectors $\vec{z} \in \C^{N/2}$
 \footnote{Many implementations of \gls{bfv} provide similar encoding and decoding procedures, extending the original BFV scheme \parencite{2012-fv-original} to facilitate encrypted vector arithmetic.}.
+When encoding a vector of $N/2$ elements into a polynomial, a main goal is of course to ensure that addition and multiplication then correspond to elementwise vector addition and multiplication.
+Furthermore, these vectors can be rotated (i.e. shifting the elements by an offset) using the \textit{Galois automorphism}.
+We will not discuss it in detail here, nevertheless Galois rotations are heavily used in the implementation to facilitate effective matrix multiplications (confer \cref{sec:matmul}).
 In total, the encoding and decoding steps consist of three transformations, $\underline{\pi}$, $\underline{\rho}$ and $\underline{\sigma}$.
 
 \begin{definition}{Canonical Embedding $\underline{\sigma}$}{sigma-transform}
@@ -414,7 +412,7 @@ To summarise the parameters and variables, a brief overview of all used symbols 
 \end{theorem}
 
 \begin{proof}
-  Similar to the BFV scheme proof (\cref{thm:bfv-enc-is-homomorphic}), we aim show that two input vectors $\vec{z}, \vec{z}' \in \C^{N/2}$ can be encoded, encrypted and added - and finally decrypted back to $\overline{\vec{z}} = \vec{z} + \vec{z}'$.
+  Similar to the BFV scheme proof (\cref{thm:bfv-enc-is-homomorphic}), we aim to show that two input vectors $\vec{z}, \vec{z}' \in \C^{N/2}$ can be encoded, encrypted and added - and finally decrypted back to $\overline{\vec{z}} = \vec{z} + \vec{z}'$.
 
   Due to the extremely high similarity of the BFV and CKKS schemes, they are even identical in their encryption, decryption and adding procedures, the only thing that remains to be shown is the additivity (or even linearity) of \cryptop{CKKS.Encode}.
 

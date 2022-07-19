@@ -54,25 +54,17 @@ model = tf.keras.Sequential([
 \end{minted}
 
 \section{Matrix-Vector Multiplication}
+\label{sec:matmul}
 The dot product that is required as part of the neural network evaluation process needs to be implemented on SEAL ciphertexts as well.
 
 There are multiple methods to achieve a syntactically correct dot product (matrix-vector multiplication) as described by \textcite{2018-gazelle} for (square) matrices.
 
 \begin{enumerate}
-  \item \textbf{Naïve MatMul} - very simple to derive but impractical in practice due to the limited further
-        applicability of the result consisting of multiple ciphertexts. Applicable to arbitrary matrix dimensions,
-        i.e. matrices $M \in \R^{s \times t}$, of course limited by the unreasonably high memory consumption
-        and computation time of this approach.
-  \item \textbf{Diagonal MatMul} - a simple and practical solution applicable to square matrices $M \in \R^{t \times t}$
-        that has a major advantage compared to the previous method as the computation yields a
-        single ciphertext object instead of many which can be directly passed on to a following evaluation operation.
-  \item \textbf{Hybrid MatMul} - essentially extending the diagonal method by generalising the definition of the
-        diagonal extraction mechanism to 'wrap around' in order to match the dimensionality of the input vector.
-        Applicable to arbitrary matrix dimensions, i.e. matrices $M \in \R^{s \times t}$ and favourable compared
-        to the Naïve Method.
-  \item \textbf{Babystep-Giantstep MatMul} - a more sophisticated technique aiming to significantly reduce the number of
-        Galois rotations as they are rather expensive to carry out,
-        with a performance boost especially noticeable for higher matrix dimensions.
+  \item \textbf{Naïve MatMul} - very simple to derive but impractical in practice due to the limited further applicability of the result consisting of multiple ciphertexts. Applicable to arbitrary matrix dimensions, i.e. matrices $M \in \R^{s \times t}$, of course limited by the unreasonably high memory consumption and computation time of this approach.
+  \item \textbf{Diagonal MatMul} - a simple and practical solution applicable to square matrices $M \in \R^{t \times t}$ that has a major advantage compared to the previous method as the computation yields a single ciphertext object instead of many which can be directly passed on to a following evaluation operation.
+  \item \textbf{Hybrid MatMul} - essentially extending the diagonal method by generalising the definition of the diagonal extraction mechanism to 'wrap around' in order to match the dimensionality of the input vector.
+        Applicable to arbitrary matrix dimensions, i.e. matrices $M \in \R^{s \times t}$ and favourable compared to the Naïve Method.
+  \item \textbf{Babystep-Giantstep MatMul} - a more sophisticated technique aiming to significantly reduce the number of Galois rotations as they are rather expensive to carry out, with a performance boost especially noticeable for higher matrix dimensions.
         Without further modification, applicable to square matrices.
 \end{enumerate}
 
