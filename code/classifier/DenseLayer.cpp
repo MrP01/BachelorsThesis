@@ -85,7 +85,6 @@ void DenseLayer::matmulHybrid(seal::Ciphertext &in_out, const Matrix &mat, seal:
   }
 
   // perform the actual multiplication
-  seal::Ciphertext original_input = in_out; // makes a copy
   seal::Ciphertext sum = in_out;
   Vector plain_sum = Vector(input);
   evaluator.multiply_plain_inplace(sum, diagonals[0]);
