@@ -95,25 +95,15 @@ $$\{M \vec{x}\}_i = \sum_{j=1}^{t} M_{ij} x_j \,.$$
 
 Accordingly, a natural (or rather, naïve) way to model this multiplication in \textit{Microsoft SEAL} would be to
 \begin{enumerate}
-  \item encode each $i$-th matrix row $(M_{i,1}, M_{i,2}, ..., M_{i,t})$ using the \cpp{Encoder}
-        with matching parameters to the ciphertext of the encoded vector $\vec{x}$.
-  \item multiply each encoded row with the encrypted vector using \cpp{Evaluator.multiply_plain()}
-        to obtain the ciphertext vector $\vec{y_i} \in \R^s$ for row $i$.
-  \item perform the 'rotate-and-sum' algorithm \parencite{2018-gazelle} on each
-        resulting vector (ciphertext) $\vec{y_i}$ to obtain the actual dot product
-        of the matrix row with the vector $\vec{x}$:
+  \item encode each $i$-th matrix row $(M_{i,1}, M_{i,2}, ..., M_{i,t})$ using the \cpp{Encoder} with matching parameters to the ciphertext of the encoded vector $\vec{x}$.
+  \item multiply each encoded row with the encrypted vector using \cpp{Evaluator.multiply_plain()} to obtain the ciphertext vector $\vec{y_i} \in \R^s$ for row $i$.
+  \item perform the 'rotate-and-sum' algorithm \parencite{2018-gazelle} on each resulting vector (ciphertext) $\vec{y_i}$ to obtain the actual dot product of the matrix row with the vector $\vec{x}$:
         \begin{enumerate}
-          \item using Galois automorphisms, rotate the entries of $\vec{y_i}$ by $\frac{s}{2}$ elements
-                to obtain $\rot_{\frac{s}{2}}(\vec{y_i})$.
-          \item perform an element-wise sum $\vec{y_i} + \rot_{\frac{s}{2}}(\vec{y_i})$
-                whose first (and also second) half now contains the sum of the two halves of $\vec{y_i}$.
-          \item repeat the previous two steps $\log_2(s)$ times, halving the
-                split parameter $s$ each time until one obtains $1$ element,
-                which yields us the requested sum of all entries $\sum_{k=1}^s \{\vec{y_i}\}_k$
-                as the dot product of $\vec{x}$ and $\vec{y_i}$.
+          \item using Galois automorphisms, rotate the entries of $\vec{y_i}$ by $\frac{s}{2}$ elements to obtain $\rot_{\frac{s}{2}}(\vec{y_i})$.
+          \item perform an element-wise sum $\vec{y_i} + \rot_{\frac{s}{2}}(\vec{y_i})$ whose first (and also second) half now contains the sum of the two halves of $\vec{y_i}$.
+          \item repeat the previous two steps $\log_2(s)$ times, halving the split parameter $s$ each time until one obtains $1$ element, which yields us the requested sum of all entries $\sum_{k=1}^s \{\vec{y_i}\}_k$ as the dot product of $\vec{x}$ and $\vec{y_i}$.
         \end{enumerate}
-  \item Given all the 'scalar' results of each row-vector dot product,
-        we can construct the resulting matrix-vector product.
+  \item Given all the 'scalar' results of each row-vector dot product, we can construct the resulting matrix-vector product.
 \end{enumerate}
 
 \paragraph{Adapting to non-square matrices}

@@ -148,6 +148,7 @@ To summarise the occuring parameters and variables, a brief overview of all used
 \end{table}
 
 Parameters in $\mathbb{P}$ described above need to be carefully chosen in order to provide for a certain security level $\lambda$ \footnote{for example, using \url{https://github.com/malb/lattice-estimator}}.
+Also note that $q$ or $t$ do not need to be prime and could be chosen e.g. as powers of 2.
 Encryption requires the public key, decryption the private key as usual in public-key encryption schemes.
 The public key depends on the secret key and is chosen in such a way that the corresponding term cancels out when decrypting, as can be seen in \autoref{subsec:bfv-verification}.
 
@@ -210,6 +211,9 @@ The diagram in \autoref{fig:bfv-overview} shows how a typical encryption process
   Of course, the influx of $\epsilon$ is only neglible if all parameters are carefully chosen as described in \cref{def:bfv-scheme} and the error terms are sufficiently small.
   $$t \ll q \Longrightarrow \delta\inv = t/q \ll 1$$ should be given while also ensuring that the spread of the distributions $\chi_{key}$, $\chi_{enc}$ and $\chi_{error}$ is not too large so that $\overline{\mu_{1,2}}, \overline{u}$ and $\tilde{\mu}$ do not lead to a large $\epsilon$ distorting our final result.
 \end{proof}
+
+As the public key $\vec{p} = (b, a)$ corresponds to a sample from the RLWE distribution (\cref{corollary:rlwe-dist}), the implied security of the BFV scheme is given by the hardness assumption of LWE (\cref{thm:lwe-hardness}).
+An attacker trying to decrypt a ciphertext $\vec{c}$, given only the public key $\vec{p}$, would thereby need to solve the RLWE search problem (\cref{corollary:search-rlwe}) which is known to be hard \parencite{2010-rlwe-original}.
 
 \cite{seal-4.0} implements the scheme, enabled using \cpp{seal::scheme_type::bfv}.
 
@@ -303,7 +307,7 @@ For simplicity, we commonly choose $T$ as the 'first half' of $\Z_d^*$ when sort
 \end{definition}
 
 Because it is not essential to understanding the encryption scheme, we will skip over concrete implementations of the rounding procedure $\underline{\rho}\inv$.
-Note that for choosing a 'close' element $\vec{g} \in \mathbb{H}$, we must first introduce a sense of proximity, in this case done by the $l_\infty$-norm $||\vec{g} - \vec{h}||_\infty$ of the difference between $\vec{h} \in \mathbb{H}$ and $\vec{g}$.
+For choosing a \textit{close} element $\vec{g} \in \mathbb{H}$, we must first introduce a sense of proximity, in this case done by the $l_\infty$-norm $||\vec{g} - \vec{h}||_\infty$ of the difference between $\vec{h} \in \mathbb{H}$ and $\vec{g}$.
 
 All in all, $m = \cryptop{CKKS.Encode}(\vec{z}),\, \vec{z} \in \C^{N/2}$ applies all inverse transformations $\underline{\pi}\inv$ (first), $\underline{\rho}\inv$ (second) and $\underline{\sigma}\inv$ (third) to an input vector $\vec{z}$ in order to finally arrive at a plaintext polynomial $m \in R/q_L R$ (equally stated as $m \in \Z_{q_L} / (X^N + 1)$ as long as $N$ is a power of 2).
 Although $\underline{\sigma}$ is defined over $\mathcal{S}$ instead of $\mathcal{R}$, all elements of $\underline{\sigma}(R)$ can indeed be mapped back to an element in $R$ using $\underline{\sigma}\inv$.
@@ -470,5 +474,8 @@ The \cryptop{CKKS.ReLin} operation serves the same purpose as in \gls{bfv}, the 
     ))) \approx \vec{z} + \vec{z}' \,.$$
   We can conclude that encoding \textit{and} encryption in CKKS are indeed homomorphic with respect to addition.
 \end{proof}
+
+As the public key $\vec{p} = (b, a)$ corresponds to a sample from the RLWE distribution (\cref{corollary:rlwe-dist}), the implied security of the CKKS scheme is given by the hardness assumption of LWE (\cref{thm:lwe-hardness}).
+An attacker trying to decrypt a ciphertext $\vec{c}$, given only the public key $\vec{p}$, would thereby need to solve the RLWE search problem (\cref{corollary:search-rlwe}) which is known to be hard \parencite{2010-rlwe-original}.
 
 \cite{seal-4.0} implements the scheme, enabled using \cpp{seal::scheme_type::ckks}.
