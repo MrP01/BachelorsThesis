@@ -54,15 +54,18 @@ The resulting scheme, referred to as \gls{bgv}, allows for integer arithmetic (a
 \label{sec:bfv}
 This scheme was developed in two separate publications, whose authors initials it is named after, \cite{2012-brakerski} and \cite{2012-fv-original}.
 \gls{bfv} is based on \gls{bgv} and they are very similar in their core ideas, one can even convert a BFV ciphertext to an equivalent BGV ciphertext \parencite{2021-he-revisiting}.
-In this section, we will focus on a slightly altered implementation introduced in \cite{2014-fv-comparison}, yet the main aspects are identical to their definitions in the original papers.
+In this section, we will focus on a slightly altered implementation introduced in \cite{2014-fv-comparison}.
 
 \subsection{Scheme Definition}
+The \gls{bfv} scheme is a tuple of algorithms, introduced in \cref{def:bfv-scheme}.
+To summarise the occuring parameters and variables, a brief overview of all used symbols is provided in \cref{tab:bfv-symbols}.
+
 \begin{definition}{The BFV-Scheme}{bfv-scheme}
   Let $R = \Z[X] / \Phi_d(X)$ be a polynomial ring with $\Phi_d(X)$ the $d$\textsuperscript{th} \hyperref[def:cyclotomic-poly]{cyclotomic polynomial}
   ($\rightarrow d \in \N$) for ciphertexts $c \in R \times R$.
   Introduce $R / qR$ the associated quotient ring of the $q$\textsuperscript{th} coset of $R$ with the modulus $q \in \N$.
   Further let $t \in \N$ denote the message modulus with $1<t<q$
-  for plain messages $m \in R/tR$ and define $\delta = \lfloor \frac{q}{t} \rfloor$,
+  for plain messages $m \in R/tR$ and define $\delta := \lfloor \frac{q}{t} \rfloor$,
   $\delta\inv = \frac{t}{q}$.
 
   Introduce three bounded discrete probability distributions $\chi_{key}$, $\chi_{enc}$ and $\chi_{error}$ over $R/qR$, one which is only used once for key generation, another used for \cryptop{BFV.Encrypt} and another (usually Gaussian-like) error distribution for manually inserted error terms (confer the \hyperref[def:lwe-search-problem]{LWE-problem}). For BFV, usually $\chi_{key} = \chi_{enc}$.
@@ -118,7 +121,6 @@ In this section, we will focus on a slightly altered implementation introduced i
   \parencite{2012-fv-original, 2012-brakerski}
 \end{definition}
 
-To summarise the parameters and variables, a brief overview of all used symbols is provided in \cref{tab:bfv-symbols}.
 \begin{table}[H]
   \centering
   \caption[Summary of the parameters and symbols in BFV]{Summary of the parameters and symbols in BFV.}
@@ -145,9 +147,16 @@ To summarise the parameters and variables, a brief overview of all used symbols 
   \label{tab:bfv-symbols}
 \end{table}
 
-\todo{Etwas mehr Kontext...?}
-
 Parameters in $\mathbb{P}$ described above need to be carefully chosen in order to provide for a certain security level $\lambda$ \footnote{for example, using \url{https://github.com/malb/lattice-estimator}}.
+Encryption requires the public key, decryption the private key as usual in public-key encryption schemes.
+The public key depends on the secret key and is chosen in such a way that the corresponding term cancels out when decrypting, as can be seen in \autoref{subsec:bfv-verification}.
+
+Homomorphic Addition, by design, works by simple addition of the corresponding ciphertexts.
+Multiplication is based on a similar procedure, but tries to prevent an explosion of the scale by dividing through $\delta$ in all three terms.
+Otherwise, the original input would be proportional to $\delta^2$ after multiplication, instead of $\delta$ as expected when decrypting.
+The \cryptop{BFV.ReLin} operation then takes care of merging the three-term tuple back into a ciphertext made of two polynomials using the relinearisation key $\vec{\gamma}$.
+
+The diagram in \autoref{fig:bfv-overview} shows how a typical encryption process works and which ring each object is part of, also compare \autoref{tab:bfv-symbols}.
 
 \begin{figure}[H]
   \centering
@@ -160,6 +169,7 @@ Parameters in $\mathbb{P}$ described above need to be carefully chosen in order 
 \end{figure}
 
 \subsection{Verification of the Additive Homomorphism}
+\label{subsec:bfv-verification}
 \begin{theorem}{BFV encryption is homomorphic with respect to addition}{bfv-enc-is-homomorphic}
   \cryptop{BFV.Encrypt} should encrypt in such a way that the addition algebra can be retained even in the transformed space, showing that we can indeed refer to it as \hyperref[def:ring-homomorphism]{homomorphic} encryption.
 \end{theorem}
