@@ -44,7 +44,7 @@ export class ClassificationComponent extends React.Component {
       let ctx = result.getContext("2d");
       // alpha channel is the last of every 4-element-block, so we have index % 4 == 3
       let alphaChannel = ctx.getImageData(0, 0, 28, 28).data.filter((value, index) => index % 4 === 3);
-      // TODO: rescale from 0..255 to 0..1
+      // potentially rescale from 0..255 to 0..1
       alphaChannel = alphaChannel.map((x) => (x > 127 ? 1 : 0));
       // give the browser one extra cycle for rendering
       setTimeout(

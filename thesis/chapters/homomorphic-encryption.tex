@@ -217,13 +217,9 @@ The diagram in \autoref{fig:bfv-overview} shows how a typical encryption process
 \section{The CKKS Scheme}
 \label{sec:ckks}
 The \gls{ckks} scheme allows us to perform approximate arithmetic on floating point numbers.
-Essentially, the idea is to extend \gls{bfv} which allows us to operate on vectors $\vec{y} \in \Z_t^n$, by an embedding approach that allows us to encode a (complex) floating point number vector $\vec{x} \in \R^n (\C^n)$ as an integer vector. A na\"ive approach would be to use a fixed-point embedding:
-$$\cryptop{Embed}(\vec{x}) = \vec{x} \cdot F$$
-with $F \in \Z$. In decimal form, for instance with $F = 1000$, we could effectively encode three decimal places of the original vector $\vec{x}$.
-% ... TODO: scale explodes, confer Roman's PETS lecture -> motivation for CKKS.
-
-\todo{Obiges soll Motivation hinter CKKS zeigen.. fertig schreiben}
-% Roman: The main motivitaion behind CKKS is that we have a homomorphic rounding operation which allows to reduce the scaling factors after mulitplication
+Essentially, the idea is to extend \gls{bfv} which allows us to operate on polynomials $p \in R/qR$, by an embedding approach that allows us to encode a (complex) floating point number vector $\vec{z} \in \R^n\, (\C^n)$ as an integer polynomial, similar to what is used in \gls{bfv}.
+A main contribution of \gls{ckks} is that we have a homomorphic rounding operation which allows to reduce the scaling factors after mulitplication.
+The remaining scheme is then extremely similar to \gls{bfv} and even more to \gls{bgv} which it is based on.
 
 Introduce $d, R, R/qR$ as in \cref{def:bfv-scheme} and further define $\mathcal{S} = \R[X] / \Phi_d(X) \subset R$ a similar polynomial ring to $R$, but over the reals instead of the integers.
 Let $N = \varphi(d)$ be the degree of the reducing cyclotomic polynomial of $\mathcal{S}$, confer \cref{def:bounded-polynomials}.
@@ -315,7 +311,14 @@ Summarised,
 $$\C^{N/2} \xlongrightarrow{\;\underline{\pi}\inv\;} \mathbb{H} \xlongrightarrow{\;\underline{\rho}\inv\;} \sigma(R) \xlongrightarrow{\;\underline{\sigma}\inv\;} R \,.$$
 The decoding procedure $\vec{z} = \cryptop{CKKS.Decode}(m),\, m \in R$ does the exact opposite to reobtain the input vector $\vec{z} \in \C^{N/2}$.
 
+It should also be noted that the encoding procedure represents an isometric ring isomorphism (a linear bijection that preserves distance) between its domain and image, as does the decoding procedure.
+This reflects in the observation that the plaintext sizes and errors are preserved under the transformations \parencite{2017-ckks-original}.
+
+\pagebreak
 \subsection{Scheme Definition}
+The \gls{bfv} scheme is a tuple of algorithms, introduced in \cref{def:bfv-scheme}.
+To summarise the occuring parameters and variables, a brief overview of all used symbols is provided in \cref{tab:ckks-symbols}.
+
 \begin{definition}{The CKKS Scheme}{ckks-scheme}
   Define $R, R/q_L R$ as in \cref{def:bfv-scheme}.
   Introduce three bounded discrete probability distributions $\chi_{key}$, $\chi_{enc}$ and $\chi_{error}$ over $R/q_L R$.
@@ -374,10 +377,13 @@ $\chi_{key} = \mathcal{H}WT(h)$ over $\{0,\pm 1\}^N$,
 $\chi_{error} = \mathcal{DG}(\sigma^2)$ over $\Z^N$ and
 $\chi_{enc} = \mathcal{ZO}(0.5)$ another distribution over $\{0,\pm 1\}^N$.
 
-It should also be noted that the encoding procedure represents an isometric ring isomorphism (a linear bijection that preserves distance) between its domain and image, as does the decoding procedure.
-This reflects in the observation that the plaintext sizes and errors are preserved under the transformations \parencite{2017-ckks-original}.
+Encryption, decryption, addition and multiplication work similarly as in \cref{def:bfv-scheme}.
+Unlike \gls{bfv} however, \gls{ckks} works with different moduli $q_L$ at each level $L$.
+This also casts off the need for up- and downscaling by $\delta$ when multiplying ciphertexts.
+The \cryptop{CKKS.ReLin} operation serves the same purpose as in \gls{bfv}, the rescaling operation is new however and takes care of the scale management.
+\cryptop{CKKS.ReScale} can be employed whenever we want to work with ciphertexts at different levels, modifying a given ciphertext to the scale of the other enables the other operations to work just as usual.
+\Cref{fig:ckks-overview} shows the extended course of action in \gls{ckks} with a preceeding encoding and decoding step.
 
-To summarise the parameters and variables, a brief overview of all used symbols is provided in \cref{tab:ckks-symbols}.
 \begin{table}[H]
   \centering
   \caption[Summary of the parameters and symbols in CKKS]{Summary of the parameters and symbols in CKKS.}
@@ -404,7 +410,6 @@ To summarise the parameters and variables, a brief overview of all used symbols 
   \end{tblr}
   \label{tab:ckks-symbols}
 \end{table}
-\todo{Etwas mehr Kontext...?}
 
 \begin{figure}[H]
   \centering
