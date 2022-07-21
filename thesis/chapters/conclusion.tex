@@ -2,7 +2,7 @@
 \label{chap:conclusion}
 
 In the present thesis, we explored the interesting realm of homomorphic encryption in a machine-learning context while considering various security aspects of it.
-Next to the written part, the reader may find a server-client ('as a service') based demonstrator implementation of the homomorphically encrypted machine learning service, including a web-based frontend.
+Next to the written part, the reader may find a server-client ('as a service') based demonstrator implementation of the homomorphically encrypted machine learning service for classifying handwritten digits, including a web-based frontend.
 
 \section{Summary}
 \Cref{chap:background} introduced mathematical preliminaries of the lattice-based homomorphic encryptions schemes used in \cref{chap:homomorphic-encryption}.
@@ -11,14 +11,21 @@ Forming the basis of the upcoming cryptographic schemes, we introduced the \gls{
 The multi-layered neural network is trained using the backpropagation algorithm of the Tensorflow library, an approach similar to gradient descent - which was all introduced in the next section of \cref{chap:background}.
 The final \cref{sec:post-quantum-sec} introduced the reader to basic quantum mechanics and most of the necessary background to understand a simple quantum-mechanical system and the underlying principles of modern quantum computers.
 
-\Cref{chap:homomorphic-encryption}
-\Cref{chap:implementation}
-\Cref{chap:results}
+\Cref{chap:homomorphic-encryption} starts out with one of the first homomorphic schemes there is, unpadded \gls{rsa}, motivating the need for a such structure.
+The first \glsdesc{fhe} scheme, invented by Craig \name{Gentry} in his PhD thesis, strongly inspired further developments in the field:
+Based on lattice problems and the \gls{rlwe} cryptosystem, \citeauthor{2012-brakerski,2012-fv-original} introduced the \gls{bfv} scheme for integer arithmetic.
+Extending it, we arrived at \gls{ckks} scheme developed by \citeauthor{2017-ckks-original} with an extensive encoding and decoding procedure.
+For both schemes, we verified the additive homomorphisms of the corresponding encryption (and encoding) operations \cryptop{BFV.Encrypt} and $\cryptop{CKKS.Encrypt} \circ \cryptop{CKKS.Encode}$.
 
-\Cref{chap:appendix}
+\Cref{chap:implementation} then presents details about the implementation of the web-based demonstrator, concerning the deployment and software architectural specifics.
+The main focus however lies on the technical challenges with \glsdesc{he} in practice.
+Four different matrix multiplication techniques were introduced in detail, gradually increasing the complexity but also the efficiency.
+The next challenge ahead was evaluating the activation function in between the two layers, due to technical reasons, only approximated by a series expansion.
+\Cref{chap:results} presents the network's training results and a detailed statistical analysis of the network performance.
+To explicitly show the 'garbling' property of the encryption, the first polynomial of the ciphertext is visualised for a few test samples (\cref{fig:ciphertext-visualisation}).
+Finally, we analysed the runtime, network communication and numerical performance of the algorithms for different parameters, summarised in \cref{tab:performance-benchmarks}.
 
-Considering the implications of mass surveilance, the importance of privacy-preserving/enhancing technologies should not be forgotten.
-
+Two longer proofs were outhoused to the \Cref{chap:appendix}, one on the power-of-2 cyclotomic polynomials and a second one on the \gls{bsgs} matrix multiplication method.
 
 \section{Outlook}
 \todo{To be written: describe existing solutions, approaches, current research, etc.}
@@ -26,6 +33,8 @@ Considering the implications of mass surveilance, the importance of privacy-pres
 % -> list the papers in library/ folder?
 % (include Fabians master thesis about splitting Relin, Galois keys using SPDZ
 % to support multiple data providers (clients) and one server, using normal HE algorithms)
+
+Considering the implications of mass surveilance, the importance of privacy-preserving/enhancing technologies should not be forgotten.
 
 \section{Related Works}
 \todo{Vielleicht als kleiner Teaser für mehr Literatur?}

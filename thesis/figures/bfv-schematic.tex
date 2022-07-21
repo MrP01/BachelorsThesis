@@ -4,11 +4,11 @@
 \tikzstyle{arrow} = [thick,->,>=stealth]
 
 \begin{tikzpicture}
-  \node[plaintext, align = center] (p) at (6,0) {plaintext \\ $m(X)$};
+  \node[plaintext, align = center] (p) at (5,0) {plaintext \\ $m(X)$};
   \node[ciphertext, align = center] (c) at (12,0) {ciphertext \\ $\vec{c} = (c_0(X), c_1(X))$};
 
-  \node[plaintext, align = center] (p2) at (6,-2.5) {plaintext \\ $\tilde{m}(X) = f(m(X))$};
-  \node[ciphertext, align = center] (c2) at (12,-2.5) {ciphertext \\ $\tilde{\vec{c}} = f(\vec{c})$};
+  \node[plaintext, align = center] (p2) at (5,-2.0) {plaintext \\ $\tilde{m}(X) = f(m(X))$};
+  \node[ciphertext, align = center] (c2) at (12,-2.0) {ciphertext \\ $\tilde{\vec{c}} = f(\vec{c})$};
 
   \draw (p.north) node[above]{$\Z_t[X]/(X^N + 1)$};
   \draw (p2.south) node[below]{$\Z_t[X]/(X^N + 1)$};

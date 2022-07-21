@@ -4,12 +4,12 @@ With a sufficiently powerful quantum computer, most digital communication could 
 Lattice-based cryptographic schemes aim to mitigate this, while including many further advantages, which will be the main topic of this thesis.
 
 With technological advancements in machine learning, problems long thought to be impossible can now be solved by complicated and resource-intensive neural network structures.
-Machine learning undoubtedly holds many new possibilities, especially in medicine, although large datasets are scarce in this area.
+Machine learning undoubtedly holds many new possibilities, especially in medicine, although large datasets are especially scarce in this area.
 \Gls{ppml} is an emerging field in data science that focusses on leveraging such highly private data anyway, without ever actually seeing it.
 The techniques behind this are homomorphic encryption schemes, two of which this thesis will discuss in detail.
 % Using fully homomorphic encryption schemes, an encrypted dataset can be operated on without ever having the possibility to decrypt it, not even with a quantum computer.
 
-To demonstrate the possibilities of these homomorphic cryptosystems applied to machine learning inference, a web-based demonstrator was developed (confer \cref{fig:frontend}).
+To demonstrate the possibilities of these homomorphic cryptosystems applied to machine learning inference, a web-based demonstrator for the classification of handwritten digits was developed (confer \cref{fig:frontend}).
 The backend server is written in C++, using the Microsoft \glstext{seal} homomorphic encryption library.
 This work starts by introducing the necessary mathematical background, motivating the definitions of the \glstext{bfv} and \glstext{ckks} encryption schemes in the following chapter and describing the basics of machine learning along the way.
 The quantum-mechanical principles and implications of \name{Shor}'s algorithm are discussed, further inciting the need for studying the hardness of the \glstext{lwe}-based cryptosystems.

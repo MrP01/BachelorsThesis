@@ -117,8 +117,9 @@ def plot_misclassifications(x_test, predictions, y_test):
 
     misclassifications = predictions != y_test
     for number in range(10):
-        i = list(predictions[misclassifications]).index(number)  # finds first image predicted as number
+        i = list(y_test[misclassifications]).index(number)  # finds first image with number
         x = x_test[misclassifications][i]
+        print(y_test[misclassifications][i], "predicted as", predictions[misclassifications][i])
         img = Image.fromarray(x * 255).convert("P")
         img.save(THESIS / "figures" / "generated" / f"mnist-misclassification-{number}.png")
 
