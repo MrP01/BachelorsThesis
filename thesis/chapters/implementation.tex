@@ -127,7 +127,7 @@ As can be seen in \cref{fig:diagonal-method}, we perform the vector-vector produ
   Given a matrix $M \in \R^{t \times t}$ and a vector $\vec{x} \in \R^t$,
   the dot product between the two can be expressed as
   \begin{equation*}
-    M \vec{x} = \sum_{j=0}^{t-1} \diag_j(M) \rot_j(\vec{x}) \,.
+    M \vec{x} = \sum_{j=0}^{t-1} \diag_j(M) \, \rot_j(\vec{x}) \,.
   \end{equation*}
 \end{theorem}
 
@@ -135,7 +135,7 @@ The key idea of this optimization is to exploit the \gls{simd} structure of the 
 
 \begin{proof}
   For all indices $i \in \Z/t\Z$,
-  $$\bigg\{\sum_{j=0}^{t-1} \diag_j(M) \rot_j(\vec{x})\bigg\}_i
+  $$\bigg\{\sum_{j=0}^{t-1} \diag_j(M) \, \rot_j(\vec{x})\bigg\}_i
     = \sum_{j=0}^{t-1} M_{i,(i+j)} x_{i+j}
     \overset{[k=i+j]}{=} \sum_{k=i}^{t+i-1} M_{ik} x_k
     = \sum_{k=0}^{t-1} M_{ik} x_k
@@ -150,7 +150,7 @@ The key idea of this optimization is to exploit the \gls{simd} structure of the 
   \label{fig:rotation-error}
 \end{figure}
 
-One major problem of the diagonal method is that it requires so many Galois rotations of the input vector, which causes a large error after too many consecutive rotations (\cref{fig:rotation-error}).
+One major problem of the diagonal method is that it requires many Galois rotations of $\vec{x}$, which is slow and also causes a large error after too many consecutive rotations (\cref{fig:rotation-error}).
 
 \subsection{The Hybrid Method}
 \begin{figure}[H]
@@ -161,6 +161,13 @@ One major problem of the diagonal method is that it requires so many Galois rota
 To further extend the previous matrix multiplication method to solve the problem (cf. \cref{subsec:non-square-matrices}), it is first necessary to extend the definition of the $\diag$ operator to non-square matrices $M \in \R^{s \times t}$.
 For the following, extending the above definition:
 $$\diag_j: \R^{s \times t} \mapsto \R^t, \; \{\diag_j(M)\}_i = M_{i, (i+j)} \,.$$
+
+\begin{theorem}{Hybrid Method}{hybrid-method}
+  For a matrix $M \in \R^{s \times t}$ with $t$ a whole multiple of $s$ and a vector $\vec{x} \in \R^t$,
+  $$M \vec{x} = (y_i)_{i \in \Z/s\Z} \;\text{with}\; \vec{y} = \sum_{k=0}^{t / s} \rot_{ks}\bigg(\sum_{j=0}^s \diag_j(M) \, \rot_j(\vec{x})\bigg) \,.$$
+\end{theorem}
+
+The hybrid method almost always outperforms the na\"ive and diagonal methods \parencite{2018-gazelle}.
 
 To exemplarily discuss the implementation of an \gls{he} algorithm, consider the following function that uses the matrix multiplication method described above:
 \begin{minted}{cpp}
