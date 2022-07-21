@@ -27,18 +27,24 @@ Finally, we analysed the runtime, network communication and numerical performanc
 
 Two longer proofs were outhoused to the \Cref{chap:appendix}, one on the power-of-2 cyclotomic polynomials and a second one on the \gls{bsgs} matrix multiplication method.
 
-\section{Outlook}
-\todo{To be written: describe existing solutions, approaches, current research, etc.}
-% describe existing solutions, approaches, current research, etc.
-% -> list the papers in library/ folder?
-% (include Fabians master thesis about splitting Relin, Galois keys using SPDZ
-% to support multiple data providers (clients) and one server, using normal HE algorithms)
+\section{Related Works and Outlook}
+There are many existing approaches of \gls{ppml} schemes or structures and even more applications - some related publications are, for the curious reader:
+\begin{itemize}
+  \item CryptoNets (inferred \gls{ml}), confer \cite{2016-cryptonets}.
+  \item Gazelle (inferred \gls{ml}) as described by \cite{2018-gazelle}.
+  \item \gls{tfhe} neural network inference, confer \cite{2019-tfhe-original}.
+  \item Random Forests using \gls{he} as described by \cite{2020-cryptotree}.
+  \item Pasta for hybrid homomorphic encryption as described in \cite{2021-pasta}.
+\end{itemize}
 
-Considering the implications of mass surveilance, the importance of privacy-preserving/enhancing technologies should not be forgotten.
+Next to Microsoft \gls{seal}, there are also other existing libraries for \gls{he}:
+\begin{itemize}
+  \item Microsoft's PyEVA, an interface to SEAL's CKKS implementation.
+  \item Halevi \& Shoup's HELib, a separate implementation of \gls{he} algorithms using NTL (the number theoretic library).
+  \item Palisade, another collection of many implemented \gls{he} algorithms, supposed to be a general-purpose tool.
+  \item TenSEAL from OpenMined, a high-level Python interface to SEAL.
+  \item PyGrid and PySyft from OpenMined, libraries to publish encrypted learning data (PyGrid) and utilize it (PySyft) for \gls{ml}.
+\end{itemize}
 
-\section{Related Works}
-\todo{Vielleicht als kleiner Teaser für mehr Literatur?}
-
-Gazelle (inferred ML) as described by \cite{2018-gazelle}.
-
-Random Forests (RF) on HE as described by \cite{2020-cryptotree}.
+Considering the implications of mass surveilance and the thereby growing mindset for data privacy, the relevance of privacy-preserving/enhancing technologies will definitely grow in the coming years.
+The relatively new class of lattice cryptosystems looks very promising, given the homomorphic properties of many such systems, and the inherent quantum security that will become even more relevant in the near future.
