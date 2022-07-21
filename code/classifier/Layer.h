@@ -7,7 +7,8 @@
 #include <seal/evaluator.h>
 #include <xtensor/xarray.hpp>
 
-enum MatMulImplementation { MATMUL_HYBRID, MATMUL_BSGS };
+enum MatMulImplementation { MATMUL_DIAGONAL_MOD, MATMUL_HYBRID, MATMUL_BSGS };
+enum DiagonalCount { IN_DIM, OUT_DIM };
 
 class Network;
 
@@ -30,8 +31,13 @@ class DenseLayer : public Layer {
   Matrix weights;
   Vector biases;
 
+  void dotMultiplyDiagonals(seal::Ciphertext &in_out, const Matrix &mat, seal::GaloisKeys &galois_keys,
+      seal::CKKSEncoder &encoder, seal::Evaluator &evaluator, enum DiagonalCount count);
+
  public:
   DenseLayer(Matrix weights, Vector biases);
+  void matmulDiagonalMod(seal::Ciphertext &in_out, const Matrix &mat, seal::GaloisKeys &galois_keys,
+      seal::CKKSEncoder &ckks_encoder, seal::Evaluator &evaluator);
   void matmulHybrid(seal::Ciphertext &in_out, const Matrix &mat, seal::GaloisKeys &galois_keys,
       seal::CKKSEncoder &ckks_encoder, seal::Evaluator &evaluator);
   void matmulBabystepGiantstep(seal::Ciphertext &in_out, const Matrix &mat, seal::GaloisKeys &galois_keys,

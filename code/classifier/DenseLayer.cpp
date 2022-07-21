@@ -36,6 +36,8 @@ void DenseLayer::feedforwardEncrypted(seal::Ciphertext &in_out, seal::GaloisKeys
     xt::view(zeroPaddedWeights, xt::range(0, out_dimension), xt::all()) = xt::transpose(weights);
     assert(zeroPaddedWeights.shape(0) == zeroPaddedWeights.shape(1));
     matmulBabystepGiantstep(in_out, zeroPaddedWeights, galoisKeys, encoder, evaluator);
+  } else if (matmulMethod == MATMUL_DIAGONAL_MOD) {
+    matmulDiagonalMod(in_out, weights, galoisKeys, encoder, evaluator);
   } else if (matmulMethod == MATMUL_HYBRID) {
     matmulHybrid(in_out, weights, galoisKeys, encoder, evaluator);
   }
@@ -46,55 +48,61 @@ void DenseLayer::feedforwardEncrypted(seal::Ciphertext &in_out, seal::GaloisKeys
   printCiphertextInternals("DenseLayer output", in_out, parent->context);
 }
 
-void DenseLayer::matmulHybrid(seal::Ciphertext &in_out, const Matrix &mat, seal::GaloisKeys &galois_keys,
-    seal::CKKSEncoder &encoder, seal::Evaluator &evaluator) {
+std::vector<seal::Plaintext> encodeMatrixDiagonals(const Matrix &mat, seal::CKKSEncoder &encoder,
+    seal::Evaluator &evaluator, seal::parms_id_type parms_id, double scale, std::vector<Vector> *plain_diagonals,
+    enum DiagonalCount count) {
+  size_t in_dim = mat.shape(0), out_dim = mat.shape(1);
+  size_t n_diagonals = (count == IN_DIM) ? in_dim : out_dim;
+  std::vector<seal::Plaintext> diagonals;
+  diagonals.reserve(n_diagonals);
+  if (plain_diagonals != nullptr)
+    plain_diagonals->reserve(n_diagonals);
+  for (auto offset = 0ULL; offset < n_diagonals; offset++) {
+    std::vector<double> diag;
+    diag.reserve(in_dim);
+    for (auto j = 0ULL; j < in_dim; j++)
+      diag.push_back(mat.at((j + offset) % in_dim, j % out_dim));
+
+    if (plain_diagonals != nullptr)
+      plain_diagonals->push_back(xt::adapt(diag));
+
+    seal::Plaintext encoded;
+    encoder.encode(diag, scale, encoded);
+    if (current_multiplication_level != 0)
+      evaluator.mod_switch_to_inplace(encoded, parms_id);
+    diagonals.push_back(encoded);
+  }
+  return diagonals;
+}
+
+void DenseLayer::dotMultiplyDiagonals(seal::Ciphertext &in_out, const Matrix &mat, seal::GaloisKeys &galois_keys,
+    seal::CKKSEncoder &encoder, seal::Evaluator &evaluator, enum DiagonalCount count) {
   int slots = encoder.slot_count(); // = N/2 = 4096/2 = 2048
-  size_t in_dim = mat.shape(0);
-  size_t out_dim = mat.shape(1);
+  size_t in_dim = mat.shape(0), out_dim = mat.shape(1);
+  size_t n_diagonals = (count == IN_DIM) ? in_dim : out_dim;
   assert(in_dim > out_dim);
   if (in_dim != slots && in_dim * 2 > slots)
     throw std::runtime_error("too little slots for matmul implementation!");
 
-  // if (slots != in_dim) {
-  //   PLOG(plog::debug) << "Adding the rotated input vector to itself...";
-  //   seal::Ciphertext in_out_rot;
-  //   evaluator.rotate_vector(in_out, -((int)in_dim), galois_keys, in_out_rot);
-  //   evaluator.add_inplace(in_out, in_out_rot);
-  // }
+  std::vector<Vector> plain_diagonals;
+  auto diagonals =
+      encodeMatrixDiagonals(mat, encoder, evaluator, in_out.parms_id(), in_out.scale(), &plain_diagonals, count);
 
   Vector input;
   if (debuggingDecryptor != nullptr)
     input = getCiphertextValue(in_out, in_dim, debuggingDecryptor, encoder);
 
-  // diagonal method preparation: encode the matrix diagonals
-  std::vector<seal::Plaintext> diagonals;
-  std::vector<Vector> unencoded_diagonals;
-  diagonals.reserve(in_dim);
-  unencoded_diagonals.reserve(in_dim);
-  for (auto offset = 0ULL; offset < in_dim; offset++) {
-    std::vector<double> diag;
-    diag.reserve(in_dim);
-    for (auto j = 0ULL; j < in_dim; j++)
-      diag.push_back(mat.at((j + offset) % in_dim, j % out_dim));
-    unencoded_diagonals.push_back(xt::adapt(diag));
-    seal::Plaintext encoded;
-    encoder.encode(diag, in_out.scale(), encoded);
-    if (current_multiplication_level != 0)
-      evaluator.mod_switch_to_inplace(encoded, in_out.parms_id());
-    diagonals.push_back(encoded);
-  }
-
   // perform the actual multiplication
   seal::Ciphertext sum = in_out;
   Vector plain_sum = Vector(input);
   evaluator.multiply_plain_inplace(sum, diagonals[0]);
-  plain_sum *= unencoded_diagonals[0];
+  plain_sum *= plain_diagonals[0];
   if (debuggingDecryptor != nullptr) {
     PLOG(plog::debug) << plain_sum;
     getCiphertextValue(sum, in_dim, debuggingDecryptor, encoder);
   }
   PLOG(plog::debug) << "--- now the following offsets:";
-  for (auto offset = 1ULL; offset < in_dim; offset++) {
+  for (auto offset = 1ULL; offset < n_diagonals; offset++) {
     seal::Ciphertext tmp;
     evaluator.rotate_vector_inplace(in_out, 1, galois_keys);
     if (debuggingDecryptor != nullptr) {
@@ -105,16 +113,41 @@ void DenseLayer::matmulHybrid(seal::Ciphertext &in_out, const Matrix &mat, seal:
     evaluator.multiply_plain(in_out, diagonals[offset], tmp);
     evaluator.add_inplace(sum, tmp);
     if (debuggingDecryptor != nullptr) {
-      Vector temp = xt::roll(input, -offset) * unencoded_diagonals[offset];
+      Vector temp = xt::roll(input, -offset) * plain_diagonals[offset];
       plain_sum += temp;
       Vector ency = getCiphertextValue(tmp, in_dim, debuggingDecryptor, encoder);
       PLOG(plog::debug) << "------> tmp-diff at offset " << offset << ": " << xt::sum(xt::square(temp - ency));
     }
   }
-  if (debuggingDecryptor != nullptr)
-    PLOG(plog::debug) << plain_sum;
   in_out = sum;
   evaluator.rescale_to_next_inplace(in_out); // scale down once
+
+  if (debuggingDecryptor != nullptr)
+    PLOG(plog::debug) << plain_sum;
+}
+
+void DenseLayer::matmulDiagonalMod(seal::Ciphertext &in_out, const Matrix &mat, seal::GaloisKeys &galois_keys,
+    seal::CKKSEncoder &encoder, seal::Evaluator &evaluator) {
+  // if (slots != in_dim) {
+  //   PLOG(plog::debug) << "Adding the rotated input vector to itself...";
+  //   seal::Ciphertext in_out_rot;
+  //   evaluator.rotate_vector(in_out, -((int)in_dim), galois_keys, in_out_rot);
+  //   evaluator.add_inplace(in_out, in_out_rot);
+  // }
+  dotMultiplyDiagonals(in_out, mat, galois_keys, encoder, evaluator, IN_DIM);
+}
+
+void DenseLayer::matmulHybrid(seal::Ciphertext &in_out, const Matrix &mat, seal::GaloisKeys &galois_keys,
+    seal::CKKSEncoder &encoder, seal::Evaluator &evaluator) {
+  dotMultiplyDiagonals(in_out, mat, galois_keys, encoder, evaluator, OUT_DIM);
+
+  // perform the rotate-and-sum algorithm
+  size_t in_dim = mat.shape(0), out_dim = mat.shape(1);
+  seal::Ciphertext rotated = in_out; // makes a copy
+  for (size_t chunk = 0; chunk < in_dim / out_dim; chunk++) {
+    evaluator.rotate_vector_inplace(rotated, out_dim, galois_keys);
+    evaluator.add_inplace(in_out, rotated);
+  }
 }
 
 void DenseLayer::matmulBabystepGiantstep(seal::Ciphertext &in_out, const Matrix &mat, seal::GaloisKeys &galois_keys,

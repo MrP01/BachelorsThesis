@@ -157,11 +157,11 @@ class Evaluator {
   }
 
   void fullBenchmark() {
-    DenseLayer::matmulMethod = MATMUL_BSGS;
-    // benchmark(false);
+    DenseLayer::matmulMethod = MATMUL_DIAGONAL_MOD;
     benchmark(true);
     DenseLayer::matmulMethod = MATMUL_HYBRID;
-    // benchmark(false);
+    benchmark(true);
+    DenseLayer::matmulMethod = MATMUL_BSGS;
     benchmark(true);
   }
 };
@@ -181,6 +181,7 @@ int main(int argc, char *argv[]) {
   network.init();
   network.loadDefaultModel();
   seal::KeyGenerator keyGen(*network.context);
+  DenseLayer::matmulMethod = MATMUL_DIAGONAL_MOD;
 
   seal::PublicKey publicKey;
   seal::GaloisKeys galoisKeys;
