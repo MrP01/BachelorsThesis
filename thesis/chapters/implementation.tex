@@ -21,8 +21,9 @@ in the \texttt{code} folder and point your browser to \url{https://localhost}.
 
 Using a Docker Multi-Stage Build, the application images were optimized towards a zero-dependency Alpine Linux image which contains nothing but compiled binaries and linked libraries.
 This is achieved by introducing intermediate layers including all necessary compiler libraries and dependencies and only copying the resulting binary to the final image.
-Similarly, the \textit{frontend} build process of course requires Node JS, a common JavaScript engine used for the React compilation step, in a previous build layer, but only serves static files in the final image without any further server logic required.
-Details on the build process can be found in \texttt{classifier.Dockerfile} and \texttt{frontend.Dockerfile}.
+Similarly, the \textit{frontend} build process of course requires Node JS, a common JavaScript engine used for the React compilation step, in a previous build layer.
+Yet, the final image only serves static files without any further server logic required and thus omits the entire JavaScript engine and associated libraries for the image.
+Details on the build process can be found in \texttt{code/classifier/classifier.Dockerfile} and \texttt{code/frontend/frontend.Dockerfile}.
 
 \section{The MNIST dataset}
 The MNIST dataset of handwritten digits \parencite{mnist-original} contains 60,000 train and 10,000 test images with corresponding labels.
@@ -32,11 +33,13 @@ into a $784$ element vector.
 \begin{figure}[H]
   \centering
   \inputtikz{figures/mnist}
-  \caption[Sample images of the MNIST dataset]{Sample images of the MNIST dataset of handwritten digits \parencite{mnist-original}. The dataset contains 70,000 images of 28x28 grayscale pixels valued from 0 to 255 as well as assoicated labels (as required for supervised learning).}
+  \caption[Sample images of the MNIST dataset]{Sample images of the MNIST dataset of handwritten digits \parencite{mnist-original}. The dataset contains 70,000 images of $28 \times 28$ grayscale pixels valued from 0 to 255 as well as assoicated labels (as required for supervised learning).}
 \end{figure}
 
 \section{Our Neural Network}
-The network implemented in our demonstrator, trained using the \textit{Tensorflow} machine learning framework in Python \footnote{\url{https://www.tensorflow.org/}}, has the following layer structure (also confer \cref{fig:neural-network}):
+The neural network implemented in our demonstrator was trained using the unencrypted standard \gls{mnist} dataset of 60,000 images, split into \SI{90}{\percent} training and \SI{10}{\percent} validation data.
+The training process itself was performed using the \textit{Tensorflow} machine learning framework in Python \footnote{\url{https://www.tensorflow.org/}}.
+The implemented network then has the following layer structure (also confer \cref{fig:neural-network}):
 \begin{align*}
   \text{Layer 1:}\; & \vec{h} = \cryptop{relu\_taylor}(M_1 \vec{x} + \vec{b_1}) \\
   \text{Layer 2:}\; & \vec{y} = \cryptop{softmax}(M_2 \vec{h} + \vec{b_2})
@@ -44,21 +47,32 @@ The network implemented in our demonstrator, trained using the \textit{Tensorflo
 
 Expressed in Python code, using the \textit{Keras} extension of Tensorflow,
 \begin{minted}{python}
-import tensorflow as tf
+  import tensorflow as tf
 
-model = tf.keras.Sequential([
-  tf.keras.layers.Flatten(input_shape=(28, 28)),
-  tf.keras.layers.Dense(128, activation=relu_taylor),
-  tf.keras.layers.Dense(10),
-  tf.keras.layers.Activation(tf.keras.activations.softmax),
-])
+  model = tf.keras.Sequential([
+    tf.keras.layers.Flatten(input_shape=(28, 28)),
+    tf.keras.layers.Dense(128, activation=relu_taylor),
+    tf.keras.layers.Dense(10),
+    tf.keras.layers.Activation(tf.keras.activations.softmax),
+  ])
 \end{minted}
 
 For performance metrics and some statistical analysis of the network's accuracy, refer to \cref{sec:accuracy-precision-recall}.
 
+To gain some intuition on what the two layers look like internally, the following plots of weights and biases have been made:
+\begin{figure}[H]
+  \centering
+  \inputtikz{figures/layer-1-and-2}
+  \caption[Weights and biases of our neural network]{First and Second Layer Weights and Biases.}
+  \label{fig:layer-1-and-2}
+\end{figure}
+
+The second (last) layer of the network outputs a vector of 10 scalars, each corresponding to one digit from 0 to 9.
+When finally applying the \cryptop{softmax} function to the output, we can interpret the values as probabilities for each digit.
+
 \section{Matrix-Vector Multiplication}
 \label{sec:matmul}
-The dot product that is required as part of the neural network evaluation process needs to be implemented on SEAL ciphertexts as well.
+The dot product that is required as part of the neural network evaluation process needs to be implemented on \gls{seal} ciphertexts as well.
 
 There are multiple methods to achieve a syntactically correct dot product (matrix-vector multiplication) as described by \textcite{2018-gazelle} for (square) matrices.
 
@@ -93,7 +107,7 @@ Term by term, one can express a matrix-vector product of $M \in \R^{s \times t}$
 $\vec{x} \in \R^s$ as follows:
 $$\{M \vec{x}\}_i = \sum_{j=1}^{t} M_{ij} x_j \,.$$
 
-Accordingly, a natural (or rather, naïve) way to model this multiplication in \textit{Microsoft SEAL} would be to
+Accordingly, a natural (or rather, naïve) way to model this multiplication in Microsoft \gls{seal} would be to
 \begin{enumerate}
   \item encode each $i$-th matrix row $(M_{i,1}, M_{i,2}, ..., M_{i,t})$ using the \cpp{Encoder} with matching parameters to the ciphertext of the encoded vector $\vec{x}$.
   \item multiply each encoded row with the encrypted vector using \cpp{Evaluator.multiply_plain()} to obtain the ciphertext vector $\vec{y_i} \in \R^s$ for row $i$.
@@ -127,7 +141,7 @@ As can be seen in \cref{fig:diagonal-method}, we perform the vector-vector produ
   Given a matrix $M \in \R^{t \times t}$ and a vector $\vec{x} \in \R^t$,
   the dot product between the two can be expressed as
   \begin{equation*}
-    M \vec{x} = \sum_{j=0}^{t-1} \diag_j(M) \, \rot_j(\vec{x}) \,.
+    M \vec{x} = \sum_{j=0}^{t-1} \diag_j(M) \cdot \rot_j(\vec{x}) \,.
   \end{equation*}
 \end{theorem}
 
@@ -135,7 +149,7 @@ The key idea of this optimization is to exploit the \gls{simd} structure of the 
 
 \begin{proof}
   For all indices $i \in \Z/t\Z$,
-  $$\bigg\{\sum_{j=0}^{t-1} \diag_j(M) \, \rot_j(\vec{x})\bigg\}_i
+  $$\bigg\{\sum_{j=0}^{t-1} \diag_j(M) \cdot \rot_j(\vec{x})\bigg\}_i
     = \sum_{j=0}^{t-1} M_{i,(i+j)} x_{i+j}
     \overset{[k=i+j]}{=} \sum_{k=i}^{t+i-1} M_{ik} x_k
     = \sum_{k=0}^{t-1} M_{ik} x_k
@@ -164,52 +178,53 @@ $$\diag_j: \R^{s \times t} \mapsto \R^t, \; \{\diag_j(M)\}_i = M_{i, (i+j)} \,.$
 
 \begin{theorem}{Hybrid Method}{hybrid-method}
   For a matrix $M \in \R^{s \times t}$ with $t$ a whole multiple of $s$ and a vector $\vec{x} \in \R^t$,
-  $$M \vec{x} = (y_i)_{i \in \Z/s\Z} \;\text{with}\; \vec{y} = \sum_{k=1}^{t / s} \rot_{ks}\bigg(\sum_{j=1}^s \diag_j(M) \, \rot_j(\vec{x})\bigg) \,.$$
+  $$M \vec{x} = (y_i)_{i \in \Z/s\Z} \;\text{with}\; \vec{y} = \sum_{k=1}^{t / s} \rot_{ks}\bigg(\sum_{j=1}^s \diag_j(M) \cdot \rot_j(\vec{x})\bigg) \,.$$
 \end{theorem}
 
 \begin{proof}
   For all indices $i \in \Z/s\Z$,
-  $$\{\vec{y}\}_i = \bigg\{\sum_{k=1}^{t / s} \rot_{ks}\bigg(\sum_{j=1}^s \diag_j(M) \, \rot_j(\vec{x})\bigg)\bigg\}_i = \sum_{k=1}^{t / s} \sum_{j=1}^{s} M_{i,(i+j) + ks} x_{(i+j) + ks} \,,$$
+  $$\{\vec{y}\}_i = \bigg\{\sum_{k=1}^{t / s} \rot_{ks}\bigg(\sum_{j=1}^s \diag_j(M) \cdot \rot_j(\vec{x})\bigg)\bigg\}_i = \sum_{k=1}^{t / s} \sum_{j=1}^{s} M_{i,(i+j) + ks} x_{(i+j) + ks} \,,$$
   substituting $l = i+j+ks$ and condensing the nested sums into one single summation expression since $\sum_{k=1}^{t / s} \sum_{j=1}^{s} f(j+ks) = \sum_{l=1}^{t} f(l)$, we obtain
-  $$y_i = \sum_{l=i}^{t+i-1} M_{il} x_l = \sum_{l=0}^{t-1} M_{il} x_l = \{M \vec{x}\}_i \,.$$
+  $$y_i = \sum_{l=1+i}^{t+i} M_{il} x_l = \sum_{l=1}^{t} M_{il} x_l = \{M \vec{x}\}_i \,.$$
+  For a longer example on the index notation and derivation of the terms above including the condensed sum, refer to \cref{proof:bsgs-matmul}.
 \end{proof}
 
-The hybrid method almost always outperforms the na\"ive and diagonal methods \parencite{2018-gazelle}.
+Due to its low number of operations, the hybrid method almost always outperforms the na\"ive and diagonal methods \parencite{2018-gazelle}.
 
 To exemplarily discuss the implementation of an \gls{he} algorithm, we break down the following piece of code responsible for the hybrid matrix multiplication.
-Thanks to SEAL's object-oriented interface and explicit, consistent naming, the code snippets are mostly self-explanatory in combination with some additional comments.
+Thanks to \gls{seal}'s object-oriented interface and explicit, consistent naming, the code snippets are mostly self-explanatory in combination with some additional comments.
 
 We first encode the matrix diagonals using the \cpp{seal::CKKSEncoder} into a vector of plaintexts (each containing the information of one diagonal).
 \begin{minted}{cpp}
-// diagonal method preparation
-size_t in_dim = matrix.shape(0), out_dim = matrix.shape(1);
-std::vector<seal::Plaintext> diagonals = encodeMatrixDiagonals(matrix, encoder, evaluator, in_out.parms_id(), in_out.scale(), nullptr, OUT_DIM);
+  // diagonal method preparation
+  size_t in_dim = matrix.shape(0), out_dim = matrix.shape(1);
+  std::vector<seal::Plaintext> diagonals = encodeMatrixDiagonals(matrix, encoder, evaluator, in_out.parms_id(), in_out.scale(), nullptr, OUT_DIM);
 \end{minted}
 
-Once this is done, we evaluate the inner sum $\sum_{j=1}^s \diag_j(M) \, \rot_j(\vec{x})$ using a loop.
+Once this is done, we evaluate the inner sum $\sum_{j=1}^s \diag_j(M) \cdot \rot_j(\vec{x})$ using a loop.
 \begin{minted}{cpp}
-// perform the actual multiplication
-seal::Ciphertext sum = in_out;  // makes a copy
-evaluator.multiply_plain_inplace(sum, diagonals[0]);  // performs the first vector-vector product
-for (auto offset = 1ULL; offset < in_dim; offset++) {
-  seal::Ciphertext tmp;  // for all remaining offsets:
-  evaluator.rotate_vector_inplace(in_out, 1, galois_keys);
-  evaluator.multiply_plain(in_out, diagonals[offset], tmp);
-  evaluator.add_inplace(sum, tmp);
-}
-in_out = sum;  // and we arrive at the first result
-evaluator.rescale_to_next_inplace(in_out);  // scale down once
+  // perform the actual multiplication
+  seal::Ciphertext sum = in_out;  // makes a copy
+  evaluator.multiply_plain_inplace(sum, diagonals[0]);  // performs the first vector-vector product
+  for (auto offset = 1ULL; offset < in_dim; offset++) {
+    seal::Ciphertext tmp;  // for all remaining offsets:
+    evaluator.rotate_vector_inplace(in_out, 1, galois_keys);
+    evaluator.multiply_plain(in_out, diagonals[offset], tmp);
+    evaluator.add_inplace(sum, tmp);
+  }
+  in_out = sum;  // and we arrive at the first result
+  evaluator.rescale_to_next_inplace(in_out);  // scale down once
 \end{minted}
 
 Finally, we exploit the repetitions in the resulting sum from above and rotate $t / s$ times to end up with the sum of all chunks, encoded in one final ciphertext vector.
 \begin{minted}{cpp}
-// perform the rotate-and-sum algorithm
-seal::Ciphertext rotated = in_out; // makes a copy
-for (size_t chunk = 0; chunk < in_dim / out_dim; chunk++) {
-  evaluator.rotate_vector_inplace(rotated, out_dim, galois_keys);
-  evaluator.add_inplace(in_out, rotated);  // adds rotated result to itself
-}
-return in_out;
+  // perform the rotate-and-sum algorithm
+  seal::Ciphertext rotated = in_out; // makes a copy
+  for (size_t chunk = 0; chunk < in_dim / out_dim; chunk++) {
+    evaluator.rotate_vector_inplace(rotated, out_dim, galois_keys);
+    evaluator.add_inplace(in_out, rotated);  // adds rotated result to itself
+  }
+  return in_out;
 \end{minted}
 
 In the \glsdesc{ml} context, it is common to have a much higher input dimension than output dimension, usually leading to fully connected layers with matrices $M \in \R^{s \times t}$ with $s \ll t$.
@@ -236,18 +251,33 @@ A proof of the above theorem can be found in \cref{proof:bsgs-matmul}.
 Note that the optimized matrix-vector multiplication only requires $t_1 + t_2$ rotations as we can store the $t_1$ inner rotations of the vector $\vec{x}$ for the upcoming evaluations.
 For larger matrices and vectors (larger $t$), $t_1 + t_2$ are indeed much smaller than the conventional number of required rotations $t = t_1 \cdot t_2$ in the diagonal or hybrid method for instance, which was the point of this modification in the first place.
 
-As we will see in \autoref{sec:performance-benchmarks}, the \gls{bsgs} method greatly improves the performance of our classification process.
+As we will see in \autoref{sec:performance-benchmarks}, the \gls{bsgs} method greatly improves the performance of our classification process, the approach of splitting the sum into two parts makes it as efficient as the hybrid method.
+
+\todo{Welche ist jetzt schneller?}
 
 \section{Polynomial Evaluation}
-From the implementation perspective, there are three properties to watch out for when working with SEAL ciphertexts:
+As the encryption hides the true value, we cannot directly evaluate the \cryptop{relu} function since we have no way of telling whether it is larger than $0$ or not.
+Using a finite series we can approximate the function though, also in the encrypted domain, because we can leverage the addition and multiplication operations of \gls{ckks}.
+
+Finding a such approximation is not particularly hard, \name{Taylor}'s theorem provides us with an explicit method to approximate a given analytic function in this way:
+$$T_N f(x; a):= \sum_{n=0}^N  \frac{f^{(n)}(a)}{n!} (x-a)^n$$
+To accomplish the best possible result however, a \name{Chebyshev} interpolation targeted at the corresponding domain subset may be a more suitable choice.
+Performing such an interpolation on the interval $[-5, 10] \subset \R$ around 0 yields us the polynomial
+$$f(x) = -0.006137 x^3 + 0.090189 x^2 + 0.59579 x + 0.54738$$
+which is plotted next to the function it is supposed to interpolate in \cref{fig:taylor-relu}.
+
+\begin{figure}[H]
+  \centering
+  \inputtikz{figures/generated/taylor-relu}
+  \caption[Comparison of the Relu activation function vs. its Taylor expansion]{Comparison of the Relu activation function vs. its Taylor expansion.}
+  \label{fig:taylor-relu}
+\end{figure}
+
+Next, we want to implement this polynomial evaluation using \gls{seal}.
+From the implementation perspective, there are three properties to keep in mind when operating on a \gls{seal} ciphertext (\cpp{seal::Ciphertext x}):
 
 \begin{enumerate}
   \item Scale (retrieved using \cpp{x.scale()}) \\
-        % \begin{quote}
-        %   Scale has nothing to do with noise. "Scale out of bounds" can appear even if noise is extremely low. Although repeated multiplication of a ciphertext by a plaintext will slowly increase the noise, it is not the reason why you see "scale out of bounds".
-        %   "Scale out of bounds" error specifically means that the scale of a ciphertext or plaintext is larger than the product of all elements in coeff\_modulus. If you perform multiplications without rescaling, you can quickly see this error. The more rescaling you perform, the less elements will be left in coeff\_modulus. Even if you managed to have the same scale in a ciphertext after every multiplication and rescale, eventually the coeff\_modulus can be too small to accommodate another multiplication.
-        % \end{quote}
-        % https://github.com/microsoft/SEAL/issues/182#issuecomment-646234787
         Can be adjusted with: \cpp{evaluator.rescale_inplace()}
   \item Encryption Parameters (retrieved using \cpp{x.parms_id()}) \\
         Can be adjusted with: \cpp{evaluator.mod_switch_to_inplace()}
@@ -255,15 +285,23 @@ From the implementation perspective, there are three properties to watch out for
         Can be adjusted with: \cpp{evaluator.relinearize_inplace()}
 \end{enumerate}
 
-\todo{Explain the challenges of polyval}
-
-\paragraph{Multiplication}
-Each time one multiplies two ciphertexts, the scales multiply (logarithmically, they add up, i.e. the bits are added together).
-The chain index reduces by 1. The chain index of an encoded ciphertext depends on the coeff moduli.
+For addition, the scales must be the same and they luckily will not change after the operation.
+The more delicate operation is ciphertext multiplication.
+Each time one multiplies two ciphertexts, the scales multiply (logarithmically, they add up, i.e. the common representations in bits are added together).
+The chain index reduces by 1, which for an encoded ciphertext depends on the coeff moduli.
 There must be enough bits remaining to perform the multiplication, namely $\log_2(scale)$ bits.
 
-\paragraph{Addition}
-The scales must be the same, but luckily they will not change.
+To illustrate the connections of these properties to one another, the following explanation of Wei Dai, one of the maintainers of \gls{seal}, on the "Scale out of bounds" error gives some good insight:
+
+\begin{quote}
+  Scale has nothing to do with noise. "Scale out of bounds" can appear even if noise is extremely low. Although repeated multiplication of a ciphertext by a plaintext will slowly increase the noise, it is not the reason why you see "scale out of bounds".
+
+  The "Scale out of bounds" error specifically means that the scale of a ciphertext or plaintext is larger than the product of all elements in \texttt{coeff\_modulus}. If you perform multiplications without rescaling, you can quickly see this error.
+
+  The more rescaling you perform, the less elements will be left in \texttt{coeff\_modulus}. Even if you managed to have the same scale in a ciphertext after every multiplication and rescale, eventually the \texttt{coeff\_modulus} can be too small to accommodate another multiplication \parencite{2020-wei-github-comment}.
+\end{quote}
+
+\todo{Explain the challenges of polyval}
 
 % TODO:
 % \section{Transparent Ciphertext}
@@ -277,24 +315,3 @@ The scales must be the same, but luckily they will not change.
 
 % https://github.com/microsoft/SEAL/issues/276#issuecomment-777073477
 % 'transparent ciphertexts (a.k.a. ciphertexts whose second polynomial is zero) are malformed and do not need the secret key to decrypt'
-
-\section{Neural Network}
-The neural network was trained using the unencrypted standard \gls{mnist} dataset of 50,000 images, split into \SI{90}{\percent} training and \SI{10}{\percent} validation data.
-
-\begin{figure}[H]
-  \centering
-  \inputtikz{figures/generated/taylor-relu}
-  \caption[Comparison of the Relu activation function vs. its Taylor expansion]{Comparison of the Relu activation function vs. its Taylor expansion.}
-  \label{fig:taylor-relu}
-\end{figure}
-\todo{Describe Taylor approximation of Relu function a bit}
-
-To gain some intuition on what the two layers look like internally, the following plots of weights and biases have been made:
-\begin{figure}[H]
-  \centering
-  \inputtikz{figures/layer-1-and-2}
-  \caption[Weights and biases of our neural network]{First and Second Layer Weights and Biases.}
-  \label{fig:layer-1-and-2}
-\end{figure}
-
-\todo{Beschreibung der obigen Figures, gehen beide Plots auf eine Seite?}

@@ -11,7 +11,7 @@ Many new cryptosystems have been developed on top of LWE, two of which this foll
 whose security is still unaffected by efficient quantum algorithms.
 Yet, it is not only their security prospect that makes these encryption schemes attractive, but first and foremost their defining \hyperref[def:ring-homomorphism]{homomorphic} property which allows for computations on the encrypted data.
 A \glslink{fhe}{\textit{fully} homomorphic encryption} scheme was first introduced by Craig \name{Gentry} in 2009, using a bootstrapping approach \parencite{2009-gentry-fhe-original}.
-The \textit{levelled} homomorphic \gls{bgv} encryption scheme is implemented in Microsoft SEAL and allows for integer arithmetic, up to a few multiplication 'levels' deep \parencite{2012-bgv-original}.
+The \textit{levelled} homomorphic \gls{bgv} encryption scheme is implemented in \cite{seal-4.0} and allows for integer arithmetic, up to a few multiplication 'levels' deep \parencite{2012-bgv-original}.
 The \gls{bfv} scheme \parencite{2012-fv-original,2012-brakerski} is very similar to it and described in a bit more detail in \cref{sec:bfv}.
 And finally, building upon concepts introduced in the former, the \gls{ckks} scheme \parencite{2017-ckks-original} allows for approximative floating-point arithmetic that finally facilitates machine-learning applications.
 
@@ -19,7 +19,7 @@ Machine Learning allows a computer to 'learn' from specifically structured data 
 In its simplest form, or even using a multi-layered neural network, this only requires two different operations on numbers (or even better, vectors): addition and multiplication.
 Using one of the \gls{he} schemes mentioned above and described in \cref{chap:homomorphic-encryption}, both are given and \gls{ppml} applications are born!
 
-The present thesis not only focusses on theoretical remarks but also includes a publicly available implementation of an \gls{he} classification server written in C++, based on the \glsdesc{he} scheme \textit{SEAL} developed by Microsoft Research \parencite{seal-4.0}, and a compact graphical user interface to interact with.
+The present thesis not only focusses on theoretical remarks but also includes a publicly available implementation of an \gls{he} classification server written in C++, based on the \glsdesc{he} library \gls{seal} developed by Microsoft Research \parencite{seal-4.0}, and a compact graphical user interface to interact with.
 A screenshot of the main functionality is displayed in \cref{fig:frontend}.
 
 \begin{figure}[H]

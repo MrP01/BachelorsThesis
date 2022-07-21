@@ -270,10 +270,10 @@ Rephrased, we seek a $T \subseteq \Z_d^*$ with $1 \in T$ such that we can fully 
 Note that $T$ is not unique, we can find multiple sets $T$ for which the above holds, for instance by brute force computation:
 
 \begin{minted}{python}
-import itertools, math, numpy as np
-d = 16; Zdstar = [z for z in range(d) if math.gcd(d, z) == 1]
-possible_T = [T for T in itertools.combinations(Zdstar, len(Zdstar) // 2)
-  if 1 in T and list(np.unique(list(T) + [(-1*t) % d for t in T])) == Zdstar]
+  import itertools, math, numpy as np
+  d = 16; Zdstar = [z for z in range(d) if math.gcd(d, z) == 1]
+  possible_T = [T for T in itertools.combinations(Zdstar, len(Zdstar) // 2)
+    if 1 in T and list(np.unique(list(T) + [(-1*t) % d for t in T])) == Zdstar]
 \end{minted}
 
 \paragraph{Example.}
