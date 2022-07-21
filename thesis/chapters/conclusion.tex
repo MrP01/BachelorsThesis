@@ -1,12 +1,24 @@
 \chapter{Conclusion}
 \label{chap:conclusion}
-\todo{To be written}
+
+In the present thesis, we explored the interesting realm of homomorphic encryption in a machine-learning context while considering various security aspects of it.
+Next to the written part, the reader may find a server-client ('as a service') based demonstrator implementation of the homomorphically encrypted machine learning service, including a web-based frontend.
+
+\section{Summary}
+\Cref{chap:background} introduced mathematical preliminaries of the lattice-based homomorphic encryptions schemes used in \cref{chap:homomorphic-encryption}.
+As the main focus lies on thoroughly understanding the notation used in the encryption schemes, we first concentrated on the algebraic ring $\Z_q[X]/(X^N+1)$ with coefficients modulo $q$ and the cyclotomic polynomial $(X^N+1)$ as its modulus.
+Forming the basis of the upcoming cryptographic schemes, we introduced the \gls{lwe} problem and its descendant, \gls{rlwe}.
+The multi-layered neural network is trained using the backpropagation algorithm of the Tensorflow library, an approach similar to gradient descent - which was all introduced in the next section of \cref{chap:background}.
+The final \cref{sec:post-quantum-sec} introduced the reader to basic quantum mechanics and most of the necessary background to understand a simple quantum-mechanical system and the underlying principles of modern quantum computers.
+
+\Cref{chap:homomorphic-encryption}
+\Cref{chap:implementation}
+\Cref{chap:results}
+
+\Cref{chap:appendix}
 
 Considering the implications of mass surveilance, the importance of privacy-preserving/enhancing technologies should not be forgotten.
 
-\section{Summary}
-\todo{To be written}
-% \inputtikz{figures/venn-diagram}
 
 \section{Outlook}
 \todo{To be written: describe existing solutions, approaches, current research, etc.}
