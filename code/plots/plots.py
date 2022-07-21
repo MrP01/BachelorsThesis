@@ -111,6 +111,18 @@ def plot_confusion_matrix(predictions, y_test):
     )
 
 
+def plot_misclassifications(x_test, predictions, y_test):
+    """Given the predictions and actual labels, plot some images that were misclassified"""
+    from PIL import Image
+
+    misclassifications = predictions != y_test
+    for number in range(10):
+        i = list(predictions[misclassifications]).index(number)  # finds first image predicted as number
+        x = x_test[misclassifications][i]
+        img = Image.fromarray(x * 255).convert("P")
+        img.save(THESIS / "figures" / "generated" / f"mnist-misclassification-{number}.png")
+
+
 def precision_and_recall(predictions: np.ndarray, y_test: np.ndarray):
     """For the given predictions and true labels, analyse"""
     precisions = []

@@ -251,7 +251,7 @@ A proof of the above theorem can be found in \cref{proof:bsgs-matmul}.
 Note that the optimized matrix-vector multiplication only requires $t_1 + t_2$ rotations as we can store the $t_1$ inner rotations of the vector $\vec{x}$ for the upcoming evaluations.
 For larger matrices and vectors (larger $t$), $t_1 + t_2$ are indeed much smaller than the conventional number of required rotations $t = t_1 \cdot t_2$ in the diagonal or hybrid method for instance, which was the point of this modification in the first place.
 
-As we will see in \autoref{sec:performance-benchmarks}, the \gls{bsgs} method greatly improves the performance of our classification process, the approach of splitting the sum into two parts makes it as efficient as the hybrid method.
+As we will see in \cref{sec:performance-benchmarks}, the \gls{bsgs} method greatly improves the performance of our classification process, the approach of splitting the sum into two parts makes it as efficient as the hybrid method.
 
 \todo{Welche ist jetzt schneller?}
 

@@ -150,14 +150,14 @@ To summarise the occuring parameters and variables, a brief overview of all used
 Parameters in $\mathbb{P}$ described above need to be carefully chosen in order to provide for a certain security level $\lambda$ \footnote{for example, using \url{https://github.com/malb/lattice-estimator}}.
 Also note that $q$ or $t$ do not need to be prime and could be chosen e.g. as powers of 2.
 Encryption requires the public key, decryption the private key as usual in public-key encryption schemes.
-The public key depends on the secret key and is chosen in such a way that the corresponding term cancels out when decrypting, as can be seen in \autoref{subsec:bfv-verification}.
+The public key depends on the secret key and is chosen in such a way that the corresponding term cancels out when decrypting, as can be seen in \cref{subsec:bfv-verification}.
 
 Homomorphic Addition, by design, works by simple addition of the corresponding ciphertexts.
 Multiplication is based on a similar procedure, but tries to prevent an explosion of the scale by dividing through $\delta$ in all three terms.
 Otherwise, the original input would be proportional to $\delta^2$ after multiplication, instead of $\delta$ as expected when decrypting.
 The \cryptop{BFV.ReLin} operation then takes care of merging the three-term tuple back into a ciphertext made of two polynomials using the relinearisation key $\vec{\gamma}$.
 
-The diagram in \autoref{fig:bfv-overview} shows how a typical encryption process works and which ring each object is part of, also compare \autoref{tab:bfv-symbols}.
+The diagram in \cref{fig:bfv-overview} shows how a typical encryption process works and which ring each object is part of, also compare \cref{tab:bfv-symbols}.
 
 \begin{figure}[H]
   \centering

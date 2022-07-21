@@ -46,6 +46,7 @@ def train(ctx, analyse=False):
         print("Accuracy:", test_accuracy)
         predictions = np.argmax(model.predict(x_test), axis=1)
         plots.plot_confusion_matrix(predictions, y_test)
+        plots.plot_misclassifications(x_test, predictions, y_test)
         plots.precision_and_recall(predictions, y_test)
         plots.plot_metric(history)
 
