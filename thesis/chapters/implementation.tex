@@ -301,17 +301,13 @@ To illustrate the connections of these properties to one another, the following 
   The more rescaling you perform, the less elements will be left in \texttt{coeff\_modulus}. Even if you managed to have the same scale in a ciphertext after every multiplication and rescale, eventually the \texttt{coeff\_modulus} can be too small to accommodate another multiplication \parencite{2020-wei-github-comment}.
 \end{quote}
 
-\todo{Explain the challenges of polyval}
+When evaluating a polynomial in SEAL, the above considerations need to be kept in mind when encoding the coefficients, multiplying the ciphertext $\vec{x}$ with itself to reach higher powers and adding together the weighted monomials.
+We of course leverage the \gls{simd} structure of the encryption scheme in order to turn the computation into an element-wise polynomial evaluation of the 1\textsuperscript{st} layer's output (an encrypted vector) before passing it on to the 2\textsuperscript{nd} layer.
 
-% TODO:
-% \section{Transparent Ciphertext}
-% \begin{quote}
-%   The problem is that you are subtracting a ciphertext from itself.
-%   This kind of operation results in a ciphertext that is identically zero; this is called a transparent ciphertext. Such a transparent ciphertext is not considered to be valid because the ciphertext reveals its underlying plaintext to anyone who sees it, even if they don't have the secret key.
-%   By default SEAL throws an exception when such a situation is encountered to protect you from a problem you may not have noticed.
-%   If you truly know what you are doing and want to enable the creation of transparent ciphertexts, you can configure SEAL [...].
-%   \parencite{kim-laine-on-transparent-ciphertexts}
-% \end{quote}
+\paragraph{Transparent Ciphertexts}
+When performing arbitrary computations on a ciphertext in \gls{seal}, it is possible to encounter a \textit{transparent ciphertext} from time to time.
+That is a ciphertext identically equal to 0 (mathematically, the tuple's second polynomial is zero, confer \cref{def:ckks-scheme}), and it is usually not considered a valid encryption as anyone who has it can immediately 'decrypt' it to its underlying value of 0.
+However, for intermediate values of the computation at hand, forwading values from addition to multiplication multiple times in our network, this is not an issue as long as we do not send the value back to the client, i.e. expose its internal structure \parencite{kim-laine-on-transparent-ciphertexts}.
 
-% https://github.com/microsoft/SEAL/issues/276#issuecomment-777073477
-% 'transparent ciphertexts (a.k.a. ciphertexts whose second polynomial is zero) are malformed and do not need the secret key to decrypt'
+In our usual setting of a web-based demonstrator for recognising handwritten digits, this situation cannot be avoided - but as long as the client does not send a ciphertext identical to 0, our final classification result (a vector of 10 elements) will never be 0.
+Therefore, the server binary is compiled with the \mintinline{bash}{-DSEAL_THROW_ON_TRANSPARENT_CIPHERTEXT=OFF} flag enabled, preventing a system halt in the case of an intermediary value evaluating to 0.
