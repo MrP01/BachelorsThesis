@@ -164,8 +164,15 @@ $$\diag_j: \R^{s \times t} \mapsto \R^t, \; \{\diag_j(M)\}_i = M_{i, (i+j)} \,.$
 
 \begin{theorem}{Hybrid Method}{hybrid-method}
   For a matrix $M \in \R^{s \times t}$ with $t$ a whole multiple of $s$ and a vector $\vec{x} \in \R^t$,
-  $$M \vec{x} = (y_i)_{i \in \Z/s\Z} \;\text{with}\; \vec{y} = \sum_{k=0}^{t / s} \rot_{ks}\bigg(\sum_{j=0}^s \diag_j(M) \, \rot_j(\vec{x})\bigg) \,.$$
+  $$M \vec{x} = (y_i)_{i \in \Z/s\Z} \;\text{with}\; \vec{y} = \sum_{k=1}^{t / s} \rot_{ks}\bigg(\sum_{j=1}^s \diag_j(M) \, \rot_j(\vec{x})\bigg) \,.$$
 \end{theorem}
+
+\begin{proof}
+  For all indices $i \in \Z/s\Z$,
+  $$\{\vec{y}\}_i = \bigg\{\sum_{k=1}^{t / s} \rot_{ks}\bigg(\sum_{j=1}^s \diag_j(M) \, \rot_j(\vec{x})\bigg)\bigg\}_i = \sum_{k=1}^{t / s} \sum_{j=1}^{s} M_{i,(i+j) + ks} x_{(i+j) + ks} \,,$$
+  substituting $l = i+j+ks$ and condensing the nested sums into one single summation expression since $\sum_{k=1}^{t / s} \sum_{j=1}^{s} f(j+ks) = \sum_{l=1}^{t} f(l)$, we obtain
+  $$y_i = \sum_{l=i}^{t+i-1} M_{il} x_l = \sum_{l=0}^{t-1} M_{il} x_l = \{M \vec{x}\}_i \,.$$
+\end{proof}
 
 The hybrid method almost always outperforms the na\"ive and diagonal methods \parencite{2018-gazelle}.
 
@@ -179,7 +186,7 @@ size_t in_dim = matrix.shape(0), out_dim = matrix.shape(1);
 std::vector<seal::Plaintext> diagonals = encodeMatrixDiagonals(matrix, encoder, evaluator, in_out.parms_id(), in_out.scale(), nullptr, OUT_DIM);
 \end{minted}
 
-Once this is done, we evaluate the inner sum $\sum_{j=0}^s \diag_j(M) \, \rot_j(\vec{x})$ using a loop.
+Once this is done, we evaluate the inner sum $\sum_{j=1}^s \diag_j(M) \, \rot_j(\vec{x})$ using a loop.
 \begin{minted}{cpp}
 // perform the actual multiplication
 seal::Ciphertext sum = in_out;  // makes a copy
@@ -208,11 +215,11 @@ return in_out;
 In the \glsdesc{ml} context, it is common to have a much higher input dimension than output dimension, usually leading to fully connected layers with matrices $M \in \R^{s \times t}$ with $s \ll t$.
 The diagonal method is especially efficient in these cases as it only requires $s + \frac{t}{s} = \frac{s^2 + t}{s}$ rotations and $s$ multiplications.
 
-\subsection{The Babystep-Giantstep Optimisation}
+\subsection{The Babystep-Giantstep Method}
 Since Galois rotations are the most computationally intensive operations in most cryptographic schemes used today \parencite{2021-pasta}, they take a large toll on the efficiency.
 In order to reduce the number of rotations required, one can make use of the \gls{bsgs} optimisation as described in \cite{2018-faster-helib}, which works as follows:
 
-\begin{theorem}{Babystep-Giantstep Optimisation}{bsgs}
+\begin{theorem}{Babystep-Giantstep Method}{bsgs}
   Given a matrix $M \in \R^{t \times t}$ and a vector $\vec{x} \in \R^t$, with $t = t_1 \cdot t_2$ split into two \gls{bsgs} parameters $t_1, t_2 \in \N$ and
   $$\diag'_p(M) = \rot_{-\lfloor p/t_1 \rfloor \cdot t_1}(\diag_p(M))\,,$$
   one can express a matrix-vector multiplication as follows:
