@@ -263,13 +263,16 @@ Finding a such approximation is not particularly hard, \name{Taylor}'s theorem p
 $$T_N f(x; a):= \sum_{n=0}^N  \frac{f^{(n)}(a)}{n!} (x-a)^n$$
 To accomplish the best possible result however, a \name{Chebyshev} interpolation targeted at the corresponding domain subset may be a more suitable choice.
 Performing such an interpolation on the interval $[-5, 10] \subset \R$ around 0 yields us the polynomial
-$$f(x) = -0.006137 x^3 + 0.090189 x^2 + 0.59579 x + 0.54738$$
+$$\cryptop{relu\_taylor}(x) = -0.006137 x^3 + 0.090189 x^2 + 0.59579 x + 0.54738$$
 which is plotted next to the function it is supposed to interpolate in \cref{fig:taylor-relu}.
 
 \begin{figure}[H]
   \centering
   \inputtikz{figures/generated/taylor-relu}
-  \caption[Comparison of the Relu activation function vs. its Taylor expansion]{Comparison of the Relu activation function vs. its Taylor expansion.}
+  \caption[Comparison of the Relu activation function vs. its Taylor expansion]{
+    Comparison of the $\cryptop{relu}(x)$ activation function vs. its series approximation $\cryptop{relu\_taylor}(x)$, plotted on the given domain.
+    Outside of it, the two functions strongly disagree.
+  }
   \label{fig:taylor-relu}
 \end{figure}
 

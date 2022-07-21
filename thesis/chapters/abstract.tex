@@ -1,14 +1,27 @@
 \chapter*{Abstract}
-Abstract of your thesis (at most one page)
+The rapid developments in quantum computation affect cryptography as it is used today.
+With a sufficiently powerful quantum computer, most digital communication could be decrypted in polynomial time by an eavesdropping party with access to such a potent utility, posing a major problem to the worldwide community.
+Lattice-based cryptographic schemes aim to mitigate this, while including many further advantages, which will be the main topic of this thesis.
 
-\todo{To be written..}
+With technological advancements in machine learning, problems long thought to be impossible can now be solved by complicated and resource-intensive neural network structures.
+Machine learning undoubtedly holds many new possibilities, especially in medicine, although large datasets are scarce in this area.
+\Gls{ppml} is an emerging field in data science that focusses on leveraging such highly private data anyway, without ever actually seeing it.
+The techniques behind this are homomorphic encryption schemes, two of which this thesis will discuss in detail.
+% Using fully homomorphic encryption schemes, an encrypted dataset can be operated on without ever having the possibility to decrypt it, not even with a quantum computer.
+
+To demonstrate the possibilities of these homomorphic cryptosystems applied to machine learning inference, a web-based demonstrator was developed (confer \cref{fig:frontend}).
+The backend server is written in C++, using the Microsoft \glstext{seal} homomorphic encryption library.
+This work starts by introducing the necessary mathematical background, motivating the definitions of the \glstext{bfv} and \glstext{ckks} encryption schemes in the following chapter and describing the basics of machine learning along the way.
+The principles and implications of \name{Shor}'s algorithm are discussed, further inciting the need for studying the hardness of the \glstext{lwe}-based cryptosystems.
+The final chapters then focus on implementation aspects, the analysis of obtained results and performance benchmarks.
 
 \paragraph{Keywords:}
-FHE, ML, image classification, neural network,
-Private AI, PPML, Confidential Computing
+FHE, ML, Image Classification, Neural Network,
+Private AI, PPML, Confidential Computing,
+Post-Quantum Security
 
 \paragraph{Technologies:}
-Microsoft SEAL (C++, nodejs),
+Microsoft SEAL (C++, NodeJS),
 Tensorflow Keras,
 Numpy,
 xtensor,
