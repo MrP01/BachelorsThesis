@@ -391,13 +391,12 @@ When given a binary target dataset $\{\vec{x_i}, t_i\}$, the goal of the trainin
 Neural networks used today are very similar in their structure (cf. \cref{fig:neural-network}).
 A neural network usually consists of multiple layers of potentially different types, commonly used ones include \textit{Dense ('Fully Connected') Layers} (essentially, matrix multiplication + bias), \textit{Convolutional Layers} (given a kernel, they perform a discrete multivariate convolution over the dataset) and mixtures of non-linear, differentiable, activation functions, max-pooling, etc. in between.
 Each Dense Layer is usually followed by an activation function such as $$\cryptop{relu}(\vec{x}) := \max(\vec{x}, 0) \,,$$ $$\cryptop{softmax}(\vec{x}) := \frac{e^{\vec{x}}}{\sum_{i=1}^{n} e^{x_i}} \,,$$ $\cryptop{tanh}(\vec{x})$ or $\cryptop{sigmoid}(\vec{x})$.
-They usually play the role of keeping the output bounded and/or sorting for 'activated' values
-\parencite{bishop-pattern-recognition-and-ml}.
+They usually play the role of keeping the output bounded and/or sorting for 'activated' values \parencite{bishop-pattern-recognition-and-ml}.
 
 \begin{figure}[H]
   \centering
   \inputtikz{figures/neural-network}
-  \caption[Neural Network illustration resembling the one used in our demonstrator]{A simple neural network resembling the structure we use in our demonstrator, the input (a 784 entry vector) is forwarded to the second layer using $\vec{h} = \cryptop{relu}(M_1 \vec{x} + \vec{b_1})$, resulting in a vector of 128 entries, and finally forwarded to the output layer with $\vec{y} = \cryptop{softmax}(M_2 \vec{h} + \vec{b_2})$. Each of the 10 outputs in $\vec{y}$ corresponds to a 'probability' associated with each digit from 0 to 9.}
+  \caption[Neural Network illustration resembling the one used in our demonstrator]{A simple neural network resembling the structure we use in our demonstrator, the input (a 784 entry vector) is forwarded to the second layer using $\vec{h} = \cryptop{relu\_taylor}(M_1 \vec{x} + \vec{b_1})$, resulting in a vector of 128 entries, and finally forwarded to the output layer with $\vec{y} = \cryptop{softmax}(M_2 \vec{h} + \vec{b_2})$. Each of the 10 outputs in $\vec{y}$ corresponds to a 'probability' associated with each digit from 0 to 9.}
   \label{fig:neural-network}
 \end{figure}
 

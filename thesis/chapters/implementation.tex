@@ -38,7 +38,7 @@ into a $784$ element vector.
 \section{Our Neural Network}
 The network implemented in our demonstrator, trained using the \textit{Tensorflow} machine learning framework in Python \footnote{\url{https://www.tensorflow.org/}}, has the following layer structure (also confer \cref{fig:neural-network}):
 \begin{align*}
-  \text{Layer 1:}\; & \vec{h} = \cryptop{relu}(M_1 \vec{x} + \vec{b_1})    \\
+  \text{Layer 1:}\; & \vec{h} = \cryptop{relu\_taylor}(M_1 \vec{x} + \vec{b_1}) \\
   \text{Layer 2:}\; & \vec{y} = \cryptop{softmax}(M_2 \vec{h} + \vec{b_2})
 \end{align*}
 
@@ -150,7 +150,7 @@ The key idea of this optimization is to exploit the \gls{simd} structure of the 
   \label{fig:rotation-error}
 \end{figure}
 
-One major problem of the diagonal method is that it requires many Galois rotations of $\vec{x}$, which is slow and also causes a large error after too many consecutive rotations (\cref{fig:rotation-error}).
+One major problem of the diagonal method is that it requires many Galois rotations of $\vec{x}$, which is slow and also causes a large error after too many consecutive rotations (confer \cref{fig:rotation-error}).
 
 \subsection{The Hybrid Method}
 \begin{figure}[H]
@@ -169,27 +169,44 @@ $$\diag_j: \R^{s \times t} \mapsto \R^t, \; \{\diag_j(M)\}_i = M_{i, (i+j)} \,.$
 
 The hybrid method almost always outperforms the na\"ive and diagonal methods \parencite{2018-gazelle}.
 
-To exemplarily discuss the implementation of an \gls{he} algorithm, consider the following function that uses the matrix multiplication method described above:
+To exemplarily discuss the implementation of an \gls{he} algorithm, we break down the following piece of code responsible for the hybrid matrix multiplication.
+Thanks to SEAL's object-oriented interface and explicit, consistent naming, the code snippets are mostly self-explanatory in combination with some additional comments.
+
+We first encode the matrix diagonals using the \cpp{seal::CKKSEncoder} into a vector of plaintexts (each containing the information of one diagonal).
 \begin{minted}{cpp}
-void DenseLayer::matmulHybrid(seal::Ciphertext &in_out, const Matrix &matrix, seal::GaloisKeys &galois_keys, seal::CKKSEncoder &encoder, seal::Evaluator &evaluator) {
-  size_t in_dim = matrix.shape(0), out_dim = matrix.shape(1);
-
-  // diagonal method preparation
-  std::vector<seal::Plaintext> diagonals = encodeMatrixDiagonals(matrix, encoder);
-
-  // perform the actual multiplication
-  seal::Ciphertext sum = in_out;  // makes a copy
-  evaluator.multiply_plain_inplace(sum, diagonals[0]);  // performs the first vector-vector product
-  for (auto offset = 1ULL; offset < in_dim; offset++) {
-    seal::Ciphertext tmp;  // for all remaining offsets:
-    evaluator.rotate_vector_inplace(in_out, 1, galois_keys);
-    evaluator.multiply_plain(in_out, diagonals[offset], tmp);
-    evaluator.add_inplace(sum, tmp);
-  }
-  in_out = sum;  // and we arrive at the final result
-  evaluator.rescale_to_next_inplace(in_out);  // scale down once
-}
+// diagonal method preparation
+size_t in_dim = matrix.shape(0), out_dim = matrix.shape(1);
+std::vector<seal::Plaintext> diagonals = encodeMatrixDiagonals(matrix, encoder, evaluator, in_out.parms_id(), in_out.scale(), nullptr, OUT_DIM);
 \end{minted}
+
+Once this is done, we evaluate the inner sum $\sum_{j=0}^s \diag_j(M) \, \rot_j(\vec{x})$ using a loop.
+\begin{minted}{cpp}
+// perform the actual multiplication
+seal::Ciphertext sum = in_out;  // makes a copy
+evaluator.multiply_plain_inplace(sum, diagonals[0]);  // performs the first vector-vector product
+for (auto offset = 1ULL; offset < in_dim; offset++) {
+  seal::Ciphertext tmp;  // for all remaining offsets:
+  evaluator.rotate_vector_inplace(in_out, 1, galois_keys);
+  evaluator.multiply_plain(in_out, diagonals[offset], tmp);
+  evaluator.add_inplace(sum, tmp);
+}
+in_out = sum;  // and we arrive at the first result
+evaluator.rescale_to_next_inplace(in_out);  // scale down once
+\end{minted}
+
+Finally, we exploit the repetitions in the resulting sum from above and rotate $t / s$ times to end up with the sum of all chunks, encoded in one final ciphertext vector.
+\begin{minted}{cpp}
+// perform the rotate-and-sum algorithm
+seal::Ciphertext rotated = in_out; // makes a copy
+for (size_t chunk = 0; chunk < in_dim / out_dim; chunk++) {
+  evaluator.rotate_vector_inplace(rotated, out_dim, galois_keys);
+  evaluator.add_inplace(in_out, rotated);  // adds rotated result to itself
+}
+return in_out;
+\end{minted}
+
+In the \glsdesc{ml} context, it is common to have a much higher input dimension than output dimension, usually leading to fully connected layers with matrices $M \in \R^{s \times t}$ with $s \ll t$.
+The diagonal method is especially efficient in these cases as it only requires $s + \frac{t}{s} = \frac{s^2 + t}{s}$ rotations and $s$ multiplications.
 
 \subsection{The Babystep-Giantstep Optimisation}
 Since Galois rotations are the most computationally intensive operations in most cryptographic schemes used today \parencite{2021-pasta}, they take a large toll on the efficiency.
