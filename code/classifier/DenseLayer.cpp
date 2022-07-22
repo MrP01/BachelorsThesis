@@ -7,7 +7,6 @@
 #include <xtensor/xview.hpp>
 
 int current_multiplication_level = 1;
-// static double scale = pow(2.0, 40);
 static std::map<size_t, std::pair<size_t, size_t>> preencoded_bsgs_parameters = {{784, {28, 28}}, {128, {16, 8}}};
 enum MatMulImplementation DenseLayer::matmulMethod = MATMUL_BSGS;
 
@@ -85,8 +84,12 @@ void DenseLayer::dotMultiplyDiagonals(seal::Ciphertext &in_out, const Matrix &ma
     throw std::runtime_error("too little slots for matmul implementation!");
 
   std::vector<Vector> plain_diagonals;
-  auto diagonals =
-      encodeMatrixDiagonals(mat, encoder, evaluator, in_out.parms_id(), in_out.scale(), &plain_diagonals, count);
+  seal::parms_id_type pid = in_out.parms_id();
+  double scale = in_out.scale();
+  std::clock_t start = clock();
+  auto diagonals = encodeMatrixDiagonals(mat, encoder, evaluator, pid, scale, &plain_diagonals, count);
+  std::clock_t end = clock();
+  PLOG(plog::info) << "encodeMatrixDiagonals took " << (double)(end - start) / CLOCKS_PER_SEC;
 
   Vector input;
   if (debuggingDecryptor != nullptr)
@@ -139,7 +142,10 @@ void DenseLayer::matmulDiagonalMod(seal::Ciphertext &in_out, const Matrix &mat, 
 
 void DenseLayer::matmulHybrid(seal::Ciphertext &in_out, const Matrix &mat, seal::GaloisKeys &galois_keys,
     seal::CKKSEncoder &encoder, seal::Evaluator &evaluator) {
+  std::clock_t start = clock();
   dotMultiplyDiagonals(in_out, mat, galois_keys, encoder, evaluator, OUT_DIM);
+  std::clock_t end = clock();
+  PLOG(plog::info) << "dotMultiply took " << (double)(end - start) / CLOCKS_PER_SEC;
 
   // perform the rotate-and-sum algorithm
   size_t in_dim = mat.shape(0), out_dim = mat.shape(1);
@@ -150,36 +156,35 @@ void DenseLayer::matmulHybrid(seal::Ciphertext &in_out, const Matrix &mat, seal:
   }
 }
 
-void DenseLayer::matmulBabystepGiantstep(seal::Ciphertext &in_out, const Matrix &mat, seal::GaloisKeys &galois_keys,
-    seal::CKKSEncoder &ckks_encoder, seal::Evaluator &evaluator) {
-  int slots = ckks_encoder.slot_count(); // = N/2 = 4096/2 = 2048
+std::vector<seal::Plaintext> prepareBabystepGiantstep(const Matrix &mat, seal::CKKSEncoder &encoder,
+    seal::Evaluator &evaluator, seal::parms_id_type parms_id, double scale) {
+  int slots = encoder.slot_count(); // = N/2 = 4096/2 = 2048
   assert(mat.shape(0) == mat.shape(1));
-  size_t matrix_dim = mat.shape(0);
-  if (matrix_dim != slots && matrix_dim * 2 > slots)
+  size_t in_dim = mat.shape(0);
+  if (in_dim != slots && in_dim * 2 > slots)
     throw std::runtime_error("too little slots for matmul implementation!");
 
-  std::pair bsgs_parameters = preencoded_bsgs_parameters.at(matrix_dim);
-  // the product of the parameters = matrix size (t1 * t2 = t), minimal sum if possible for minimal rotation operations
+  std::pair bsgs_parameters = preencoded_bsgs_parameters.at(in_dim);
   int bsgs_n1 = bsgs_parameters.first, bsgs_n2 = bsgs_parameters.second;
-  if (bsgs_n1 * bsgs_n2 != matrix_dim)
+  if (bsgs_n1 * bsgs_n2 != in_dim)
     throw std::runtime_error("wrong bsgs parameters");
   PLOG(plog::debug) << "BSGS parameters: " << bsgs_n1 << ", " << bsgs_n2;
 
   // baby step giant step method preparation:
-  std::vector<seal::Plaintext> matrix;
-  matrix.reserve(matrix_dim);
-  for (auto i = 0ULL; i < matrix_dim; i++) {
+  std::vector<seal::Plaintext> bsgsMatrix;
+  bsgsMatrix.reserve(in_dim);
+  for (auto i = 0ULL; i < in_dim; i++) {
     std::vector<double> diag;
     auto k = i / bsgs_n1;
-    diag.reserve(matrix_dim + k * bsgs_n1);
+    diag.reserve(in_dim + k * bsgs_n1);
 
-    for (auto j = 0ULL; j < matrix_dim; j++)
-      diag.push_back(mat.at(j, (i + j) % matrix_dim));
+    for (auto j = 0ULL; j < in_dim; j++)
+      diag.push_back(mat.at(j, (i + j) % in_dim));
     if (k)
       std::rotate(diag.begin(), diag.begin() + diag.size() - k * bsgs_n1, diag.end());
 
     // prepare for non-full-packed rotations
-    if (slots != matrix_dim) {
+    if (slots != in_dim) {
       for (uint64_t index = 0; index < k * bsgs_n1; index++) {
         diag.push_back(diag[index]);
         diag[index] = 0;
@@ -187,22 +192,35 @@ void DenseLayer::matmulBabystepGiantstep(seal::Ciphertext &in_out, const Matrix 
     }
 
     seal::Plaintext row;
-    ckks_encoder.encode(diag, in_out.scale(), row);
+    encoder.encode(diag, scale, row);
     if (current_multiplication_level != 0)
-      evaluator.mod_switch_to_inplace(row, in_out.parms_id());
-    matrix.push_back(row);
+      evaluator.mod_switch_to_inplace(row, parms_id);
+    bsgsMatrix.push_back(row);
   }
+  return bsgsMatrix;
+}
 
+void DenseLayer::matmulBabystepGiantstep(seal::Ciphertext &in_out, const Matrix &mat, seal::GaloisKeys &galois_keys,
+    seal::CKKSEncoder &encoder, seal::Evaluator &evaluator) {
+  std::clock_t prepStart = clock();
+  auto bsgsMatrix = prepareBabystepGiantstep(mat, encoder, evaluator, in_out.parms_id(), in_out.scale());
+  std::clock_t prepEnd = clock();
+  PLOG(plog::info) << "BSGS prep took " << (double)(prepEnd - prepStart) / CLOCKS_PER_SEC;
+
+  std::clock_t start = clock();
   // prepare for non-full-packed rotations
-  if (slots != matrix_dim) {
+  size_t in_dim = mat.shape(0);
+  if (encoder.slot_count() != in_dim) {
     seal::Ciphertext in_out_rot;
-    evaluator.rotate_vector(in_out, -((int)matrix_dim), galois_keys, in_out_rot);
+    evaluator.rotate_vector(in_out, -((int)in_dim), galois_keys, in_out_rot);
     evaluator.add_inplace(in_out, in_out_rot);
   }
 
   seal::Ciphertext temp;
   seal::Ciphertext outer_sum;
   seal::Ciphertext inner_sum;
+  std::pair bsgs_parameters = preencoded_bsgs_parameters.at(in_dim);
+  int bsgs_n1 = bsgs_parameters.first, bsgs_n2 = bsgs_parameters.second;
 
   // prepare rotations
   std::vector<seal::Ciphertext> rot;
@@ -212,9 +230,9 @@ void DenseLayer::matmulBabystepGiantstep(seal::Ciphertext &in_out, const Matrix 
     evaluator.rotate_vector(rot[j - 1], 1, galois_keys, rot[j]);
 
   for (uint64_t k = 0; k < bsgs_n2; k++) {
-    evaluator.multiply_plain(rot[0], matrix[k * bsgs_n1], inner_sum);
+    evaluator.multiply_plain(rot[0], bsgsMatrix[k * bsgs_n1], inner_sum);
     for (uint64_t j = 1; j < bsgs_n1; j++) {
-      evaluator.multiply_plain(rot[j], matrix[k * bsgs_n1 + j], temp);
+      evaluator.multiply_plain(rot[j], bsgsMatrix[k * bsgs_n1 + j], temp);
       evaluator.add_inplace(inner_sum, temp);
     }
     if (!k)
@@ -226,4 +244,6 @@ void DenseLayer::matmulBabystepGiantstep(seal::Ciphertext &in_out, const Matrix 
   }
   in_out = outer_sum;
   evaluator.rescale_to_next_inplace(in_out); // scale down once
+  std::clock_t end = clock();
+  PLOG(plog::info) << "BSGS mult took " << (double)(end - start) / CLOCKS_PER_SEC;
 }

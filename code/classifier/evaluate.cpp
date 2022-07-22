@@ -82,7 +82,7 @@ class Evaluator {
         plain = layer->feedforward(plain);
         PLOG(plog::debug) << "[Intermediate result]: exact: " << plain;
 
-        layer->debuggingDecryptor = &decryptor;
+        IF_PLOG(plog::debug) { layer->debuggingDecryptor = &decryptor; }
         layer->feedforwardEncrypted(encrypted, galoisKeys, relinKeys, encoder, evaluator);
         printCiphertextInternals("Intermediate result", encrypted, network.context);
         Vector enc = getCiphertextValue(encrypted, plain.shape(0), &decryptor, encoder);
