@@ -39,7 +39,7 @@ With unpadded RSA \parencite{1983-rsa}, some arithmetic can be performed on the 
 As we can see, the term \glsdesc{he} originates from the ability to perform computations on encrypted data while ensuring the same results are obtained when the same operations are applied to the original data.
 
 \section{Gentry's FHE-Scheme and BGV}
-Homomorphic encryption was envisioned by \citeauthor{1978-he-envisioned} as early as the 70's but remained a phantasm for almost three decades and was since referred to as the 'holy grail' of cryptography.
+Homomorphic encryption was envisioned by \citeauthor{1978-he-envisioned} as early as the 70s but remained a phantasm for almost three decades and was since referred to as the 'holy grail' of cryptography.
 The first fully homomorphic encryption scheme was introduced in Craig \name{Gentry}'s PhD thesis, based on lattice problems \parencite{2009-gentry-fhe-original}.
 In earlier schemes, each \gls{he} operation increases noise, making it partially homomorphic instead of fully homomorphic encryption.
 \name{Gentry} devised a technique called \textit{bootstrapping} that evaluates the \textit{decryption} circuit homomorphically and thereby resets the noise introduced by previous operations, enabling true fully homomorphic encryption (\gls{fhe}).
@@ -53,7 +53,7 @@ The resulting scheme, referred to as \gls{bgv}, allows for integer arithmetic (a
 \section{The BFV Scheme}
 \label{sec:bfv}
 This scheme was developed in two separate publications, whose authors initials it is named after, \cite{2012-brakerski} and \cite{2012-fv-original}.
-\gls{bfv} is based on \gls{bgv} and they are very similar in their core ideas, one can even convert a BFV ciphertext to an equivalent BGV ciphertext \parencite{2021-he-revisiting}.
+\gls{bfv} is based on \gls{bgv} and they are really similar in their core ideas, one can even convert a BFV ciphertext to an equivalent BGV ciphertext \parencite{2021-he-revisiting}.
 In this section, we will focus on a slightly altered implementation introduced in \cite{2014-fv-comparison}.
 
 \subsection{Scheme Definition}
@@ -195,7 +195,7 @@ The diagram in \cref{fig:bfv-overview} shows how a typical encryption process wo
       \delta \overline{m} + b \overline{u} + \overline{\mu_1} \\
       a \overline{u} + \overline{\mu_2}
     \end{pmatrix}^T$$
-  we obtain a ciphertext that hopefully decrypts to the correct sum.
+  we obtain a ciphertext that decrypts to the correct sum.
   Indeed,
   \begin{align*}
     \cryptop{BFV.Decrypt}(s, \overline{\vec{c}})
@@ -227,7 +227,7 @@ The remaining scheme is then extremely similar to \gls{bfv} and even more to \gl
 
 Introduce $d, R, R/qR$ as in \cref{def:bfv-scheme} and further define $\mathcal{S} = \R[X] / \Phi_d(X) \subset R$ a similar polynomial ring to $R$, but over the reals instead of the integers.
 Let $N = \varphi(d)$ be the degree of the reducing cyclotomic polynomial of $\mathcal{S}$, confer \cref{def:bounded-polynomials}.
-For convenience, we usually choose $d$ a power of $2$ and then, by \cref{thm:power-of-2-cyclo-poly}, $N = \varphi(d) = \frac{d}{2}$ which yields very efficiently multipliable polynomials because the homomorphic multiplication operation can be performed using a \gls{dft} and further optimized using the \gls{fft}, which in its unmodified form only accepts power-of-2 vector sizes \parencite{2017-ckks-original}.
+For convenience, we usually choose $d$ a power of $2$ and then, by \cref{thm:power-of-2-cyclo-poly}, $N = \varphi(d) = \frac{d}{2}$ which yields efficiently multipliable polynomials because the homomorphic multiplication operation can be performed using a \gls{dft} and further optimized using the \gls{fft}, which in its unmodified form only accepts power-of-2 vector sizes \parencite{2017-ckks-original}.
 
 \subsection{Encoding and Decoding}
 In addition to encryption and decryption, the \gls{ckks} scheme also defines the \cryptop{CKKS.Encode} and \cryptop{CKKS.Decode} operations, extending possible plain inputs from polynomials $m \in R$ (as in BFV) to complex-valued vectors $\vec{z} \in \C^{N/2}$
@@ -313,7 +313,7 @@ All in all, $m = \cryptop{CKKS.Encode}(\vec{z}),\, \vec{z} \in \C^{N/2}$ applies
 Although $\underline{\sigma}$ is defined over $\mathcal{S}$ instead of $\mathcal{R}$, all elements of $\underline{\sigma}(R)$ can indeed be mapped back to an element in $R$ using $\underline{\sigma}\inv$.
 Summarised,
 $$\C^{N/2} \xlongrightarrow{\;\underline{\pi}\inv\;} \mathbb{H} \xlongrightarrow{\;\underline{\rho}\inv\;} \sigma(R) \xlongrightarrow{\;\underline{\sigma}\inv\;} R \,.$$
-The decoding procedure $\vec{z} = \cryptop{CKKS.Decode}(m),\, m \in R$ does the exact opposite to reobtain the input vector $\vec{z} \in \C^{N/2}$.
+The decoding procedure $\vec{z} = \cryptop{CKKS.Decode}(m),\, m \in R$ does the opposite to reobtain the input vector $\vec{z} \in \C^{N/2}$.
 
 It should also be noted that the encoding procedure represents an isometric ring isomorphism (a linear bijection that preserves distance) between its domain and image, as does the decoding procedure.
 This reflects in the observation that the plaintext sizes and errors are preserved under the transformations \parencite{2017-ckks-original}.

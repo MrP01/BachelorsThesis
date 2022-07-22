@@ -280,7 +280,7 @@ Public-key cryptosystems are fundamentally different from symmetric systems, whi
 Often times, public-key schemes (rather slow) are used to exchange keys for subsequent symmetric encryption (rather fast) of large plaintexts, for instance in the \gls{tls} protocol \parencite{rfc8446}.
 
 \subsection{Learning with Errors on Rings (RLWE)}
-Very similar to \cref{def:lwe-dist}, the Ring-LWE distribution is derived as follows \parencite{2010-rlwe-original}:
+Similar to \cref{def:lwe-dist}, the Ring-LWE distribution is derived as follows \parencite{2010-rlwe-original}:
 
 \begin{corollary}{RLWE-Distribution $B_{\vec{s}, \chi_{error}}$}{rlwe-dist}
   Given a quotient \hyperref[def:ring]{ring} $(R/qR, +, \cdot)$, we choose some secret $s \in R/qR$.
@@ -294,7 +294,7 @@ Very similar to \cref{def:lwe-dist}, the Ring-LWE distribution is derived as fol
   \end{itemize}
 \end{corollary}
 
-In the exact same manner as in \cref{subsec:lwe}, the search and decision problems can be constructed.
+The search and decision problems can be constructed in the same manner as for \gls{lwe}:
 
 \begin{corollary}{RLWE-Search Problem}{search-rlwe}
   Given $m$ independent samples $(a_i, b_i)_{0 < i \leq m}$ from $B_{s, \chi_{error}}$, find the secret $s$.
@@ -361,12 +361,12 @@ given a dataset $\{\vec{x}_i, t_i\}$.
   \label{fig:gradient-descent}
 \end{figure}
 
-A very common method to find such a minimum is \gls{gd}, a straightforward iterative technique to find nearby minima, given a starting position $\vec{w_0}$ in 'parameter space'.
+A common method to find such a minimum is \gls{gd}, a straightforward iterative technique to find nearby minima, given a starting position $\vec{w_0}$ in 'parameter space'.
 In its simplest form, \gls{gd} simply evaluates the \textit{gradient} of the loss function $L$ at the starting point $\vec{w_0}$, yielding a direction in parameter space in which the loss will increase the most at this given point.
 Therefore, we advance in the opposite direction given by $-\nabla L$, by a distance $\eta$.
 In the next iteration, our subsequent guess for the local minimum is then given by $$\vec{w_{i+1}} = \vec{w_i} - \eta \nabla L$$
-which we choose as the next starting point to repeat the same process as can be seen in \cref{fig:gradient-descent}.
-The iteration finishes when $||\nabla L|| = 0$ (and hopefully the Hessian at $\vec{w_i}$ is positive definite) or when a recurring loop in the iteration sequence is detected, or when the loss variation $|L(\vec{w_{i+1}}) - L(\vec{w_i})|$ deceeds a given threshold \parencite{bishop-pattern-recognition-and-ml}.
+which we choose as the next starting point to repeat the process as can be seen in \cref{fig:gradient-descent}.
+The iteration finishes when $||\nabla L|| = 0$ and the Hessian at $\vec{w_i}$ is positive definite, indicating a proper minimum, or when a recurring loop in the iteration sequence is detected, or when the loss variation $|L(\vec{w_{i+1}}) - L(\vec{w_i})|$ deceeds a given threshold \parencite{bishop-pattern-recognition-and-ml}.
 
 Note that without modification, \gls{gd} is not a reliable method to find global minima, only local ones.
 An effective optimisation would be mixing \gls{gd} with Monte-Carlo Markov Chain methods, traversing through parameter space given some probability distribution, and performing \gls{gd} subsequently at multiple locations, thereby escaping the local minima's wells to possibly reach a global minimum.
@@ -388,7 +388,7 @@ It only has binary output, on which it decides by performing a dot product betwe
 When given a binary target dataset $\{\vec{x_i}, t_i\}$, the goal of the training process is to determine the weights $\vec{w}$ and bias $b$ such that $\cryptop{Perceptron}_{\vec{w}, b}(\vec{x_i}) = t_i$ for as many samples as possible.
 
 \name{McCulloch} and \name{Pitts} further employed multiple consecutively connected perceptrons to form a larger 'network', each one referred to as a layer.
-Neural networks used today are very similar in their structure (cf. \cref{fig:neural-network}).
+Neural networks used today are remarkably similar in their structure (cf. \cref{fig:neural-network}).
 A neural network usually consists of multiple layers of potentially different types, commonly used ones include \textit{Dense ('Fully Connected') Layers} (essentially, matrix multiplication + bias), \textit{Convolutional Layers} (given a kernel, they perform a discrete multivariate convolution over the dataset) and mixtures of non-linear, differentiable, activation functions, max-pooling, etc. in between.
 Each Dense Layer is usually followed by an activation function such as $$\cryptop{relu}(\vec{x}) := \max(\vec{x}, 0) \,,$$ $$\cryptop{softmax}(\vec{x}) := \frac{e^{\vec{x}}}{\sum_{i=1}^{n} e^{x_i}} \,,$$ $\cryptop{tanh}(\vec{x})$ or $\cryptop{sigmoid}(\vec{x})$.
 They usually play the role of keeping the output bounded and/or sorting for 'activated' values \parencite{bishop-pattern-recognition-and-ml}.
@@ -403,7 +403,7 @@ They usually play the role of keeping the output bounded and/or sorting for 'act
 The training process is more complicated in the case of a layered network, especially with non-linear activation functions in between.
 Yet, the basic principle behind the training process stays the same: Evaluating the loss function $L$ (depending on all weights, biases, convolutional kernels and other parameters in the network) and finding the direction in parameter space in which the loss shrinks, formalised by the layer-wise gradient (for which we require the activation functions to be differentiable).
 The \textit{Backpropagation Algorithm}, an interative process similar to \gls{gd}, does exactly that: Evaluating the gradient of the loss function on the last layer and inversely forwarding the changes to the layer before it, and so on.
-From there, inferences on the weights, biases and other parameters can be made in order to update them for the next iteration and start over, hopefully working ourselves towards the minimal loss possible \parencite{bishop-pattern-recognition-and-ml}.
+From there, inferences on the weights, biases and other parameters can be made in order to update them for the next iteration and start over again, repeating the process, working ourselves towards the minimal loss possible \parencite{bishop-pattern-recognition-and-ml}.
 
 As a final note to better understand the implications and possibilities of a large neural network, consider the following universal approximation theorem:
 
@@ -435,7 +435,7 @@ Function spaces are a widely useful concept, polynomial rings are a great exampl
 Wave functions $\psi: \C^3 \mapsto \R$ are usually chosen as elements of the $\mathcal{L}^2$-space, the space of square-integrable\footnote{Mathematicians usually formalise these using \name{Lebesgue}-integrals instead of the commonly used \name{Riemann} formulation of an integral. \name{Lebesgue} integration allows for a much broader class of integrable functions and is usually the preferred method in this context.} functions:
 $$\mathcal{L}^2 = \big\{\psi: \C^3 \mapsto \C \,\big|\, ||\psi|| < \infty\big\} \quad \text{with} \; ||\psi|| = \int_{-\infty}^{\infty} \psi^*(\vec{x}) \psi(\vec{x}) \,d^3x$$
 with $||\psi||$ referred to as the $l_2$-norm of the function $\psi$.
-By far not all functions are square integrable though, first and foremost, polynomials do not decrease in their absolute value towards $-\infty$ and $\infty$ leading to $||\psi|| \rightarrow \infty$, they are clearly not square integrable.
+By far not all functions are square integrable though, especially polynomials do not decrease in their absolute value towards $-\infty$ and $\infty$ leading to $||\psi|| \rightarrow \infty$, they are clearly not square integrable.
 An example that does work would be a normal distribution, or any function of the \name{Schwartz} space.
 
 The traditional Copenhagen interpretation relates a wave function to the probability that a particle is at the current position $\vec{r}$ at time $t$ at the given time.
@@ -477,8 +477,8 @@ There exist
   \item EXPSPACE (Exponential space)
 \end{enumerate}
 computational complexity classes, sorted by the amount of problems contained in them (NL $\subseteq$ P $\subseteq$ NP $\subseteq$ PSPACE $\subseteq$ EXPTIME $\subseteq$ EXPSPACE).
-A particularly interesting open problem is whether P = NP, one of the millenium prize problems.
-The \gls{np} class of problems is very useful in cryptography, it is especially important for the hardness assumptions of cryptographic schemes, problems should be at least as hard as the hardest problems in \gls{np}.
+A particularly interesting open problem is whether P = NP, one of the millennium prize problems.
+The \gls{np} class of problems is particularly useful in cryptography, it is especially important for the hardness assumptions of cryptographic schemes, problems should be at least as hard as the hardest problems in \gls{np}.
 
 \begin{definition}{NP-Hardness}{np-hard}
   A problem is referred to as \textit{NP-hard} \gls{iff} it is at least as hard as the hardest problems in the complexity class \glstext{np} (nondeterministic polynomial time). Formally written,

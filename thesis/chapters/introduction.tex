@@ -9,10 +9,10 @@ As it stands, lattice-based cryptography presents a solution to a politically an
 
 Many new cryptosystems have been developed on top of LWE, two of which this following thesis will focus on specifically: \hyperref[def:bfv-scheme]{BFV} and \hyperref[def:ckks-scheme]{CKKS};
 whose security is still unaffected by efficient quantum algorithms.
-Yet, it is not only their security prospect that makes these encryption schemes attractive, but first and foremost their defining \hyperref[def:ring-homomorphism]{homomorphic} property which allows for computations on the encrypted data.
+Yet, it is not only their security prospect that makes these encryption schemes attractive, but primarily their defining \hyperref[def:ring-homomorphism]{homomorphic} property which allows for computations on the encrypted data.
 A \glslink{fhe}{\textit{fully} homomorphic encryption} scheme was first introduced by Craig \name{Gentry} in 2009, using a bootstrapping approach \parencite{2009-gentry-fhe-original}.
 The \textit{levelled} homomorphic \gls{bgv} encryption scheme is implemented in \cite{seal-4.0} and allows for integer arithmetic, up to a few multiplication 'levels' deep \parencite{2012-bgv-original}.
-The \gls{bfv} scheme \parencite{2012-fv-original,2012-brakerski} is very similar to it and described in a bit more detail in \cref{sec:bfv}.
+The \gls{bfv} scheme \parencite{2012-fv-original,2012-brakerski} is highly similar and described in a bit more detail in \cref{sec:bfv}.
 And finally, building upon concepts introduced in the former, the \gls{ckks} scheme \parencite{2017-ckks-original} allows for approximative floating-point arithmetic that finally facilitates machine-learning applications.
 
 Machine Learning allows a computer to 'learn' from specifically structured data using linear regression or similar methods, and to apply this 'knowledge' to new, unknown inputs.

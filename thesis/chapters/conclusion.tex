@@ -6,7 +6,7 @@ Next to the written part, the reader may find a server-client ('as a service') b
 
 \section{Summary}
 \Cref{chap:background} introduced mathematical preliminaries of the lattice-based homomorphic encryptions schemes used in \cref{chap:homomorphic-encryption}.
-As the main focus lies on thoroughly understanding the notation used in the encryption schemes, we first concentrated on the algebraic ring $\Z_q[X]/(X^N+1)$ with coefficients modulo $q$ and the cyclotomic polynomial $(X^N+1)$ as its modulus.
+As the focus lies on thoroughly understanding the notation used in the encryption schemes, we first concentrated on the algebraic ring $\Z_q[X]/(X^N+1)$ with coefficients modulo $q$ and the cyclotomic polynomial $(X^N+1)$ as its modulus.
 Forming the basis of the upcoming cryptographic schemes, we introduced the \gls{lwe} problem and its descendant, \gls{rlwe}.
 The multi-layered neural network is trained using the backpropagation algorithm of the Tensorflow library, an approach similar to gradient descent - which was all introduced in the next section of \cref{chap:background}.
 The final \cref{sec:post-quantum-sec} introduced the reader to basic quantum mechanics and most of the necessary background to understand a simple quantum-mechanical system and the underlying principles of modern quantum computers.
@@ -18,7 +18,7 @@ Extending it, we arrived at \gls{ckks} scheme developed by \citeauthor{2017-ckks
 For both schemes, we verified the additive homomorphisms of the corresponding encryption (and encoding) operations \cryptop{BFV.Encrypt} and $\cryptop{CKKS.Encrypt} \circ \cryptop{CKKS.Encode}$.
 
 \Cref{chap:implementation} then presents details about the implementation of the web-based demonstrator, concerning the deployment and software architectural specifics.
-The main focus however lies on the technical challenges with \glsdesc{he} in practice.
+The focus however lies on the technical challenges with \glsdesc{he} in practice.
 Four different matrix multiplication techniques were introduced in detail, gradually increasing the complexity but also the efficiency.
 The next challenge ahead was evaluating the activation function in between the two layers, due to technical reasons, only approximated by a series expansion.
 \Cref{chap:results} presents the network's training results and a detailed statistical analysis of the network performance.
@@ -47,4 +47,4 @@ Next to Microsoft \gls{seal}, there are also other existing libraries for \gls{h
 \end{itemize}
 
 Considering the implications of mass surveilance and the thereby growing mindset for data privacy, the relevance of privacy-preserving/enhancing technologies will definitely grow in the coming years.
-The relatively new class of lattice cryptosystems looks very promising, given the homomorphic properties of many such systems, and the inherent quantum security that will become even more relevant in the near future.
+The relatively new class of lattice cryptosystems looks immensely promising, given the homomorphic properties of many such systems, and the inherent quantum security that will become even more relevant in the near future.

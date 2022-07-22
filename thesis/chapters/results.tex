@@ -24,8 +24,8 @@ Each pixel corresponds to a coefficient $a \in \Z / q\Z$ scaled down by the modu
 The machine learning framework behind the project, Tensorflow, splits its training process into \textit{epochs}, which can be found on the x-axis in the plot above.
 For each training epoch, we find the progress that has been made in a single epoch by looking at the new accuracy (which percentage of the images has been classified correctly) and the loss function (\gls{mse} in this case).
 Per training run, we make a differentiation between training metrics and validation metrics, illustratively shown above for the given network.
-Validation data is not involved in the training process, it is used to find a point in time when training accuracy still rises while validation accuracy starts to drop.
-At this point we are very likely to find the network's learning process in an \textit{overfitting} situation, so the training process terminates.
+The validation data is not involved with the training process, it is only used to find a point in the process when training accuracy still rises while validation accuracy starts to drop.
+At this point we will likely find the network's learning process in an \textit{overfitting} situation, so the training process terminates.
 
 \section{Accuracy, Precision, Recall}
 \label{sec:accuracy-precision-recall}
