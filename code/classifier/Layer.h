@@ -20,8 +20,10 @@ class Layer {
 
  public:
   Layer() = default;
+  virtual void prepare(
+      seal::CKKSEncoder &encoder, seal::Evaluator &evaluator, seal::parms_id_type parms_id, double scale) = 0;
   virtual Vector feedforward(Vector x) = 0;
-  virtual void feedforwardEncrypted(seal::Ciphertext &in_out, seal::GaloisKeys &galoisKeys, seal::RelinKeys relinKeys,
+  virtual void feedforwardEncrypted(seal::Ciphertext &in_out, seal::GaloisKeys &galoisKeys, seal::RelinKeys &relinKeys,
       seal::CKKSEncoder &ckksEncoder, seal::Evaluator &evaluator) = 0;
   seal::Decryptor *debuggingDecryptor = nullptr;
 };
@@ -31,19 +33,33 @@ class DenseLayer : public Layer {
   Matrix weights;
   Vector biases;
 
-  void dotMultiplyDiagonals(seal::Ciphertext &in_out, const Matrix &mat, seal::GaloisKeys &galois_keys,
-      seal::CKKSEncoder &encoder, seal::Evaluator &evaluator, enum DiagonalCount count);
+  size_t in_dim, out_dim;
+  std::vector<Vector> plainDiagonals;
+
+  seal::Plaintext preencodedBiases;
+  std::vector<seal::Plaintext> preencodedDiagonals;
+  std::vector<seal::Plaintext> preencodedBSGS;
+
+  void dotMultiplyDiagonals(seal::Ciphertext &in_out, seal::GaloisKeys &galois_keys, seal::CKKSEncoder &encoder,
+      seal::Evaluator &evaluator, enum DiagonalCount count);
 
  public:
   DenseLayer(Matrix weights, Vector biases);
-  void matmulDiagonalMod(seal::Ciphertext &in_out, const Matrix &mat, seal::GaloisKeys &galois_keys,
-      seal::CKKSEncoder &ckks_encoder, seal::Evaluator &evaluator);
-  void matmulHybrid(seal::Ciphertext &in_out, const Matrix &mat, seal::GaloisKeys &galois_keys,
-      seal::CKKSEncoder &ckks_encoder, seal::Evaluator &evaluator);
-  void matmulBabystepGiantstep(seal::Ciphertext &in_out, const Matrix &mat, seal::GaloisKeys &galois_keys,
-      seal::CKKSEncoder &ckks_encoder, seal::Evaluator &evaluator);
+
+  void prepare(seal::CKKSEncoder &encoder, seal::Evaluator &evaluator, seal::parms_id_type parms_id, double scale);
+  void prepareDiagonals(
+      seal::CKKSEncoder &encoder, seal::Evaluator &evaluator, seal::parms_id_type parms_id, double scale);
+  void prepareBabystepGiantstep(
+      seal::CKKSEncoder &encoder, seal::Evaluator &evaluator, seal::parms_id_type parms_id, double scale);
+  void matmulDiagonalMod(seal::Ciphertext &in_out, seal::GaloisKeys &galois_keys, seal::CKKSEncoder &ckks_encoder,
+      seal::Evaluator &evaluator);
+  void matmulHybrid(seal::Ciphertext &in_out, seal::GaloisKeys &galois_keys, seal::CKKSEncoder &ckks_encoder,
+      seal::Evaluator &evaluator);
+  void matmulBabystepGiantstep(seal::Ciphertext &in_out, seal::GaloisKeys &galois_keys, seal::CKKSEncoder &ckks_encoder,
+      seal::Evaluator &evaluator);
+
   virtual Vector feedforward(Vector x);
-  virtual void feedforwardEncrypted(seal::Ciphertext &in_out, seal::GaloisKeys &galoisKeys, seal::RelinKeys relinKeys,
+  virtual void feedforwardEncrypted(seal::Ciphertext &in_out, seal::GaloisKeys &galoisKeys, seal::RelinKeys &relinKeys,
       seal::CKKSEncoder &ckksEncoder, seal::Evaluator &evaluator);
 
   static enum MatMulImplementation matmulMethod;
@@ -52,8 +68,9 @@ class DenseLayer : public Layer {
 class ActivationLayer : public Layer {
  public:
   ActivationLayer() = default;
+  void prepare(seal::CKKSEncoder &encoder, seal::Evaluator &evaluator, seal::parms_id_type parms_id, double scale){};
 
   virtual Vector feedforward(Vector x);
-  virtual void feedforwardEncrypted(seal::Ciphertext &in_out, seal::GaloisKeys &galoisKeys, seal::RelinKeys relinKeys,
+  virtual void feedforwardEncrypted(seal::Ciphertext &in_out, seal::GaloisKeys &galoisKeys, seal::RelinKeys &relinKeys,
       seal::CKKSEncoder &ckksEncoder, seal::Evaluator &evaluator);
 };

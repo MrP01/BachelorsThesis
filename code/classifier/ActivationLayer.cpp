@@ -11,8 +11,8 @@ Vector ActivationLayer::feedforward(Vector x) {
   return RELU_COEFF_0 + RELU_COEFF_1 * x + RELU_COEFF_2 * xt::pow(x, 2) + RELU_COEFF_3 * xt::pow(x, 3);
 }
 
-seal::Ciphertext multiplyPlain(seal::Ciphertext &x, double coeff, seal::RelinKeys relinKeys, seal::CKKSEncoder &encoder,
-    seal::Evaluator &evaluator) {
+seal::Ciphertext multiplyPlain(seal::Ciphertext &x, double coeff, seal::RelinKeys &relinKeys,
+    seal::CKKSEncoder &encoder, seal::Evaluator &evaluator) {
   seal::Ciphertext result;
   seal::Plaintext plain_coeff;
   encoder.encode(coeff, x.parms_id(), x.scale(), plain_coeff); // use the same parameters as x!
@@ -46,8 +46,8 @@ void addThreeInplace(seal::Ciphertext &in_out, seal::Ciphertext &a, seal::Cipher
   evaluator.add_inplace(in_out, b);
 }
 
-void ActivationLayer::feedforwardEncrypted(seal::Ciphertext &x, seal::GaloisKeys &galoisKeys, seal::RelinKeys relinKeys,
-    seal::CKKSEncoder &encoder, seal::Evaluator &evaluator) {
+void ActivationLayer::feedforwardEncrypted(seal::Ciphertext &x, seal::GaloisKeys &galoisKeys,
+    seal::RelinKeys &relinKeys, seal::CKKSEncoder &encoder, seal::Evaluator &evaluator) {
   printCiphertextInternals("ActivationLayer input", x, parent->context);
 
   seal::Ciphertext x2, x3;

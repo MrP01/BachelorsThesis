@@ -27,7 +27,7 @@ class Evaluator {
   xt::xarray<uint8_t> y_test = xt::load_npy<uint8_t>("data/mnist/y-test.npy");
 
   Evaluator(Network network_, seal::SecretKey secretKey, seal::PublicKey publicKey, seal::GaloisKeys galoisKeys,
-      seal::RelinKeys relinKeys)
+      seal::RelinKeys &relinKeys)
       : network(network_), encryptor(*network_.context, publicKey, secretKey), encoder(*network_.context),
         decryptor(*network_.context, secretKey), evaluator(*network_.context), galoisKeys(galoisKeys),
         relinKeys(relinKeys) {
@@ -35,6 +35,12 @@ class Evaluator {
     PLOG(plog::info) << "Relin keys: " << relinKeys.save_size(seal::compr_mode_type::zstd);
     PLOG(plog::info) << "Galois keys: " << galoisKeys.save_size(seal::compr_mode_type::zstd);
     keySize = galoisKeys.save_size(seal::compr_mode_type::zstd) + relinKeys.save_size(seal::compr_mode_type::zstd);
+  }
+
+  void prepareLayers() {
+    network.layers[0]->prepare(encoder, evaluator, network.context->first_parms_id(), SCALE); // chain index 5
+    network.layers[2]->prepare(
+        encoder, evaluator, network.context->last_context_data().get()->prev_context_data()->parms_id(), SCALE); // 1
   }
 
   double evaluateNetworkOnTestData(size_t N = 300) {
@@ -157,8 +163,8 @@ class Evaluator {
   }
 
   void fullBenchmark() {
-    DenseLayer::matmulMethod = MATMUL_DIAGONAL_MOD;
-    benchmark(true);
+    // DenseLayer::matmulMethod = MATMUL_DIAGONAL_MOD;
+    // benchmark(true);
     DenseLayer::matmulMethod = MATMUL_HYBRID;
     benchmark(true);
     DenseLayer::matmulMethod = MATMUL_BSGS;
@@ -194,6 +200,7 @@ int main(int argc, char *argv[]) {
 
   PLOG(plog::info) << "Key Generation time: " << (double)(keyGen_end - keyGen_start) / CLOCKS_PER_SEC;
   Evaluator evaluator(network, keyGen.secret_key(), publicKey, galoisKeys, relinKeys);
+  evaluator.prepareLayers();
   PLOG(plog::info) << "keySize: " << evaluator.keySize;
   if (evalPlain)
     evaluator.evaluateNetworkOnTestData(evalPlain);
