@@ -118,8 +118,8 @@ $$\{M \vec{x}\}_i = \sum_{j=1}^{t} M_{ij} x_j \,.$$
 
 Accordingly, a natural (or rather, naïve) way to model this multiplication in Microsoft \gls{seal} would be to
 \begin{enumerate}
-  \item encode each $i$-th matrix row $(M_{i,1}, M_{i,2}, ..., M_{i,t})$ using the \cpp{Encoder} with matching parameters to the ciphertext of the encoded vector $\vec{x}$.
-  \item multiply each encoded row with the encrypted vector using \cpp{Evaluator.multiply_plain()} to obtain the ciphertext vector $\vec{y_i} \in \R^s$ for row $i$.
+  \item encode each $i$-th matrix row $(M_{i,1}, M_{i,2}, ..., M_{i,t})$ using the \texttt{Encoder} with matching parameters to the ciphertext of the encoded vector $\vec{x}$.
+  \item multiply each encoded row with the encrypted vector using \texttt{Evaluator.multiply\_plain()} to obtain the ciphertext vector $\vec{y_i} \in \R^s$ for row $i$.
   \item perform the 'rotate-and-sum' algorithm \parencite{2018-gazelle} on each resulting vector (ciphertext) $\vec{y_i}$ to obtain the actual dot product of the matrix row with the vector $\vec{x}$:
         \begin{enumerate}
           \item using Galois automorphisms, rotate the entries of $\vec{y_i}$ by $\frac{s}{2}$ elements to obtain $\rot_{\frac{s}{2}}(\vec{y_i})$.

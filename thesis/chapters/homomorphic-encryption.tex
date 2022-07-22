@@ -165,6 +165,7 @@ The diagram in \cref{fig:bfv-overview} shows how a typical encryption process wo
   \caption[Schematic overview of the BFV scheme]{
     Schematic overview of the BFV scheme, adapted from \cite{2020-cryptotree}.
     A plaintext polynomial $m(X)$ is encrypted to the ciphertext $\vec{c} = \cryptop{BFV.Encrypt}(\vec{p}, m)$ using the public key $\vec{p}$, operated on using a combination of \cryptop{BFV.\{Add, Mult, ReLin\}} ciphertext operations and finally decrypted to a new $\tilde{m} = \cryptop{BFV.Decrypt}(s, \tilde{\vec{c}})$ using the secret key $s$.
+    \vspace{0.8cm}
   }
   \label{fig:bfv-overview}
 \end{figure}
