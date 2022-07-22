@@ -27,13 +27,17 @@ Details on the build process can be found in \texttt{code/classifier/classifier.
 
 \section{The MNIST dataset}
 The MNIST dataset of handwritten digits \parencite{mnist-original} contains 60,000 train and 10,000 test images with corresponding labels.
-In order to stick to the traditional feedforward technique with data represented in vector format, therefore it is common to reshape data from $(28, 28)$ images (represented as grayscale values in a matrix)
-into a $784$ element vector.
+Some sample images are displayed in \cref{fig:mnist}, with ascending labels from 0 to 9.
+In order to stick to the traditional feedforward technique with data represented in vector format, therefore it is common to reshape data from $(28, 28)$ images (represented as grayscale values in a matrix) into a $784$ element vector.
 
 \begin{figure}[H]
   \centering
   \inputtikz{figures/mnist}
-  \caption[Sample images of the MNIST dataset]{Sample images of the MNIST dataset of handwritten digits \parencite{mnist-original}. The dataset contains 70,000 images of $28 \times 28$ grayscale pixels valued from 0 to 255 as well as assoicated labels (as required for supervised learning).}
+  \caption[Sample images of the MNIST dataset]{
+    Sample images of the MNIST dataset of handwritten digits \parencite{mnist-original}.
+    The dataset contains 70,000 images of $28 \times 28$ grayscale pixels valued from 0 to 255 as well as assoicated labels (as required for supervised learning).
+  }
+  \label{fig:mnist}
 \end{figure}
 
 \section{Our Neural Network}
@@ -63,13 +67,18 @@ To gain some intuition on what the two layers look like internally, the followin
 \begin{figure}[H]
   \centering
   \inputtikz{figures/layer-1-and-2}
-  \caption[Weights and biases of our neural network]{First and Second Layer Weights and Biases.}
+  \caption[Weights and biases of our neural network]{
+    First and Second Layer Weights and Biases of the trained neural network.
+    The weight matrices ($784 \times 128$ and $128 \times 10$) are skewed to account for the different dimensions used.
+    The biases have the same shape as the output of the matrix multiplication and the input of the next layer.
+  }
   \label{fig:layer-1-and-2}
 \end{figure}
 
-The second (last) layer of the network outputs a vector of 10 scalars, each corresponding to one digit from 0 to 9.
+After going through both layers (confer \cref{fig:layer-1-and-2}), with the approximative \cryptop{relu\_taylor} activation function in between, the second (last) layer of the network outputs a vector of 10 scalars, each corresponding to one digit from 0 to 9.
 When finally applying the \cryptop{softmax} function to the output, we can interpret the values as probabilities for each digit.
 
+\pagebreak
 \section{Matrix-Vector Multiplication}
 \label{sec:matmul}
 The dot product that is required as part of the neural network evaluation process needs to be implemented on \gls{seal} ciphertexts as well.
@@ -88,12 +97,12 @@ There are multiple methods to achieve a syntactically correct dot product (matri
 For the following, define
 \newcommand{\rot}{\cryptop{rot}}
 \newcommand{\diag}{\cryptop{diag}}
-\begin{align}
-  \rot_j: \R^t \mapsto \R^t,             & \; \{\rot_j(\vec{x})\}_i = x_{i + j} \label{eq:rot-definition} \\
-  \diag_j: \R^{t \times t} \mapsto \R^t, & \; \{\diag_j(M)\}_i = M_{i, (i+j)} \label{eq:diag-definition}
-\end{align}
+\begin{align*}
+  \rot_j: \R^t \mapsto \R^t,             & \; \{\rot_j(\vec{x})\}_i = x_{i + j} \\
+  \diag_j: \R^{t \times t} \mapsto \R^t, & \; \{\diag_j(M)\}_i = M_{i, (i+j)}
+\end{align*}
 with all indices $i, j \in \Z_t$ member of the cyclic quotient group $\Z_t := \Z / t \Z$ of all integers modulo $t$, meaning that overflowing indices simply wrap around again starting at index $0$ to simplify notation.
-For the sake of compactness, we stick to this notation for the rest of this section.
+For the sake of compactness, we stick to this notation for the rest of the section.
 
 \pagebreak
 \subsection{The Naïve Method}
@@ -101,10 +110,10 @@ For the sake of compactness, we stick to this notation for the rest of this sect
   \centering
   \inputtikz{figures/generated/matmul-naive}
   \caption[Naïve matrix multiplication method]{The naïve method to multiply a square matrix with a vector (adapted from \cite{2018-gazelle}).}
+  \label{fig:naive-method}
 \end{figure}
-
 Term by term, one can express a matrix-vector product of $M \in \R^{s \times t}$ and
-$\vec{x} \in \R^s$ as follows:
+$\vec{x} \in \R^s$ as follows (also see \cref{fig:naive-method}):
 $$\{M \vec{x}\}_i = \sum_{j=1}^{t} M_{ij} x_j \,.$$
 
 Accordingly, a natural (or rather, naïve) way to model this multiplication in Microsoft \gls{seal} would be to
@@ -140,12 +149,8 @@ As can be seen in \cref{fig:diagonal-method}, we perform the vector-vector produ
 \begin{theorem}{Diagonal Method}{diagonal-method}
   Given a matrix $M \in \R^{t \times t}$ and a vector $\vec{x} \in \R^t$,
   the dot product between the two can be expressed as
-  \begin{equation*}
-    M \vec{x} = \sum_{j=0}^{t-1} \diag_j(M) \cdot \rot_j(\vec{x}) \,.
-  \end{equation*}
+  $$M \vec{x} = \sum_{j=0}^{t-1} \diag_j(M) \cdot \rot_j(\vec{x}) \,.$$
 \end{theorem}
-
-The key idea of this optimization is to exploit the \gls{simd} structure of the encryption schemes, in particular that of \gls{ckks}, and aggregating the result in one of the ciphertext objects.
 
 \begin{proof}
   For all indices $i \in \Z/t\Z$,
@@ -156,9 +161,10 @@ The key idea of this optimization is to exploit the \gls{simd} structure of the 
     = \{M \vec{x}\}_i \,.$$
 \end{proof}
 
+The key idea of this optimization is to exploit the \gls{simd} structure of the encryption schemes, in particular that of \gls{ckks}, and aggregating the result in one of the ciphertext objects.
+
 \begin{figure}[H]
   \centering
-  \pgfplotsset{/pgfplots/group/.cd,vertical sep=2.0cm}
   \inputtikz{figures/generated/rotation-error}
   \caption[Error development after rotations of the diagonal method]{Diagonal Method error development after each rotation of the input vector.}
   \label{fig:rotation-error}
@@ -171,6 +177,7 @@ One major problem of the diagonal method is that it requires many Galois rotatio
   \centering
   \inputtikz{figures/generated/matmul-hybrid}
   \caption[Hybrid matrix multiplication method]{The hybrid method to multiply an arbitrarily sized matrix with a vector (adapted from \cite{2018-gazelle}).}
+  \label{fig:hybrid-method}
 \end{figure}
 To further extend the previous matrix multiplication method to solve the problem (cf. \cref{subsec:non-square-matrices}), it is first necessary to extend the definition of the $\diag$ operator to non-square matrices $M \in \R^{s \times t}$.
 For the following, extending the above definition:
@@ -190,6 +197,7 @@ $$\diag_j: \R^{s \times t} \mapsto \R^t, \; \{\diag_j(M)\}_i = M_{i, (i+j)} \,.$
 \end{proof}
 
 Due to its low number of operations, the hybrid method almost always outperforms the na\"ive and diagonal methods \parencite{2018-gazelle}.
+A schematic representation illustrating the process can be seen in \cref{fig:hybrid-method}.
 
 To exemplarily discuss the implementation of an \gls{he} algorithm, we break down the following piece of code responsible for the hybrid matrix multiplication.
 Thanks to \gls{seal}'s object-oriented interface and explicit, consistent naming, the code snippets are mostly self-explanatory in combination with some additional comments.

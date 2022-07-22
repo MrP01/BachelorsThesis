@@ -1,6 +1,6 @@
 \setlength{\headheight}{19.53pt}
 \setlength{\headsep}{1.8em}
-\setlength{\textfloatsep}{10pt}
+\setlength{\belowcaptionskip}{-12pt}
 
 \makenoidxglossaries
 \newacronym{he}{HE}{Homomorphic Encryption}
@@ -47,3 +47,23 @@
   % Placeholder
   % \vspace{2cm}
 }
+
+\makeatletter
+\newcommand{\refcheckize}[1]{%
+  \expandafter\let\csname @@\string#1\endcsname#1%
+  \expandafter\DeclareRobustCommand\csname relax\string#1\endcsname[1]{%
+    \csname @@\string#1\endcsname{##1}\wrtusdrf{##1}}%
+  \expandafter\let\expandafter#1\csname relax\string#1\endcsname
+}
+\makeatother
+
+\crefname{figure}{figure}{figures}
+\crefname{tcb@cnt@definition}{definition}{definitions}
+\crefname{tcb@cnt@theorem}{theorem}{theorems}
+\crefname{tcb@cnt@lemma}{lemma}{lemmata}
+\crefname{tcb@cnt@corollary}{corollary}{corollaries}
+\crefname{tcb@cnt@remark}{remark}{remarks}
+
+%%% Now we add the reference commands we want refcheck to be aware of
+\refcheckize{\cref}
+\refcheckize{\Cref}

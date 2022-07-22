@@ -423,7 +423,10 @@ The mathematical structure behind the model is a multivariate Gaussian distribut
 \begin{figure}[H]
   \centering
   \inputtikz{figures/wave-function}
-  \caption[Illustration of a wave function]{Illustration of a wave function $\tilde{\psi}: \R^2 \mapsto \R$ as commonly used in quantum mechanics.}
+  \caption[Illustration of a wave function]{
+    Illustration of a wave function $\psi$ as commonly used in quantum mechanics.
+    Its absolute value $|\psi(\vec{r}, t)|^2 = (\psi^* \psi)(\vec{r}, t)$ is a measure of the probability that a particle is currently at position $\vec{r}$ at time $t$.
+  }
   \label{fig:wave-function}
 \end{figure}
 
@@ -432,14 +435,14 @@ In quantum mechanics, we seek a mathematical description of quantum phenomena, c
 The mathematical foundation of quantum mechanics is deeply rooted in linear algebra and functional analysis.
 An important concept is that of function spaces and, especially, Hilbert spaces.
 Function spaces are a widely useful concept, polynomial rings are a great example too (confer \cref{corollary:bounded-polynomials-mod-q}).
-Wave functions $\psi: \C^3 \mapsto \R$ are usually chosen as elements of the $\mathcal{L}^2$-space, the space of square-integrable\footnote{Mathematicians usually formalise these using \name{Lebesgue}-integrals instead of the commonly used \name{Riemann} formulation of an integral. \name{Lebesgue} integration allows for a much broader class of integrable functions and is usually the preferred method in this context.} functions:
-$$\mathcal{L}^2 = \big\{\psi: \C^3 \mapsto \C \,\big|\, ||\psi|| < \infty\big\} \quad \text{with} \; ||\psi|| = \int_{-\infty}^{\infty} \psi^*(\vec{x}) \psi(\vec{x}) \,d^3x$$
+Wave functions $\psi: \C^3 \times \R \mapsto \C$ are usually chosen as elements of the $\mathcal{L}^2$-space, the space of square-integrable\footnote{Mathematicians usually formalise these using \name{Lebesgue}-integrals instead of the commonly used \name{Riemann} formulation of an integral. \name{Lebesgue} integration allows for a much broader class of integrable functions and is usually the preferred method in this context.} functions:
+$$\mathcal{L}^2 = \big\{\psi: \C^3 \times \R \mapsto \C \,\big|\, ||\psi|| < \infty\big\} \quad \text{with} \; ||\psi|| = \int_{-\infty}^{\infty} \psi^*(\vec{x}) \psi(\vec{x}) \,d^3x$$
 with $||\psi||$ referred to as the $l_2$-norm of the function $\psi$.
 By far not all functions are square integrable though, especially polynomials do not decrease in their absolute value towards $-\infty$ and $\infty$ leading to $||\psi|| \rightarrow \infty$, they are clearly not square integrable.
 An example that does work would be a normal distribution, or any function of the \name{Schwartz} space.
 
 The traditional Copenhagen interpretation relates a wave function to the probability that a particle is at the current position $\vec{r}$ at time $t$ at the given time.
-Namely, this probability is given by $|\psi(\vec{r}, t)|^2$.
+Namely, this probability is given by $|\psi(\vec{r}, t)|^2$, see \cref{fig:wave-function} for an exemplary illustration.
 The square-integrability requirement is imposed on the wave function $\psi$ in order to make it normalizable, i.e. ensure that the total probability of presence is finite (or exactly $1$) when integrated over all possible states the system might be in.
 
 When describing a quantum particle or system, physicists usually work with mathematical objects in three different spaces:
