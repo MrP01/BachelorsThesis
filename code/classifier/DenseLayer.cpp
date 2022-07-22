@@ -30,12 +30,18 @@ Vector DenseLayer::feedforward(Vector x) {
 void DenseLayer::feedforwardEncrypted(seal::Ciphertext &in_out, seal::GaloisKeys &galoisKeys,
     seal::RelinKeys &relinKeys, seal::CKKSEncoder &encoder, seal::Evaluator &evaluator) {
   IF_PLOG(plog::debug) { printCiphertextInternals("DenseLayer input", in_out, parent->context); }
-  if (matmulMethod == MATMUL_BSGS)
-    matmulBabystepGiantstep(in_out, galoisKeys, encoder, evaluator);
-  else if (matmulMethod == MATMUL_DIAGONAL_MOD)
-    matmulDiagonalMod(in_out, galoisKeys, encoder, evaluator);
-  else if (matmulMethod == MATMUL_HYBRID)
-    matmulHybrid(in_out, galoisKeys, encoder, evaluator);
+
+  switch (matmulMethod) {
+    case MATMUL_DIAGONAL_MOD:
+      matmulDiagonalMod(in_out, galoisKeys, encoder, evaluator);
+      break;
+    case MATMUL_HYBRID:
+      matmulHybrid(in_out, galoisKeys, encoder, evaluator);
+      break;
+    case MATMUL_BSGS:
+      matmulBabystepGiantstep(in_out, galoisKeys, encoder, evaluator);
+      break;
+  }
 
   preencodedBiases.scale() = in_out.scale(); // the true scales should be nearly identical, so we fake it
   evaluator.add_plain_inplace(in_out, preencodedBiases);
@@ -131,10 +137,7 @@ void DenseLayer::matmulDiagonalMod(
 
 void DenseLayer::matmulHybrid(
     seal::Ciphertext &in_out, seal::GaloisKeys &galois_keys, seal::CKKSEncoder &encoder, seal::Evaluator &evaluator) {
-  std::clock_t start = clock();
   dotMultiplyDiagonals(in_out, galois_keys, encoder, evaluator, OUT_DIM);
-  std::clock_t end = clock();
-  PLOG(plog::info) << "dotMultiply took " << (double)(end - start) / CLOCKS_PER_SEC;
 
   // perform the rotate-and-sum algorithm
   seal::Ciphertext rotated = in_out; // makes a copy
@@ -189,7 +192,6 @@ void DenseLayer::prepareBabystepGiantstep(
 
 void DenseLayer::matmulBabystepGiantstep(
     seal::Ciphertext &in_out, seal::GaloisKeys &galois_keys, seal::CKKSEncoder &encoder, seal::Evaluator &evaluator) {
-  std::clock_t start = clock();
   // prepare for non-full-packed rotations
   if (encoder.slot_count() != in_dim) {
     seal::Ciphertext in_out_rot;
@@ -225,6 +227,4 @@ void DenseLayer::matmulBabystepGiantstep(
   }
   in_out = outer_sum;
   evaluator.rescale_to_next_inplace(in_out); // scale down once
-  std::clock_t end = clock();
-  PLOG(plog::info) << "BSGS mult took " << (double)(end - start) / CLOCKS_PER_SEC;
 }

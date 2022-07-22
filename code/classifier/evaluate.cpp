@@ -56,7 +56,7 @@ class Evaluator {
     return accuracy;
   }
 
-  double evaluateNetworkOnEncryptedTestData(size_t N = 20) {
+  double evaluateNetworkOnEncryptedTestData(size_t N, bool dumpCiphertextVisualisation) {
     seal::Plaintext plain;
     seal::Ciphertext encrypted;
     double mre_sum = 0;
@@ -65,44 +65,48 @@ class Evaluator {
     for (size_t i = 0; i < N; i++) {
       auto some_x_test = xt::view(x_test, i, xt::all());
       auto some_x_test_vector = std::vector<double>(some_x_test.begin(), some_x_test.end());
-      xt::dump_npy(filename_base + std::to_string(i) + "-plain.npy", some_x_test);
       assert(some_x_test_vector.size() == 784);
       encoder.encode(some_x_test_vector, SCALE, plain);
-      encryptor.encrypt(plain, encrypted);
-      auto visualisation = network.interpretCiphertextAsPixels(encrypted);
-      xt::dump_npy(filename_base + std::to_string(i) + "-ciphertext.npy", visualisation);
-      network.saveXArrayToPNG(filename_base + std::to_string(i) + "-ciphertext.png", visualisation);
+      encryptor.encrypt_symmetric(plain, encrypted);
 
-      // seal::Ciphertext result = network.predictEncrypted(encrypted, relinKeys, galoisKeys);
-      size_t index = 0;
-      Vector plain = some_x_test;
-      for (Layer *layer : network.layers) {
-        PLOG(plog::debug) << "Feeding ciphertext through layer " << index++;
-
-        plain = layer->feedforward(plain);
-        PLOG(plog::debug) << "[Intermediate result]: exact: " << plain;
-
-        IF_PLOG(plog::debug) { layer->debuggingDecryptor = &decryptor; }
-        layer->feedforwardEncrypted(encrypted, galoisKeys, relinKeys, encoder, evaluator);
-        printCiphertextInternals("Intermediate result", encrypted, network.context);
-        Vector enc = getCiphertextValue(encrypted, plain.shape(0), &decryptor, encoder);
-        PLOG(plog::debug) << "--> diff: " << xt::sum(xt::square(enc - plain));
-        PLOG(plog::debug) << "----------------------------------------------------------------------------------------";
+      if (dumpCiphertextVisualisation) {
+        xt::dump_npy(filename_base + std::to_string(i) + "-plain.npy", some_x_test);
+        auto visualisation = network.interpretCiphertextAsPixels(encrypted);
+        xt::dump_npy(filename_base + std::to_string(i) + "-ciphertext.npy", visualisation);
+        network.saveXArrayToPNG(filename_base + std::to_string(i) + "-ciphertext.png", visualisation);
       }
-      seal::Ciphertext result = encrypted;
+
+      seal::Ciphertext result = network.predictEncrypted(encrypted, relinKeys, galoisKeys);
+      // size_t index = 0;
+      // Vector plain = some_x_test;
+      // for (Layer *layer : network.layers) {
+      //   PLOG(plog::debug) << "Feeding ciphertext through layer " << index++;
+
+      //   plain = layer->feedforward(plain);
+      //   PLOG(plog::debug) << "[Intermediate result]: exact: " << plain;
+
+      //   IF_PLOG(plog::debug) { layer->debuggingDecryptor = &decryptor; }
+      //   layer->feedforwardEncrypted(encrypted, galoisKeys, relinKeys, encoder, evaluator);
+      //   printCiphertextInternals("Intermediate result", encrypted, network.context);
+      //   Vector enc = getCiphertextValue(encrypted, plain.shape(0), &decryptor, encoder);
+      //   PLOG(plog::debug) << "--> diff: " << xt::sum(xt::square(enc - plain));
+      //   PLOG(plog::debug) <<
+      //   "----------------------------------------------------------------------------------------";
+      // }
+      // seal::Ciphertext result = encrypted;
 
       Vector result_from_encrypted_method = getCiphertextValue(result, 10, &decryptor, encoder);
       auto exact_result = network.predict(some_x_test);
-      size_t prediction = network.interpretResult(result_from_encrypted_method);
+      Digit prediction = network.interpretResult(result_from_encrypted_method);
       PLOG(plog::debug) << "Exact result:    " << exact_result;
       PLOG(plog::debug) << "Relative errors: " << xt::abs((result_from_encrypted_method - exact_result) / exact_result);
       double mre = meanMaxRelativeError(result_from_encrypted_method, exact_result);
       PLOG(plog::debug) << "Mean max-relative error: " << mre;
       if (prediction == y_test[i]) {
-        PLOG(plog::info) << "--> Correctly predicted!!";
+        PLOG(plog::info) << "----> Correctly predicted " << (int)y_test[i] << " as " << (int)prediction;
         correct_predictions++;
       } else {
-        PLOG(plog::info) << "--> Incorrect prediction " << prediction << " (correct: " << y_test[i] << ")";
+        PLOG(plog::info) << "--> Incorrectly predicted " << (int)y_test[i] << " as " << (int)prediction;
       }
       mre_sum += mre;
     }
@@ -172,16 +176,18 @@ int main(int argc, char *argv[]) {
   xt::print_options::set_line_width(120);
 
   size_t evalPlain = 0, evalEnc = 0;
+  bool dumpCiphertextVisualisation = false;
   if (argc >= 2)
     evalPlain = atol(argv[1]);
   if (argc >= 3)
     evalEnc = atol(argv[2]);
+  if (argc >= 4 && strncmp(argv[3], "dump", 4) == 0)
+    dumpCiphertextVisualisation = true;
 
   Network network;
   network.init();
   network.loadDefaultModel();
   seal::KeyGenerator keyGen(*network.context);
-  DenseLayer::matmulMethod = MATMUL_DIAGONAL_MOD;
 
   seal::PublicKey publicKey;
   seal::GaloisKeys galoisKeys;
@@ -194,12 +200,15 @@ int main(int argc, char *argv[]) {
 
   PLOG(plog::info) << "Key Generation time: " << (double)(keyGen_end - keyGen_start) / CLOCKS_PER_SEC;
   Evaluator evaluator(network, keyGen.secret_key(), publicKey, galoisKeys, relinKeys);
-  PLOG(plog::info) << "keySize: " << evaluator.keySize;
+  PLOG(plog::info) << "Relin + Galois Key Size: " << evaluator.keySize;
+  PLOG(plog::info) << "Dump Ciphertext Visualisation: " << dumpCiphertextVisualisation;
+
   if (evalPlain)
     evaluator.evaluateNetworkOnTestData(evalPlain);
   if (evalEnc)
-    evaluator.evaluateNetworkOnEncryptedTestData(evalEnc);
+    evaluator.evaluateNetworkOnEncryptedTestData(evalEnc, dumpCiphertextVisualisation);
   if (!evalPlain && !evalEnc)
     evaluator.fullBenchmark();
+
   return 0;
 }
