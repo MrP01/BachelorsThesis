@@ -44,10 +44,10 @@ class Evaluator {
   }
 
   double evaluateNetworkOnTestData(size_t N = 300) {
-    int correct = 0, i = 0;
+    size_t correct = 0, i = 0;
     for (auto iter = xt::axis_begin(x_test, 0); iter != xt::axis_end(x_test, 0); iter++) {
       Vector x = *iter, result = network.predict(x);
-      int prediction = network.interpretResult(result);
+      size_t prediction = network.interpretResult(result);
       if (i % 12 == 0)
         PLOG(plog::debug) << i << " / " << N << "\r" << std::flush;
       if (prediction == y_test[i])
@@ -66,7 +66,7 @@ class Evaluator {
     seal::Plaintext plain;
     seal::Ciphertext encrypted;
     double mre_sum = 0;
-    int correct_predictions = 0;
+    size_t correct_predictions = 0;
     std::string filename_base("data/ciphertext-visualisation/");
     for (size_t i = 0; i < N; i++) {
       auto some_x_test = xt::view(x_test, i, xt::all());
@@ -80,7 +80,7 @@ class Evaluator {
       network.saveXArrayToPNG(filename_base + std::to_string(i) + "-ciphertext.png", visualisation);
 
       // seal::Ciphertext result = network.predictEncrypted(encrypted, relinKeys, galoisKeys);
-      int index = 0;
+      size_t index = 0;
       Vector plain = some_x_test;
       for (Layer *layer : network.layers) {
         PLOG(plog::debug) << "Feeding ciphertext through layer " << index++;
@@ -99,7 +99,7 @@ class Evaluator {
 
       Vector result_from_encrypted_method = getCiphertextValue(result, 10, &decryptor, encoder);
       auto exact_result = network.predict(some_x_test);
-      int prediction = network.interpretResult(result_from_encrypted_method);
+      size_t prediction = network.interpretResult(result_from_encrypted_method);
       PLOG(plog::debug) << "Exact result:    " << exact_result;
       PLOG(plog::debug) << "Relative errors: " << xt::abs((result_from_encrypted_method - exact_result) / exact_result);
       double mre = meanMaxRelativeError(result_from_encrypted_method, exact_result);
@@ -137,7 +137,7 @@ class Evaluator {
 
     Vector exact_result = network.predict(some_x_test);
     double mre = meanMaxRelativeError(output, exact_result);
-    int prediction = network.interpretResult(output);
+    size_t prediction = network.interpretResult(output);
     if (prediction == y_test[i])
       PLOG(plog::debug) << "correct";
     PLOG(plog::info) << "Runtime: " << (double)(end - start) / CLOCKS_PER_SEC
@@ -151,7 +151,7 @@ class Evaluator {
     size_t N = 3;
     PLOG(plog::info) << "Starting benchmark with " << COEFF_MODULUS_START_BITS << ", " << COEFF_MODULUS_MIDDLE_BITS
                      << ", poly mod degree " << POLY_MOD_DEGREE << " and matmul method " << DenseLayer::matmulMethod
-                     << " and symmetric encryption: " << symmetric << " and seclevel " << (int)SECURITY_LEVEL;
+                     << " and symmetric encryption: " << symmetric << " and seclevel " << (size_t)SECURITY_LEVEL;
     double totalRuntime = 0, totalMRE = 0;
     for (size_t i = 0; i < N; i++) {
       auto pair = runOnce(rand() % x_test.shape(0), symmetric);

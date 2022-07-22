@@ -75,7 +75,7 @@ nlohmann::json handleEncryptedPredictionRequest(nlohmann::json request) {
 void handleGetTestData(const httplib::Request &req, httplib::Response &response) {
   auto x_test = xt::load_npy<float>("data/mnist/x-test.npy");
   size_t pos = 0;
-  std::vector<int> indices;
+  std::vector<size_t> indices;
   std::string indices_str = req.get_param_value("indices");
   while ((pos = indices_str.find("-")) != std::string::npos) {
     indices.push_back(std::atoi(indices_str.substr(0, pos).c_str()));

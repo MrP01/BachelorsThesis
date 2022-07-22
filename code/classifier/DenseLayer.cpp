@@ -17,9 +17,9 @@ DenseLayer::DenseLayer(Matrix weights, Vector biases) : weights(weights), biases
 
 Vector DenseLayer::feedforward(Vector x) {
   Vector dot = xt::zeros<double>({weights.shape()[1]});
-  for (uint64_t col = 0; col < weights.shape()[1]; col++) {
+  for (size_t col = 0; col < weights.shape()[1]; col++) {
     double sum = 0;
-    for (uint64_t row = 0; row < weights.shape()[0]; row++)
+    for (size_t row = 0; row < weights.shape()[0]; row++)
       sum += weights.at(row, col) * x[row];
     dot[col] = sum;
   }
@@ -30,15 +30,13 @@ Vector DenseLayer::feedforward(Vector x) {
 void DenseLayer::feedforwardEncrypted(seal::Ciphertext &in_out, seal::GaloisKeys &galoisKeys,
     seal::RelinKeys &relinKeys, seal::CKKSEncoder &encoder, seal::Evaluator &evaluator) {
   IF_PLOG(plog::debug) { printCiphertextInternals("DenseLayer input", in_out, parent->context); }
-  // PLOG(plog::warning) << "Called with " << parent->context->get_context_data(in_out.parms_id())->chain_index()
-  //                     << ", and scale " << in_out.scale();
-  if (matmulMethod == MATMUL_BSGS) {
+  if (matmulMethod == MATMUL_BSGS)
     matmulBabystepGiantstep(in_out, galoisKeys, encoder, evaluator);
-  } else if (matmulMethod == MATMUL_DIAGONAL_MOD) {
+  else if (matmulMethod == MATMUL_DIAGONAL_MOD)
     matmulDiagonalMod(in_out, galoisKeys, encoder, evaluator);
-  } else if (matmulMethod == MATMUL_HYBRID) {
+  else if (matmulMethod == MATMUL_HYBRID)
     matmulHybrid(in_out, galoisKeys, encoder, evaluator);
-  }
+
   preencodedBiases.scale() = in_out.scale(); // the true scales should be nearly identical, so we fake it
   evaluator.add_plain_inplace(in_out, preencodedBiases);
   IF_PLOG(plog::debug) { printCiphertextInternals("DenseLayer output", in_out, parent->context); }
@@ -76,7 +74,7 @@ void DenseLayer::prepareDiagonals(
 
 void DenseLayer::dotMultiplyDiagonals(seal::Ciphertext &in_out, seal::GaloisKeys &galois_keys,
     seal::CKKSEncoder &encoder, seal::Evaluator &evaluator, enum DiagonalCount count) {
-  int slots = encoder.slot_count(); // = N/2 = 4096/2 = 2048
+  size_t slots = encoder.slot_count(); // = N/2 = 4096/2 = 2048
   size_t n_diagonals = (count == IN_DIM) ? in_dim : out_dim;
   assert(in_dim > out_dim);
   if (in_dim != slots && in_dim * 2 > slots)
@@ -125,7 +123,7 @@ void DenseLayer::matmulDiagonalMod(
   // if (slots != in_dim) {
   //   PLOG(plog::debug) << "Adding the rotated input vector to itself...";
   //   seal::Ciphertext in_out_rot;
-  //   evaluator.rotate_vector(in_out, -((int)in_dim), galois_keys, in_out_rot);
+  //   evaluator.rotate_vector(in_out, -((size_t)in_dim), galois_keys, in_out_rot);
   //   evaluator.add_inplace(in_out, in_out_rot);
   // }
   dotMultiplyDiagonals(in_out, galois_keys, encoder, evaluator, IN_DIM);
@@ -152,12 +150,12 @@ void DenseLayer::prepareBabystepGiantstep(
   xt::view(zeroPaddedWeights, xt::range(0, out_dim), xt::all()) = xt::transpose(weights);
   assert(zeroPaddedWeights.shape(0) == zeroPaddedWeights.shape(1));
 
-  int slots = encoder.slot_count(); // = N/2 = 4096/2 = 2048
+  size_t slots = encoder.slot_count(); // = N/2 = 4096/2 = 2048
   if (in_dim != slots && in_dim * 2 > slots)
     throw std::runtime_error("too little slots for matmul implementation!");
 
   std::pair bsgs_parameters = preencoded_bsgs_parameters.at(in_dim);
-  int bsgs_n1 = bsgs_parameters.first, bsgs_n2 = bsgs_parameters.second;
+  size_t bsgs_n1 = bsgs_parameters.first, bsgs_n2 = bsgs_parameters.second;
   if (bsgs_n1 * bsgs_n2 != in_dim)
     throw std::runtime_error("wrong bsgs parameters");
   PLOG(plog::debug) << "BSGS parameters: " << bsgs_n1 << ", " << bsgs_n2;
@@ -176,7 +174,7 @@ void DenseLayer::prepareBabystepGiantstep(
 
     // prepare for non-full-packed rotations
     if (slots != in_dim) {
-      for (uint64_t index = 0; index < k * bsgs_n1; index++) {
+      for (size_t index = 0; index < k * bsgs_n1; index++) {
         diag.push_back(diag[index]);
         diag[index] = 0;
       }
@@ -195,7 +193,7 @@ void DenseLayer::matmulBabystepGiantstep(
   // prepare for non-full-packed rotations
   if (encoder.slot_count() != in_dim) {
     seal::Ciphertext in_out_rot;
-    evaluator.rotate_vector(in_out, -((int)in_dim), galois_keys, in_out_rot);
+    evaluator.rotate_vector(in_out, -((size_t)in_dim), galois_keys, in_out_rot);
     evaluator.add_inplace(in_out, in_out_rot);
   }
 
@@ -203,18 +201,18 @@ void DenseLayer::matmulBabystepGiantstep(
   seal::Ciphertext outer_sum;
   seal::Ciphertext inner_sum;
   std::pair bsgs_parameters = preencoded_bsgs_parameters.at(in_dim);
-  int bsgs_n1 = bsgs_parameters.first, bsgs_n2 = bsgs_parameters.second;
+  size_t bsgs_n1 = bsgs_parameters.first, bsgs_n2 = bsgs_parameters.second;
 
   // prepare rotations
   std::vector<seal::Ciphertext> rot;
   rot.resize(bsgs_n1);
   rot[0] = in_out;
-  for (uint64_t j = 1; j < bsgs_n1; j++)
+  for (size_t j = 1; j < bsgs_n1; j++)
     evaluator.rotate_vector(rot[j - 1], 1, galois_keys, rot[j]);
 
-  for (uint64_t k = 0; k < bsgs_n2; k++) {
+  for (size_t k = 0; k < bsgs_n2; k++) {
     evaluator.multiply_plain(rot[0], preencodedBSGS[k * bsgs_n1], inner_sum);
-    for (uint64_t j = 1; j < bsgs_n1; j++) {
+    for (size_t j = 1; j < bsgs_n1; j++) {
       evaluator.multiply_plain(rot[j], preencodedBSGS[k * bsgs_n1 + j], temp);
       evaluator.add_inplace(inner_sum, temp);
     }

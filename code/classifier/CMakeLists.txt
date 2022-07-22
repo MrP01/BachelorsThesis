@@ -2,6 +2,7 @@ cmake_minimum_required(VERSION 3.16)
 project(classifier)
 
 add_definitions("-g")  # gcc adds debug information (confer `man gcc`)
+# add_definitions("-Wall")
 set(CMAKE_CXX_STANDARD 23)
 include(${CMAKE_BINARY_DIR}/conanbuildinfo.cmake)
 conan_basic_setup()

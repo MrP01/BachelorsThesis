@@ -49,7 +49,7 @@ void Network::addLayer(Layer *layer) {
 }
 
 Vector Network::predict(Vector input) {
-  int index = 0;
+  size_t index = 0;
   for (Layer *layer : layers) {
     PLOG(plog::debug) << "Feeding plain data through layer " << index++;
     input = layer->feedforward(input);
@@ -62,7 +62,7 @@ seal::Ciphertext Network::predictEncrypted(
   seal::Evaluator evaluator(*context);
   seal::CKKSEncoder encoder(*context);
 
-  int index = 0;
+  size_t index = 0;
   for (Layer *layer : layers) {
     PLOG(plog::debug) << "Feeding ciphertext through layer " << index++;
     layer->feedforwardEncrypted(ciphertext, galoisKeys, relinKeys, encoder, evaluator);
@@ -71,7 +71,7 @@ seal::Ciphertext Network::predictEncrypted(
   return ciphertext;
 }
 
-int Network::interpretResult(Vector result) { return xt::argmax(result)(); }
+Digit Network::interpretResult(Vector result) { return xt::argmax(result)(); }
 
 Vector Network::interpretResultProbabilities(Vector result) {
   Vector y = xt::exp(result);

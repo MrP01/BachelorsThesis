@@ -10,6 +10,8 @@
 #define SECURITY_LEVEL seal::sec_level_type::tc128
 #define SCALE pow(2.0, COEFF_MODULUS_MIDDLE_BITS)
 
+typedef uint8_t Digit;
+
 class Network {
  public:
   std::vector<Layer *> layers;
@@ -24,7 +26,7 @@ class Network {
   Vector predict(Vector input);
   seal::Ciphertext predictEncrypted(
       seal::Ciphertext &ciphertext, seal::RelinKeys &relinKeys, seal::GaloisKeys &galoisKeys);
-  int interpretResult(Vector result);
+  Digit interpretResult(Vector result);
   Vector interpretResultProbabilities(Vector result);
 
   xt::xarray<uint8_t> interpretCiphertextAsPixels(seal::Ciphertext &ciphertext);
