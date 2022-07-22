@@ -41,6 +41,11 @@ void Network::loadDefaultModel() {
   addLayer(new DenseLayer(w1, b1));
   addLayer(new ActivationLayer());
   addLayer(new DenseLayer(w2, b2));
+
+  seal::Evaluator evaluator(*context);
+  seal::CKKSEncoder encoder(*context);
+  layers[0]->prepare(encoder, evaluator, context->first_parms_id(), SCALE); // chain index 5
+  layers[2]->prepare(encoder, evaluator, context->last_context_data().get()->prev_context_data()->parms_id(), SCALE);
 }
 
 void Network::addLayer(Layer *layer) {

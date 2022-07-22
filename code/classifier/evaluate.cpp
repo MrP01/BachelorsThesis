@@ -37,12 +37,6 @@ class Evaluator {
     keySize = galoisKeys.save_size(seal::compr_mode_type::zstd) + relinKeys.save_size(seal::compr_mode_type::zstd);
   }
 
-  void prepareLayers() {
-    network.layers[0]->prepare(encoder, evaluator, network.context->first_parms_id(), SCALE); // chain index 5
-    network.layers[2]->prepare(
-        encoder, evaluator, network.context->last_context_data().get()->prev_context_data()->parms_id(), SCALE); // 1
-  }
-
   double evaluateNetworkOnTestData(size_t N = 300) {
     size_t correct = 0, i = 0;
     for (auto iter = xt::axis_begin(x_test, 0); iter != xt::axis_end(x_test, 0); iter++) {
@@ -200,7 +194,6 @@ int main(int argc, char *argv[]) {
 
   PLOG(plog::info) << "Key Generation time: " << (double)(keyGen_end - keyGen_start) / CLOCKS_PER_SEC;
   Evaluator evaluator(network, keyGen.secret_key(), publicKey, galoisKeys, relinKeys);
-  evaluator.prepareLayers();
   PLOG(plog::info) << "keySize: " << evaluator.keySize;
   if (evalPlain)
     evaluator.evaluateNetworkOnTestData(evalPlain);
