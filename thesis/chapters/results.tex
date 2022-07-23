@@ -1,16 +1,5 @@
 \chapter{Results}
 \label{chap:results}
-\section{Ciphertext Visualisations}
-In order to visually demonstrate the encryption, visualisations of the ciphertext polynomial $c_0$ (refer to \cref{sec:ckks}) were generated using a \gls{crt} decomposition of the \gls{rns} representation of $c_0$.
-Each pixel corresponds to a coefficient $a \in \Z / q\Z$ scaled down by the modulus $q$ to obtain a brightness value between $0$ and $1$.
-
-\begin{figure}[H]
-  \centering
-  % \includegraphics[width=\linewidth]{figures/ciphertext-visualisation.png}
-  \inputtikz{figures/ciphertext-visualisation}
-  \caption[Visualisation of the plain input images compared to their ciphertext]{Ciphertext Visualisation: The first row corresponds to the images in plain, the second row depicts an encrypted version, namely the reconstructed polynomial coefficients $a_k$ of the ciphertext polynomial.}
-  \label{fig:ciphertext-visualisation}
-\end{figure}
 
 \section{The Training Process}
 \begin{figure}[H]
@@ -44,8 +33,8 @@ At this point we will likely find the network's learning process in an \textit{o
 \end{figure}
 
 As we can see in \cref{fig:confusion-matrix}, the majority of all images are classified correctly (visible in the diagonal).
-What makes the confusion matrix so interesting is identifying frequently mixed up digits - for instance, 3 and 5, 2 and 7 or 4 and 9.
-Judging with a human eye, this is somewhat reasonable - even more so when looking at the actual set of misclassified images (\cref{fig:misclassifications}).
+What makes the confusion matrix so interesting is identifying frequently mixed up digits, for instance, 3 and 5, 2 and 7 or 4 and 9.
+Judging with a human eye, this is somewhat reasonable, even more so when looking at the actual set of misclassified images (\cref{fig:misclassifications}).
 
 \begin{figure}[H]
   \centering
@@ -83,12 +72,12 @@ Precision (also referred to as PPV, positive predictive value) refers to the abi
   \end{tblr}
 \end{table}
 
-Averaged over all digits, the mean precision amounts to \SI{97.37}{\percent} while the average recall is similarly high at \SI{97.36}{\percent}.
-The encrypted network evaluation yields an average Mean Max-Relative Error (see \cref{tab:performance-benchmarks}) of \SI{2.97}{\percent} using the hybrid method.
+Averaged over all digits, the mean precision (in plain) amounts to \SI{97.37}{\percent} while the average recall is similarly high at \SI{97.36}{\percent}.
+The encrypted network evaluation of the full test set yields an average Mean Max-Relative Error (see \cref{tab:performance-benchmarks}) of \SI{2.97}{\percent} using the hybrid method.
 
 \section{Performance Benchmarks}
 \label{sec:performance-benchmarks}
-This section focusses on runtime and communication overhead analysis.
+This section finally gives a runtime and communication overhead analysis of the project.
 For fair comparisons, the preparations required for each method individually were not taken into account, as they can be performed once at the beginning of the program.
 
 \vspace{6pt}
@@ -145,8 +134,22 @@ The above benchmarks (\cref{tab:performance-benchmarks}) were accumulated on an 
 Without any encryption, the neural network classifies the full 10,000 image dataset in \SI{515}{\milli\second} on the same machine, as compared to $3 \frac{1}{2}$ hours for the encrypted evaluation.
 
 Obviously, smaller parameters $B_1, B_2, N$ yield smaller polynomials, in the number of coefficients as well as the coefficient representations, and therefore cause less computation and communication overhead.
-The slowest method is the diagonal method, followed by \gls{bsgs} and the winner is the hybrid method in this case, though not by far - in terms of speed!
-Looking at accuracy, the diagonal method wins, although it is very close to the numeric accuracy of the hybrid method.
+The slowest method is the diagonal method, followed by \gls{bsgs} and the winner is the hybrid method in this case, though not by far in terms of speed!
+Looking at accuracy, the diagonal method wins, although it is negligibly close to the numeric accuracy of the hybrid method.
 
-The most secure tested parameters are $60, 40, 32768$ which already lead to very long classification times while ensuring a security level of 256 bits.
+The most secure tested parameters are $60, 40, 32768$ which already lead to quite long classification times while ensuring a security level of 256 bits.
 For the web-based demonstrator (where speed matters), the natural choice is the first parameter set of $34, 25, 8192$ which allows for the most efficient computations and short response times in combination with the hybrid matrix multiplication method, while still guaranteeing 128-bit security.
+
+\section{Ciphertext Visualisations}
+In order to visually demonstrate the encryption, visualisations of the ciphertext polynomial $c_0$ (refer to \cref{sec:ckks}) were generated using a decomposition of the \gls{rns} representation of $c_0$.
+This is required because \gls{seal} optimizes the storage of the ciphertext polynomials by splitting them up into sub-polynomials using the \gls{crt}.
+The full modulus $q$, required to be huge for a secure system, is split up into multiple moduli $q_1, q_2, ...$, depending on the system parameters, so that $q = q_1 \cdot q_2 \cdot ... = \prod_{i=1} q_i$.
+Each pixel in the image below then corresponds to a coefficient $a \in \Z / q\Z$ scaled down by the total modulus $q$ to obtain a brightness value between $0$ and $1$.
+
+\vspace{8pt}
+\begin{figure}[H]
+  \centering
+  \inputtikz{figures/ciphertext-visualisation}
+  \caption[Visualisation of the plain input images compared to their ciphertext]{Ciphertext Visualisation: The first row corresponds to the images in plain, the second row depicts an encrypted version, namely the reconstructed polynomial coefficients $a_k$ of the ciphertext polynomial.}
+  \label{fig:ciphertext-visualisation}
+\end{figure}
