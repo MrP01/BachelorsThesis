@@ -37,7 +37,7 @@ class Evaluator {
     keySize = galoisKeys.save_size(seal::compr_mode_type::zstd) + relinKeys.save_size(seal::compr_mode_type::zstd);
   }
 
-  double evaluateNetworkOnTestData(size_t N = 300) {
+  double evaluateNetworkOnTestData(size_t N) {
     size_t correct = 0, i = 0;
     for (auto iter = xt::axis_begin(x_test, 0); iter != xt::axis_end(x_test, 0); iter++) {
       Vector x = *iter, result = network.predict(x);
@@ -161,8 +161,8 @@ class Evaluator {
   }
 
   void fullBenchmark() {
-    // DenseLayer::matmulMethod = MATMUL_DIAGONAL_MOD;
-    // benchmark(true);
+    DenseLayer::matmulMethod = MATMUL_DIAGONAL_MOD;
+    benchmark(true);
     DenseLayer::matmulMethod = MATMUL_HYBRID;
     benchmark(true);
     DenseLayer::matmulMethod = MATMUL_BSGS;

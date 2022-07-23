@@ -52,7 +52,7 @@ void DenseLayer::prepare(
     seal::CKKSEncoder &encoder, seal::Evaluator &evaluator, seal::parms_id_type parms_id, double scale) {
   seal::parms_id_type next_parms_id = parent->context->get_context_data(parms_id)->next_context_data()->parms_id();
   PLOG(plog::warning) << "Preparing with " << parent->context->get_context_data(parms_id)->chain_index()
-                      << ", and scale " << scale;
+                      << " and scale " << scale;
 
   prepareDiagonals(encoder, evaluator, parms_id, scale);
   prepareBabystepGiantstep(encoder, evaluator, parms_id, scale);

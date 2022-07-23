@@ -46,8 +46,9 @@ RUN --mount=type=cache,target=/root/.keras/datasets/ python -m invoke train
 
 # Part 3: Tiny image only containing the binary, the model and test data
 FROM base
-COPY --from=cpp-build /usr/local/lib/libntl* /usr/local/lib/
+COPY --from=cpp-build /usr/local/lib/libntl.so.44 /usr/local/lib/libntl.so.44
 COPY --from=cpp-build /classifier/build/bin/classifier /classifier/classifier
+COPY --from=cpp-build /classifier/build/bin/evaluate /classifier/evaluate
 COPY --from=trainer /classifier/data/models/ /classifier/data/models/
 COPY --from=trainer /classifier/data/mnist/x-test.npy /classifier/data/mnist/x-test.npy
 COPY --from=trainer /classifier/data/mnist/y-test.npy /classifier/data/mnist/y-test.npy
