@@ -26,7 +26,7 @@ Yet, the final image only serves static files without any further server logic r
 Details on the build process can be found in \texttt{code/classifier/classifier.Dockerfile} and \texttt{code/frontend/frontend.Dockerfile}.
 
 \section{The MNIST dataset}
-The MNIST dataset of handwritten digits \parencite{mnist-original} contains 60,000 train and 10,000 test images with corresponding labels.
+The \gls{mnist} dataset of handwritten digits \parencite{mnist-original} contains 60,000 train and 10,000 test images with corresponding labels.
 Some sample images are displayed in \cref{fig:mnist}, with ascending labels from 0 to 9.
 In order to stick to the traditional feedforward technique with data represented in vector format, therefore it is common to reshape data from $(28, 28)$ images (represented as grayscale values in a matrix) into a $784$ element vector.
 
@@ -35,10 +35,13 @@ In order to stick to the traditional feedforward technique with data represented
   \inputtikz{figures/mnist}
   \caption[Sample images of the MNIST dataset]{
     Sample images of the MNIST dataset of handwritten digits \parencite{mnist-original}.
-    The dataset contains 70,000 images of $28 \times 28$ grayscale pixels valued from 0 to 255 as well as assoicated labels (as required for supervised learning).
+    The dataset contains 70,000 images of $28 \times 28$ grayscale pixels valued from 0 to 255 as well as associated labels (as required for supervised learning).
   }
   \label{fig:mnist}
 \end{figure}
+
+\gls{mnist} is one of the most commonly used datasets in \glsdesc{ml}, featured in an abundant number of tutorials and showcases, all in all it is very well studied.
+The National Institute of Standards and Technology recently published an extended version with uppercase and lowercase letters of the Latin alphabet contained as well (EMNIST), processed in the same way as \gls{mnist}, which should also work with our demonstrator.
 
 \section{Our Neural Network}
 The neural network implemented in our demonstrator was trained using the unencrypted standard \gls{mnist} dataset of 60,000 images, split into \SI{90}{\percent} training and \SI{10}{\percent} validation data.
@@ -237,6 +240,8 @@ Finally, we exploit the repetitions in the resulting sum from above and rotate $
 
 In the \glsdesc{ml} context, it is common to have a much higher input dimension than output dimension, usually leading to fully connected layers with matrices $M \in \R^{s \times t}$ with $s \ll t$.
 The diagonal method is especially efficient in these cases as it only requires $s + \frac{t}{s} = \frac{s^2 + t}{s}$ rotations and $s$ multiplications.
+
+As outlined in \cref{sec:performance-benchmarks}, the hybrid method will prove to be the fastest method for the matrix sizes in our given project, with the 2\textsuperscript{nd} best numerical accuracy.
 
 \subsection{The Babystep-Giantstep Method}
 Since Galois rotations are the most computationally intensive operations in most cryptographic schemes used today \parencite{2021-pasta}, they take a large toll on the efficiency.
