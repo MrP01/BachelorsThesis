@@ -21,7 +21,8 @@ For both schemes, we verified the additive homomorphisms of the corresponding en
 The focus however lies on the technical challenges with \glsdesc{he} in practice.
 Four different matrix multiplication techniques were introduced in detail, gradually increasing the complexity but also the efficiency.
 The next challenge ahead was evaluating the activation function in between the two layers, due to technical reasons, only approximated by a series expansion.
-\Cref{chap:results} presents the network's training results and a detailed statistical analysis of the network performance.
+As we further found in \cref{chap:results}, the most efficient multiplication method is the hybrid method.
+The results chapter presents the network's training results and a detailed statistical analysis of the network performance.
 To explicitly show the 'garbling' property of the encryption, the first polynomial of the ciphertext is visualised for a few test samples (\cref{fig:ciphertext-visualisation}).
 Finally, we analysed the runtime, network communication and numerical performance of the algorithms for different parameters, summarised in \cref{tab:performance-benchmarks}.
 

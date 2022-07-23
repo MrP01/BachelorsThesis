@@ -257,11 +257,11 @@ In order to reduce the number of rotations required, one can make use of the \gl
 A proof of the above theorem can be found in \cref{proof:bsgs-matmul}.
 
 Note that the optimized matrix-vector multiplication only requires $t_1 + t_2$ rotations as we can store the $t_1$ inner rotations of the vector $\vec{x}$ for the upcoming evaluations.
-For larger matrices and vectors (larger $t$), $t_1 + t_2$ are indeed much smaller than the conventional number of required rotations $t = t_1 \cdot t_2$ in the diagonal or hybrid method for instance, which was the point of this modification in the first place.
+For larger matrices and vectors (larger $t$), $t_1 + t_2$ are indeed much smaller than the conventional number of required rotations $t = t_1 \cdot t_2$ in the diagonal method, or $\frac{s^2 + t}{s}$ rotations in the hybrid method, which was the point of this modification in the first place.
+However, the number of multiplications and additions remains high - at least $t$ multiplications are required, whereas the hybrid method only requires $s$ multiplications (potentially much lower than $t$).
 
-As we will see in \cref{sec:performance-benchmarks}, the \gls{bsgs} method greatly improves the performance of our classification process, the approach of splitting the sum into two parts makes it as efficient as the hybrid method.
-
-\todo{Welche ist jetzt schneller?}
+As we will see in \cref{sec:performance-benchmarks}, the \gls{bsgs} method also improves the performance of our classification process compared to the diagonal method, yet for the chosen parameters it does not reach the speed of the hybrid method.
+the approach of splitting the sum into two parts improves its performance close to that of the hybrid method.
 
 \section{Polynomial Evaluation}
 As the encryption hides the true value, we cannot directly evaluate the \cryptop{relu} function since we have no way of telling whether it is larger than $0$ or not.
@@ -322,3 +322,9 @@ However, for intermediate values of the computation at hand, forwading values fr
 
 In our usual setting of a web-based demonstrator for recognising handwritten digits, this situation cannot be avoided - but as long as the client does not send a ciphertext identical to 0, our final classification result (a vector of 10 elements) will never be 0.
 Therefore, the server binary is compiled with the \mintinline{bash}{-DSEAL_THROW_ON_TRANSPARENT_CIPHERTEXT=OFF} flag enabled, preventing a system halt in the case of an intermediary value evaluating to 0.
+
+An important optimisation was to pre-encode the weight matrices and bias vectors upon startup of the server.
+This halved the individual request-response times, especially for the fast \gls{bsgs} and hybrid methods.
+
+The first layer multiplication is much slower than the second-layer one due to the large matrices, depending on the multiplication method, but around a factor of 60-100.
+For more details on runtime benchmarks, refer to \cref{sec:performance-benchmarks}.
