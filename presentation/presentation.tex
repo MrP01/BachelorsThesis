@@ -1,36 +1,27 @@
+\PassOptionsToPackage{dvispnames}{xcolor}
 \documentclass[aspectratio=169]{beamer}
-\usetheme[minimal,]{tugraz2018}
-%% Choose main theme variant:
-% [standard]        % standard (default)
-% [institute]       % with institute's graphical acronym on the left
-% [minimal]         % with reduced visuals
+\usetheme[institute]{tugraz2018}
+\usepackage[beamer]{prettytex/base}
+\usepackage{prettytex/math}
 
-%% Choose your font style:
-%                   % Helvetica (default for Corporate Design)
-% [webfont]         % Source Sans Pro (as used on tugraz.at)
-% [nofont]          % no font loaded - Computer Modern Sans
+\newcommand\labelenumi{\theenumi.}
+\newcommand\labelenumii{(\theenumii)}
+\newcommand\labelenumiii{\theenumiii.}
+\newcommand\labelenumiv{\theenumiv.}
 
-%% Choose your department's color instead of TU Graz red (optional):
-% [arch]            %
-% [bau]             %
-% [etit]            %
-% [mbww]            %
-% [tcvp]            %
-% [mpug]            %
-% [infbio]          %
-
-\usepackage[utf8]{inputenc}
-\usepackage[english]{babel}
-
-%% Enter presentation metadata
-\title[Short Title]{Secure Classification as a Service}
+\title[Secure Classification as a Service]{
+  Secure Classification as a Service \\
+  \small\normalfont\textcolor{black}{
+    Levelled Homomorphic, Post-Quantum Secure Machine Learning Inference \\
+    based on the CKKS Encryption Scheme
+  }
+}
 \author{Peter Waldert}
-\date{Presentation Event/Date}
+\date{Bachelor Thesis Presentation, 01.08.2022}
 \institute{IAIK}
 \instituteurl{iaik.tugraz.at}
 
-%% Logos
-\institutelogo{beamerthemetugraz/institute/iaik}  % graphical acronym for [institute] theme (left margin)
+\institutelogo{beamerthemetugraz/institute/IAIK}
 % \additionallogo{figures/logo}  % additional institute/department logo (footline; optional)
 % \logobar{Supported by: ...}  % sponsors (titlepage; optional)
 
