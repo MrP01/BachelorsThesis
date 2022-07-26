@@ -5,16 +5,16 @@ In the present thesis, we explored the interesting realm of homomorphic encrypti
 Next to the written part, the reader may find a server-client ('as a service') based demonstrator implementation of the homomorphically encrypted machine learning service for classifying handwritten digits, including a web-based frontend.
 
 \section{Summary}
-\Cref{chap:background} introduced mathematical preliminaries of the lattice-based homomorphic encryptions schemes used in \cref{chap:homomorphic-encryption}.
-As the focus lies on thoroughly understanding the notation used in the encryption schemes, we first concentrated on the algebraic ring $\Z_q[X]/(X^N+1)$ with coefficients modulo $q$ and the cyclotomic polynomial $(X^N+1)$ as its modulus.
+\Cref{chap:background} introduced mathematical preliminaries of the lattice-based homomorphic encryption schemes used in \cref{chap:homomorphic-encryption}.
+As the focus lies on thoroughly understanding the notation used in the \gls{he} schemes, we first concentrated on the algebraic ring $\Z_q[X]/(X^N+1)$ with integer coefficients modulo $q$ and the cyclotomic polynomial $(X^N+1)$ as its modulus.
 Forming the basis of the upcoming cryptographic schemes, we introduced the \gls{lwe} problem and its descendant, \gls{rlwe}.
-The multi-layered neural network is trained using the backpropagation algorithm of the Tensorflow library, an approach similar to gradient descent - which was all introduced in the next section of \cref{chap:background}.
+The multi-layered neural network is then trained using the backpropagation algorithm of the Tensorflow library, an approach similar to gradient descent - which was all introduced in the next section of \cref{chap:background}.
 The final \cref{sec:post-quantum-sec} introduced the reader to basic quantum mechanics and most of the necessary background to understand a simple quantum-mechanical system and the underlying principles of modern quantum computers.
 
-\Cref{chap:homomorphic-encryption} starts out with one of the first homomorphic schemes there is, unpadded \gls{rsa}, motivating the need for a such structure.
+\Cref{chap:homomorphic-encryption} starts out with one of the first homomorphic schemes there is, unpadded \gls{rsa}, motivating the need for such a structure.
 The first \glsdesc{fhe} scheme, invented by Craig \name{Gentry} in his PhD thesis, strongly inspired further developments in the field:
 Based on lattice problems and the \gls{rlwe} cryptosystem, \citeauthor{2012-brakerski,2012-fv-original} introduced the \gls{bfv} scheme for integer arithmetic.
-Extending it, we arrived at \gls{ckks} scheme developed by \citeauthor{2017-ckks-original} with an extensive encoding and decoding procedure.
+Extending it, we arrived at the \gls{ckks} scheme developed by \citeauthor{2017-ckks-original} with an extensive encoding and decoding procedure.
 For both schemes, we verified the additive homomorphisms of the corresponding encryption (and encoding) operations \cryptop{BFV.Encrypt} and $\cryptop{CKKS.Encrypt} \circ \cryptop{CKKS.Encode}$.
 
 \Cref{chap:implementation} then presents details about the implementation of the web-based demonstrator, concerning the deployment and software architectural specifics.
@@ -30,7 +30,7 @@ Two longer proofs were outhoused to the \Cref{chap:appendix}, one on the power-o
 
 \section{Related Works and Outlook}
 There are many existing approaches of \gls{ppml} schemes or structures and even more applications - some related publications are, for the curious reader:
-\begin{itemize}
+\begin{itemize}[noitemsep]
   \item CryptoNets (inferred \gls{ml}), confer \cite{2016-cryptonets}.
   \item Gazelle (inferred \gls{ml}) as described by \cite{2018-gazelle}.
   \item \gls{tfhe} neural network inference, confer \cite{2019-tfhe-original}.
@@ -39,7 +39,7 @@ There are many existing approaches of \gls{ppml} schemes or structures and even 
 \end{itemize}
 
 Next to Microsoft \gls{seal}, there are also other existing libraries for \gls{he}:
-\begin{itemize}
+\begin{itemize}[noitemsep]
   \item Microsoft's PyEVA, an interface to SEAL's CKKS implementation.
   \item Halevi \& Shoup's HELib, a separate implementation of \gls{he} algorithms using NTL (the number theoretic library).
   \item Palisade, another collection of many implemented \gls{he} algorithms, supposed to be a general-purpose tool.

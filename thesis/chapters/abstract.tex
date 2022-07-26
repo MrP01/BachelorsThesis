@@ -15,6 +15,12 @@ This work starts by introducing the necessary mathematical background, motivatin
 The quantum-mechanical principles and implications of \name{Shor}'s algorithm are discussed, further inciting the need for studying the hardness of the \glstext{lwe}-based cryptosystems.
 The final chapters then focus on implementation aspects, the analysis of obtained results and performance benchmarks.
 
+To quickly run the demonstrator on your machine using \href{https://www.docker.com/}{Docker}:
+\begin{minted}{bash}
+  docker run --name classifier --detach mrp001/sealed-mnist-classifier
+  docker run -p 80:80 -p 443:443 --link classifier mrp001/sealed-mnist-frontend
+\end{minted}
+
 \paragraph{Keywords:}
 FHE, ML, Image Classification, Neural Network,
 Private AI, PPML, Confidential Computing,

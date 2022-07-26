@@ -45,7 +45,7 @@ The National Institute of Standards and Technology recently published an extende
 
 \section{Our Neural Network}
 The neural network implemented in our demonstrator was trained using the unencrypted standard \gls{mnist} dataset of 60,000 images, split into \SI{90}{\percent} training and \SI{10}{\percent} validation data.
-The training process itself was performed using the \textit{Tensorflow} machine learning framework in Python \footnote{\url{https://www.tensorflow.org/}}.
+The training process itself was performed using the \textit{Tensorflow} machine learning framework in Python\footnote{\url{https://www.tensorflow.org/}}.
 The implemented network then has the following layer structure (also confer \cref{fig:neural-network}):
 \begin{align*}
   \text{Layer 1:}\; & \vec{h} = \cryptop{relu\_taylor}(M_1 \vec{x} + \vec{b_1}) \\
@@ -83,7 +83,7 @@ When finally applying the \cryptop{softmax} function to the output, we can inter
 
 \pagebreak
 \section{Matrix-Vector Multiplication}
-\label{sec:matmul}
+\label{sec:matmul}  % TODO: x \in R^s oder R^t
 The dot product that is required as part of the neural network evaluation process needs to be implemented on \gls{seal} ciphertexts as well.
 
 There are multiple methods to achieve a syntactically correct dot product (matrix-vector multiplication) as described by \textcite{2018-gazelle} for (square) matrices.
@@ -239,7 +239,7 @@ Finally, we exploit the repetitions in the resulting sum from above and rotate $
 \end{minted}
 
 In the \glsdesc{ml} context, it is common to have a much higher input dimension than output dimension, usually leading to fully connected layers with matrices $M \in \R^{s \times t}$ with $s \ll t$.
-The diagonal method is especially efficient in these cases as it only requires $s + \frac{t}{s} = \frac{s^2 + t}{s}$ rotations and $s$ multiplications.
+The hybrid method is especially efficient in these cases as it only requires $s + \frac{t}{s} = \frac{s^2 + t}{s}$ rotations and $s$ multiplications.
 
 As outlined in \cref{sec:performance-benchmarks}, the hybrid method will prove to be the fastest method for the matrix sizes in our given project, with the 2\textsuperscript{nd} best numerical accuracy.
 

@@ -89,6 +89,7 @@ For fair comparisons, the preparations required for each method individually wer
     Different parameter sets $\bm{B_1}, \bm{B_2}, \bm{N}$ are compared for each of the implemented matrix multiplication methods \textit{diagonal}, \textit{hybrid} and \textit{Babystep-Giantstep} (\glstext{bsgs}), looking at the averaged runtime, message size and also the accuracy when compared to the plain result ($\bm{\Delta}$).
     \vspace{6pt}
   }
+  \captionsetup{margin=10pt}
   \caption*{
     $\bm{B_1}$ ... Coefficient Moduli start bits (also equal to the last) \\
     $\bm{B_2}$ ... Coefficient Moduli middle bits, also defines the scale as $2^{B_2}$ \\
@@ -104,9 +105,6 @@ For fair comparisons, the preparations required for each method individually wer
     row{5,6,7} = {bg=violet9},
     row{8,9,10} = {bg=blue9},
     row{11,12,13} = {bg=azure9},
-        % row{14,15,16} = {bg=azure9},
-        % row{2,5,8,11,14,17} = {abovesep=4pt},
-        % row{4,7,10,13,16,19} = {belowsep=4pt},
       }
     \hline
     \bf Mode & \bf SecLevel & $\bm{B_1}$ & $\bm{B_2}$ & $\bm{N}$ & \bf MatMul & $\bm{T}$ / \si{\second} & $\bm{M}$ / \si{\mebi\byte} & $\bm{\Delta}$ / 1 \\

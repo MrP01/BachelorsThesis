@@ -127,7 +127,7 @@ Its roots, found by solving $p(\xi) = 0$ for $\xi$, yielding $\xi^n = 1 \leftrig
   An $n$\textsuperscript{th} root of unity $y$ is referred to as \textit{primitive}, \gls{iff} there exists no $m < n$ for which that root $y$ is also an $m$\textsuperscript{th} root of unity, i.e. $y^m \neq 1$.
   An equivalent indicator of a primitive root is $\gcd(m, n) = 1$, referring to the greatest common divisor between $m$ and $n$ which is $1$ \gls{iff} they are mutually prime.
 \end{lemma}
-Due to the fact that for any $k, l \in \Z$, their product $\xi_k \cdot x_l$ is also a root of unity, and $\xi_{k+jn} = \xi_k \; \forall j \in \Z$, they clearly comprise a cyclic Abelian group over the complex numbers $\C$ under multiplication with (for instance) the first root $\xi_1 = e^{2\pi i \frac{1}{n}}$ as its generator.
+Due to the fact that for any $k, l \in \Z$, their product $\xi_k \cdot \xi_l$ is also a root of unity, and $\xi_{k+jn} = \xi_k \; \forall j \in \Z$, they clearly comprise a cyclic Abelian group over the complex numbers $\C$ under multiplication with (for instance) the first root $\xi_1 = e^{2\pi i \frac{1}{n}}$ as its generator.
 
 \begin{figure}
   \centering
@@ -154,7 +154,7 @@ In theory, there are multiple equivalent definitions of said ring, but by conven
 The proof for \cref{remark:cyclotomic-irreducibility} is quite cumbersome, but can be found in \cite{2002-serge-algebra}.
 
 \begin{theorem}{$2^k$\textsuperscript{th} Cyclotomic Polynomial}{power-of-2-cyclo-poly}
-  The $N$\textsuperscript{th} cyclotomic polynomial, where $M = 2N = 2^k$ ($k \in \N$) is a power of $2$, can be identified as
+  The $M$\textsuperscript{th} cyclotomic polynomial, where $M = 2N = 2^k$ ($k \in \N$) is a power of $2$, can be identified as
   $$\Phi_{M}(x) = x^{N} + 1\,.$$
   Its degree is $N$, consistent with $\varphi(2^k) = 2^{k-1} \; \forall k \in \N$.
 \end{theorem}
@@ -228,7 +228,7 @@ Based on SVP, one can construct GapSVP, an approximative version with advantages
 \end{definition}
 
 Note that without the last requirement $||\vec{z}|| \leq \beta$, the \gls{sis} problem can be easily solved through Gaussian elimination or similar algorithms, however they rarely yield a short (or \textit{the} shortest) solution.
-It can be shown that solving \gls{sis} is at least as hard as solving \gls{gapsvp} with appropriate parameters \parencite{1996-hard-lattice-problems}.
+It can be shown that solving \gls{sis} is at least as hard as solving the \gls{gapsvp} with appropriate parameters \parencite{1996-hard-lattice-problems}.
 
 Using the above problems, multiple cryptographic primitives can be constructed due to the proven hardness that also propagates to quantum computers.
 Examples include collision resistant hash functions, signatures, pseudorandom functions or even Regev's public-key cryptosystem that is based on \gls{lwe}, which is reduced to the other lattice problems \parencite{2016-decade-of-lattice}.
@@ -396,7 +396,7 @@ They usually play the role of keeping the output bounded and/or sorting for 'act
 \begin{figure}[H]
   \centering
   \inputtikz{figures/neural-network}
-  \caption[Neural Network illustration resembling the one used in our demonstrator]{A simple neural network resembling the structure we use in our demonstrator, the input (a 784 entry vector) is forwarded to the second layer using $\vec{h} = \cryptop{relu\_taylor}(M_1 \vec{x} + \vec{b_1})$, resulting in a vector of 128 entries, and finally forwarded to the output layer with $\vec{y} = \cryptop{softmax}(M_2 \vec{h} + \vec{b_2})$. Each of the 10 outputs in $\vec{y}$ corresponds to a 'probability' associated with each digit from 0 to 9.}
+  \caption[Neural Network illustration resembling the one used in our demonstrator]{A simple neural network resembling the structure we use in our demonstrator, the input (a 784 entry vector) is forwarded to the second layer using $\vec{h} = \cryptop{relu}(M_1 \vec{x} + \vec{b_1})$, resulting in a vector of 128 entries, and finally forwarded to the output layer with $\vec{y} = \cryptop{softmax}(M_2 \vec{h} + \vec{b_2})$. Each of the 10 outputs in $\vec{y}$ corresponds to a 'probability' associated with each digit from 0 to 9.}
   \label{fig:neural-network}
 \end{figure}
 
@@ -411,7 +411,7 @@ As a final note to better understand the implications and possibilities of a lar
   If the neural network has at least one hidden layer, proper nonlinear activation functions and enough data and hidden units, it can approximate any continuous function $y(x, w): \R^n \mapsto \R$ arbitrarily well on a compact domain \parencite{1989-HornikMultilayerFN}.
 \end{theorem}
 
-In the case of our demonstrator, the network consists of two fully connected layers with a Taylor-approximated \cryptop{relu} activation function in between.
+In the case of our demonstrator, the network consists of two fully connected layers with a Taylor-approximated \cryptop{relu} activation function in between, which we need to be able to classify on encrypted data.
 For more details on the implemented neural networks' structure, code and performance, refer to \cref{chap:implementation} and \cref{chap:results}.
 
 An alternative approach to modelling higher dimensional data would be \textit{Gaussian Processes}, a \glsdesc{ml} technique with a focus on different applications than neural networks', but just as powerful \parencite[Chapter 45]{2005-mackay-information-theory}.

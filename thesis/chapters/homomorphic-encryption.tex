@@ -300,6 +300,7 @@ For simplicity, we commonly choose $T$ as the 'first half' of $\Z_d^*$ when sort
   Then, $(1T) \cup (-1T) = \{1, 3, 5, ..., N-1\} \cup \{d-1, d-3, d-5, ..., d-N+1\} = \{1, 3, 5, ..., N-1, N+1, ..., d-5, d-3, d-1\} = \Z_d^*$.
 }.
 
+% TODO: rho_delta\inv richtig?
 \begin{definition}{Discretisation to an element of $\underline{\sigma}(R)$}{}
   Using one of several round-off algorithms (cf. \cite{2013-rlwe-toolkit}), given an element of $\mathbb{H}$, define a rounding operation $\underline{\rho}\inv: \mathbb{H} \mapsto \underline{\sigma}(R)$ that maps an $\vec{h} \in \mathbb{H}$ to its closest element in $\underline{\sigma}(R) \subset \mathbb{H}$, also denoted as
   $$\underline{\rho}\inv(\vec{h}) := \lfloor \vec{h} \rceil_{\underline{\sigma}(R)}\,.$$
@@ -321,7 +322,7 @@ This reflects in the observation that the plaintext sizes and errors are preserv
 
 \pagebreak
 \subsection{Scheme Definition}
-The \gls{bfv} scheme is a tuple of algorithms, introduced in \cref{def:bfv-scheme}.
+The \gls{ckks} scheme is a tuple of algorithms, introduced in \cref{def:ckks-scheme}.
 To summarise the occuring parameters and variables, a brief overview of all used symbols is provided in \cref{tab:ckks-symbols}.
 
 \begin{definition}{The CKKS Scheme}{ckks-scheme}
