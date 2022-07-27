@@ -222,9 +222,9 @@ An attacker trying to decrypt a ciphertext $\vec{c}$, given only the public key 
 \section{The CKKS Scheme}
 \label{sec:ckks}
 The \gls{ckks} scheme allows us to perform approximate arithmetic on floating point numbers.
-Essentially, the idea is to extend \gls{bfv} which allows us to operate on polynomials $p \in R/qR$, by an embedding approach that allows us to encode a (complex) floating point number vector $\vec{z} \in \R^n\, (\C^n)$ as an integer polynomial, similar to what is used in \gls{bfv}.
-A main contribution of \gls{ckks} is that we have a homomorphic rounding operation which allows to reduce the scaling factors after mulitplication.
-The remaining scheme is then extremely similar to \gls{bfv} and even more to \gls{bgv} which it is based on.
+Essentially, the idea is to extend \gls{bgv} which allows us to operate on polynomials $p \in R/q_L R$, by an embedding approach that allows us to encode a (complex) floating point number vector $\vec{z} \in \R^n\, (\C^n)$ as an integer polynomial, similar to what is used in \gls{bfv}.
+A main contribution of \gls{ckks} is the homomorphic rounding operation which allows us to reduce the scaling factors after mulitplication.
+The remaining scheme operations are extremely similar to the encryption, decryption, addition and multiplication in \gls{bfv} and \gls{bgv}.
 
 Introduce $d, R, R/qR$ as in \cref{def:bfv-scheme} and further define $\mathcal{S} = \R[X] / \Phi_d(X) \subset R$ a similar polynomial ring to $R$, but over the reals instead of the integers.
 Let $N = \varphi(d)$ be the degree of the reducing cyclotomic polynomial of $\mathcal{S}$, confer \cref{def:bounded-polynomials}.

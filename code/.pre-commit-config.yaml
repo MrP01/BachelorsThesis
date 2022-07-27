@@ -19,14 +19,14 @@ repos:
       - id: mixed-line-ending
       - id: trailing-whitespace
   - repo: https://github.com/pre-commit/mirrors-clang-format
-    rev: v14.0.5
+    rev: v14.0.6
     hooks:
       - id: clang-format
         types:
           - c++
           - c
   - repo: https://github.com/psf/black
-    rev: 22.3.0
+    rev: 22.6.0
     hooks:
       - id: black
         args:
@@ -68,7 +68,7 @@ repos:
       - id: python-no-eval
       - id: python-no-log-warn
   - repo: https://github.com/asottile/pyupgrade
-    rev: v2.34.0
+    rev: v2.37.3
     hooks:
       - id: pyupgrade
         args:
@@ -103,5 +103,11 @@ repos:
         name: latex-format-all
         entry: latex-format-all
         language: system
+        types:
+          - tex
+  - repo: https://github.com/amperser/proselint
+    rev: 0.13.0
+    hooks:
+      - id: proselint
         types:
           - tex
