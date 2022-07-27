@@ -64,14 +64,12 @@ As a highly relevant structure to cryptography and a great example of a quotient
   define the commutative quotient ring of integers modulo $q$ as $(\Z / q \Z, +, \cdot)$ with
   two operations $+$ and $\cdot$ and
   $$\Z / q \Z = \{\overline{x}_q \,|\, x \in \Z, 0 \leq x < q\}$$
-  where $q \Z = \{q x \,|\, x \in \Z\} \triangleleft \Z$ (where $\triangleleft$ refers to the left being a subgroup of the right) denotes the $q$\th multiplicative coset\footnote{
+  where $q \Z := \{q x \,|\, x \in \Z\} \triangleleft \Z$ (where $\triangleleft$ refers to the left being a subgroup of the right) denotes the $q$\th multiplicative coset\footnote{
     from the left and from the right, therefore $q \Z$ is called a normal subgroup of $\Z$
   } of the integers and
-  $$\overline{x}_q = \{y \equiv x \mod q \,|\, y \in \Z\}$$
+  $$\overline{x}_q := \{y \equiv x \mod q \,|\, y \in \Z\}$$
   is the set of all multiples of $q$ with remainder $x$.
-  Note that many operations that resulting groups, rings or fields are commonly equipped with,
-  such as addition or multiplication, propagate to an equivalent definition in the ring of integers modulo $q$
-  by considering their result as a congruence class instead of it, which in turn is again an element of $\Z / q \Z$.
+  Note that many operations that resulting groups, rings or fields are commonly equipped with, such as addition or multiplication, propagate to an equivalent definition in the ring of integers modulo $q$ by considering their result as a congruence class instead of it, which in turn is again an element of $\Z / q \Z$.
 \end{lemma}
 
 This ring is of specific importance in discrete mathematics and can be regarded as a formalisation of modular arithmetic, much of which we will require at a later point in this chapter.
@@ -80,7 +78,7 @@ As a first step towards the first central result, \cref{corollary:bounded-polyno
 
 \begin{definition}{Polynomial Ring over $\Z$}{poly-ring}
   On the set of all complex-valued polynomials with integer coefficients (a function space)
-  $$\Z[X] = \big\{p: \C \mapsto \C \,, p(x) = \sum_{k=0}^\infty a_k x^k, a_k \in \Z \;\forall k \geq 0\big\},$$
+  $$\Z[X] := \big\{p: \C \mapsto \C \,, p(x) = \sum_{k=0}^\infty a_k x^k, a_k \in \Z \;\forall k \geq 0\big\},$$
   we can define a commutative ring $(\Z[X], +, \cdot)$ equipped with the standard addition $+$ and multiplication $\cdot$ operations (as an extension over the field $\C$) of polynomials.
 \end{definition}
 
@@ -120,7 +118,7 @@ An important polynomial is $$p: \C \mapsto \C, \; p(x) = x^n - 1 \,.$$
 Its roots, found by solving $p(\xi) = 0$ for $\xi$, yielding $\xi^n = 1 \leftrightarrow \xi_k = \sqrt[n]{1}$ are referred to as the $n$\th roots of unity, of which there are multiple for each $n \in \N$.
 
 \begin{lemma}{The $n$\th roots of unity}{nth-roots-of-unity}
-  For some integer $n \in \N$, the $n$ complex roots $\xi_1, \xi_2, ..., \xi_n \in \C$ of unity can be found as $$\xi_k = e^{2\pi i \frac{k}{n}} \quad k \in \{1, 2, ..., n\}$$ with $i$ being the imaginary unit.
+  For some integer $n \in \N$, the $n$ complex roots $\xi_1, \xi_2, ..., \xi_n \in \C$ of unity can be found as $$\xi_k := e^{2\pi i \frac{k}{n}} \quad k \in \{1, 2, ..., n\}$$ with $i$ being the imaginary unit.
   Confer \cref{fig:nth-roots-of-unity}.
   Using \name{Euler}'s identity, their real and imaginary components can be explicitly found as $\xi_k = \cos(2\pi \frac{k}{n}) + i \sin(2\pi \frac{k}{n})$.
 
@@ -139,7 +137,7 @@ Due to the fact that for any $k, l \in \Z$, their product $\xi_k \cdot \xi_l$ is
 \begin{definition}{Cyclotomic Polynomial}{cyclotomic-poly}
   Given the $n$\th roots of unity $\{\xi_k\}$, we can define the $n$\th
   cyclotomic polynomial $\Phi_n \in \Z[X]$ as the product over all primitive roots of unity
-  $$\Phi_n(x) = \prod_{\stackrel{k=1}{\xi_k \mathrm{primitive}}}^{n} (x - \xi_k) \,.$$
+  $$\Phi_n(x) := \prod_{\stackrel{k=1}{\xi_k \mathrm{primitive}}}^{n} (x - \xi_k) \,.$$
   It is unique for each given $n \in \N$.
 \end{definition}
 The number of primitive roots of unity is given by $\varphi(n)$, denoting \name{Euler}'s totient function which counts the natural numbers $m$ less than $n$ who do not share a common divisor $\neq 1$, i.e. $\gcd(m, n) = 1$.
@@ -162,9 +160,9 @@ Find a short but illustrative proof of \cref{thm:power-of-2-cyclo-poly} in \cref
 
 \begin{definition}{Ring of Polynomials of highest degree $N-1$}{bounded-polynomials}
   For a power-of-2 $N$, one can construct the quotient ring $(R, +, \cdot)$ as
-  $$R = \Z[X] / (X^N + 1)$$
-  where $(X^N + 1)$ denotes the set of all polynomial multiples of the polynomial $p \in \Z[X], p(x) = x^N + 1$, so
-  $$(X^N+1) = \{q: \C \mapsto \C,\; q(x) = r(x) \cdot (x^N+1) \;|\; r \in \Z[X]\} \,.$$
+  $$R := \Z[X] / (X^N + 1)$$
+  where $(X^N + 1)$ denotes the set of all polynomial multiples of the polynomial $p \in \Z[X],\, p(x) := x^N + 1$, so
+  $$(X^N+1) := \{q: \C \mapsto \C,\; q(x) = r(x) \cdot (x^N+1) \;|\; r \in \Z[X]\} \,.$$
   The elements of $R$ are then polynomials with integer coefficients of maximum degree $N-1$.
 \end{definition}
 
@@ -176,7 +174,7 @@ As promised above, we will require \cref{lemma:integers-modulo-q} for the fundam
 
 \begin{corollary}{Polynomial Ring modulo $q$}{bounded-polynomials-mod-q}
   Further modifying $R = \Z[X] / (X^N+1)$ for $N$ a power of $2$ to only take coefficients mod $q$, we obtain two equivalent definitions for the same ring:
-  $$R_q = R/qR = (\Z/q\Z)[X] / (X^N+1)$$
+  $$R_q := R/qR = (\Z/q\Z)[X] / (X^N+1)$$
   which contains polynomials with integer coefficients modulo $q$ of degree $N-1$.
   Explicitly stated, the set can be written as:
   $$R/qR = \{p: \C \mapsto \C,\; p(x) = \sum_{k=0}^{N-1} a_k x^k \;|\; a_k \in \Z/q\Z\}$$
@@ -196,14 +194,14 @@ Most notably, lattice problems are conjectured to be secure against quantum comp
 \newcommand{\lat}{\mathcal{L}}
 \begin{definition}{Lattice}{lattice}
   A lattice $(\lat, +, \cdot)$ is a vector field over the integers $(\Z, +, \cdot)$, defined using a set of $n$ basis vectors $\vec{b_1}, \vec{b_2}, ..., \vec{b_n} \in \R^n$, that can be introduced as a set
-  $$\lat = \bigg\{\sum_{i=1}^n c_i \vec{b}_i \,\bigg|\, c \in \Z\bigg\} \subseteq \R^n$$
+  $$\lat := \bigg\{\sum_{i=1}^n c_i \vec{b}_i \,\bigg|\, c \in \Z\bigg\} \subseteq \R^n$$
   equipped with at least vector addition $+: \lat \times \lat \mapsto \lat$ and scalar multiplication $\cdot: \Z \times \lat \mapsto \lat$.
   As an extension of $\R^n$, the Euclidean norm $||\cdot||$ is also defined and the standard Euclidean metric $d: \lat \times \lat \mapsto \R$, yielding a metric space $(\lat, d)$, can be obtained by the norm of a vector difference, denoted $||(\cdot) - (\cdot)||$.
 \end{definition}
 
 Lattices are a common concept appearing in many areas of mathematics and physics, related to their effective representation as data structures and also geometric intuition (cf. \cref{fig:lattice}).
 Its \textit{minimum distance} $\lambda_{min}$ is defined as the smallest Euclidean distance between two points $\vec{p_1}, \vec{p_2} \in \lat$
-$$\lambda_{min} = \min_{\vec{p_1}, \vec{p_2} \in \lat} d(\vec{p_1}, \vec{p_2}) =
+$$\lambda_{min} := \min_{\vec{p_1}, \vec{p_2} \in \lat} d(\vec{p_1}, \vec{p_2}) =
   \min_{\vec{p_1}, \vec{p_2} \in \lat} ||\vec{p_1} - \vec{p_2}|| \,,$$
 which can be equivalently thought of as the minimal length of any non-zero vector in the lattice $\lat$, because of $\vec{0}$ always being an element of the lattice which can be chosen as $\vec{p_1}$ and the translational symmetry between fundamental lattice volumes (or regions).
 
@@ -335,7 +333,7 @@ Much media attention was earned in the 2000-2010 decade when larger image classi
 
 To illustrate the concept, we will focus on a simple learning method, namely that of gradient descent.
 In supervised learning problems, this technique first requires us to introduce a loss (error) function $L: \R^n \mapsto \R$, usually \gls{mse}, which has comparably nice convergence properties due to its parabolic shape:
-$$L(\vec{w}) = \frac{1}{2} \sum_{i=1}^N (t_i - \vec{w}^T \phi(\vec{x_i})) = \frac{1}{2} (\vec{t} - \Phi \vec{w})^T (\vec{t} - \Phi \vec{w})$$
+$$L(\vec{w}) := \frac{1}{2} \sum_{i=1}^N (t_i - \vec{w}^T \phi(\vec{x_i})) = \frac{1}{2} (\vec{t} - \Phi \vec{w})^T (\vec{t} - \Phi \vec{w})$$
 where $\vec{w} \in \R^n$ represents the weights and $\Phi \in \R^{N \times (n+1)}$ is an auxiliary matrix introduced for compact notation, consisting of basis functions $\phi: \R^N \mapsto \R^N$ applied to the inputs $\vec{x_i}$, referred to as the design matrix.
 This approach allows for a great deal of flexibility when working with more complicated datasets, simply choosing a suitable basis often reduces the problem to a perfectly linear one, easing the fitting process.
 When $L(\vec{w^*}) = 0$, this means we have found the perfect weights, since our predictions exactly match the targets (labels) $t_i$.
@@ -373,7 +371,7 @@ If the loss function has a simpler form (if it can be written as a quadratic for
 As the relations behind data become more and more complicated, the demand for more sophisticated modelling methods increases.
 Frank \name{Rosenblatt} first implemented the \textit{Perceptron} function invented by \name{McCulloch} and \name{Pitts}, an object that closely resembles the neural network structures still in use today.
 The perceptron is a function $\cryptop{Perceptron}_{\vec{w}, b}: \R^n \mapsto {0, 1}$ defined as follows:
-$$\cryptop{Perceptron}_{\vec{w}, b}(\vec{x})={\begin{cases}
+$$\cryptop{Perceptron}_{\vec{w}, b}(\vec{x}) := {\begin{cases}
     1 & {\text{if }}\ \vec{w} \cdot \vec{x} +b>0, \\
     0 & {\text{otherwise}}
   \end{cases}}$$
@@ -409,7 +407,9 @@ In the case of our demonstrator, the network consists of two fully connected lay
 For more details on the implemented neural networks' structure, code and performance, refer to \cref{chap:implementation} and \cref{chap:results}.
 
 An alternative approach to modelling higher dimensional data would be \textit{Gaussian Processes}, a \glsdesc{ml} technique with a focus on different applications than neural networks', but just as powerful \parencite[Chapter 45]{2005-mackay-information-theory}.
-The mathematical structure behind the model is a multivariate Gaussian distribution $$p: \R^n \mapsto \R,\, p(\vec{x}) = \frac{1}{\sqrt{(2\pi)^n |\Sigma|}} e^{-\frac{1}{2} (\vec{x}-\vec{\mu})^T \Sigma\inv (\vec{x}-\vec{\mu})} \,,$$ in many cases allowing for explicit analytical expressions and calculations as compared to multi-layered neural networks.
+The mathematical structure behind the model is a multivariate Gaussian distribution
+$$p: \R^n \mapsto \R,\, p(\vec{x}) := \frac{1}{\sqrt{(2\pi)^n |\Sigma|}} e^{-\frac{1}{2} (\vec{x}-\vec{\mu})^T \Sigma\inv (\vec{x}-\vec{\mu})} \,,$$
+in many cases allowing for explicit analytical expressions and calculations as compared to multi-layered neural networks.
 
 \pagebreak
 \section{Post-Quantum Security}
@@ -429,8 +429,8 @@ In quantum mechanics, we seek a mathematical description of quantum phenomena, c
 The mathematical foundation of quantum mechanics is deeply rooted in linear algebra and functional analysis.
 An important concept is that of function spaces and, especially, Hilbert spaces.
 Function spaces are a widely useful concept, polynomial rings are a great example too (confer \cref{corollary:bounded-polynomials-mod-q}).
-Wave functions $\psi: \C^3 \times \R \mapsto \C$ are usually chosen as elements of the $\mathcal{L}^2$-space, the space of square-integrable\footnote{Mathematicians usually formalise these using \name{Lebesgue}-integrals instead of the commonly used \name{Riemann} formulation of an integral. \name{Lebesgue} integration allows for a much broader class of integrable functions and is usually the preferred method in this context.} functions:
-$$\mathcal{L}^2 = \big\{\psi: \C^3 \times \R \mapsto \C \,\big|\, ||\psi|| < \infty\big\} \quad \text{with} \; ||\psi|| = \int_{-\infty}^{\infty} \psi^*(\vec{x}) \psi(\vec{x}) \,d^3x$$
+Wave functions $\psi: \R^3 \times \R \mapsto \C$ are usually chosen as elements of the $\mathcal{L}^2$-space, the space of square-integrable\footnote{Mathematicians usually formalise these using \name{Lebesgue}-integrals instead of the commonly used \name{Riemann} formulation of an integral. \name{Lebesgue} integration allows for a much broader class of integrable functions and is usually the preferred method in this context.} functions:
+$$\mathcal{L}^2 := \big\{\psi: \R^3 \times \R \mapsto \C \,\big|\, ||\psi|| < \infty\big\} \quad \text{with} \; ||\psi|| := \int_{\R^3} d^3 r \int_{\R} dt \; \psi^*(\vec{r}, t) \psi(\vec{r}, t)$$
 with $||\psi||$ referred to as the $l_2$-norm of the function $\psi$.
 By far not all functions are square integrable though, especially polynomials do not decrease in their absolute value towards $-\infty$ and $\infty$ leading to $||\psi|| \rightarrow \infty$, they are clearly not square integrable.
 An example that does work would be a normal distribution, or any function of the \name{Schwartz} space.
@@ -441,8 +441,8 @@ The square-integrability requirement is imposed on the wave function $\psi$ in o
 
 When describing a quantum particle or system, physicists usually work with mathematical objects in three different spaces:
 \begin{itemize}
-  \item Position space inhibited by the wave function $\psi(\vec{r}, t) = \braket{r | s_1, s_2, ..., s_n} \in \mathcal{L}^2$ (a function space),
-  \item Momentum space given by the Fourier-transformed wave function $\overline{\psi}(\vec{p}, t) = \braket{p | s_1, s_2, ..., s_n}$ $\in \mathcal{L}^2$ (also a function space) and
+  \item Position space inhibited by the wave function $\psi(\vec{r}, t) := \braket{r | s_1, s_2, ..., s_n} \in \mathcal{L}^2$ (a function space),
+  \item Momentum space given by the Fourier-transformed wave function $\overline{\psi}(\vec{p}, t) := \braket{p | s_1, s_2, ..., s_n}$ $\in \mathcal{L}^2$ (also a function space) and
   \item State space, encompassing all possible basis states in which a system might currently be, a description that is usually highly specific to the problem we aim to solve with it.
         In the discrete, finite-dimensional case, represented by $\ket{s_1, s_2, ..., s_n} \in \mathbb{S}$.
 \end{itemize}

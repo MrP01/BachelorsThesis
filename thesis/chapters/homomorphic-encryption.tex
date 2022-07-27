@@ -61,7 +61,7 @@ The \gls{bfv} scheme is a tuple of algorithms, introduced in \cref{def:bfv-schem
 To summarise the occuring parameters and variables, a brief overview of all used symbols is provided in \cref{tab:bfv-symbols}.
 
 \begin{definition}{The BFV-Scheme}{bfv-scheme}
-  Let $R = \Z[X] / \Phi_d(X)$ be a polynomial ring with $\Phi_d(X)$ the $d$\th \hyperref[def:cyclotomic-poly]{cyclotomic polynomial}
+  Let $R := \Z[X] / \Phi_d(X)$ be a polynomial ring with $\Phi_d(X)$ the $d$\th \hyperref[def:cyclotomic-poly]{cyclotomic polynomial}
   ($\rightarrow d \in \N$) for ciphertexts $c \in R \times R$.
   Introduce $R / qR$ the associated quotient ring of the $q$\th coset of $R$ with the modulus $q \in \N$.
   Further let $t \in \N$ denote the message modulus with $1<t<q$
@@ -70,10 +70,10 @@ To summarise the occuring parameters and variables, a brief overview of all used
 
   Introduce three bounded discrete probability distributions $\chi_{key}$, $\chi_{enc}$ and $\chi_{error}$ over $R/qR$, one which is only used once for key generation, another used for \cryptop{BFV.Encrypt} and another (usually Gaussian-like) error distribution for manually inserted error terms (confer the \hyperref[def:lwe-search-problem]{LWE-problem}). For BFV, usually $\chi_{key} = \chi_{enc}$.
 
-  For a polynomial $a \in R/qR$, consider the decomposition $a = \sum_{i=0}^{l-1} a_i w^i$ into base $w \in \N$ obtained by $\cryptop{WordDecomp}: R \mapsto R^l, \cryptop{WordDecomp}(a) = ([a_i]_w)_{i=0}^{l-1}$. \\
-  Further let $\cryptop{PowersOf}: R \mapsto R^l$ be defined as $\cryptop{PowersOf}(a) = ([a w^i]_q)_{i=0}^{l-1}$.
+  For a polynomial $a \in R/qR$, consider the decomposition $a = \sum_{i=0}^{l-1} a_i w^i$ into base $w \in \N$ obtained by $\cryptop{WordDecomp}: R \mapsto R^l, \cryptop{WordDecomp}(a) := ([a_i]_w)_{i=0}^{l-1}$. \\
+  Further let $\cryptop{PowersOf}: R \mapsto R^l$ be defined as $\cryptop{PowersOf}(a) := ([a w^i]_q)_{i=0}^{l-1}$.
 
-  Let the parameters $\mathbb{P} = (d, q, t, \chi_{key}, \chi_{error}, w)$ and $l = \lfloor \log_w(q) \rfloor + 1$.
+  Let the parameters $\mathbb{P} := (d, q, t, \chi_{key}, \chi_{error}, w)$, $N := \varphi(d)$ and $l := \lfloor \log_w(q) \rfloor + 1$.
   \vspace{0.2cm}
 
   \cryptop{BFV.} \\
@@ -177,7 +177,7 @@ The diagram in \cref{fig:bfv-overview} shows how a typical encryption process wo
 \end{theorem}
 
 \begin{proof}
-  Starting out with two messages $m, m' \in R/tR$, two polynomials of degree $N-1$ with $N$ coefficients modulo $t$, we check whether addition of two ciphertexts $\vec{c} = \cryptop{BFV.Encrypt}(\vec{p}, m)$ and $\vec{c}' = \cryptop{BFV.Encrypt}(\vec{p}, m')$ indeed decrypts as $m + m'$.
+  Starting out with two messages $m, m' \in R/tR$, two polynomials of degree $N-1$ with $N$ coefficients modulo $t$, we check whether addition of two ciphertexts $\vec{c} := \cryptop{BFV.Encrypt}(\vec{p}, m)$ and $\vec{c}' := \cryptop{BFV.Encrypt}(\vec{p}, m')$ indeed decrypts as $m + m'$.
 
   The client first creates a secret key $s$ and public key $\vec{p} = (b, a)$ with $b = -(as + \tilde{\mu})$ using $\cryptop{BFV.ParamGen}(\lambda)$ and $\cryptop{BFV.KeyGen}(\mathbb{P})$.
   Encrypting $m$ and $m'$ using the public key, we obtain
@@ -226,8 +226,8 @@ Essentially, the idea is to extend \gls{bgv} which allows us to operate on polyn
 A main contribution of \gls{ckks} is the homomorphic rounding operation which allows us to reduce the scaling factors after mulitplication.
 The remaining scheme operations are extremely similar to the encryption, decryption, addition and multiplication in \gls{bfv} and \gls{bgv}.
 
-Introduce $d, R, R/qR$ as in \cref{def:bfv-scheme} and further define $\mathcal{S} = \R[X] / \Phi_d(X) \subset R$ a similar polynomial ring to $R$, but over the reals instead of the integers.
-Let $N = \varphi(d)$ be the degree of the reducing cyclotomic polynomial of $\mathcal{S}$, confer \cref{def:bounded-polynomials}.
+Introduce $d, R, R/qR$ as in \cref{def:bfv-scheme} and further define $\mathcal{S} := \R[X] / \Phi_d(X) \subset R$ a similar polynomial ring to $R$, but over the reals instead of the integers.
+Let $N := \varphi(d)$ be the degree of the reducing cyclotomic polynomial of $\mathcal{S}$, confer \cref{def:bounded-polynomials}.
 For convenience, we usually choose $d$ a power of $2$ and then, by \cref{thm:power-of-2-cyclo-poly}, $N = \varphi(d) = \frac{d}{2}$ which yields efficiently multipliable polynomials because the homomorphic multiplication operation can be performed using a \gls{dft} and further optimized using the \gls{fft}, which in its unmodified form only accepts power-of-2 vector sizes \parencite{2017-ckks-original}.
 
 \subsection{Encoding and Decoding}
