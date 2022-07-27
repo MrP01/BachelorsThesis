@@ -3,6 +3,7 @@
 \usetheme[institute]{tugraz2018}
 \usepackage[beamer]{prettytex/base}
 \usepackage{prettytex/math}
+\usepackage{prettytex/gfx}
 \input{customs.tex}
 
 \title[Secure Classification as a Service]{
@@ -50,17 +51,22 @@
   \begin{frame}{Post-Quantum Security}\end{frame}
   \begin{frame}{The \gls{rsa} Scheme}\end{frame}
   \section{Lattice Cryptography}
-  \begin{frame}{Polynomial Rings}\end{frame}
-  \begin{frame}{The LWE Problem}\end{frame}
+  \begin{frame}{Polynomial Rings}
+    \begin{figure}
+      \scalebox{0.7}{\inputtikz{../thesis/figures/nth-roots-of-unity}}
+      \caption{The 5\th roots of unity}
+    \end{figure}
+  \end{frame}
+  \begin{frame}{The \gls{lwe} Problem}\end{frame}
   \section{The CKKS Scheme}
-  \begin{frame}{Overview}
+  \begin{frame}{Overview of \gls{ckks}}
     \cite{2017-ckks-original}
   \end{frame}
   \begin{frame}{Encoding and Decoding}\end{frame}
   \begin{frame}{Encryption and Decryption}\end{frame}
   \begin{frame}{Homomorphic Addition}\end{frame}
   \section{Implementation}
-  \begin{frame}{Demo: Secure MNIST Classification as a Service}\end{frame}
+  \begin{frame}{Demo: Secure Handwritten Digit Classification as a Service}\end{frame}
   \begin{frame}{Neural Networks}\end{frame}
   \begin{frame}{Matrix Multiplications}\end{frame}
   \section{Results}

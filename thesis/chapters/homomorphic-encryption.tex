@@ -61,9 +61,9 @@ The \gls{bfv} scheme is a tuple of algorithms, introduced in \cref{def:bfv-schem
 To summarise the occuring parameters and variables, a brief overview of all used symbols is provided in \cref{tab:bfv-symbols}.
 
 \begin{definition}{The BFV-Scheme}{bfv-scheme}
-  Let $R = \Z[X] / \Phi_d(X)$ be a polynomial ring with $\Phi_d(X)$ the $d$\textsuperscript{th} \hyperref[def:cyclotomic-poly]{cyclotomic polynomial}
+  Let $R = \Z[X] / \Phi_d(X)$ be a polynomial ring with $\Phi_d(X)$ the $d$\th \hyperref[def:cyclotomic-poly]{cyclotomic polynomial}
   ($\rightarrow d \in \N$) for ciphertexts $c \in R \times R$.
-  Introduce $R / qR$ the associated quotient ring of the $q$\textsuperscript{th} coset of $R$ with the modulus $q \in \N$.
+  Introduce $R / qR$ the associated quotient ring of the $q$\th coset of $R$ with the modulus $q \in \N$.
   Further let $t \in \N$ denote the message modulus with $1<t<q$
   for plain messages $m \in R/tR$ and define $\delta := \lfloor \frac{q}{t} \rfloor$,
   $\delta\inv = \frac{t}{q}$.
@@ -246,7 +246,7 @@ In total, the encoding and decoding steps consist of three transformations, $\un
 \end{definition}
 
 All elements of $R$ are also elements of $\mathcal{S}$ since $\Z \subset \mathcal{S}$ which results in $\underline{\sigma}(R) \subset \underline{\sigma}(\mathcal{S})$, every plaintext polynomial $m \in R$ can be encoded into $\underline{\sigma}(R)$.
-Also note that evaluating a polynomial on the $n$\textsuperscript{th} roots of unity corresponds to performing a \name{Fourier}-Transform.
+Also note that evaluating a polynomial on the $n$\th roots of unity corresponds to performing a \name{Fourier}-Transform.
 
 Define the commutative subring $(\mathbb{H}, +, \cdot)$ of $(\C^N, +, \cdot)$ on the set
 $$\mathbb{H} := \{\vec{z} = (z_j)_{j \in \Z_d^*} \in \C^N : z_j = \overline{z_{-j}} \;\forall j \in \Z_d^*\} \subseteq \C^N$$
@@ -446,7 +446,7 @@ The \cryptop{CKKS.ReLin} operation serves the same purpose as in \gls{bfv}, the 
   Especially the bijectivity of $\underline{\sigma}$ is cumbersome to show and for more details we refer the reader to \cite{2017-ckks-original}.
 
   \begin{itemize}
-    \item The canonical embedding $\underline{\sigma}$ evaluates an input polynomial on the $N$\textsuperscript{th} roots of unity $\{\xi_j\}_{j \in \Z_d^*}$.
+    \item The canonical embedding $\underline{\sigma}$ evaluates an input polynomial on the $N$\th roots of unity $\{\xi_j\}_{j \in \Z_d^*}$.
           For any two polynomials $p_1, p_2 \in \mathcal{S}$, $$\underline{\sigma}(p_1 + p_2) = \big((p_1 + p_2)(\xi_j)\big)_{j \in \Z_d^*} = \big(p_1(\xi_j) + p_2(\xi_j)\big)_{j \in \Z_d^*} = \underline{\sigma}(p_1) + \underline{\sigma}(p_2) \,.$$
     \item The rounding operation $\underline{\rho_\delta}\inv$ is only approximately additive due to its nature \footnote{For an illustrative counterexample of the additivity of rounding, refer to \url{https://math.stackexchange.com/questions/58239/linear-functions-with-rounding}.}.
           For any two vectors $\vec{h_1}, \vec{h_2} \in \mathbb{H}$,

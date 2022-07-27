@@ -64,7 +64,7 @@ As a highly relevant structure to cryptography and a great example of a quotient
   define the commutative quotient ring of integers modulo $q$ as $(\Z / q \Z, +, \cdot)$ with
   two operations $+$ and $\cdot$ and
   $$\Z / q \Z = \{\overline{x}_q \,|\, x \in \Z, 0 \leq x < q\}$$
-  where $q \Z = \{q x \,|\, x \in \Z\} \triangleleft \Z$ (where $\triangleleft$ refers to the left being a subgroup of the right) denotes the $q$\textsuperscript{th} multiplicative coset\footnote{
+  where $q \Z = \{q x \,|\, x \in \Z\} \triangleleft \Z$ (where $\triangleleft$ refers to the left being a subgroup of the right) denotes the $q$\th multiplicative coset\footnote{
     from the left and from the right, therefore $q \Z$ is called a normal subgroup of $\Z$
   } of the integers and
   $$\overline{x}_q = \{y \equiv x \mod q \,|\, y \in \Z\}$$
@@ -117,14 +117,14 @@ Due to their interesting structure and efficient computability, in the schemes i
 An important concept is that of cyclotomic ('circle-cutting') polynomials, which we will discuss in a bit more detail here.
 
 An important polynomial is $$p: \C \mapsto \C, \; p(x) = x^n - 1 \,.$$
-Its roots, found by solving $p(\xi) = 0$ for $\xi$, yielding $\xi^n = 1 \leftrightarrow \xi_k = \sqrt[n]{1}$ are referred to as the $n$\textsuperscript{th} roots of unity, of which there are multiple for each $n \in \N$.
+Its roots, found by solving $p(\xi) = 0$ for $\xi$, yielding $\xi^n = 1 \leftrightarrow \xi_k = \sqrt[n]{1}$ are referred to as the $n$\th roots of unity, of which there are multiple for each $n \in \N$.
 
-\begin{lemma}{The $n$\textsuperscript{th} roots of unity}{nth-roots-of-unity}
+\begin{lemma}{The $n$\th roots of unity}{nth-roots-of-unity}
   For some integer $n \in \N$, the $n$ complex roots $\xi_1, \xi_2, ..., \xi_n \in \C$ of unity can be found as $$\xi_k = e^{2\pi i \frac{k}{n}} \quad k \in \{1, 2, ..., n\}$$ with $i$ being the imaginary unit.
   Confer \cref{fig:nth-roots-of-unity}.
   Using \name{Euler}'s identity, their real and imaginary components can be explicitly found as $\xi_k = \cos(2\pi \frac{k}{n}) + i \sin(2\pi \frac{k}{n})$.
 
-  An $n$\textsuperscript{th} root of unity $y$ is referred to as \textit{primitive}, \gls{iff} there exists no $m < n$ for which that root $y$ is also an $m$\textsuperscript{th} root of unity, i.e. $y^m \neq 1$.
+  An $n$\th root of unity $y$ is referred to as \textit{primitive}, \gls{iff} there exists no $m < n$ for which that root $y$ is also an $m$\th root of unity, i.e. $y^m \neq 1$.
   An equivalent indicator of a primitive root is $\gcd(m, n) = 1$, referring to the greatest common divisor between $m$ and $n$ which is $1$ \gls{iff} they are mutually prime.
 \end{lemma}
 Due to the fact that for any $k, l \in \Z$, their product $\xi_k \cdot \xi_l$ is also a root of unity, and $\xi_{k+jn} = \xi_k \; \forall j \in \Z$, they clearly comprise a cyclic Abelian group over the complex numbers $\C$ under multiplication with (for instance) the first root $\xi_1 = e^{2\pi i \frac{1}{n}}$ as its generator.
@@ -132,18 +132,18 @@ Due to the fact that for any $k, l \in \Z$, their product $\xi_k \cdot \xi_l$ is
 \begin{figure}
   \centering
   \inputtikz{figures/nth-roots-of-unity}
-  \caption[The 5th roots of unity]{The 5\textsuperscript{th} roots of unity visualised on the complex plane. Obviously, they all lie on the unit circle $|z| = 1$, motivating the name of cyclotomic, 'circle-cutting', polynomials, whose roots cut the unit circle into multiple sectors.}
+  \caption[The 5th roots of unity]{The 5\th roots of unity visualised on the complex plane. Obviously, they all lie on the unit circle $|z| = 1$, motivating the name of cyclotomic, 'circle-cutting', polynomials, whose roots cut the unit circle into multiple sectors.}
   \label{fig:nth-roots-of-unity}
 \end{figure}
 
 \begin{definition}{Cyclotomic Polynomial}{cyclotomic-poly}
-  Given the $n$\textsuperscript{th} roots of unity $\{\xi_k\}$, we can define the $n$\textsuperscript{th}
+  Given the $n$\th roots of unity $\{\xi_k\}$, we can define the $n$\th
   cyclotomic polynomial $\Phi_n \in \Z[X]$ as the product over all primitive roots of unity
   $$\Phi_n(x) = \prod_{\stackrel{k=1}{\xi_k \mathrm{primitive}}}^{n} (x - \xi_k) \,.$$
   It is unique for each given $n \in \N$.
 \end{definition}
 The number of primitive roots of unity is given by $\varphi(n)$, denoting \name{Euler}'s totient function which counts the natural numbers $m$ less than $n$ who do not share a common divisor $\neq 1$, i.e. $\gcd(m, n) = 1$.
-$\varphi(n)$ therefore also counts the number of primitive roots of unity for $n$, consequently also yielding the degree of the $n$\textsuperscript{th} cyclotomic polynomial.
+$\varphi(n)$ therefore also counts the number of primitive roots of unity for $n$, consequently also yielding the degree of the $n$\th cyclotomic polynomial.
 
 An important aspect of cyclotomic polynomials is that they are irreducible over their coefficient space, the integers $\Z$.
 \begin{remark}{Irreducibility of Cyclotomic Polynomials}{cyclotomic-irreducibility}
@@ -153,8 +153,8 @@ This enables us to \textit{uniquely} define a quotient ring with cyclotomic poly
 In theory, there are multiple equivalent definitions of said ring, but by convention we choose the cyclotomic polynomial because it cannot be simplified further.
 The proof for \cref{remark:cyclotomic-irreducibility} is quite cumbersome, but can be found in \cite{2002-serge-algebra}.
 
-\begin{theorem}{$2^k$\textsuperscript{th} Cyclotomic Polynomial}{power-of-2-cyclo-poly}
-  The $M$\textsuperscript{th} cyclotomic polynomial, where $M = 2N = 2^k$ ($k \in \N$) is a power of $2$, can be identified as
+\begin{theorem}{$2^k$\th Cyclotomic Polynomial}{power-of-2-cyclo-poly}
+  The $M$\th cyclotomic polynomial, where $M = 2N = 2^k$ ($k \in \N$) is a power of $2$, can be identified as
   $$\Phi_{M}(x) = x^{N} + 1\,.$$
   Its degree is $N$, consistent with $\varphi(2^k) = 2^{k-1} \; \forall k \in \N$.
 \end{theorem}
@@ -168,7 +168,7 @@ Find a short but illustrative proof of \cref{thm:power-of-2-cyclo-poly} in \cref
   The elements of $R$ are then polynomials with integer coefficients of maximum degree $N-1$.
 \end{definition}
 
-If $N$ is a power of $2$, according to \cref{thm:power-of-2-cyclo-poly}, $$R = \Z[X] / \Phi_d(X) = \Z[X] / (X^N + 1)$$ is the set of integer-coefficient polynomials reduced modulo $\Phi_d(X)$, the $d$\textsuperscript{th} cyclotomic polynomial with $N = \varphi(d) = \frac{d}{2}$.
+If $N$ is a power of $2$, according to \cref{thm:power-of-2-cyclo-poly}, $$R = \Z[X] / \Phi_d(X) = \Z[X] / (X^N + 1)$$ is the set of integer-coefficient polynomials reduced modulo $\Phi_d(X)$, the $d$\th cyclotomic polynomial with $N = \varphi(d) = \frac{d}{2}$.
 Since every cyclotomic polynomial is irreducible, this is a unique representation of $R$ without any possible further simplifications.
 Therefore, in the following we will focus on power-of-2 cyclotomic polynomials, which turn out to be even more useful when defining FFT-optimized operations on them.
 
@@ -326,7 +326,7 @@ The trained algorithm can then be utilised to match fresh input data with a pred
 
 A popular subset of applications to \gls{ml} are classification problems, predominantly image classification, which was not as easily possible before without a human eye due to the lack of computing power.
 Classification problems can be formulated quickly, the goal is to computationally categorize input data (for instance, images) into a predefined set of classes (for instance, cats and dogs).
-The primary concept behind \acrlong{ml} is not at all new, linear regression was already employed by \name{Gauß} and \name{Legendre} in the early 19\textsuperscript{th} century; the term 'Neural Network' was coined by \name{McCulloch} and \name{Pitts} in 1943.
+The primary concept behind \acrlong{ml} is not at all new, linear regression was already employed by \name{Gauß} and \name{Legendre} in the early 19\th century; the term 'Neural Network' was coined by \name{McCulloch} and \name{Pitts} in 1943.
 Much media attention was earned in the 2000-2010 decade when larger image classification problems became feasible with the increasing computational power of modern computers, up until the advent of Deep Learning \parencite{bishop-pattern-recognition-and-ml}.
 % Keep in mind however, that Machine Learning in this form is nothing more than glorified statistical regression.
 
