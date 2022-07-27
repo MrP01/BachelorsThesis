@@ -7,11 +7,7 @@
 \usepackage{prettytex/code}
 \usepackage{prettytex/thesis}
 \usepackage[bsc,claim,iaik]{iaikthesis}
-\usepackage{tabularray}
-\usepackage{neuralnetwork}
-\usepackage{cancel}
-\usepackage{braket}
-\usepackage[nameinlink]{cleveref}
+\input{customs.tex}
 
 \thesistitle{
   Secure Classification as a Service \\
@@ -35,7 +31,7 @@
 \author{\@thesisauthor}
 
 \input{macros.tex}
-\addbibresource{sources.bib}
+\addbibresource{../library/sources.bib}
 
 \begin{document}
   \printthesistitle

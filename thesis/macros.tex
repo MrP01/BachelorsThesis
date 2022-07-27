@@ -1,7 +1,3 @@
-\setlength{\headheight}{19.53pt}
-\setlength{\headsep}{1.8em}
-\setlength{\belowcaptionskip}{-12pt}
-
 \makenoidxglossaries
 \newacronym{he}{HE}{Homomorphic Encryption}
 \newacronym{fhe}{FHE}{Fully Homomorphic Encryption}
@@ -43,21 +39,3 @@
   \tikzsetnextfilename{#1}
   \input{#1.tex}
 }
-
-\crefname{figure}{figure}{figures}
-\crefname{tcb@cnt@definition}{definition}{definitions}
-\crefname{tcb@cnt@theorem}{theorem}{theorems}
-\crefname{tcb@cnt@lemma}{lemma}{lemmata}
-\crefname{tcb@cnt@corollary}{corollary}{corollaries}
-\crefname{tcb@cnt@remark}{remark}{remarks}
-
-\makeatletter
-\renewcommand\listoffigures{
-  \section*{\listfigurename}
-  \@starttoc{lof}
-}
-\renewcommand\listoftables{
-  \section*{\listtablename}
-  \@starttoc{lot}
-}
-\makeatother

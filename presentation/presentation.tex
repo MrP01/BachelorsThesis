@@ -3,11 +3,7 @@
 \usetheme[institute]{tugraz2018}
 \usepackage[beamer]{prettytex/base}
 \usepackage{prettytex/math}
-
-\newcommand\labelenumi{\theenumi.}
-\newcommand\labelenumii{(\theenumii)}
-\newcommand\labelenumiii{\theenumiii.}
-\newcommand\labelenumiv{\theenumiv.}
+\input{customs.tex}
 
 \title[Secure Classification as a Service]{
   Secure Classification as a Service \\
@@ -25,6 +21,21 @@
 % \additionallogo{figures/logo}  % additional institute/department logo (footline; optional)
 % \logobar{Supported by: ...}  % sponsors (titlepage; optional)
 
+% Ungefähre Struktur:
+% * Motivation aus zwei Richtungen: Privacy-Preserving Machine Learning möglich? (Anwendungen in der Medizin) -> HE
+%   netter Side-Effect: Post-Quantum Security via Lattice Cryptography
+% * Beispiel für HE und Public-Key Asymmetric Encryption zur Veranschaulichung: RSA
+% * Learning With Errors und andere Lattice Probleme (nur ein paar Sätze)
+% * Relation von CKKS zu LWE: Wie der Private Key geschützt ist und Hardness des LWE-Problems.
+% * CKKS Scheme erklären, dazu: Polynomring Z_q[X]/(X^N+1) erläutern, wie wird encoded und verschlüsselt
+% * Zeigen, dass Encrypt(Encode(z)) + Encrypt(Encode(z')) == Encrypt(Encode(z + z')) in CKKS
+% * Implementation erklären (SEAL, Struktur in Server/Client, etc.), Demo der UI.
+% * Verschiedene Matmul-Implementationen, Optimierungen
+% * Ergebnisse: Performance des Netzwerks, Benchmarks, Ciphertext-Visualisierungen.
+
+\input{../thesis/macros.tex}
+\addbibresource{../library/sources.bib}
+
 \begin{document}
   \begin{frame}[plain]
     \maketitle
@@ -35,49 +46,44 @@
   \end{frame}
 
   \section{Introduction}
-  \begin{frame}{The frame title}
-    A text frame
+  \begin{frame}{Privacy for Medical Applications}\end{frame}
+  \begin{frame}{Post-Quantum Security}\end{frame}
+  \begin{frame}{The \gls{rsa} Scheme}\end{frame}
+  \section{Lattice Cryptography}
+  \begin{frame}{Polynomial Rings}\end{frame}
+  \begin{frame}{The LWE Problem}\end{frame}
+  \section{The CKKS Scheme}
+  \begin{frame}{Overview}
+    \cite{2017-ckks-original}
   \end{frame}
-
-  \section{Content}
-  \begin{frame}{Lists}
-    \begin{itemize}
-      \item First item
-      \item Second item
-      \item Third item
-    \end{itemize}
-  \end{frame}
-
-  \begin{frame}{Numbered Lists and Pauses}
-    \begin{enumerate}
-      \item First item
-            \begin{enumerate}
-              \item First subitem
-                    \begin{enumerate}
-                      \item First
-                      \item Second
-                    \end{enumerate}
-            \end{enumerate}
-            \pause
-      \item Second item
-            \pause
-      \item Third item
-    \end{enumerate}
-  \end{frame}
-
-  \begin{frame}{An Image}
-    \centering
-    \includegraphics[height=0.6\textheight]{figures/photoexample-169}
-  \end{frame}
+  \begin{frame}{Encoding and Decoding}\end{frame}
+  \begin{frame}{Encryption and Decryption}\end{frame}
+  \begin{frame}{Homomorphic Addition}\end{frame}
+  \section{Implementation}
+  \begin{frame}{Demo: Secure MNIST Classification as a Service}\end{frame}
+  \begin{frame}{Neural Networks}\end{frame}
+  \begin{frame}{Matrix Multiplications}\end{frame}
+  \section{Results}
+  \begin{frame}{Confusion everywhere}\end{frame}
+  \begin{frame}{Runtime Benchmarks}\end{frame}
+  \begin{frame}{Ciphertext Visualisations}\end{frame}
 
   \section*{}
   \begin{frame}{Conclusion}
-    ...
+    Crypto is good for us
   \end{frame}
 
   %\begin{frame}[c,plain]
   \begin{frame}[c]
     \centering
     \Large Questions?
+  \end{frame}
+
+  \begin{frame}[allowframebreaks]{Glossary}
+    \printnoidxglossary[type=acronym]
+  \end{frame}
+
+  \begin{frame}[allowframebreaks]{Bibliography}
+    \printbibliography
   \end{frame}
 \end{document}

@@ -250,10 +250,8 @@ Its hardness assumptions are related to GapSVP and were first formally proven by
   Given a prime $p \in \N$ and $n \in \N$, we choose some secret $\vec{s} \in (\Z / p \Z)^n$.
   In order to sample a value from the LWE distribution $A_{\vec{s}, \chi_{error}}$:
   \begin{itemize}
-    \item Draw a random vector $a \in (\Z/p\Z)^n$ from the multivariate uniform distribution
-          with its domain in the integers up to $p$.
-    \item Given another probability distribution $\chi_{error}$ over the integers modulo $p$,
-          sample a scalar 'error term' $\mu \in \Z / p \Z$ from it, often also referred to as noise.
+    \item Draw a random vector $a \in (\Z/p\Z)^n$ from the multivariate uniform distribution with its domain in the integers up to $p$.
+    \item Given another probability distribution $\chi_{error}$ over the integers modulo $p$, sample a scalar 'error term' $\mu \in \Z / p \Z$ from it, often also referred to as noise.
     \item Set $b = \vec{s} \cdot \vec{a} + \mu$, with $\cdot$ denoting the standard vector product.
     \item Output the pair $(\vec{a}, b) \in (\Z / p \Z)^n \times (\Z / p \Z)$.
   \end{itemize}
@@ -287,8 +285,7 @@ Similar to \cref{def:lwe-dist}, the Ring-LWE distribution is derived as follows 
   In order to sample a value from the RLWE distribution $B_{s, \chi_{error}}$:
   \begin{itemize}
     \item Uniformly randomly draw an element $a \in R/qR$
-    \item Given another probability distribution $\chi_{error}$ over the ring elements,
-          sample an 'error term' $\mu \in R/qR$ from it, also referred to as noise.
+    \item Given another probability distribution $\chi_{error}$ over the ring elements, sample an 'error term' $\mu \in R/qR$ from it, also referred to as noise.
     \item Set $b = s \cdot a + \mu$, with $\cdot$ denoting the ring multiplication operation.
     \item Output the pair $(a, b) \in R/qR \times R/qR$.
   \end{itemize}
@@ -300,9 +297,7 @@ The search and decision problems can be constructed in the same manner as for \g
   Given $m$ independent samples $(a_i, b_i)_{0 < i \leq m}$ from $B_{s, \chi_{error}}$, find the secret $s$.
 \end{corollary}
 \begin{corollary}{RLWE-Decision Problem}{decision-rlwe}
-  Given $m$ samples $(a_i, b_i)_{0 < i \leq m}$, distinguish (with non-negligible advantage)
-  whether they were drawn from $B_{s, \chi_{error}}$ or from the uniform distribution
-  $u$ over $R/qR \times R/qR$.
+  Given $m$ samples $(a_i, b_i)_{0 < i \leq m}$, distinguish (with non-negligible advantage) whether they were drawn from $B_{s, \chi_{error}}$ or from the uniform distribution $u$ over $R/qR \times R/qR$.
 \end{corollary}
 
 The main advantage of RLWE over LWE is that is conceptually similar and yet simple to formalise over an arbitrarily chosen \hyperref[def:ring]{ring} $(R, +, \cdot)$ which allows for a vast amount of applications and interesting constructions.
