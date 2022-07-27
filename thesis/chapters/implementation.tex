@@ -322,11 +322,11 @@ We of course leverage the \gls{simd} structure of the encryption scheme in order
 
 \section{Further Implementation Challenges}
 When performing arbitrary computations on a ciphertext in \gls{seal}, it is possible to encounter a \textit{transparent ciphertext} from time to time.
-That is a ciphertext identically equal to 0 (mathematically, the tuple's second polynomial is zero, confer \cref{def:ckks-scheme}), and it is usually not considered a valid encryption as anyone who has it can immediately 'decrypt' it to its underlying value of 0.
+That is a ciphertext identically equal to 0 (mathematically, the tuple's second polynomial is zero, confer \cref{def:ckks-scheme}), and it is usually not considered a valid encryption as anyone who has it can immediately 'decrypt' it to its underlying value of $0$.
 However, for intermediate values of the computation at hand, forwading values from addition to multiplication multiple times in our network, this is not an issue as long as we do not send the value back to the client, i.e. expose its internal structure \parencite{kim-laine-on-transparent-ciphertexts}.
 
-In our usual setting of a web-based demonstrator for recognising handwritten digits, this situation cannot be avoided - but as long as the client does not send a ciphertext identical to 0, our final classification result (a vector of 10 elements) will never be 0.
-Therefore, the server binary is compiled with the \mintinline{bash}{-DSEAL_THROW_ON_TRANSPARENT_CIPHERTEXT=OFF} flag enabled, preventing a system halt in the case of an intermediary value evaluating to 0.
+In our usual setting of a web-based demonstrator for recognising handwritten digits, this situation cannot be avoided - but as long as the client does not send a ciphertext identical to $0$, our final classification result (a vector of 10 elements) will never be $0$.
+Therefore, the server binary is compiled with the \texttt{-DSEAL\_THROW\_ON\_TRANSPARENT\_CIPHERTEXT=OFF} flag enabled, preventing a system halt in the case of an intermediary value evaluating to $0$.
 
 An important optimisation was to pre-encode the weight matrices and bias vectors upon startup of the server.
 This halved the individual request-response times, especially for the fast \gls{bsgs} and hybrid methods.

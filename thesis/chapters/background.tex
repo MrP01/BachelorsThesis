@@ -432,7 +432,7 @@ Function spaces are a widely useful concept, polynomial rings are a great exampl
 Wave functions $\psi: \R^3 \times \R \mapsto \C$ are usually chosen as elements of the $\mathcal{L}^2$-space, the space of square-integrable\footnote{Mathematicians usually formalise these using \name{Lebesgue}-integrals instead of the commonly used \name{Riemann} formulation of an integral. \name{Lebesgue} integration allows for a much broader class of integrable functions and is usually the preferred method in this context.} functions:
 $$\mathcal{L}^2 := \big\{\psi: \R^3 \times \R \mapsto \C \,\big|\, ||\psi|| < \infty\big\} \quad \text{with} \; ||\psi|| := \int_{\R^3} d^3 r \int_{\R} dt \; \psi^*(\vec{r}, t) \psi(\vec{r}, t)$$
 with $||\psi||$ referred to as the $l_2$-norm of the function $\psi$.
-By far not all functions are square integrable though, especially polynomials do not decrease in their absolute value towards $-\infty$ and $\infty$ leading to $||\psi|| \rightarrow \infty$, they are clearly not square integrable.
+By far not all functions are square integrable though, especially polynomials do not decrease in their absolute value towards $-\infty$ or $\infty$, leading to $||\psi|| \rightarrow \infty$, they are clearly not square integrable.
 An example that does work would be a normal distribution, or any function of the \name{Schwartz} space.
 
 The traditional Copenhagen interpretation relates a wave function to the probability that a particle is at the current position $\vec{r}$ at time $t$ at the given time.
