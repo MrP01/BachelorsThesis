@@ -244,6 +244,7 @@
 \definecolor{iaikgray}{RGB}{213,213,214}
 \colorlet{iaiktug}{tug}
 \newcommand{\iaiklogo}{%{{{
+  \tikzsetnextfilename{iaiklogo}%
   \begin{tikzpicture}[y=-0.80pt, x=0.80pt, inner sep=0pt, outer sep=0pt]
   \begin{scope}[cm={{1.33333,0.0,0.0,-1.33333,(0.0,1065.8267)}}]
     \begin{scope}[shift={(64.1961,387.2106)}]
@@ -272,7 +273,7 @@
 
 % integrated tugraz logo {{{
 \providecommand{\tuglogo}{%
-  %\tikzsetnextfilename{tugrazlogo}%
+  \tikzsetnextfilename{tugrazlogo}%
   \begin{tikzpicture}[y=0.80pt, x=0.80pt, yscale=-1.000000, xscale=1.000000, inner sep=0pt, outer sep=0pt]
   \begin{scope}[cm={{1.25,0.0,0.0,-1.25,(0.0,53.75)}}]
     \begin{scope}[scale=0.100]
@@ -379,6 +380,7 @@
 
 % integrated nawi logo {{{
 \providecommand{\nawilogo}{%
+  \tikzsetnextfilename{nawilogo}%
   \begin{tikzpicture}[y=-0.020pt, x=0.020pt]
   \begin{scope}[fill=black]
     \path[fill] (7415,4662) .. controls (7301,4609) and (7266.0,4481.0) .. (7342.0,4394.0) .. controls (7394.0,4335.0) and

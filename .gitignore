@@ -4,10 +4,13 @@
 secrets/
 demosecrets/
 stuff/
+thesis/tikz/**/*.dpth
+thesis/tikz/**/*.md5
 
 *.[oa]
 *~
 *.aux
+*.auxlock
 *.log
 *.idx
 *.out
