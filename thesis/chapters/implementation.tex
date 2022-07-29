@@ -28,14 +28,14 @@ Details on the build process can be found in \texttt{code/classifier/classifier.
 \section{The MNIST dataset}
 The \gls{mnist} dataset of handwritten digits \parencite{mnist-original} contains 60,000 train and 10,000 test images with corresponding labels.
 Some sample images are displayed in \cref{fig:mnist}, with ascending labels from 0 to 9.
-In order to stick to the traditional feedforward technique with data represented in vector format, therefore it is common to reshape data from $(28, 28)$ images (represented as grayscale values in a matrix) into a $784$ element vector.
+In order to stick to the traditional feedforward technique with data represented in vector format, therefore it is common to reshape data from $(28, 28)$ images (represented as greyscale values in a matrix) into a $784$ element vector.
 
 \begin{figure}[H]
   \centering
   \inputtikz{figures/mnist}
   \caption[Sample images of the MNIST dataset]{
     Sample images of the MNIST dataset of handwritten digits \parencite{mnist-original}.
-    The dataset contains 70,000 images of $28 \times 28$ grayscale pixels valued from 0 to 255 as well as associated labels (as required for supervised learning).
+    The dataset contains 70,000 images of $28 \times 28$ greyscale pixels valued from 0 to 255 as well as associated labels (as required for supervised learning).
   }
   \label{fig:mnist}
 \end{figure}
@@ -323,7 +323,7 @@ We of course leverage the \gls{simd} structure of the encryption scheme in order
 \section{Further Implementation Challenges}
 When performing arbitrary computations on a ciphertext in \gls{seal}, it is possible to encounter a \textit{transparent ciphertext} from time to time.
 That is a ciphertext identically equal to 0 (mathematically, the tuple's second polynomial is zero, confer \cref{def:ckks-scheme}), and it is usually not considered a valid encryption as anyone who has it can immediately 'decrypt' it to its underlying value of $0$.
-However, for intermediate values of the computation at hand, forwading values from addition to multiplication multiple times in our network, this is not an issue as long as we do not send the value back to the client, i.e. expose its internal structure \parencite{kim-laine-on-transparent-ciphertexts}.
+However, for intermediate values of the computation at hand, forwarding values from addition to multiplication multiple times in our network, this is not an issue as long as we do not send the value back to the client, i.e. expose its internal structure \parencite{kim-laine-on-transparent-ciphertexts}.
 
 In our usual setting of a web-based demonstrator for recognising handwritten digits, this situation cannot be avoided - but as long as the client does not send a ciphertext identical to $0$, our final classification result (a vector of 10 elements) will never be $0$.
 Therefore, the server binary is compiled with the \texttt{-DSEAL\_THROW\_ON\_TRANSPARENT\_CIPHERTEXT=OFF} flag enabled, preventing a system halt in the case of an intermediary value evaluating to $0$.

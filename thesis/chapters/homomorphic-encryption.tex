@@ -223,7 +223,7 @@ An attacker trying to decrypt a ciphertext $\vec{c}$, given only the public key 
 \label{sec:ckks}
 The \gls{ckks} scheme allows us to perform approximate arithmetic on floating point numbers.
 Essentially, the idea is to extend \gls{bgv} which allows us to operate on polynomials $p \in R/q_L R$, by an embedding approach that allows us to encode a (complex) floating point number vector $\vec{z} \in \R^n\, (\C^n)$ as an integer polynomial, similar to what is used in \gls{bfv}.
-A main contribution of \gls{ckks} is the homomorphic rounding operation which allows us to reduce the scaling factors after mulitplication.
+A main contribution of \gls{ckks} is the homomorphic rounding operation which allows us to reduce the scaling factors after multiplication.
 The remaining scheme operations are extremely similar to the encryption, decryption, addition and multiplication in \gls{bfv} and \gls{bgv}.
 
 Introduce $d, R, R/qR$ as in \cref{def:bfv-scheme} and further define $\mathcal{S} := \R[X] / \Phi_d(X) \subset R$ a similar polynomial ring to $R$, but over the reals instead of the integers.
@@ -253,7 +253,7 @@ $$\mathbb{H} := \{\vec{z} = (z_j)_{j \in \Z_d^*} \in \C^N : z_j = \overline{z_{-
 of all complex-valued vectors $\vec{z}$ where the first half equals the reversed complex-conjugated second half.
 
 \begin{definition}{Natural Projection $\underline{\pi}$}{pi-transform}
-  Let $T$ be a mulitplicative subgroup of $\Z_d^*$ with $\Z_d^* / T = \{\pm 1\} = \{1T, -1T\}$, then the natural projection $\underline{\pi}: \mathbb{H} \mapsto \C^{N/2}$ is defined as
+  Let $T$ be a multiplicative subgroup of $\Z_d^*$ with $\Z_d^* / T = \{\pm 1\} = \{1T, -1T\}$, then the natural projection $\underline{\pi}: \mathbb{H} \mapsto \C^{N/2}$ is defined as
   $$\underline{\pi}\big((z_j)_{j \in \Z_M^*}\big) := (z_j)_{j \in T}$$
   Let its inverse be denoted by $\underline{\pi}\inv: \C^{N/2} \mapsto \mathbb{H}$ and consequently defined as
   $$\underline{\pi}\inv\big((z_j)_{j \in T}\big) := \big(\nu(z_j)\big)_{j \in \Z_M^*} \; \mathrm{with} \; \nu(z_j) = \begin{cases}
@@ -314,7 +314,7 @@ All in all, $m = \cryptop{CKKS.Encode}(\vec{z}),\, \vec{z} \in \C^{N/2}$ applies
 Although $\underline{\sigma}$ is defined over $\mathcal{S}$ instead of $\mathcal{R}$, all elements of $\underline{\sigma}(R)$ can indeed be mapped back to an element in $R$ using $\underline{\sigma}\inv$.
 Summarised,
 $$\C^{N/2} \xlongrightarrow{\;\underline{\pi}\inv\;} \mathbb{H} \xlongrightarrow{\;\underline{\rho}\inv\;} \sigma(R) \xlongrightarrow{\;\underline{\sigma}\inv\;} R \,.$$
-The decoding procedure $\vec{z} = \cryptop{CKKS.Decode}(m),\, m \in R$ does the opposite to reobtain the input vector $\vec{z} \in \C^{N/2}$.
+The decoding procedure $\vec{z} = \cryptop{CKKS.Decode}(m),\, m \in R$ does the opposite to re-obtain the input vector $\vec{z} \in \C^{N/2}$.
 
 It should also be noted that the encoding procedure represents an isometric ring isomorphism (a linear bijection that preserves distance) between its domain and image, as does the decoding procedure.
 This reflects in the observation that the plaintext sizes and errors are preserved under the transformations \parencite{2017-ckks-original}.
@@ -322,7 +322,7 @@ This reflects in the observation that the plaintext sizes and errors are preserv
 \pagebreak
 \subsection{Scheme Definition}
 The \gls{ckks} scheme is a tuple of algorithms, introduced in \cref{def:ckks-scheme}.
-To summarise the occuring parameters and variables, a brief overview of all used symbols is provided in \cref{tab:ckks-symbols}.
+To summarise the occurring parameters and variables, a brief overview of all used symbols is provided in \cref{tab:ckks-symbols}.
 
 \begin{definition}{The CKKS Scheme}{ckks-scheme}
   Define $R, R/q_L R$ as in \cref{def:bfv-scheme}.
@@ -365,7 +365,7 @@ To summarise the occuring parameters and variables, a brief overview of all used
         $\quad\rightarrow \overline{\vec{c}}$} \\
     \cryptop{ReLin}$(\overline{\vec{c}}, \vec{\gamma})$ & {
         Using the evaluation key $\vec{\gamma}$,
-        relinearize from $\overline{\vec{c}} = (c_0, c_1, c_2)$ to
+        relinearise from $\overline{\vec{c}} = (c_0, c_1, c_2)$ to
         $\vec{c} = (c_0, c_1) + \lfloor P\inv c_2 \vec{\gamma} \rceil$
         $\quad\rightarrow \vec{c}$} \\
     \cryptop{ReScale}$(\vec{c})$ & {
@@ -387,7 +387,7 @@ Unlike \gls{bfv} however, \gls{ckks} works with different moduli $q_L$ at each l
 This also casts off the need for up- and downscaling by $\delta$ when multiplying ciphertexts.
 The \cryptop{CKKS.ReLin} operation serves the same purpose as in \gls{bfv}, the rescaling operation is new however and takes care of the scale management.
 \cryptop{CKKS.ReScale} can be employed whenever we want to work with ciphertexts at different levels, modifying a given ciphertext to the scale of the other enables the other operations to work just as usual.
-\Cref{fig:ckks-overview} shows the extended course of action in \gls{ckks} with a preceeding encoding and decoding step.
+\Cref{fig:ckks-overview} shows the extended course of action in \gls{ckks} with a preceding encoding and decoding step.
 
 \begin{table}[H]
   \centering
