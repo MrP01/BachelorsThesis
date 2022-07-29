@@ -314,7 +314,7 @@ This translation can be used to infer security requirements from LWE (a well-stu
 \pagebreak
 \section{Machine Learning}
 \label{sec:machine-learning}
-Undoubtedly one of the most prevalent concepts in todays computing world, \gls{ml} has shaped how computers think and how we interact with them significantly.
+Undoubtedly one of the most prevalent concepts in today's computing world, \gls{ml} has shaped how computers think and how we interact with them significantly.
 As Shafi \name{Goldwasser} puts it, \textquote[\cite{goldwasserTalk2018}]{\textit{Machine Learning is somewhere in the intersection of Artificial Intelligence, Statistics and Theoretical Computer Science}}.
 
 Within the scope of this thesis, the basics of neural networks and associated learning methods shall be covered, limited to the category of supervised learning problems (as opposed to unsupervised learning problems).
@@ -394,13 +394,13 @@ They usually play the role of keeping the output bounded and/or sorting for 'act
 
 The training process is more complicated in the case of a layered network, especially with non-linear activation functions in between.
 Yet, the basic principle behind the training process stays the same: Evaluating the loss function $L$ (depending on all weights, biases, convolutional kernels and other parameters in the network) and finding the direction in parameter space in which the loss shrinks, formalised by the layer-wise gradient (for which we require the activation functions to be differentiable).
-The \textit{Backpropagation Algorithm}, an interative process similar to \gls{gd}, does exactly that: Evaluating the gradient of the loss function on the last layer and inversely forwarding the changes to the layer before it, and so on.
+The \textit{Backpropagation Algorithm}, an interactive process similar to \gls{gd}, does exactly that: Evaluating the gradient of the loss function on the last layer and inversely forwarding the changes to the layer before it, and so on.
 From there, inferences on the weights, biases and other parameters can be made in order to update them for the next iteration and start over again, repeating the process, working ourselves towards the minimal loss possible \parencite{bishop-pattern-recognition-and-ml}.
 
 As a final note to better understand the implications and possibilities of a large neural network, consider the following universal approximation theorem:
 
 \begin{theorem}{Universal Approximation}{universal-approx}
-  If the neural network has at least one hidden layer, proper nonlinear activation functions and enough data and hidden units, it can approximate any continuous function $y(x, w): \R^n \mapsto \R$ arbitrarily well on a compact domain \parencite{1989-HornikMultilayerFN}.
+  If the neural network has at least one hidden layer, proper non-linear activation functions and enough data and hidden units, it can approximate any continuous function $y(x, w): \R^n \mapsto \R$ arbitrarily well on a compact domain \parencite{1989-HornikMultilayerFN}.
 \end{theorem}
 
 In the case of our demonstrator, the network consists of two fully connected layers with a Taylor-approximated \cryptop{relu} activation function in between, which we need to be able to classify on encrypted data.
@@ -463,7 +463,7 @@ For instance, two antisymmetrically entangled fermions never expose the same spi
 
 Quantum computers exploit the physical properties of quantum systems such as superposition and entanglement in order to speed up computations.
 They facilitate up to exponential speedups when algorithms are available, compared to problems on traditional computers.
-In conventional complexity theory, problems are filed into different complexity classes when analyzing their runtime and memory usage.
+In conventional complexity theory, problems are filed into different complexity classes when analysing their runtime and memory usage.
 There exist
 \begin{enumerate}[noitemsep,topsep=0pt,parsep=0pt,partopsep=0pt]
   \item NL (Nondeterministic Logarithmic space)
@@ -520,7 +520,7 @@ which we then take modulo $N$, resulting in a superposition of remainders
 $$\ket{1, [g^1]_N} + \ket{2, [g^2]_N} + \ket{3, [g^3]_N} + ... \,.$$
 
 Here is where \name{Shor}'s key idea came in:
-The remainders in the above superposition expose repetitions at a period of exactly $r$ (which, by our definition fulfills $g^r \equiv 1 \mod N$) because for any $a \in \Z$,
+The remainders in the above superposition expose repetitions at a period of exactly $r$ (which, by our definition fulfils $g^r \equiv 1 \mod N$) because for any $a \in \Z$,
 $$g^x \equiv g^{x + r} \equiv g^{x + 2r} \equiv ... \equiv g^{x + ar} \mod N$$
 the remainders are periodic with frequency $\frac{1}{r}$.
 The above can be quickly derived from $g^r = mN + 1$, therefore $$g^{x+r} = g^x g^r = (\tilde{m} N + [g^x]_N) (m N + 1) = (m \tilde{m} N + [g^x]_N m + \tilde{m}) N + [g^x]_N$$ is indeed congruent to $g^x \mod N$.

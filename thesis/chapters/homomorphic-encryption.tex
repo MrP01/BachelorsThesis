@@ -29,7 +29,7 @@ With unpadded RSA \parencite{1983-rsa}, some arithmetic can be performed on the 
    & \equiv \mathcal{E}(m_1 \cdot m_2) \mod q
 \end{align*}
 
-\gls{rsa} encryption (even supporting an unbounded number of modular multiplications) therefore fulfills the properties of a multiplicative ring homomorphism, which in general terms is defined as follows:
+\gls{rsa} encryption (even supporting an unbounded number of modular multiplications) therefore fulfils the properties of a multiplicative ring homomorphism, which in general terms is defined as follows:
 
 \begin{definition}{Ring Homomorphism}{ring-homomorphism}
   Given two \hyperref[def:ring]{rings} $(R, +, \cdot)$ and $(S, \oplus, \otimes)$, we call a mapping $\varphi: R \rightarrow S$ a ring homomorphism when it satisfies the following conditions:
@@ -43,7 +43,7 @@ Homomorphic encryption was envisioned by \citeauthor{1978-he-envisioned} as earl
 The first fully homomorphic encryption scheme was introduced in Craig \name{Gentry}'s PhD thesis, based on lattice problems \parencite{2009-gentry-fhe-original}.
 In earlier schemes, each \gls{he} operation increases noise, making it partially homomorphic instead of fully homomorphic encryption.
 \name{Gentry} devised a technique called \textit{bootstrapping} that evaluates the \textit{decryption} circuit homomorphically and thereby resets the noise introduced by previous operations, enabling true fully homomorphic encryption (\gls{fhe}).
-Followup schemes improved his blueprint, Gentry's work is clearly a landmark achievement \parencite{2010-first-glimpse-of-fhe}.
+Follow-up schemes improved his blueprint, Gentry's work is clearly a landmark achievement \parencite{2010-first-glimpse-of-fhe}.
 
 \cite{2012-bgv-original} developed a generalisation of \gls{rlwe} that enables interpolation between \gls{lwe} and \gls{rlwe}, allowing for many improvements on earlier schemes, though mainly relying on \cite{2009-gentry-fhe-original}.
 The resulting scheme, referred to as \gls{bgv}, allows for integer arithmetic (addition and multiplication on $\Z/q\Z$). It also employs a modulus reduction technique, greatly extending the homomorphic capacity to a broader class of homomorphic circuits.
@@ -58,7 +58,7 @@ In this section, we will focus on a slightly altered implementation introduced i
 
 \subsection{Scheme Definition}
 The \gls{bfv} scheme is a tuple of algorithms, introduced in \cref{def:bfv-scheme}.
-To summarise the occuring parameters and variables, a brief overview of all used symbols is provided in \cref{tab:bfv-symbols}.
+To summarise the occurring parameters and variables, a brief overview of all used symbols is provided in \cref{tab:bfv-symbols}.
 
 \begin{definition}{The BFV-Scheme}{bfv-scheme}
   Let $R := \Z[X] / \Phi_d(X)$ be a polynomial ring with $\Phi_d(X)$ the $d$\th \hyperref[def:cyclotomic-poly]{cyclotomic polynomial}
@@ -113,7 +113,7 @@ To summarise the occuring parameters and variables, a brief overview of all used
         $\quad\rightarrow \overline{\vec{c}}$} \\
     \cryptop{ReLin}$(\overline{\vec{c}}, \vec{\gamma})$ & {
         Using the relin key $\vec{\gamma} = (\vec{b}, \vec{a})$,
-        relinearize from $\overline{\vec{c}} = (c_0, c_1, c_2)$ as
+        relinearise from $\overline{\vec{c}} = (c_0, c_1, c_2)$ as
         $\vec{c} = (c_0 + \cryptop{WordDecomp}(c_2) \cdot \vec{b}, c_1 + \cryptop{WordDecomp}(c_2) \cdot \vec{a})$
         $\quad\rightarrow \vec{c}$} \\
   \end{tblr}
@@ -209,7 +209,7 @@ The diagram in \cref{fig:bfv-overview} shows how a typical encryption process wo
     \approx \big\lfloor [\overline{m}]_t \big\rceil = \lfloor \overline{m} \rceil \approx \overline{m}
   \end{align*}
   we arrive at the desired result $\overline{m} = m + m'$ after rounding ($\lfloor \cdot \rceil$) the (real) polynomial to a close element in $R/tR$ using one of several round-off algorithms  (cf. \cite{2013-rlwe-toolkit}).
-  Of course, the influx of $\epsilon$ is only neglible if all parameters are carefully chosen as described in \cref{def:bfv-scheme} and the error terms are sufficiently small.
+  Of course, the influx of $\epsilon$ is only negligible if all parameters are carefully chosen as described in \cref{def:bfv-scheme} and the error terms are sufficiently small.
   $$t \ll q \Longrightarrow \delta\inv = t/q \ll 1$$ should be given while also ensuring that the spread of the distributions $\chi_{key}$, $\chi_{enc}$ and $\chi_{error}$ is not too large so that $\overline{\mu_{1,2}}, \overline{u}$ and $\tilde{\mu}$ do not lead to a large $\epsilon$ distorting our final result.
 \end{proof}
 
