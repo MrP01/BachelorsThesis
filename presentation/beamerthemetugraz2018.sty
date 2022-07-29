@@ -638,9 +638,9 @@ text.fg}
 %%%   FULLSCREEN   %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \newcommand{\fullscreenfigure}[1]{
 	\begin{frame}[plain]
-		\begin{tikzpicture}[remember picture,overlay]
+		\tikzexternaldisable\begin{tikzpicture}[remember picture,overlay]
       \node at (current page.center) {\includegraphics[height=\paperheight,keepaspectratio]{#1}};
-    \end{tikzpicture}
+    \tikzexternalenable\end{tikzpicture}
 	\end{frame}
 }
 \newcommand{\fullscreengraphic}[1]{% for some compatibility with 2013
@@ -702,7 +702,7 @@ text.fg}
 \iftugraz@headline
   \setbeamertemplate{headline}[text line]{
     \rule{0pt}{18pt}
-    \begin{tikzpicture}[tugtheme]
+    \tikzexternaldisable\begin{tikzpicture}[tugtheme]
       \iftugraz@minimal
         \draw (current page.north east) ++(-.17,-\tugraz@rightindent) node[anchor=base east,font=\usebeamerfont{footline}] {%
           \ifx\insertinstituteurl\empty\else\insertinstituteurl~\tikz{\fill[tug] (0,0) rectangle ++(1ex,1ex);}\fi
@@ -717,7 +717,7 @@ text.fg}
       \draw (current page.north west) +(\tugraz@indent,-.55+\tugraz@wideyshift) node {%
         \ifx\insertsection\empty\insertshorttitle\else\insertsection\fi
       };
-    \end{tikzpicture}
+    \tikzexternalenable\end{tikzpicture}
   }
 \else
   \setbeamertemplate{headline}[empty]
@@ -731,24 +731,24 @@ text.fg}
   \else        \newcommand{\tugraz@insttrim}{1} \fi
 
 \defbeamertemplate{frame number block}{minimal}{
-	\begin{tikzpicture}[tugtheme]
+	\tikzexternaldisable\begin{tikzpicture}[tugtheme]
     \fill[main] (current page.south west) rectangle +(\tugraz@footheight,\tugraz@footheight);
     \draw (current page.south west) +(.5*\tugraz@footheight,.5*\tugraz@footheight) node[anchor=center,font={\usebeamercolor[fg]{page number in head/foot}}] {\insertframenumber};
-  \end{tikzpicture}
+  \tikzexternalenable\end{tikzpicture}
 }
 
 \defbeamertemplate{frame number block}{institute}{
-	\begin{tikzpicture}[tugtheme]
+	\tikzexternaldisable\begin{tikzpicture}[tugtheme]
     \node[anchor=north west] at (current page.north west) {\includegraphics[width=\tugraz@instheight cm,trim=0cm 0cm 0cm \tugraz@insttrim cm,clip]{\insertinstitutelogo}};
     \draw (current page.north west) ++(0,-0.7+\tugraz@wideyshift) ++(.5*\tugraz@instheight,-.5*\tugraz@instheight) ++(0,-.1) node[anchor=center,font={\usebeamercolor[fg]{page number in head/foot}}] {\insertframenumber};
-  \end{tikzpicture}
+  \tikzexternalenable\end{tikzpicture}
 }
 
 \defbeamertemplate{frame number block}{standard}{
-	\begin{tikzpicture}[tugtheme]
+	\tikzexternaldisable\begin{tikzpicture}[tugtheme]
     \fill[main] (current page.north west) ++(0,-.7+\tugraz@wideyshift) rectangle +(\tugraz@instheight,-\tugraz@instheight);
     \draw (current page.north west) ++(0,-0.7+\tugraz@wideyshift) ++(.5*\tugraz@instheight,-.5*\tugraz@instheight) node[anchor=center,font={\usebeamercolor[fg]{page number in head/foot}}] {\insertframenumber};
-  \end{tikzpicture}
+  \tikzexternalenable\end{tikzpicture}
 }
 \setbeamertemplate{frame number block}[standard]
 
@@ -759,12 +759,12 @@ text.fg}
   \setbeamertemplate{footline}[text line]{
     \rule{0pt}{\tugraz@footheight cm}
     \usebeamerfont{footline}
-    \begin{tikzpicture}[tugtheme]
+    \tikzexternaldisable\begin{tikzpicture}[tugtheme]
       \draw[fill, footline.bg] (current page.south west) rectangle +(\paperwidth,\tugraz@footheight);
       \draw (current page.south east) +(-\tugraz@rightindent,0.1) node[above left] {\drawadditionallogo};
       \draw (current page.south west) ++(\tugraz@indent,.45) node {\insertshortauthor\ifx\insertinstitute\empty\else, \insertshortinstitute\fi};
       \draw (current page.south west) ++(\tugraz@indent,.15) node {\insertshortdate}; % {\insertdate};
-    \end{tikzpicture}
+    \tikzexternalenable\end{tikzpicture}
     \usebeamertemplate{frame number block}
   }%
 \else
@@ -822,7 +822,7 @@ text.fg}
 \defbeamertemplate{title page}{presentation}{
   \drawtitlepagebackground
 
-  \begin{tikzpicture}[tugtheme]
+  \tikzexternaldisable\begin{tikzpicture}[tugtheme]
     \draw (current page.west) +(\tugraz@indent,0) node[font={\usebeamercolor[fg]{title}\usebeamerfont{title}}] {\parbox[b]{.9\paperwidth}{\inserttitle}};
 
     \draw (current page.west) +(\tugraz@indent,\iftugraz@wide-1.2\else-1\fi) node[font={\usebeamercolor[fg]{author}\usebeamerfont{author}}] {\parbox[b]{.9\paperwidth}{\insertauthor}};
@@ -837,11 +837,11 @@ text.fg}
 
     \draw (current page.south west) +(\tugraz@indent,0.25) node[above right,font=\usebeamerfont{headline}] {\ifx\insertinstituteurl\empty\else\strut\textcolor{tug}{\tuggreater}~~\insertinstituteurl\fi};
     \draw (current page.south east) +(-\tugraz@rightindent,0.1) node[above left] {\drawadditionallogo};
-	\end{tikzpicture}
+	\tikzexternalenable\end{tikzpicture}
 }
 
 \newcommand{\drawtitlepagebackground}{
-  \begin{tikzpicture}[tugtheme]
+  \tikzexternaldisable\begin{tikzpicture}[tugtheme]
     \iftugraz@files
       \node[anchor=north west] at (current page.north west) {\includegraphics[width=\paperwidth]{\inserttitlebackground}};
     \else\iftugraz@logo
@@ -855,7 +855,7 @@ text.fg}
     \fi
 
     \fill[foot] (current page.south west) rectangle +(\paperwidth,\tugraz@footheight);
-  \end{tikzpicture}%
+  \tikzexternalenable\end{tikzpicture}%
 }
 \setbeamertemplate{title page}[presentation]
 
@@ -949,7 +949,7 @@ text.fg}
 
 \newcommand{\makelogo}{
   \iftugraz@logo
-  \begin{tikzpicture}[tugtheme]
+  \tikzexternaldisable\begin{tikzpicture}[tugtheme]
     \loadcoordinates
     \iftugraz@wide
       \iftugraz@poi
@@ -960,7 +960,7 @@ text.fg}
     \else
       \draw (toptextNE) node[below left] (tuglogo) {\tuglogoscaled[\tugraz@logosize]};
     \fi
-  \end{tikzpicture}
+  \tikzexternalenable\end{tikzpicture}
   \fi
 }
 
@@ -971,30 +971,30 @@ text.fg}
 \defbeamertemplate{welcome page top}{fill}{
   % NOTE: maybe default to
   %\setbeamercolor{tuglogo}{fg=white}
-  \begin{tikzpicture}[tugtheme]
+  \tikzexternaldisable\begin{tikzpicture}[tugtheme]
     \loadcoordinates
     \usebeamercolor{welcome page top}
     \fill[bg] (topNW) rectangle (topSE);
-  \end{tikzpicture}%
+  \tikzexternalenable\end{tikzpicture}%
   \makelogo%
 }
 \defbeamertemplate{welcome page top}{figure}{
   \iftugraz@files
     \ifx\inserttitlefigure\empty\else%
-      \begin{tikzpicture}[tugtheme]
+      \tikzexternaldisable\begin{tikzpicture}[tugtheme]
         \loadcoordinates
         \node[above right] at (topSW) {\includegraphics[width=\paperwidth]{\inserttitlefigure}};
-      \end{tikzpicture}
+      \tikzexternalenable\end{tikzpicture}
     \fi
   \fi
   \makelogo%
 }
 \defbeamertemplate{welcome page top}{shade}{
   \setbeamercolor{welcome page top}{fg=black}
-  \begin{tikzpicture}[tugtheme]
+  \tikzexternaldisable\begin{tikzpicture}[tugtheme]
     \loadcoordinates
     \node[fit=(topSW) (topNE), bottom color=black!45, top color=black!5] {};
-  \end{tikzpicture}%
+  \tikzexternalenable\end{tikzpicture}%
   \makelogo%
 }
 \setbeamertemplate{welcome page top}[figure]
@@ -1014,7 +1014,7 @@ text.fg}
     \usebeamertemplate{welcome page top}
   \fi
 
-  \begin{tikzpicture}[tugtheme]
+  \tikzexternaldisable\begin{tikzpicture}[tugtheme]
     \loadcoordinates
 
     \filldraw[main] (barSW) rectangle (barNE);
@@ -1034,7 +1034,7 @@ text.fg}
       \draw (foottextSW) +(0,.05) node[above right,font=\usebeamerfont{headline}] {\ifx\insertinstituteurl\empty\else\strut\textcolor{tug}{\tuggreater}~~\insertinstituteurl\fi};
       \draw (footSE) +(-\tugraz@rightindent,0.1) node[above left] {\drawadditionallogo};
     \fi
-  \end{tikzpicture}
+  \tikzexternalenable\end{tikzpicture}
 }
 
 \defbeamertemplate{title page}{welcome}{
@@ -1046,7 +1046,7 @@ text.fg}
   \tugraz@poitrue
   \setbeamerfont{subtitle}{size=\large}
   \usebeamertemplate{welcome}
-  \begin{tikzpicture}[tugtheme]
+  \tikzexternaldisable\begin{tikzpicture}[tugtheme]
     % Marker for POI newsline, hidden in converted/printed version
     % turn off with \hideocgs{hiddenmarkers1}{display}
     \begin{ocg}[printocg=never,exportocg=never]{Hidden POI marker}{hiddenmarkers1}{1}
@@ -1054,7 +1054,7 @@ text.fg}
       \draw[dashed,thick,fg,fill=bg] (footSW) rectangle (footNE);
       \draw (current page.south) node[fg, above=1ex, font=\large] {(space reserved for newsline)};
     \end{ocg}
-  \end{tikzpicture}
+  \tikzexternalenable\end{tikzpicture}
 }
 
 \defbeamertemplate{title page}{poi nonewsline}{
@@ -1078,7 +1078,7 @@ text.fg}
 \setbeamercolor{tuglogo}{fg=black,bg=tug}
 \newcommand{\tuglogo}{%
   %\tikzsetnextfilename{tugrazlogo}%
-  \begin{tikzpicture}[y=0.80pt, x=0.80pt, yscale=-1.000000, xscale=1.000000, inner sep=0pt, outer sep=0pt]
+  \tikzexternaldisable\begin{tikzpicture}[y=0.80pt, x=0.80pt, yscale=-1.000000, xscale=1.000000, inner sep=0pt, outer sep=0pt]
   \usebeamercolor{tuglogo}
   \begin{scope}[cm={{1.25,0.0,0.0,-1.25,(0.0,53.75)}}]
     \begin{scope}[scale=0.100]
@@ -1172,7 +1172,7 @@ text.fg}
         (1129.8433,77.4219) -- (1060.7300,77.4219) -- (1060.7300,8.3086) -- cycle;
     \end{scope}
   \end{scope}
-  \end{tikzpicture}%
+  \tikzexternalenable\end{tikzpicture}%
 }
 %}}}
 
@@ -1228,19 +1228,19 @@ text.fg}
 \iftugraz@plainsectionpages
 \begin{frame}[plain]
   \usebeamerfont{part page}\usebeamercolor[fg]{part page}
-  \begin{tikzpicture}[tugtheme]
+  \tikzexternaldisable\begin{tikzpicture}[tugtheme]
     \draw (current page.center) ++(0,.2) node[above,align=center] {\strut #2};
     \draw (current page.center) ++(0,-.5) node[below,align=center,font=\normalsize] {\strut #1};
-  \end{tikzpicture}
+  \tikzexternalenable\end{tikzpicture}
 \end{frame}
 \else
 \section*{}
 \begin{frame}
   \usebeamerfont{part page}\usebeamercolor[fg]{part page}
-  \begin{tikzpicture}[tugtheme]
+  \tikzexternaldisable\begin{tikzpicture}[tugtheme]
     \draw (current page.center) ++(0,.2) node[above,align=center] {\strut #2};
     \draw (current page.center) ++(0,-.5) node[below,align=center,font=\normalsize] {\strut #1};
-  \end{tikzpicture}
+  \tikzexternalenable\end{tikzpicture}
 \end{frame}
 %\section{#2}
 \fi

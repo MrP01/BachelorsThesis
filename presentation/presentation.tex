@@ -1,10 +1,16 @@
-\PassOptionsToPackage{dvispnames}{xcolor}
+\PassOptionsToPackage{dvispnames, table}{xcolor}
 \documentclass[aspectratio=169]{beamer}
 \usetheme[institute]{tugraz2018}
 \usepackage[beamer]{prettytex/base}
 \usepackage{prettytex/math}
 \usepackage{prettytex/gfx}
 \input{customs.tex}
+
+\tikzexternalize[prefix=tikz/]
+\renewcommand{\inputtikz}[1]{
+  \tikzsetnextfilename{#1}
+  \input{../thesis/#1.tex}
+}
 
 \title[Secure Classification as a Service]{
   Secure Classification as a Service \\
@@ -53,7 +59,7 @@
   \section{Lattice Cryptography}
   \begin{frame}{Polynomial Rings}
     \begin{figure}
-      \scalebox{0.7}{\inputtikz{../thesis/figures/nth-roots-of-unity}}
+      \scalebox{0.7}{\inputtikz{figures/nth-roots-of-unity}}
       \caption{The 5\th roots of unity}
     \end{figure}
   \end{frame}
