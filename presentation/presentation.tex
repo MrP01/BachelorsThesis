@@ -54,23 +54,123 @@
 
   \section{Introduction}
   \begin{frame}{Privacy for Medical Applications}\end{frame}
-  \begin{frame}{Post-Quantum Security}\end{frame}
-  \begin{frame}{The \gls{rsa} Scheme}\end{frame}
-  \section{Lattice Cryptography}
-  \begin{frame}{Polynomial Rings}
-    \begin{figure}
-      \scalebox{0.7}{\inputtikz{figures/nth-roots-of-unity}}
-      \caption{The 5\th roots of unity}
+  \begin{frame}{Post-Quantum Security}
+    \begin{figure}[H]
+      \centering
+      \inputtikz{figures/wave-function}
+      \caption{Illustration of a wave function $\psi$ as commonly used in quantum mechanics.}
+      \label{fig:wave-function}
     \end{figure}
   \end{frame}
-  \begin{frame}{The \gls{lwe} Problem}\end{frame}
+
+
+  \begin{frame}{The \gls{rsa} Scheme}
+    From the integers $\Z$, define the quotient ring $(\Z/q\Z, +, \cdot)$.
+
+    With unpadded RSA \parencite{1983-rsa}, some arithmetic can be performed on the ciphertext - looking at the encrypted ciphertext $\mathcal{E}: \Z/q\Z \mapsto \Z/q\Z,\, \mathcal{E}(m) := m^r \mod q$ ($r, q \in \N$) of the message $m_1, m_2 \in \Z/q\Z$ respectively, the following holds:
+    \begin{align*}
+      \mathcal{E}(m_1) \cdot \mathcal{E}(m_2)
+       & \equiv (m_1)^r (m_2)^r \mod q            \\
+       & \equiv (m_1 m_2)^r \mod q                \\
+       & \equiv \mathcal{E}(m_1 \cdot m_2) \mod q
+    \end{align*}
+  \end{frame}
+
+  \section{Lattice Cryptography and RLWE}
+  \begin{frame}{Polynomial Rings}
+    \begin{columns}
+      \begin{column}{0.5\linewidth}
+        \begin{definition}[Cyclotomic Polynomial]
+          Given the $n$\th roots of unity $\{\xi_k\}$, define $\Phi_n \in \Z[X]$ as
+          $$\Phi_n(x) := \prod_{\stackrel{k=1}{\xi_k \mathrm{primitive}}}^{n} (x - \xi_k) \,.$$
+          It is unique for each given $n \in \N$.
+        \end{definition}
+      \end{column}
+      \begin{column}{0.32\linewidth}
+        \begin{figure}
+          \scalebox{0.7}{\inputtikz{figures/nth-roots-of-unity}}
+          \caption{The 5\th roots of unity}
+          \label{fig:nth-roots-of-unity}
+        \end{figure}
+      \end{column}
+    \end{columns}
+  \end{frame}
+
+  \begin{frame}{Some Notation}
+    \begin{itemize}
+      \item $\Z[X] := \big\{p: \C \mapsto \C \,, p(x) = \sum_{k=0}^\infty a_k x^k, a_k \in \Z \;\forall k \geq 0\big\}$
+      \item $\Z_q[X] := (\Z/q\Z)[X]$
+      \item $\Z_q[X] / \Phi_M(X)$
+      \item $\Z_q[X]/(X^N+1)$ for $N$ a power of 2.
+    \end{itemize}
+  \end{frame}
+
+  \begin{frame}{The \gls{lwe} Problem}
+    \begin{definition}[LWE-Distribution $A_{\vec{s}, \chi_{error}}$]
+      Given a prime $q \in \N$ and $n \in \N$, we choose some secret $\vec{s} \in (\Z / q \Z)^n$.
+      In order to sample a value from the LWE distribution $A_{\vec{s}, \chi_{error}}$:
+      \begin{itemize}
+        \item Draw a random vector $a \in (\Z/q\Z)^n$ from the multivariate uniform distribution with its domain in the integers up to $q$.
+        \item Given another probability distribution $\chi_{error}$ over the integers modulo $q$, sample a scalar 'error term' $\mu \in \Z / q \Z$ from it, often also referred to as noise.
+        \item Set $b = \vec{s} \cdot \vec{a} + \mu$, with $\cdot$ denoting the standard vector product.
+        \item Output the pair $(\vec{a}, b) \in (\Z / q \Z)^n \times (\Z / q \Z)$.
+      \end{itemize}
+    \end{definition}
+
+    Search-LWE-Problem:
+    Given $m$ independent samples $(\vec{a}_i, b_i)_{0 < i \leq m}$ from $A_{\vec{s}, \chi_{error}}$, find $\vec{s}$.
+  \end{frame}
+
+  \begin{frame}{The \gls{rlwe} Problem}
+    \begin{corollary}[RLWE-Distribution $B_{\vec{s}, \chi_{error}}$]
+      Given a quotient $(R/qR, +, \cdot)$, we choose some secret $s \in R/qR$.
+      In order to sample a value from the RLWE distribution $B_{s, \chi_{error}}$:
+      \begin{itemize}
+        \item Uniformly randomly draw an element $a \in R/qR$
+        \item Given another probability distribution $\chi_{error}$ over the ring elements, sample an 'error term' $\mu \in R/qR$ from it, also referred to as noise.
+        \item Set $b = s \cdot a + \mu$, with $\cdot$ denoting the ring multiplication operation.
+        \item Output the pair $(a, b) \in R/qR \times R/qR$.
+      \end{itemize}
+    \end{corollary}
+
+    Use it to construct a cryptosystem...
+  \end{frame}
+
   \section{The CKKS Scheme}
   \begin{frame}{Overview of \gls{ckks}}
     \cite{2017-ckks-original}
   \end{frame}
-  \begin{frame}{Encoding and Decoding}\end{frame}
-  \begin{frame}{Encryption and Decryption}\end{frame}
-  \begin{frame}{Homomorphic Addition}\end{frame}
+
+  \begin{frame}{Encoding and Decoding}
+    \cryptop{CKKS.} \\
+    \begin{tblr}{Q[l,h]Q[l,h,\textwidth - 3.5cm]}
+      \cryptop{Encode}$(\vec{z})$ & {For a given input vector $\vec{z}$, output
+          $m = (\underline{\sigma}\inv \circ \underline{\rho_\delta}\inv \circ \underline{\pi}\inv)(\vec{z}) = \underline{\sigma}\inv(\lfloor \delta \cdot \underline{\pi}\inv(\vec{z})\rceil_{\underline{\sigma}(R)})$ $\quad\rightarrow m$} \\
+      \cryptop{Decode}$(m)$ & {Decode plaintext $m$ as
+          $\vec{z} = (\underline{\pi} \circ \underline{\rho_\delta} \circ \underline{\sigma})(m) = (\underline{\pi} \circ \underline{\sigma})(\delta\inv m)$
+          $\quad\rightarrow \vec{z}$} \\
+    \end{tblr}
+  \end{frame}
+  \begin{frame}{Encryption and Decryption}
+    \cryptop{CKKS.} \\
+    \begin{tblr}{Q[l,h]Q[l,h,\textwidth - 3.5cm]}
+      \cryptop{Encrypt}$(\vec{p}, m)$ & {
+          Let $(b,a) = \vec{p}$, $u \leftarrow \chi_{enc}$, $\mu_1, \mu_2 \leftarrow \chi_{error}$,
+          then the ciphertext is $\vec{c} = u \cdot \vec{p} + (m + \mu_1, \mu_2) = (m + bu + \mu_1, au + \mu_2)$
+          $\quad\rightarrow \vec{c}$} \\
+      \cryptop{Decrypt}$(s, \vec{c})$ & {
+          Decrypt the ciphertext $\vec{c} = (c_0, c_1)$ as $m = \lbrack c_0 + c_1 s\rbrack_{q_L}$
+          $\quad\rightarrow m$} \\
+    \end{tblr}
+  \end{frame}
+  \begin{frame}{Homomorphic Addition}
+    \cryptop{CKKS.} \\
+    \begin{tblr}{Q[l,h]Q[l,h,\textwidth - 3.5cm]}
+      \cryptop{Add}$(\vec{c}_1, \vec{c}_2)$ & {
+          Output $\vec{c}_3 = \vec{c}_1 + \vec{c}_2$
+          $\quad\rightarrow \vec{c}_3$} \\
+    \end{tblr}
+  \end{frame}
   \section{Implementation}
   \begin{frame}{Demo: Secure Handwritten Digit Classification as a Service}\end{frame}
   \begin{frame}{Neural Networks}\end{frame}

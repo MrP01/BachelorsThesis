@@ -245,13 +245,13 @@ Next, we would like to consider \gls{lwe}, a computing problem that is believed 
 Its hardness assumptions are related to GapSVP and were first formally proven by \citeauthor{2005-lwe-original}, for which he received the 2018 Gödel price.
 
 \begin{definition}{LWE-Distribution $A_{\vec{s}, \chi_{error}}$}{lwe-dist}
-  Given a prime $p \in \N$ and $n \in \N$, we choose some secret $\vec{s} \in (\Z / p \Z)^n$.
+  Given a prime $q \in \N$ and $n \in \N$, we choose some secret $\vec{s} \in (\Z / q \Z)^n$.
   In order to sample a value from the LWE distribution $A_{\vec{s}, \chi_{error}}$:
   \begin{itemize}
-    \item Draw a random vector $a \in (\Z/p\Z)^n$ from the multivariate uniform distribution with its domain in the integers up to $p$.
-    \item Given another probability distribution $\chi_{error}$ over the integers modulo $p$, sample a scalar 'error term' $\mu \in \Z / p \Z$ from it, often also referred to as noise.
+    \item Draw a random vector $a \in (\Z/q\Z)^n$ from the multivariate uniform distribution with its domain in the integers up to $q$.
+    \item Given another probability distribution $\chi_{error}$ over the integers modulo $q$, sample a scalar 'error term' $\mu \in \Z / q \Z$ from it, often also referred to as noise.
     \item Set $b = \vec{s} \cdot \vec{a} + \mu$, with $\cdot$ denoting the standard vector product.
-    \item Output the pair $(\vec{a}, b) \in (\Z / p \Z)^n \times (\Z / p \Z)$.
+    \item Output the pair $(\vec{a}, b) \in (\Z / q \Z)^n \times (\Z / q \Z)$.
   \end{itemize}
 \end{definition}
 
@@ -261,7 +261,7 @@ The general approach useful to cryptography is to sample an element from the LWE
   Given $m$ independent samples $(\vec{a}_i, b_i)_{0 < i \leq m}$ from $A_{\vec{s}, \chi_{error}}$, find the secret $\vec{s}$.
 \end{definition}
 \begin{definition}{LWE-Problem - Decision Version}{lwe-decision-problem}
-  Given $m$ samples $(\vec{a}_i, b_i)_{0 < i \leq m}$, distinguish (with non-negligible advantage) whether they were drawn from $A_{\vec{s}, \chi_{error}}$ or from the uniform distribution $u$ over $(\Z / p \Z)^n \times (\Z / p \Z)$.
+  Given $m$ samples $(\vec{a}_i, b_i)_{0 < i \leq m}$, distinguish (with non-negligible advantage) whether they were drawn from $A_{\vec{s}, \chi_{error}}$ or from the uniform distribution $u$ over $(\Z / q \Z)^n \times (\Z / q \Z)$.
 \end{definition}
 
 In their above definitions, \citeauthor{2005-lwe-original} showed that the two problems are equivalent.
