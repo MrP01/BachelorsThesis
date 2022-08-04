@@ -496,8 +496,8 @@ text.fg}
 %\renewcommand{\emph}[1]{{\color{main}#1}}
 
 %%%   LISTS   %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\newcommand{\colbox}[2][tug]{\tikz[baseline=-.7ex, external/export=false]{\node[fill=#1, draw=#1, draw, inner sep=0pt, minimum size=1em, text=white, name={n}] at (0,0) {#2};}}
-\newcommand{\itemsq}{\raisebox{0.25ex}{\tikz{\fill rectangle (0.75ex,0.75ex);}}}
+\newcommand{\colbox}[2][tug]{\tikzset{external/export next=false}\tikz[baseline=-.7ex]{\node[fill=#1, draw=#1, draw, inner sep=0pt, minimum size=1em, text=white, name={n}] at (0,0) {#2};}}
+\newcommand{\itemsq}{\raisebox{0.25ex}{\tikzset{external/export next=false}\tikz{\fill rectangle (0.75ex,0.75ex);}}}
 
 % standard beamer itemize spacing, tug items
 \defbeamertemplate{itemize item}{tugitem}{{\itemsq}}
@@ -705,7 +705,7 @@ text.fg}
     \tikzexternaldisable\begin{tikzpicture}[tugtheme]
       \iftugraz@minimal
         \draw (current page.north east) ++(-.17,-\tugraz@rightindent) node[anchor=base east,font=\usebeamerfont{footline}] {%
-          \ifx\insertinstituteurl\empty\else\insertinstituteurl~\tikz{\fill[tug] (0,0) rectangle ++(1ex,1ex);}\fi
+          \ifx\insertinstituteurl\empty\else\insertinstituteurl~\tikzset{external/export next=false}\tikz{\fill[tug] (0,0) rectangle ++(1ex,1ex);}\fi
         };
       \else
         \draw (current page.north west) +(\tugraz@indent,      -.7+\tugraz@wideyshift) coordinate (lineleft);
@@ -817,7 +817,7 @@ text.fg}
   \fi\fi
 \fi
 
-\newcommand{\tuggreater}{\tikz{\draw[line width=.75pt] (0,0) -- +(.5ex,.5ex) -- +(0,1ex);}}
+\newcommand{\tuggreater}{\tikzset{external/export next=false}\tikz{\draw[line width=.75pt] (0,0) -- +(.5ex,.5ex) -- +(0,1ex);}}
 
 \defbeamertemplate{title page}{presentation}{
   \drawtitlepagebackground
@@ -1072,7 +1072,7 @@ text.fg}
 
 
 %%%   TUGRAZ LOGO   %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\newcommand{\tugsq}{\raisebox{0.5ex}{\tikz{\fill (0,0) rectangle (0.5ex,0.5ex);}}}
+\newcommand{\tugsq}{\raisebox{0.5ex}{\tikzset{external/export next=false}\tikz{\fill (0,0) rectangle (0.5ex,0.5ex);}}}
 
 % integrated logo version {{{
 \setbeamercolor{tuglogo}{fg=black,bg=tug}

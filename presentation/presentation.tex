@@ -63,7 +63,6 @@
     \end{figure}
   \end{frame}
 
-
   \begin{frame}{The \gls{rsa} Scheme}
     From the integers $\Z$, define the quotient ring $(\Z/q\Z, +, \cdot)$.
 
@@ -138,6 +137,15 @@
 
   \section{The CKKS Scheme}
   \begin{frame}{Overview of \gls{ckks}}
+    \begin{figure}[H]
+      \centering
+      \inputtikz{figures/ckks-schematic}
+      \caption[Schematic overview of the CKKS scheme]{
+        Schematic overview of CKKS, adapted from \cite{2020-cryptotree}.
+        A plain vector $\vec{z} \in \C^{N/2}$ is encoded to a plaintext polynomial $m = \cryptop{CKKS.Encode}(\vec{z})$, encrypted to the ciphertext $\vec{c} = \cryptop{CKKS.Encrypt}(\vec{p}, m)$ using the public key $\vec{p}$, operated on using a combination of \cryptop{CKKS.\{Add, Mult, ReLin, ReScale\}} ciphertext operations and finally decrypted and decoded to a new $\tilde{\vec{z}} = \cryptop{CKKS.Decode}(\cryptop{CKKS.Decrypt}(s, \tilde{\vec{c}}))$ using the secret key $s$.
+      }
+      \label{fig:ckks-overview}
+    \end{figure}
     \cite{2017-ckks-original}
   \end{frame}
 
