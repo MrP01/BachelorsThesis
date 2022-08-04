@@ -1,0 +1,63 @@
+\section{Lattice Cryptography and RLWE}
+\begin{frame}{The \gls{lwe} Problem}
+  \begin{definition}[LWE-Distribution $A_{\vec{s}, \chi_{error}}$]
+    Given a prime $q \in \N$ and $n \in \N$, we choose some secret $\vec{s} \in (\Z / q \Z)^n$.
+    In order to sample a value from the LWE distribution $A_{\vec{s}, \chi_{error}}$:
+    \begin{itemize}
+      \item Draw a random vector $a \in (\Z/q\Z)^n$ from the multivariate uniform distribution with its domain in the integers up to $q$.
+      \item Given another probability distribution $\chi_{error}$ over the integers modulo $q$, sample a scalar 'error term' $\mu \in \Z / q \Z$ from it, often also referred to as noise.
+      \item Set $b = \vec{s} \cdot \vec{a} + \mu$, with $\cdot$ denoting the standard vector product.
+      \item Output the pair $(\vec{a}, b) \in (\Z / q \Z)^n \times (\Z / q \Z)$.
+    \end{itemize}
+  \end{definition}
+
+  Search-LWE-Problem:
+  Given $m$ independent samples $(\vec{a}_i, b_i)_{0 < i \leq m}$ from $A_{\vec{s}, \chi_{error}}$, find $\vec{s}$.
+\end{frame}
+
+\begin{frame}{Polynomial Rings}
+  \begin{columns}
+    \begin{column}{0.5\linewidth}
+      \begin{definition}[Cyclotomic Polynomial]
+        Given the $n$\th roots of unity $\{\xi_k\}$, define $\Phi_n \in \Z[X]$ as
+        $$\Phi_n(x) := \prod_{\stackrel{k=1}{\xi_k \mathrm{primitive}}}^{n} (x - \xi_k) \,.$$
+        It is unique for each given $n \in \N$.
+      \end{definition}
+    \end{column}
+    \begin{column}{0.32\linewidth}
+      \begin{figure}
+        \scalebox{0.7}{\inputtikz{figures/nth-roots-of-unity}}
+        \caption{The 5\th roots of unity}
+        \label{fig:nth-roots-of-unity}
+      \end{figure}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Some Notation}
+  \begin{itemize}
+    \item $\Z[X] := \big\{p: \C \mapsto \C \,, p(x) = \sum_{k=0}^\infty a_k x^k, a_k \in \Z \;\forall k \geq 0\big\}$
+    \item $\Z_q[X] := (\Z/q\Z)[X]$
+    \item $\Z_q[X] / \Phi_M(X)$ using the $M$\th cyclotomic polynomial
+    \item $\Z_q[X]/(X^N+1)$ for $N$ a power of 2.
+          \begin{itemize}
+            \item Elements are polynomials of degree $N-1$ with integer coefficients modulo $q$.
+          \end{itemize}
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{The \gls{rlwe} Problem}
+  \begin{corollary}[RLWE-Distribution $B_{\vec{s}, \chi_{error}}$]
+    Given a quotient $(R/qR, +, \cdot)$, we choose some secret $s \in R/qR$.
+    In order to sample a value from the RLWE distribution $B_{s, \chi_{error}}$:
+    \begin{itemize}
+      \item Uniformly randomly draw an element $a \in R/qR$
+      \item Given another probability distribution $\chi_{error}$ over the ring elements, sample an 'error term' $\mu \in R/qR$ from it, also referred to as noise.
+      \item Set $b = s \cdot a + \mu$, with $\cdot$ denoting the ring multiplication operation.
+      \item Output the pair $(a, b) \in R/qR \times R/qR$.
+    \end{itemize}
+  \end{corollary}
+
+  Use it to construct a cryptosystem...
+  Idea: Attacker needs to solve \gls{lwe} given the ciphertext and public key.
+\end{frame}

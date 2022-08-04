@@ -1,0 +1,59 @@
+\section{Implementation Goal and Methods}
+\begin{frame}{Goal: Classify MNIST}
+  \begin{itemize}
+    \item Two main types of \gls{ml}: Supervised and Unsupervised Learning
+    \item Popular dataset: \gls{mnist}. Encode as vector of 784 entries.
+  \end{itemize}
+
+  \begin{figure}[H]
+    \centering
+    \scalebox{0.8}{\inputtikz{figures/mnist}}
+    \caption[Sample images of the MNIST dataset]{
+      Sample images of the MNIST dataset of handwritten digits \parencite{mnist-original}.
+      The dataset contains 70,000 images of $28 \times 28$ greyscale pixels valued from 0 to 255 as well as associated labels (as required for supervised learning).
+    }
+    \label{fig:mnist}
+  \end{figure}
+\end{frame}
+
+\begin{frame}{Neural Networks}
+  \begin{figure}[H]
+    \centering
+    \scalebox{0.9}{\inputtikz{figures/neural-network}}
+    \caption[Neural Network illustration resembling the one used in our demonstrator]{
+      A simple neural network resembling the structure we use in our demonstrator with $\vec{h} = \cryptop{relu}(M_1 \vec{x} + \vec{b_1})$ and the output $\vec{y} = \cryptop{softmax}(M_2 \vec{h} + \vec{b_2})$.
+    }
+    \label{fig:neural-network}
+  \end{figure}
+\end{frame}
+
+\begin{frame}{Matrix Multiplication: The Na\"ive Method}
+  \begin{figure}[H]
+    \centering
+    \hspace{-3cm}
+    \scalebox{0.9}{\inputtikz{figures/generated/matmul-naive}}
+    \caption[Naïve matrix multiplication method]{The naïve method to multiply a square matrix with a vector (adapted from \cite{2018-gazelle}).}
+    \label{fig:naive-method}
+  \end{figure}
+\end{frame}
+
+\begin{frame}{Matrix Multiplication: The Diagonal Method}
+  \begin{figure}[H]
+    \centering
+    \hspace{-3cm}
+    \scalebox{0.9}{\inputtikz{figures/generated/matmul-diagonal}}
+    \caption[Diagonal matrix multiplication method]{The diagonal method to multiply a square matrix with a vector (adapted from \cite{2018-gazelle}).}
+    \label{fig:diagonal-method}
+  \end{figure}
+\end{frame}
+
+\begin{frame}{Matrix Multiplication: The Hybrid Method}
+  \begin{figure}[H]
+    \centering
+    \hspace{-3cm}
+    \scalebox{0.9}{\inputtikz{figures/generated/matmul-hybrid}}
+    \caption[Hybrid matrix multiplication method]{The hybrid method to multiply an arbitrarily sized matrix with a vector (adapted from \cite{2018-gazelle}).}
+    \label{fig:hybrid-method}
+  \end{figure}
+  Similar performance: The BabyStep-Giantstep Method.
+\end{frame}

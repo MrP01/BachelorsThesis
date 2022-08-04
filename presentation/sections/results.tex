@@ -1,0 +1,58 @@
+\section{Results: Network Analysis and Performance Benchmarks}
+\begin{frame}{Chaos everywhere: The Confusion Matrix}
+  \centering
+  \scalebox{0.7}{\inputtikz{figures/generated/confusion-matrix}}
+\end{frame}
+
+\begin{frame}{Runtime Benchmarks}
+  \begin{table}[H]
+    \centering
+    \caption[Performance Benchmarks / Communication Overhead]{
+      Performance benchmarks and communication overhead of the classification procedure on an Intel\textregistered \, i7-5600U CPU, including the encoding and decoding steps.
+    }
+    % \captionsetup{margin=10pt}
+    % \caption*{
+    %   $\bm{B_1}$ ... Coefficient Moduli start bits (also equal to the last) \\
+    %   $\bm{B_2}$ ... Coefficient Moduli middle bits, also defines the scale as $2^{B_2}$ \\
+    %   $\bm{N}$ ... Polynomial Modulus Degree, found in the exponent of $p(X) = X^N + 1$ \\
+    %   $\bm{T}$ ... Runtime of encryption + classification + decryption \\
+    %   $\bm{M}$ ... Message Size (Relin Keys + Galois Keys + Request Ciphertext + Response Ciphertext) \\
+    %   $\bm{\Delta}$ ... Mean Max-Relative Error compared to the exact result, i.e. $\bm{\Delta} := \frac{\langle |\bm{y}_{prediction} - \bm{y}_{exact}| \rangle}{\max |\bm{y}_{exact}|}$
+    % }
+    \SetTblrInner{rowsep=1pt}
+    \scalebox{0.8}{
+      \begin{tblr}{
+        colspec={ccrrrrrrr},
+        row{2,3,4} = {bg=azure9},
+        row{5,6,7} = {bg=violet9},
+        row{8,9,10} = {bg=blue9},
+        row{11,12,13} = {bg=azure9},
+          }
+        \hline
+        \bf Mode & \bf SecLevel & $\bm{B_1}$ & $\bm{B_2}$ & $\bm{N}$ & \bf MatMul & $\bm{T}$ / \si{\second} & $\bm{M}$ / \si{\mebi\byte} & $\bm{\Delta}$ / 1 \\
+        \hline
+        Release & tc128 & 34 & 25 & 8192 & Diagonal & 8.39 & 132.72 & 0.0364 \\
+        & & & & & Hybrid & 1.35 & 132.72 & 0.0362 \\
+        & & & & & BSGS & 1.66 & 132.72 & 0.1433 \\
+        \hline
+        & tc128 & 60 & 40 & 16384 & Diagonal & 17.24 & 286.51 & 0.0363 \\
+        & & & & & Hybrid & 3.05 & 286.51 & 0.0364 \\
+        & & & & & BSGS & 3.66 & 286.51 & 0.1399 \\
+        \hline
+        & tc256 & 60 & 40 & 32768 & Diagonal & 35.24 & 615.16 & 0.0363 \\
+        & & & & & Hybrid & 5.99 & 615.16 & 0.0364 \\
+        & & & & & BSGS & 7.34 & 615.16 & 0.1399 \\
+      \end{tblr}
+    }
+    \label{tab:performance-benchmarks}
+  \end{table}
+\end{frame}
+
+\begin{frame}{Ciphertext Visualisations}
+  \begin{figure}[H]
+    \centering
+    \scalebox{0.9}{\inputtikz{figures/ciphertext-visualisation}}
+    \caption[Visualisation of the plain input images compared to their ciphertext]{Ciphertext Visualisation: The first row corresponds to the images in plain, the second row depicts an encrypted version, namely the reconstructed polynomial coefficients $a_k$ of the ciphertext polynomial.}
+    \label{fig:ciphertext-visualisation}
+  \end{figure}
+\end{frame}

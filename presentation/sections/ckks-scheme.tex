@@ -1,0 +1,64 @@
+\section{The CKKS Scheme}
+\begin{frame}{Overview of \gls{ckks}}
+  \begin{figure}[H]
+    \centering
+    \scalebox{0.8}{\inputtikz{figures/ckks-schematic}}
+    \caption[Schematic overview of the CKKS scheme]{
+      Schematic overview of CKKS \parencite{2017-ckks-original}, adapted from \cite{2020-cryptotree}.
+      A plain vector $\vec{z} \in \C^{N/2}$ is encoded to $m = \cryptop{CKKS.Encode}(\vec{z})$, encrypted to $\vec{c} = \cryptop{CKKS.Encrypt}(\vec{p}, m)$, decrypted and decoded to a new $\tilde{\vec{z}} = \cryptop{CKKS.Decode}(\cryptop{CKKS.Decrypt}(s, \tilde{\vec{c}}))$.
+    }
+    \label{fig:ckks-overview}
+  \end{figure}
+\end{frame}
+
+\begin{frame}{Encoding and Decoding}
+  \cryptop{CKKS.} \\
+  \begin{tblr}{Q[l,h]Q[l,h,\textwidth - 3.5cm]}
+    \cryptop{Encode}$(\vec{z})$ & {For a given input vector $\vec{z}$, output
+        $m = (\underline{\sigma}\inv \circ \underline{\rho_\delta}\inv \circ \underline{\pi}\inv)(\vec{z}) = \underline{\sigma}\inv(\lfloor \delta \cdot \underline{\pi}\inv(\vec{z})\rceil_{\underline{\sigma}(R)})$ $\quad\rightarrow m$} \\
+    \cryptop{Decode}$(m)$ & {Decode plaintext $m$ as
+        $\vec{z} = (\underline{\pi} \circ \underline{\rho_\delta} \circ \underline{\sigma})(m) = (\underline{\pi} \circ \underline{\sigma})(\delta\inv m)$
+        $\quad\rightarrow \vec{z}$} \\
+  \end{tblr}
+  \begin{itemize}
+    \item Three transformations: $\underline{\sigma}\inv$, $\underline{\rho_\delta}\inv$ and $\underline{\pi}\inv$.
+    \item Key idea: Homomorphic property, they preserve additivity and multiplicativity.
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{Encryption and Decryption}
+  \cryptop{CKKS.} \\
+  \begin{tblr}{Q[l,h]Q[l,h,\textwidth - 3.5cm]}
+    \cryptop{Encrypt}$(\vec{p}, m)$ & {
+        Let $(b,a) = \vec{p}$, $u \leftarrow \chi_{enc}$, $\mu_1, \mu_2 \leftarrow \chi_{error}$,
+        then the ciphertext is $\vec{c} = u \cdot \vec{p} + (m + \mu_1, \mu_2) = (m + bu + \mu_1, au + \mu_2)$
+        $\quad\rightarrow \vec{c}$} \\
+    \cryptop{Decrypt}$(s, \vec{c})$ & {
+        Decrypt the ciphertext $\vec{c} = (c_0, c_1)$ as $m = \lbrack c_0 + c_1 s\rbrack_{q_L}$
+        $\quad\rightarrow m$} \\
+  \end{tblr}
+  \begin{itemize}
+    \item A public-key cryptosystem! Encrypt with $\vec{p}$, decrypt with $s$.
+    \item Leaves the attacker with the \gls{rlwe} problem.
+    \item Decrypts correctly under certain conditions...
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{Homomorphic Addition}
+  \begin{tblr}{Q[l,h]Q[l,h,\textwidth - 3.5cm]}
+    \cryptop{CKKS.Add}$(\vec{c}_1, \vec{c}_2)$ & {
+        Output $\vec{c}_3 = \vec{c}_1 + \vec{c}_2$
+        $\quad\rightarrow \vec{c}_3$} \\
+  \end{tblr}
+
+  Decrypts correctly?
+  \begin{align*}
+    \cryptop{CKKS.Decrypt}(s, \overline{\vec{c}})
+     & = \lfloor \delta\inv [\overline{c_0} + \overline{c_1} s]_t \rceil                                                                                                                                                         \\
+     & = \big\lfloor \delta\inv [\delta \overline{m} + b \overline{u} + \overline{\mu_1} + (a \overline{u} + \overline{\mu_2}) s]_t \big\rceil                                                                                   \\
+     & = \big\lfloor [(\delta\inv\delta) \overline{m} + \delta\inv b \overline{u} + \delta\inv \overline{\mu_1} + \delta\inv a s \overline{u} + \delta\inv \overline{\mu_2} s]_t \big\rceil                                      \\
+     & = \big\lfloor [\overline{m} - \cancel{\delta\inv as \overline{u}} - \delta\inv \tilde{\mu} \overline{u} + \delta\inv \overline{\mu_1} + \cancel{\delta\inv as \overline{u}} + \delta\inv \overline{\mu_2} s]_t \big\rceil \\
+     & = \big\lfloor [\overline{m} + \underbrace{\delta\inv (\overline{\mu_1} + \overline{\mu_2} s - \tilde{\mu} \overline{u})}_{:= \epsilon \,, ||\epsilon|| \ll 1}]_t \big\rceil
+    \approx \big\lfloor [\overline{m}]_t \big\rceil = \lfloor \overline{m} \rceil \approx \overline{m}
+  \end{align*}
+\end{frame}
