@@ -53,7 +53,15 @@
   \end{frame}
 
   \section{Introduction}
-  \begin{frame}{Privacy for Medical Applications}\end{frame}
+  \begin{frame}{Privacy for Medical Applications}
+    \begin{itemize}
+      \item Development of new applications and solutions in health care, but: very sensitive data.
+      \item For instance, RNA sequences, images of skin, lab data, medical records, etc.
+      \item The results are even more volatile: Disease predictions
+      \item $\Rightarrow$ Demand for privacy-preserving solutions in machine learning applications.
+    \end{itemize}
+  \end{frame}
+
   \begin{frame}{Post-Quantum Security}
     \begin{figure}[H]
       \centering
@@ -64,7 +72,7 @@
   \end{frame}
 
   \begin{frame}{The \gls{rsa} Scheme}
-    From the integers $\Z$, define the quotient ring $(\Z/q\Z, +, \cdot)$.
+    From the integers $\Z$, define the quotient ring $(\Z/q\Z, +, \cdot)$ for some modulus $q \in \N$.
 
     With unpadded RSA \parencite{1983-rsa}, some arithmetic can be performed on the ciphertext - looking at the encrypted ciphertext $\mathcal{E}: \Z/q\Z \mapsto \Z/q\Z,\, \mathcal{E}(m) := m^r \mod q$ ($r, q \in \N$) of the message $m_1, m_2 \in \Z/q\Z$ respectively, the following holds:
     \begin{align*}
@@ -76,6 +84,22 @@
   \end{frame}
 
   \section{Lattice Cryptography and RLWE}
+  \begin{frame}{The \gls{lwe} Problem}
+    \begin{definition}[LWE-Distribution $A_{\vec{s}, \chi_{error}}$]
+      Given a prime $q \in \N$ and $n \in \N$, we choose some secret $\vec{s} \in (\Z / q \Z)^n$.
+      In order to sample a value from the LWE distribution $A_{\vec{s}, \chi_{error}}$:
+      \begin{itemize}
+        \item Draw a random vector $a \in (\Z/q\Z)^n$ from the multivariate uniform distribution with its domain in the integers up to $q$.
+        \item Given another probability distribution $\chi_{error}$ over the integers modulo $q$, sample a scalar 'error term' $\mu \in \Z / q \Z$ from it, often also referred to as noise.
+        \item Set $b = \vec{s} \cdot \vec{a} + \mu$, with $\cdot$ denoting the standard vector product.
+        \item Output the pair $(\vec{a}, b) \in (\Z / q \Z)^n \times (\Z / q \Z)$.
+      \end{itemize}
+    \end{definition}
+
+    Search-LWE-Problem:
+    Given $m$ independent samples $(\vec{a}_i, b_i)_{0 < i \leq m}$ from $A_{\vec{s}, \chi_{error}}$, find $\vec{s}$.
+  \end{frame}
+
   \begin{frame}{Polynomial Rings}
     \begin{columns}
       \begin{column}{0.5\linewidth}
@@ -99,25 +123,12 @@
     \begin{itemize}
       \item $\Z[X] := \big\{p: \C \mapsto \C \,, p(x) = \sum_{k=0}^\infty a_k x^k, a_k \in \Z \;\forall k \geq 0\big\}$
       \item $\Z_q[X] := (\Z/q\Z)[X]$
-      \item $\Z_q[X] / \Phi_M(X)$
-      \item $\Z_q[X]/(X^N+1)$ for $N$ a power of 2.
+      \item $\Z_q[X] / \Phi_M(X)$ using the $M$\th cyclotomic polynomial
+      \item $\Z_q[X]/(X^N+1)$ for $N$ a power of 2. \pause
+            \begin{itemize}
+              \item Elements are polynomials of degree $N-1$ with integer coefficients modulo $q$.
+            \end{itemize}
     \end{itemize}
-  \end{frame}
-
-  \begin{frame}{The \gls{lwe} Problem}
-    \begin{definition}[LWE-Distribution $A_{\vec{s}, \chi_{error}}$]
-      Given a prime $q \in \N$ and $n \in \N$, we choose some secret $\vec{s} \in (\Z / q \Z)^n$.
-      In order to sample a value from the LWE distribution $A_{\vec{s}, \chi_{error}}$:
-      \begin{itemize}
-        \item Draw a random vector $a \in (\Z/q\Z)^n$ from the multivariate uniform distribution with its domain in the integers up to $q$.
-        \item Given another probability distribution $\chi_{error}$ over the integers modulo $q$, sample a scalar 'error term' $\mu \in \Z / q \Z$ from it, often also referred to as noise.
-        \item Set $b = \vec{s} \cdot \vec{a} + \mu$, with $\cdot$ denoting the standard vector product.
-        \item Output the pair $(\vec{a}, b) \in (\Z / q \Z)^n \times (\Z / q \Z)$.
-      \end{itemize}
-    \end{definition}
-
-    Search-LWE-Problem:
-    Given $m$ independent samples $(\vec{a}_i, b_i)_{0 < i \leq m}$ from $A_{\vec{s}, \chi_{error}}$, find $\vec{s}$.
   \end{frame}
 
   \begin{frame}{The \gls{rlwe} Problem}
@@ -133,16 +144,17 @@
     \end{corollary}
 
     Use it to construct a cryptosystem...
+    Idea: Attacker needs to solve \gls{lwe} given the ciphertext and public key.
   \end{frame}
 
   \section{The CKKS Scheme}
   \begin{frame}{Overview of \gls{ckks}}
     \begin{figure}[H]
       \centering
-      \inputtikz{figures/ckks-schematic}
+      \scalebox{0.8}{\inputtikz{figures/ckks-schematic}}
       \caption[Schematic overview of the CKKS scheme]{
         Schematic overview of CKKS, adapted from \cite{2020-cryptotree}.
-        A plain vector $\vec{z} \in \C^{N/2}$ is encoded to a plaintext polynomial $m = \cryptop{CKKS.Encode}(\vec{z})$, encrypted to the ciphertext $\vec{c} = \cryptop{CKKS.Encrypt}(\vec{p}, m)$ using the public key $\vec{p}$, operated on using a combination of \cryptop{CKKS.\{Add, Mult, ReLin, ReScale\}} ciphertext operations and finally decrypted and decoded to a new $\tilde{\vec{z}} = \cryptop{CKKS.Decode}(\cryptop{CKKS.Decrypt}(s, \tilde{\vec{c}}))$ using the secret key $s$.
+        A plain vector $\vec{z} \in \C^{N/2}$ is encoded to $m = \cryptop{CKKS.Encode}(\vec{z})$, encrypted to $\vec{c} = \cryptop{CKKS.Encrypt}(\vec{p}, m)$, decrypted and decoded to a new $\tilde{\vec{z}} = \cryptop{CKKS.Decode}(\cryptop{CKKS.Decrypt}(s, \tilde{\vec{c}}))$.
       }
       \label{fig:ckks-overview}
     \end{figure}
@@ -158,7 +170,12 @@
           $\vec{z} = (\underline{\pi} \circ \underline{\rho_\delta} \circ \underline{\sigma})(m) = (\underline{\pi} \circ \underline{\sigma})(\delta\inv m)$
           $\quad\rightarrow \vec{z}$} \\
     \end{tblr}
+    \begin{itemize}
+      \item Three transformations: $\underline{\sigma}\inv$, $\underline{\rho_\delta}\inv$ and $\underline{\pi}\inv$.
+      \item Key idea: Homomorphic property, they preserve additivity and multiplicativity.
+    \end{itemize}
   \end{frame}
+
   \begin{frame}{Encryption and Decryption}
     \cryptop{CKKS.} \\
     \begin{tblr}{Q[l,h]Q[l,h,\textwidth - 3.5cm]}
@@ -170,23 +187,156 @@
           Decrypt the ciphertext $\vec{c} = (c_0, c_1)$ as $m = \lbrack c_0 + c_1 s\rbrack_{q_L}$
           $\quad\rightarrow m$} \\
     \end{tblr}
+    \begin{itemize}
+      \item A public-key cryptosystem! Encrypt with $\vec{p}$, decrypt with $s$.
+      \item Leaves the attacker with the \gls{rlwe} problem.
+      \item Decrypts correctly under certain conditions...
+    \end{itemize}
   \end{frame}
+
   \begin{frame}{Homomorphic Addition}
-    \cryptop{CKKS.} \\
     \begin{tblr}{Q[l,h]Q[l,h,\textwidth - 3.5cm]}
-      \cryptop{Add}$(\vec{c}_1, \vec{c}_2)$ & {
+      \cryptop{CKKS.Add}$(\vec{c}_1, \vec{c}_2)$ & {
           Output $\vec{c}_3 = \vec{c}_1 + \vec{c}_2$
           $\quad\rightarrow \vec{c}_3$} \\
     \end{tblr}
+
+    Decrypts correctly?
+    \begin{align*}
+      \cryptop{BFV.Decrypt}(s, \overline{\vec{c}})
+       & = \lfloor \delta\inv [\overline{c_0} + \overline{c_1} s]_t \rceil                                                                                                                                                         \\
+       & = \big\lfloor \delta\inv [\delta \overline{m} + b \overline{u} + \overline{\mu_1} + (a \overline{u} + \overline{\mu_2}) s]_t \big\rceil                                                                                   \\
+       & = \big\lfloor [(\delta\inv\delta) \overline{m} + \delta\inv b \overline{u} + \delta\inv \overline{\mu_1} + \delta\inv a s \overline{u} + \delta\inv \overline{\mu_2} s]_t \big\rceil                                      \\
+       & = \big\lfloor [\overline{m} - \cancel{\delta\inv as \overline{u}} - \delta\inv \tilde{\mu} \overline{u} + \delta\inv \overline{\mu_1} + \cancel{\delta\inv as \overline{u}} + \delta\inv \overline{\mu_2} s]_t \big\rceil \\
+       & = \big\lfloor [\overline{m} + \underbrace{\delta\inv (\overline{\mu_1} + \overline{\mu_2} s - \tilde{\mu} \overline{u})}_{:= \epsilon \,, ||\epsilon|| \ll 1}]_t \big\rceil
+      \approx \big\lfloor [\overline{m}]_t \big\rceil = \lfloor \overline{m} \rceil \approx \overline{m}
+    \end{align*}
   \end{frame}
-  \section{Implementation}
-  \begin{frame}{Demo: Secure Handwritten Digit Classification as a Service}\end{frame}
-  \begin{frame}{Neural Networks}\end{frame}
-  \begin{frame}{Matrix Multiplications}\end{frame}
-  \section{Results}
-  \begin{frame}{Confusion everywhere}\end{frame}
-  \begin{frame}{Runtime Benchmarks}\end{frame}
-  \begin{frame}{Ciphertext Visualisations}\end{frame}
+
+  \section{Implementation Goal and Methods}
+  \begin{frame}{Goal: Classify MNIST}
+    \begin{itemize}
+      \item Two main types of \gls{ml}: Supervised and Unsupervised Learning
+      \item Popular dataset: \gls{mnist}. Encode as vector of 784 entries.
+    \end{itemize}
+
+    \begin{figure}[H]
+      \centering
+      \scalebox{0.8}{\inputtikz{figures/mnist}}
+      \caption[Sample images of the MNIST dataset]{
+        Sample images of the MNIST dataset of handwritten digits \parencite{mnist-original}.
+        The dataset contains 70,000 images of $28 \times 28$ greyscale pixels valued from 0 to 255 as well as associated labels (as required for supervised learning).
+      }
+      \label{fig:mnist}
+    \end{figure}
+  \end{frame}
+
+  \begin{frame}{Neural Networks}
+    \begin{figure}[H]
+      \centering
+      \scalebox{0.9}{\inputtikz{figures/neural-network}}
+      \caption[Neural Network illustration resembling the one used in our demonstrator]{
+        A simple neural network resembling the structure we use in our demonstrator with $\vec{h} = \cryptop{relu}(M_1 \vec{x} + \vec{b_1})$ and the output $\vec{y} = \cryptop{softmax}(M_2 \vec{h} + \vec{b_2})$.
+      }
+      \label{fig:neural-network}
+    \end{figure}
+  \end{frame}
+
+  \begin{frame}{Matrix Multiplication: The Na\"ive Method}
+    \begin{figure}[H]
+      \centering
+      \hspace{-3cm}
+      \scalebox{0.9}{\inputtikz{figures/generated/matmul-naive}}
+      \caption[Naïve matrix multiplication method]{The naïve method to multiply a square matrix with a vector (adapted from \cite{2018-gazelle}).}
+      \label{fig:naive-method}
+    \end{figure}
+  \end{frame}
+
+  \begin{frame}{Matrix Multiplication: The Diagonal Method}
+    \begin{figure}[H]
+      \centering
+      \hspace{-3cm}
+      \scalebox{0.9}{\inputtikz{figures/generated/matmul-diagonal}}
+      \caption[Diagonal matrix multiplication method]{The diagonal method to multiply a square matrix with a vector (adapted from \cite{2018-gazelle}).}
+      \label{fig:diagonal-method}
+    \end{figure}
+  \end{frame}
+
+  \begin{frame}{Matrix Multiplication: The Hybrid Method}
+    \begin{figure}[H]
+      \centering
+      \hspace{-3cm}
+      \scalebox{0.9}{\inputtikz{figures/generated/matmul-hybrid}}
+      \caption[Hybrid matrix multiplication method]{The hybrid method to multiply an arbitrarily sized matrix with a vector (adapted from \cite{2018-gazelle}).}
+      \label{fig:hybrid-method}
+    \end{figure}
+    Similar performance: The BabyStep-Giantstep Method.
+  \end{frame}
+
+  \section{Live Demo of the WebApp}
+  \begin{frame}{Demo: Secure Handwritten Digit Classification as a Service}
+    \qrcode[nolink,height=2cm]{https://secure-classification.peter.waldert.at/}
+    \url{https://secure-classification.peter.waldert.at/}
+  \end{frame}
+
+  \section{Results: Network Analysis and Performance Benchmarks}
+  \begin{frame}{Chaos everywhere: The Confusion Matrix}
+    \centering
+    \scalebox{0.7}{\inputtikz{figures/generated/confusion-matrix}}
+  \end{frame}
+
+  \begin{frame}{Runtime Benchmarks}
+    \begin{table}[H]
+      \centering
+      \caption[Performance Benchmarks / Communication Overhead]{
+        Performance benchmarks and communication overhead of the classification procedure on an Intel\textregistered \, i7-5600U CPU, including the encoding and decoding steps.
+      }
+      % \captionsetup{margin=10pt}
+      % \caption*{
+      %   $\bm{B_1}$ ... Coefficient Moduli start bits (also equal to the last) \\
+      %   $\bm{B_2}$ ... Coefficient Moduli middle bits, also defines the scale as $2^{B_2}$ \\
+      %   $\bm{N}$ ... Polynomial Modulus Degree, found in the exponent of $p(X) = X^N + 1$ \\
+      %   $\bm{T}$ ... Runtime of encryption + classification + decryption \\
+      %   $\bm{M}$ ... Message Size (Relin Keys + Galois Keys + Request Ciphertext + Response Ciphertext) \\
+      %   $\bm{\Delta}$ ... Mean Max-Relative Error compared to the exact result, i.e. $\bm{\Delta} := \frac{\langle |\bm{y}_{prediction} - \bm{y}_{exact}| \rangle}{\max |\bm{y}_{exact}|}$
+      % }
+      \SetTblrInner{rowsep=1pt}
+      \scalebox{0.8}{
+        \begin{tblr}{
+          colspec={ccrrrrrrr},
+          row{2,3,4} = {bg=azure9},
+          row{5,6,7} = {bg=violet9},
+          row{8,9,10} = {bg=blue9},
+          row{11,12,13} = {bg=azure9},
+            }
+          \hline
+          \bf Mode & \bf SecLevel & $\bm{B_1}$ & $\bm{B_2}$ & $\bm{N}$ & \bf MatMul & $\bm{T}$ / \si{\second} & $\bm{M}$ / \si{\mebi\byte} & $\bm{\Delta}$ / 1 \\
+          \hline
+          Release & tc128 & 34 & 25 & 8192 & Diagonal & 8.39 & 132.72 & 0.0364 \\
+          & & & & & Hybrid & 1.35 & 132.72 & 0.0362 \\
+          & & & & & BSGS & 1.66 & 132.72 & 0.1433 \\
+          \hline
+          & tc128 & 60 & 40 & 16384 & Diagonal & 17.24 & 286.51 & 0.0363 \\
+          & & & & & Hybrid & 3.05 & 286.51 & 0.0364 \\
+          & & & & & BSGS & 3.66 & 286.51 & 0.1399 \\
+          \hline
+          & tc256 & 60 & 40 & 32768 & Diagonal & 35.24 & 615.16 & 0.0363 \\
+          & & & & & Hybrid & 5.99 & 615.16 & 0.0364 \\
+          & & & & & BSGS & 7.34 & 615.16 & 0.1399 \\
+        \end{tblr}
+      }
+      \label{tab:performance-benchmarks}
+    \end{table}
+  \end{frame}
+
+  \begin{frame}{Ciphertext Visualisations}
+    \begin{figure}[H]
+      \centering
+      \scalebox{0.9}{\inputtikz{figures/ciphertext-visualisation}}
+      \caption[Visualisation of the plain input images compared to their ciphertext]{Ciphertext Visualisation: The first row corresponds to the images in plain, the second row depicts an encrypted version, namely the reconstructed polynomial coefficients $a_k$ of the ciphertext polynomial.}
+      \label{fig:ciphertext-visualisation}
+    \end{figure}
+  \end{frame}
 
   \section*{}
   \begin{frame}{Conclusion}
