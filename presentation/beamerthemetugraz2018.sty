@@ -496,7 +496,7 @@ text.fg}
 %\renewcommand{\emph}[1]{{\color{main}#1}}
 
 %%%   LISTS   %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\newcommand{\colbox}[2][tug]{\tikz[baseline=-.7ex]{\node[fill=#1, draw=#1, draw, inner sep=0pt, minimum size=1em, text=white, name={n}] at (0,0) {#2};}}
+\newcommand{\colbox}[2][tug]{\tikz[baseline=-.7ex, external/export=false]{\node[fill=#1, draw=#1, draw, inner sep=0pt, minimum size=1em, text=white, name={n}] at (0,0) {#2};}}
 \newcommand{\itemsq}{\raisebox{0.25ex}{\tikz{\fill rectangle (0.75ex,0.75ex);}}}
 
 % standard beamer itemize spacing, tug items
