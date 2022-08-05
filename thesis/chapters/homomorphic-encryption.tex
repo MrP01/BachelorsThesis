@@ -447,7 +447,7 @@ The \cryptop{CKKS.ReLin} operation serves the same purpose as in \gls{bfv}, the 
   \begin{itemize}
     \item The canonical embedding $\underline{\sigma}$ evaluates an input polynomial on the $N$\th roots of unity $\{\xi_j\}_{j \in \Z_d^*}$.
           For any two polynomials $p_1, p_2 \in \mathcal{S}$, $$\underline{\sigma}(p_1 + p_2) = \big((p_1 + p_2)(\xi_j)\big)_{j \in \Z_d^*} = \big(p_1(\xi_j) + p_2(\xi_j)\big)_{j \in \Z_d^*} = \underline{\sigma}(p_1) + \underline{\sigma}(p_2) \,.$$
-    \item The rounding operation $\underline{\rho_\delta}\inv$ is only approximately additive due to its nature \footnote{For an illustrative counterexample of the additivity of rounding, refer to \url{https://math.stackexchange.com/questions/58239/linear-functions-with-rounding}.}.
+    \item The rounding operation $\underline{\rho_\delta}\inv$ is only approximately additive due to its nature\footnote{For an illustrative counterexample of the additivity of rounding, refer to \url{https://math.stackexchange.com/questions/58239/linear-functions-with-rounding}.}.
           For any two vectors $\vec{h_1}, \vec{h_2} \in \mathbb{H}$,
           \begin{align*}
             \underline{\rho_\delta}\inv(\vec{h_1} + \vec{h_2})
