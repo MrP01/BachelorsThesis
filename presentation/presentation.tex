@@ -1,5 +1,5 @@
 \PassOptionsToPackage{dvispnames, table}{xcolor}
-\documentclass[aspectratio=169]{beamer}
+\documentclass[aspectratio=169, onlytextwidth]{beamer}
 \usetheme[institute]{tugraz2018}
 \usepackage[beamer]{prettytex/base}
 \usepackage{prettytex/math}
@@ -59,15 +59,36 @@
 
   \section{Live Demo of the WebApp}
   \begin{frame}{Demo: Secure Handwritten Digit Classification as a Service}
-    \qrcode[nolink,height=2cm]{https://secure-classification.peter.waldert.at/}
-    \url{https://secure-classification.peter.waldert.at/}
+    \begin{columns}[c]
+      \begin{column}{0.7\linewidth}
+        \begin{figure}[H]
+          \centering
+          \includegraphics[width=0.75\linewidth]{../thesis/figures/frontend.pdf}
+          \vspace{-0.3cm}
+          \caption{\url{https://secure-classification.peter.waldert.at/}.}
+        \end{figure}
+      \end{column}
+      \begin{column}{0.24\linewidth}
+        Scan the QR-Code:
+        \qrcode[nolink,height=3.1cm]{https://secure-classification.peter.waldert.at/}
+      \end{column}
+    \end{columns}
   \end{frame}
 
   \include{sections/results}
 
   \section*{}
   \begin{frame}{Conclusion}
-    Crypto is good for us
+    \begin{itemize}
+      \item Schemes like \gls{rsa} become problematic due to \name{Shor}'s Algorithm $\Rightarrow$ Lattice Crypto.
+      \item New Cryptosystems constructed based on \name{Regev}'s \gls{lwe}-problem, e.g. \gls{ckks}.
+      \item Encryption is homomorphic with respect to addition (and multiplication).
+      \item The Encoding and Decoding procedures of CKKS allow for \gls{simd} operations needed for efficient computations.
+      \item Image Classification of the handwritten digits can be done using a neural network.
+      \item The required operations can be translated to \gls{he}.
+      \item For better performance, improved matrix multiplication methods are utilised.
+      \item Our Demonstrator: \url{https://secure-classification.peter.waldert.at/}.
+    \end{itemize}
   \end{frame}
 
   %\begin{frame}[c,plain]

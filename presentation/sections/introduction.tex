@@ -1,10 +1,10 @@
 \section{Introduction}
 \begin{frame}{Privacy for Medical Applications}
   \begin{itemize}
-    \item Development of new applications and solutions in health care, but: highly sensitive data.
+    \item Development of new applications and solutions 'of numerical nature' in health care, but: highly sensitive medical data.
     \item For instance, RNA sequences, images of skin, lab data, medical records, etc.
-    \item The results are even more volatile: Disease predictions
-    \item $\Rightarrow$ Demand for privacy-preserving solutions in machine learning applications.
+    \item The results are even more volatile: disease predictions
+    \item $\Rightarrow$ Demand for privacy-preserving solutions in \gls{ml} applications.
   \end{itemize}
 \end{frame}
 
@@ -20,7 +20,7 @@
 \begin{frame}{The \gls{rsa} Scheme}
   From the integers $\Z$, define the quotient ring $(\Z/q\Z, +, \cdot)$ for some modulus $q \in \N$.
 
-  With unpadded RSA \parencite{1983-rsa}, some arithmetic can be performed on the ciphertext - looking at the encrypted ciphertext $\mathcal{E}: \Z/q\Z \mapsto \Z/q\Z,\, \mathcal{E}(m) := m^r \mod q$ ($r, q \in \N$) of the message $m_1, m_2 \in \Z/q\Z$ respectively, the following holds:
+  With unpadded \gls{rsa} \parencite{1983-rsa}, some arithmetic can be performed on the ciphertext - looking at the encrypted ciphertext $\mathcal{E}: \Z/q\Z \mapsto \Z/q\Z,\, \mathcal{E}(m) := m^r \mod q$ ($r, q \in \N$) of the message $m_1, m_2 \in \Z/q\Z$ respectively, the following holds:
   \begin{align*}
     \mathcal{E}(m_1) \cdot \mathcal{E}(m_2)
      & \equiv (m_1)^r (m_2)^r \mod q            \\

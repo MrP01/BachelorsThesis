@@ -1,4 +1,28 @@
-\section{Lattice Cryptography and RLWE}
+\section{Lattice Cryptography, LWE and RLWE}
+\begin{frame}{Lattices}
+  \begin{columns}
+    \begin{column}{0.6\linewidth}
+      \vspace{-0.5cm}
+      \begin{definition}[Lattice]
+        A lattice $(\lat, +, \cdot)$ is a vector field over the integers $(\Z, +, \cdot)$, defined using a set of $n$ basis vectors $\vec{b_1}, \vec{b_2}, ..., \vec{b_n} \in \R^n$, that can be introduced as a set
+        $$\lat := \bigg\{\sum_{i=1}^n c_i \vec{b}_i \,\bigg|\, c \in \Z\bigg\} \subseteq \R^n$$
+        equipped with at least vector addition $+: \lat \times \lat \mapsto \lat$ and scalar multiplication $\cdot: \Z \times \lat \mapsto \lat$.
+      \end{definition}
+    \end{column}
+    \begin{column}{0.32\linewidth}
+      \vspace{-0.3cm}
+      \begin{figure}
+        \centering
+        \scalebox{0.5}{\hspace{-1cm}\inputtikz{figures/lattice}}
+        \caption[Illustration of a standard lattice]{
+          Illustration of a standard lattice $\lat$ with two basis vectors $\vec{b}_1$ and $\vec{b}_2$.
+        }
+        \label{fig:lattice}
+      \end{figure}
+    \end{column}
+  \end{columns}
+\end{frame}
+
 \begin{frame}{The \gls{lwe} Problem}
   \begin{definition}[LWE-Distribution $A_{\vec{s}, \chi_{error}}$]
     Given a prime $q \in \N$ and $n \in \N$, we choose some secret $\vec{s} \in (\Z / q \Z)^n$.
@@ -17,7 +41,7 @@
 
 \begin{frame}{Polynomial Rings}
   \begin{columns}
-    \begin{column}{0.5\linewidth}
+    \begin{column}{0.6\linewidth}
       \begin{definition}[Cyclotomic Polynomial]
         Given the $n$\th roots of unity $\{\xi_k\}$, define $\Phi_n \in \Z[X]$ as
         $$\Phi_n(x) := \prod_{\stackrel{k=1}{\xi_k \mathrm{primitive}}}^{n} (x - \xi_k) \,.$$
@@ -26,7 +50,7 @@
     \end{column}
     \begin{column}{0.32\linewidth}
       \begin{figure}
-        \scalebox{0.7}{\inputtikz{figures/nth-roots-of-unity}}
+        \scalebox{0.64}{\hspace{-1.5cm}\inputtikz{figures/nth-roots-of-unity}}
         \caption{The 5\th roots of unity}
         \label{fig:nth-roots-of-unity}
       \end{figure}
@@ -37,11 +61,14 @@
 \begin{frame}{Some Notation}
   \begin{itemize}
     \item $\Z[X] := \big\{p: \C \mapsto \C \,, p(x) = \sum_{k=0}^\infty a_k x^k, a_k \in \Z \;\forall k \geq 0\big\}$
+          \begin{itemize}
+            \item Complex-valued Polynomials with integer coefficients.
+          \end{itemize}
     \item $\Z_q[X] := (\Z/q\Z)[X]$
     \item $\Z_q[X] / \Phi_M(X)$ using the $M$\th cyclotomic polynomial
     \item $\Z_q[X]/(X^N+1)$ for $N$ a power of 2.
           \begin{itemize}
-            \item Elements are polynomials of degree $N-1$ with integer coefficients modulo $q$.
+            \item Its elements are polynomials of degree $N-1$ with integer coefficients mod $q$.
           \end{itemize}
   \end{itemize}
 \end{frame}

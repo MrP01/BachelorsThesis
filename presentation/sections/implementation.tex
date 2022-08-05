@@ -16,7 +16,7 @@
   \end{figure}
 \end{frame}
 
-\begin{frame}{Neural Networks}
+\begin{frame}{Feedforward Neural Networks}
   \begin{figure}[H]
     \centering
     \scalebox{0.9}{\inputtikz{figures/neural-network}}
@@ -27,33 +27,52 @@
   \end{figure}
 \end{frame}
 
+\newcommand{\matmulscale}{0.75}
+\newcommand{\matmulhoffset}{-3cm}
 \begin{frame}{Matrix Multiplication: The Na\"ive Method}
   \begin{figure}[H]
     \centering
-    \hspace{-3cm}
-    \scalebox{0.9}{\inputtikz{figures/generated/matmul-naive}}
-    \caption[Naïve matrix multiplication method]{The naïve method to multiply a square matrix with a vector (adapted from \cite{2018-gazelle}).}
+    \hspace{\matmulhoffset}
+    \scalebox{\matmulscale}{\inputtikz{figures/generated/matmul-naive}}
+    \caption[Naïve matrix multiplication method]{The naïve method to multiply a matrix $M \in \R^{s \times t}$ with a vector $\vec{x} \in \R^t$ (adapted from \cite{2018-gazelle}).}
     \label{fig:naive-method}
   \end{figure}
+
+  $$\{M \vec{x}\}_i = \sum_{j=1}^{t} M_{ij} x_j \,.$$
 \end{frame}
 
 \begin{frame}{Matrix Multiplication: The Diagonal Method}
   \begin{figure}[H]
     \centering
-    \hspace{-3cm}
-    \scalebox{0.9}{\inputtikz{figures/generated/matmul-diagonal}}
+    \hspace{\matmulhoffset}
+    \scalebox{\matmulscale}{\inputtikz{figures/generated/matmul-diagonal}}
     \caption[Diagonal matrix multiplication method]{The diagonal method to multiply a square matrix with a vector (adapted from \cite{2018-gazelle}).}
     \label{fig:diagonal-method}
   \end{figure}
+
+  $$M \vec{x} = \sum_{j=0}^{t-1} \diag_j(M) \cdot \rot_j(\vec{x}) \,.$$
 \end{frame}
 
 \begin{frame}{Matrix Multiplication: The Hybrid Method}
   \begin{figure}[H]
     \centering
-    \hspace{-3cm}
-    \scalebox{0.9}{\inputtikz{figures/generated/matmul-hybrid}}
+    \hspace{\matmulhoffset}
+    \scalebox{\matmulscale}{\inputtikz{figures/generated/matmul-hybrid}}
     \caption[Hybrid matrix multiplication method]{The hybrid method to multiply an arbitrarily sized matrix with a vector (adapted from \cite{2018-gazelle}).}
     \label{fig:hybrid-method}
   \end{figure}
-  Similar performance: The BabyStep-Giantstep Method.
+
+  $$M \vec{x} = (y_i)_{i \in \Z/s\Z} \;\text{with}\; \vec{y} = \sum_{k=1}^{t / s} \rot_{ks}\bigg(\sum_{j=1}^s \diag_j(M) \cdot \rot_j(\vec{x})\bigg) \,.$$
+\end{frame}
+
+\begin{frame}{Polynomial Evaluation}
+  \begin{itemize}
+    \item Fourth Method: The \gls{bsgs} Method, which has similar performance as the hybrid method.
+    \item In between the dense layers, we need to evaluate the \cryptop{relu} function.
+          \begin{itemize}
+            \item Approximate it by a series expansion...
+                  $$\cryptop{relu\_taylor}(x) = -0.006137 x^3 + 0.090189 x^2 + 0.59579 x + 0.54738 \,.$$
+          \end{itemize}
+    \item The \cryptop{softmax} activation at the end can be done by the client.
+  \end{itemize}
 \end{frame}
