@@ -5,22 +5,39 @@
     \item For instance, RNA sequences, images of skin, lab data, medical records, etc.
     \item The results are even more volatile: disease predictions
     \item $\Rightarrow$ Demand for privacy-preserving solutions in \gls{ml} applications.
+    \item By the way: Post-Quantum Secure Cryptosystems
   \end{itemize}
 \end{frame}
 
 \begin{frame}{Post-Quantum Security}
-  \begin{figure}[H]
-    \centering
-    \inputtikz{figures/wave-function}
-    \caption{Illustration of a wave function $\psi$ as commonly used in quantum mechanics.}
-    \label{fig:wave-function}
-  \end{figure}
+  \begin{columns}
+    \begin{column}{0.6\linewidth}
+      Quantum Computers affect Cryprography today:
+      \begin{itemize}
+        \item Problems believed to be \glstext{np}-hard on classical computers can be computed in polynomial time using a quantum computer.
+        \item No hardness proof of the integer factorisation or RSA problems exist as of today.
+        \item \name{Shor}'s, \name{Grover}'s and other algorithms can 'break' many cryptographic schemes used today.
+        \item The existence of a sufficiently powerful quantum computer endangers the security of \glstext{tls}, etc.
+      \end{itemize}
+    \end{column}
+    \begin{column}{0.4\linewidth}
+      \vspace{-0.3cm}
+      \begin{figure}[H]
+        \centering
+        \scalebox{0.7}{\inputtikz{figures/wave-function}}
+        \caption{Illustration of a wave function $\psi$ as commonly used in quantum mechanics.}
+        \label{fig:wave-function}
+      \end{figure}
+    \end{column}
+  \end{columns}
 \end{frame}
 
 \begin{frame}{The \gls{rsa} Scheme}
   From the integers $\Z$, define the quotient ring $(\Z/q\Z, +, \cdot)$ for some modulus $q \in \N$.
 
-  With unpadded \gls{rsa} \parencite{1983-rsa}, some arithmetic can be performed on the ciphertext - looking at the encrypted ciphertext $\mathcal{E}: \Z/q\Z \mapsto \Z/q\Z,\, \mathcal{E}(m) := m^r \mod q$ ($r, q \in \N$) of the message $m_1, m_2 \in \Z/q\Z$ respectively, the following holds:
+  With unpadded \glstext{rsa} \parencite{1983-rsa}, $\mathcal{E}: \Z/q\Z \mapsto \Z/q\Z$
+  $$\mathcal{E}(m) := m^r \mod q \quad r, q \in \N$$
+  applied to the messages $m_1, m_2 \in \Z/q\Z$ respectively, the following holds:
   \begin{align*}
     \mathcal{E}(m_1) \cdot \mathcal{E}(m_2)
      & \equiv (m_1)^r (m_2)^r \mod q            \\

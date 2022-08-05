@@ -47,12 +47,14 @@
 
 \begin{frame}{Homomorphic Addition}
   \begin{tblr}{Q[l,h]Q[l,h,\textwidth - 3.5cm]}
-    \cryptop{CKKS.Add}$(\vec{c}_1, \vec{c}_2)$ & {
-        Output $\vec{c}_3 = \vec{c}_1 + \vec{c}_2$
-        $\quad\rightarrow \vec{c}_3$} \\
+    \cryptop{CKKS.Add}$(\vec{c}, \vec{c}')$ & {
+        Output $\overline{\vec{c}} = \vec{c} + \vec{c}' = \begin{pmatrix}
+            \delta (m + m') + b (u + u') + (\mu_1 + \mu_1') \\
+            a (u + u') + (\mu_2 + \mu_2')
+          \end{pmatrix}^T$} \\
   \end{tblr}
 
-  Decrypts correctly?
+  Indeed, the ciphertext $\overline{\vec{c}}$ correctly decrypts back to $\overline{m} := m + m'$:
   \begin{align*}
     \cryptop{CKKS.Decrypt}(s, \overline{\vec{c}})
      & = \lfloor \delta\inv [\overline{c_0} + \overline{c_1} s]_t \rceil                                                                                                                                                         \\

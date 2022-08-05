@@ -1,6 +1,17 @@
 \section{Lattice Cryptography, LWE and RLWE}
 \begin{frame}{Lattices}
   \begin{columns}
+    \begin{column}{0.32\linewidth}
+      \vspace{-0.3cm}
+      \begin{figure}
+        \centering
+        \scalebox{0.5}{\inputtikz{figures/lattice}}
+        \caption[Illustration of a standard lattice]{
+          Illustration of a standard lattice $\lat$ with two basis vectors $\vec{b}_1$ and $\vec{b}_2$.
+        }
+        \label{fig:lattice}
+      \end{figure}
+    \end{column}
     \begin{column}{0.6\linewidth}
       \vspace{-0.5cm}
       \begin{definition}[Lattice]
@@ -8,17 +19,6 @@
         $$\lat := \bigg\{\sum_{i=1}^n c_i \vec{b}_i \,\bigg|\, c \in \Z\bigg\} \subseteq \R^n$$
         equipped with at least vector addition $+: \lat \times \lat \mapsto \lat$ and scalar multiplication $\cdot: \Z \times \lat \mapsto \lat$.
       \end{definition}
-    \end{column}
-    \begin{column}{0.32\linewidth}
-      \vspace{-0.3cm}
-      \begin{figure}
-        \centering
-        \scalebox{0.5}{\hspace{-1cm}\inputtikz{figures/lattice}}
-        \caption[Illustration of a standard lattice]{
-          Illustration of a standard lattice $\lat$ with two basis vectors $\vec{b}_1$ and $\vec{b}_2$.
-        }
-        \label{fig:lattice}
-      \end{figure}
     \end{column}
   \end{columns}
 \end{frame}
