@@ -30,9 +30,11 @@ export class ClassificationComponent extends React.Component {
   }
 
   componentWillUnmount() {
-    // this.communicator.delete();
-    // delete this.communicator;
-    // console.log("Cleaned up.");
+    if (this.communicator) {
+      this.communicator.delete();
+      delete this.communicator;
+      console.log("Cleaned up.");
+    }
   }
 
   classify() {
@@ -89,10 +91,6 @@ export class ClassificationComponent extends React.Component {
     var svg = new Blob([gridSvg], { type: "image/svg+xml;charset=utf-8" });
     var url = DOMURL.createObjectURL(svg);
     img.src = url;
-
-    // react-painter disables touch on the whole document when it should only be drags originating from the canvas
-    document.body.style.touchAction = null;
-    canvas.style.touchAction = "none";
   }
 
   fetchMoreTestImages() {

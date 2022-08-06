@@ -1,5 +1,11 @@
+body {
+  /* react-painter disables touch on the whole document when it should only be drags originating from the canvas */
+  touch-action: initial !important;
+}
+
 canvas {
   border: 1px solid #26a69a;
+  touch-action: none;
 }
 
 .canvas-container {
