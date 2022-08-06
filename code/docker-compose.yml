@@ -7,6 +7,10 @@ services:
       context: .
       dockerfile: classifier/classifier.Dockerfile
 
+  classifier2:
+    image: mrp001/sealed-mnist-classifier
+    restart: unless-stopped
+
   frontend:
     image: mrp001/sealed-mnist-frontend
     restart: unless-stopped

@@ -40,7 +40,7 @@ nlohmann::json handlePlainPredictionRequest(nlohmann::json request) {
 }
 
 nlohmann::json handleEncryptedPredictionRequest(nlohmann::json request) {
-  PLOG(plog::debug) << "Incoming encrypted request";
+  PLOG(plog::info) << "Incoming encrypted request... starting handler";
 
   seal::RelinKeys relinKeys;
   seal::GaloisKeys galoisKeys;
