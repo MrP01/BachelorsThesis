@@ -35,6 +35,7 @@ class BaseCommunicator {
   }
 
   async classify() {}
+  isSecure() {}
   delete() {}
 }
 
@@ -43,6 +44,10 @@ export class PlainCommunicator extends BaseCommunicator {
     return await this._makeApiRequest("POST", "/classify/plain/", {
       image: Array.from(flatImageArray),
     });
+  }
+
+  isSecure() {
+    return false;
   }
 }
 
@@ -99,6 +104,7 @@ export class SEALCommunicator extends BaseCommunicator {
   static argmax(array) {
     return [].reduce.call(array, (m, c, i, arr) => (c > arr[m] ? i : m), 0);
   }
+
   static softmax(array) {
     let exponentiated = array.map((x) => Math.exp(x));
     let sum = exponentiated.reduce((a, b) => a + b);
@@ -143,5 +149,9 @@ export class SEALCommunicator extends BaseCommunicator {
     this._publicKey.delete();
     this._relinKeys.delete();
     this._galoisKeys.delete();
+  }
+
+  isSecure() {
+    return true;
   }
 }

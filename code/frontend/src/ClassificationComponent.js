@@ -89,6 +89,10 @@ export class ClassificationComponent extends React.Component {
     var svg = new Blob([gridSvg], { type: "image/svg+xml;charset=utf-8" });
     var url = DOMURL.createObjectURL(svg);
     img.src = url;
+
+    // react-painter disables touch on the whole document when it should only be drags originating from the canvas
+    document.body.style.touchAction = null;
+    canvas.style.touchAction = "none";
   }
 
   fetchMoreTestImages() {
@@ -121,7 +125,7 @@ export class ClassificationComponent extends React.Component {
     return (
       <Row>
         <ProgressBar className={self.state.calculating ? "" : "transparent"} />
-        <Col m={6} s={12}>
+        <Col l={6} m={12} s={12}>
           <ReactPainter
             width={280}
             height={280}
@@ -139,7 +143,7 @@ export class ClassificationComponent extends React.Component {
                   <div className="command-bar">
                     <Button onClick={self.clear.bind(self)}>Clear</Button>
                     <Button onClick={self.classify.bind(self)} disabled={self.state.calculating}>
-                      Classify
+                      {this.communicator && this.communicator.isSecure() ? "🔒" : ""} Classify
                     </Button>
                   </div>
                 </div>
@@ -148,7 +152,7 @@ export class ClassificationComponent extends React.Component {
           />
           <p className="grey-text">Each grid cell represents one pixel in the 28x28 image.</p>
         </Col>
-        <Col m={6} s={12}>
+        <Col l={6} m={12} s={12}>
           <div className="card-panel z-depth-1">
             <div className="row valign-wrapper">
               <div className="col s2">
@@ -171,7 +175,7 @@ export class ClassificationComponent extends React.Component {
           <h6>Probabilities</h6>
           <ProbabilityDisplay probabilities={this.state.probabilities} />
         </Col>
-        {this.state.testImagesAvailable && (
+        {this.state.testImagesAvailable > 0 && (
           <Col s={12}>
             <p style={{ marginTop: 0, marginBottom: 4 }} className={"center"}>
               By clicking on one of the following test images, you can load it to the canvas directly:

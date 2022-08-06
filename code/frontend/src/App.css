@@ -3,8 +3,7 @@ canvas {
 }
 
 .canvas-container {
-  padding: 20px;
-  padding-top: 0.5rem;
+  padding: 0.5rem 0 20px 0;
   position: relative;
 }
 
@@ -42,4 +41,15 @@ canvas {
 
 .transparent {
   opacity: 0;
+}
+
+@media (max-width: 767px) {
+  h3 {
+    font-size: 30px;
+  }
+}
+@media (min-width: 768px) {
+  h3 {
+    margin-top: 48px;
+  }
 }

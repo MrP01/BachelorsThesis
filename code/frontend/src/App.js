@@ -11,15 +11,14 @@ function App() {
     <div>
       <Navbar
         alignLinks="right"
-        brand={<span style={{ paddingLeft: "10px" }}>FHE Classifier</span>}
+        brand={<span style={{ paddingLeft: "10px", width: "220px" }}>FHE Classifier</span>}
         id="mobile-nav"
         menuIcon={<span />}
+        sidenav={null}
         style={{ backgroundColor: "cornflowerblue" }}
       ></Navbar>
       <Container>
-        <h3 className={"center"} style={{ marginTop: 48 }}>
-          Classify your Secret Data
-        </h3>
+        <h3 className={"center"}>Classify your Secret Data</h3>
         <p className={"center"}>
           Using state-of-the-art Fully Homomorphic Encryption, directly from within the browser, based on Web Assembly.
         </p>
