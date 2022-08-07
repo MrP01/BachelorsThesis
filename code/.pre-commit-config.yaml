@@ -105,9 +105,9 @@ repos:
         language: system
         types:
           - tex
-  - repo: https://github.com/amperser/proselint
-    rev: 0.13.0
-    hooks:
-      - id: proselint
-        types:
-          - tex
+  # - repo: https://github.com/amperser/proselint
+  #   rev: 0.13.0
+  #   hooks:
+  #     - id: proselint
+  #       types:
+  #         - tex

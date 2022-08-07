@@ -1,30 +1,24 @@
 \section{The CKKS Scheme}
+\begin{frame}{What is CKKS?}
+  \begin{itemize}
+    \item Levelled Homomorphic Encryption Scheme.
+    \item Enables Public-Key (asymmetric) Cryptography.
+    \item Approximative Floating-Point Arithmetic.
+    \item Security based on \gls{lwe}.
+    \item \gls{simd} Encoding.
+  \end{itemize}
+\end{frame}
+
 \begin{frame}{Overview of \gls{ckks}}
   \begin{figure}[H]
     \centering
     \scalebox{0.8}{\inputtikz{figures/ckks-schematic}}
-    \caption[Schematic overview of the CKKS scheme]{
-      Schematic overview of CKKS \parencite{2017-ckks-original}, adapted from \cite{2020-cryptotree}.
-      A plain vector $\vec{z} \in \C^{N/2}$ is encoded to $m = \cryptop{CKKS.Encode}(\vec{z})$, encrypted to $\vec{c} = \cryptop{CKKS.Encrypt}(\vec{p}, m)$, decrypted and decoded to a new $\tilde{\vec{z}} = \cryptop{CKKS.Decode}(\cryptop{CKKS.Decrypt}(s, \tilde{\vec{c}}))$.
-    }
+    % \caption[Schematic overview of the CKKS scheme]{
+    %   Schematic overview of CKKS \parencite{2017-ckks-original}, adapted from \cite{2020-cryptotree}.
+    %   A plain vector $\vec{z} \in \C^{N/2}$ is encoded to $m = \cryptop{CKKS.Encode}(\vec{z})$, encrypted to $\vec{c} = \cryptop{CKKS.Encrypt}(\vec{p}, m)$, decrypted and decoded to a new $\tilde{\vec{z}} = \cryptop{CKKS.Decode}(\cryptop{CKKS.Decrypt}(s, \tilde{\vec{c}}))$.
+    % }
     \label{fig:ckks-overview}
   \end{figure}
-\end{frame}
-
-\begin{frame}{Encoding and Decoding}
-  \cryptop{CKKS.} \\
-  \begin{tblr}{Q[l,h]Q[l,h,\textwidth - 3.5cm]}
-    \cryptop{Encode}$(\vec{z})$ & {For a given input vector $\vec{z}$, output
-        $m = (\underline{\sigma}\inv \circ \underline{\rho_\delta}\inv \circ \underline{\pi}\inv)(\vec{z}) = \underline{\sigma}\inv(\lfloor \delta \cdot \underline{\pi}\inv(\vec{z})\rceil_{\underline{\sigma}(R)})$ $\quad\rightarrow m$} \\
-    \cryptop{Decode}$(m)$ & {Decode plaintext $m$ as
-        $\vec{z} = (\underline{\pi} \circ \underline{\rho_\delta} \circ \underline{\sigma})(m) = (\underline{\pi} \circ \underline{\sigma})(\delta\inv m)$
-        $\quad\rightarrow \vec{z}$} \\
-  \end{tblr}
-  \begin{itemize}
-    \item Three transformations: $\underline{\sigma}\inv$, $\underline{\rho_\delta}\inv$ and $\underline{\pi}\inv$.
-    \item Key idea: Homomorphic property, they preserve additivity and multiplicativity.
-    \item Allows for homomorphic \gls{simd} operations.
-  \end{itemize}
 \end{frame}
 
 \begin{frame}{Encryption and Decryption}

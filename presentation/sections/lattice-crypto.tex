@@ -1,19 +1,17 @@
 \section{Lattice Cryptography, LWE and RLWE}
-\begin{frame}{Lattices}
+\begin{frame}[c]
   \begin{columns}
     \begin{column}{0.32\linewidth}
-      \vspace{-0.3cm}
       \begin{figure}
         \centering
         \scalebox{0.5}{\inputtikz{figures/lattice}}
-        \caption[Illustration of a standard lattice]{
-          Illustration of a standard lattice $\lat$ with two basis vectors $\vec{b}_1$ and $\vec{b}_2$.
-        }
+        % \caption[Illustration of a standard lattice]{
+        %   Illustration of a standard lattice $\lat$ with two basis vectors $\vec{b}_1$ and $\vec{b}_2$.
+        % }
         \label{fig:lattice}
       \end{figure}
     \end{column}
     \begin{column}{0.6\linewidth}
-      \vspace{-0.5cm}
       \begin{definition}[Lattice]
         A lattice $(\lat, +, \cdot)$ is a vector field over the integers $(\Z, +, \cdot)$, defined using a set of $n$ basis vectors $\vec{b_1}, \vec{b_2}, ..., \vec{b_n} \in \R^n$, that can be introduced as a set
         $$\lat := \bigg\{\sum_{i=1}^n c_i \vec{b}_i \,\bigg|\, c \in \Z\bigg\} \subseteq \R^n$$
@@ -40,36 +38,4 @@
 
   Published by \name{Regev} in 2005 \cite{2005-lwe-original}.
   Lead to the \glstext{fhe} scheme by \name{Gentry} in 2009 \cite{2009-gentry-fhe-original}.
-\end{frame}
-
-\begin{frame}{Some Notation}
-  \begin{itemize}
-    \item $\Z[X] := \big\{p: \C \mapsto \C \,, p(x) = \sum_{k=0}^\infty a_k x^k, a_k \in \Z \;\forall k \geq 0\big\}$
-          \begin{itemize}
-            \item Complex-valued Polynomials with integer coefficients.
-          \end{itemize}
-    \item $\Z_q[X] := (\Z/q\Z)[X] = \Z[X] / q\Z[X]$
-    \item $\Z_q[X] / \Phi_M(X) \underbrace{ = \Z_q[X]/(X^N+1)}_{\text{for } M=2N, \text{ powers of 2}}$ using the $M$\th cyclotomic polynomial $\Phi_M(X)$.
-          \begin{itemize}
-            \item Its elements are polynomials of degree $(N-1)$\footnote{For general $M$, degree $\varphi(M) - 1$} with integer coefficients mod $q$.
-          \end{itemize}
-  \end{itemize}
-\end{frame}
-
-\begin{frame}{The \gls{rlwe} Problem}
-  \begin{corollary}[RLWE-Distribution $B_{\vec{s}, \chi_{error}}$]
-    Given a quotient ring $(R/qR, +, \cdot)$, choose a secret $s \in R/qR$.
-    Sampling from the RLWE distribution $B_{s, \chi_{error}}$:
-    \begin{itemize}
-      \item Uniformly randomly draw an element $a \in R/qR$
-      \item Sample 'noise' $\mu \in R/qR$ from $\chi_{error}$.
-      \item Set $b = s \cdot a + \mu$, with $\cdot$ denoting the ring multiplication operation.
-      \item Output the pair $(a, b) \in R/qR \times R/qR$.
-    \end{itemize}
-  \end{corollary}
-
-  Proven equivalent to LWE.
-
-  Use Search-RLWE to construct a cryptosystem...
-  Idea: Attacker needs to solve \gls{lwe} given the public key to recover the secret $s$.
 \end{frame}

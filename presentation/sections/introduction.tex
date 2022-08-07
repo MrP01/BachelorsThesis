@@ -1,4 +1,19 @@
 \section{Introduction}
+\begin{frame}{What do we want?}
+  \begin{itemize}
+    \item Encrypted \gls{ml} as a service
+    \item Using homomorphic encryption
+    \item That is Post-Quantum secure
+    \item Which is somewhat fast
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{What did I do?}
+  \begin{itemize}
+    \item Fix stuff
+  \end{itemize}
+\end{frame}
+
 \begin{frame}{\gls{ppml}}
   \begin{itemize}
     \item Development of new applications and solutions 'of numerical nature' in different fields
@@ -28,25 +43,10 @@
       \begin{figure}[H]
         \centering
         \scalebox{0.7}{\inputtikz{figures/wave-function}}
-        \caption{Illustration of a wave function $\psi$ as commonly used in quantum mechanics.}
+        % \caption{Illustration of a wave function $\psi$ as commonly used in quantum mechanics.}
         \label{fig:wave-function}
       \end{figure}
     \end{column}
   \end{columns}
   Our Webservice is (from the point of todays knowledge) still secure in the presence of a quantum computer.
-\end{frame}
-
-\begin{frame}{The \gls{rsa} Scheme}
-  From the integers $\Z$, define the quotient ring $(\Z/q\Z, +, \cdot)$ for some modulus $q \in \N$.
-
-  With unpadded \glstext{rsa} \parencite{1983-rsa}, $\mathcal{E}: \Z/q\Z \mapsto \Z/q\Z$
-  $$\mathcal{E}(m) := m^r \mod q \quad r, q \in \N$$
-  applied to the messages $m_1, m_2 \in \Z/q\Z$ respectively, the following holds:
-  \begin{align*}
-    \mathcal{E}(m_1) \cdot \mathcal{E}(m_2)
-     & \equiv (m_1)^r (m_2)^r \mod q            \\
-     & \equiv (m_1 m_2)^r \mod q                \\
-     & \equiv \mathcal{E}(m_1 \cdot m_2) \mod q
-  \end{align*}
-  $\Rightarrow$ A Group Homomorphism!
 \end{frame}

@@ -30,6 +30,54 @@
   \end{columns}
 \end{frame}
 
+\begin{frame}{Some Notation}
+  \begin{itemize}
+    \item $\Z[X] := \big\{p: \C \mapsto \C \,, p(x) = \sum_{k=0}^\infty a_k x^k, a_k \in \Z \;\forall k \geq 0\big\}$
+          \begin{itemize}
+            \item Complex-valued Polynomials with integer coefficients.
+          \end{itemize}
+    \item $\Z_q[X] := (\Z/q\Z)[X] = \Z[X] / q\Z[X]$
+    \item $\Z_q[X] / \Phi_M(X) \underbrace{ = \Z_q[X]/(X^N+1)}_{\text{for } M=2N, \text{ powers of 2}}$ using the $M$\th cyclotomic polynomial $\Phi_M(X)$.
+          \begin{itemize}
+            \item Its elements are polynomials of degree $(N-1)$\footnote{For general $M$, degree $\varphi(M) - 1$} with integer coefficients mod $q$.
+          \end{itemize}
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{The \gls{rlwe} Problem}
+  \begin{definition}[RLWE-Distribution $B_{\vec{s}, \chi_{error}}$]
+    Given a quotient ring $(R/qR, +, \cdot)$, choose a secret $s \in R/qR$.
+    Sampling from the RLWE distribution $B_{s, \chi_{error}}$:
+    \begin{itemize}
+      \item Uniformly randomly draw an element $a \in R/qR$
+      \item Sample 'noise' $\mu \in R/qR$ from $\chi_{error}$.
+      \item Set $b = s \cdot a + \mu$, with $\cdot$ denoting the ring multiplication operation.
+      \item Output the pair $(a, b) \in R/qR \times R/qR$.
+    \end{itemize}
+  \end{definition}
+
+  Proven equivalent to LWE.
+
+  Use Search-RLWE to construct a cryptosystem...
+  Idea: Attacker needs to solve \gls{lwe} given the public key to recover the secret $s$.
+\end{frame}
+
+\begin{frame}{Encoding and Decoding}
+  \cryptop{CKKS.} \\
+  \begin{tblr}{Q[l,h]Q[l,h,\textwidth - 3.5cm]}
+    \cryptop{Encode}$(\vec{z})$ & {For a given input vector $\vec{z}$, output
+        $m = (\underline{\sigma}\inv \circ \underline{\rho_\delta}\inv \circ \underline{\pi}\inv)(\vec{z}) = \underline{\sigma}\inv(\lfloor \delta \cdot \underline{\pi}\inv(\vec{z})\rceil_{\underline{\sigma}(R)})$ $\quad\rightarrow m$} \\
+    \cryptop{Decode}$(m)$ & {Decode plaintext $m$ as
+        $\vec{z} = (\underline{\pi} \circ \underline{\rho_\delta} \circ \underline{\sigma})(m) = (\underline{\pi} \circ \underline{\sigma})(\delta\inv m)$
+        $\quad\rightarrow \vec{z}$} \\
+  \end{tblr}
+  \begin{itemize}
+    \item Three transformations: $\underline{\sigma}\inv$, $\underline{\rho_\delta}\inv$ and $\underline{\pi}\inv$.
+    \item Key idea: Homomorphic property, they preserve additivity and multiplicativity.
+    \item Allows for homomorphic \gls{simd} operations.
+  \end{itemize}
+\end{frame}
+
 \begin{frame}[c]
   \begin{definition}[Canonical Embedding $\underline{\sigma}$]
     For a real-valued polynomial $p \in \mathcal{S}$, define the canonical embedding of $\mathcal{S}$ in $\C^N$ as a mapping $\underline{\sigma}: \mathcal{S} \mapsto \C^N$ with $$\underline{\sigma}(p) := \big(p(e^{-2\pi i j / N})\big)_{j \in \Z_d^*}$$ with $\Z_d^* := \{x \in \Z / d\Z \,|\, \gcd(x, d) = 1\}$ the set of all integers smaller than $d$ that do not share a factor $> 1$ with $d$.
@@ -57,6 +105,23 @@
         \overline{z_j} & \text{otherwise}
       \end{cases}$$
   \end{definition}
+\end{frame}
+
+\begin{frame}{Goal: Classify MNIST Images of Handwritten Digits}
+  \begin{itemize}
+    \item Two major types of \gls{ml}: Supervised and Unsupervised Learning
+    \item Popular dataset: \gls{mnist}. Encode as vector of 784 entries.
+  \end{itemize}
+
+  \begin{figure}[H]
+    \centering
+    \scalebox{0.8}{\inputtikz{figures/mnist}}
+    \caption[Sample images of the MNIST dataset]{
+      Sample images of the MNIST database of handwritten digits \parencite{mnist-original}.
+      The dataset contains 70,000 images of $28 \times 28$ greyscale pixels valued from 0 to 255 as well as associated labels (as required for supervised learning).
+    }
+    \label{fig:mnist}
+  \end{figure}
 \end{frame}
 
 \begin{frame}[c]
@@ -91,6 +156,21 @@
     substituting $l = i+j+ks$ and condensing the nested sums into one single summation expression since $\sum_{k=1}^{t / s} \sum_{j=1}^{s} f(j+ks) = \sum_{l=1}^{t} f(l)$, we obtain
     $$y_i = \sum_{l=1+i}^{t+i} M_{il} x_l = \sum_{l=1}^{t} M_{il} x_l = \{M \vec{x}\}_i \,.$$
   \end{proof}
+\end{frame}
+
+\begin{frame}{The \gls{rsa} Scheme}
+  From the integers $\Z$, define the quotient ring $(\Z/q\Z, +, \cdot)$ for some modulus $q \in \N$.
+
+  With unpadded \glstext{rsa} \parencite{1983-rsa}, $\mathcal{E}: \Z/q\Z \mapsto \Z/q\Z$
+  $$\mathcal{E}(m) := m^r \mod q \quad r, q \in \N$$
+  applied to the messages $m_1, m_2 \in \Z/q\Z$ respectively, the following holds:
+  \begin{align*}
+    \mathcal{E}(m_1) \cdot \mathcal{E}(m_2)
+     & \equiv (m_1)^r (m_2)^r \mod q            \\
+     & \equiv (m_1 m_2)^r \mod q                \\
+     & \equiv \mathcal{E}(m_1 \cdot m_2) \mod q
+  \end{align*}
+  $\Rightarrow$ A Group Homomorphism!
 \end{frame}
 
 \begin{frame}[allowframebreaks]{\name{Shor}'s Algorithm}

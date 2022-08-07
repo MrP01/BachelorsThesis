@@ -1,21 +1,4 @@
 \section{Implementation Goal and Methods}
-\begin{frame}{Goal: Classify MNIST Images of Handwritten Digits}
-  \begin{itemize}
-    \item Two major types of \gls{ml}: Supervised and Unsupervised Learning
-    \item Popular dataset: \gls{mnist}. Encode as vector of 784 entries.
-  \end{itemize}
-
-  \begin{figure}[H]
-    \centering
-    \scalebox{0.8}{\inputtikz{figures/mnist}}
-    \caption[Sample images of the MNIST dataset]{
-      Sample images of the MNIST database of handwritten digits \parencite{mnist-original}.
-      The dataset contains 70,000 images of $28 \times 28$ greyscale pixels valued from 0 to 255 as well as associated labels (as required for supervised learning).
-    }
-    \label{fig:mnist}
-  \end{figure}
-\end{frame}
-
 \begin{frame}{Feedforward Neural Networks}
   \begin{figure}[H]
     \centering
@@ -37,7 +20,7 @@
     \centering
     \hspace{\matmulhoffset}
     \scalebox{\matmulscale}{\inputtikz{figures/generated/matmul-naive}}
-    \caption[Naïve matrix multiplication method]{The naïve method to multiply a matrix $M \in \R^{s \times t}$ with a vector $\vec{x} \in \R^t$ (adapted from \cite{2018-gazelle}).}
+    % \caption[Naïve matrix multiplication method]{The naïve method to multiply a matrix $M \in \R^{s \times t}$ with a vector $\vec{x} \in \R^t$ (adapted from \cite{2018-gazelle}).}
     \label{fig:naive-method}
   \end{figure}
 
@@ -49,7 +32,7 @@
     \centering
     \hspace{\matmulhoffset}
     \scalebox{\matmulscale}{\inputtikz{figures/generated/matmul-diagonal}}
-    \caption[Diagonal matrix multiplication method]{The diagonal method to multiply a square matrix with a vector (adapted from \cite{2018-gazelle}).}
+    % \caption[Diagonal matrix multiplication method]{The diagonal method to multiply a square matrix with a vector (adapted from \cite{2018-gazelle}).}
     \label{fig:diagonal-method}
   \end{figure}
 
@@ -61,7 +44,7 @@
     \centering
     \hspace{\matmulhoffset}
     \scalebox{\matmulscale}{\inputtikz{figures/generated/matmul-hybrid}}
-    \caption[Hybrid matrix multiplication method]{The hybrid method to multiply an arbitrarily sized matrix with a vector (adapted from \cite{2018-gazelle}).}
+    % \caption[Hybrid matrix multiplication method]{The hybrid method to multiply an arbitrarily sized matrix with a vector (adapted from \cite{2018-gazelle}).}
     \label{fig:hybrid-method}
   \end{figure}
 
