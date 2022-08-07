@@ -12,8 +12,6 @@
   \input{../thesis/#1.tex}
 }
 
-% TODO: Das Live-Exportieren der Visualisierungen als PNG habe ich ja auf deinen Wunsch auch noch eingebaut in C++, das werde ich auch zeigen.
-
 \title[Secure Classification as a Service]{
   Secure Classification as a Service \\
   \small\normalfont\textcolor{black}{
@@ -30,18 +28,6 @@
 % \additionallogo{beamerthemetugraz/institute/ITPCP-rot}
 % \logobar{Supported by: ...}  % sponsors (titlepage; optional)
 
-% Ungefähre Struktur:
-% * Motivation aus zwei Richtungen: Privacy-Preserving Machine Learning möglich? (Anwendungen in der Medizin) -> HE
-%   netter Side-Effect: Post-Quantum Security via Lattice Cryptography
-% * Beispiel für HE und Public-Key Asymmetric Encryption zur Veranschaulichung: RSA
-% * Learning With Errors und andere Lattice Probleme (nur ein paar Sätze)
-% * Relation von CKKS zu LWE: Wie der Private Key geschützt ist und Hardness des LWE-Problems.
-% * CKKS Scheme erklären, dazu: Polynomring Z_q[X]/(X^N+1) erläutern, wie wird encoded und verschlüsselt
-% * Zeigen, dass Encrypt(Encode(z)) + Encrypt(Encode(z')) == Encrypt(Encode(z + z')) in CKKS
-% * Implementation erklären (SEAL, Struktur in Server/Client, etc.), Demo der UI.
-% * Verschiedene Matmul-Implementationen, Optimierungen
-% * Ergebnisse: Performance des Netzwerks, Benchmarks, Ciphertext-Visualisierungen.
-
 \input{../thesis/macros.tex}
 \addbibresource{../library/sources.bib}
 
@@ -50,53 +36,15 @@
     \maketitle
   \end{frame}
 
-  \begin{frame}{Outline}
-    \tableofcontents
-  \end{frame}
-
   \include{sections/introduction}
+  \include{sections/encrypted-ml}
   \include{sections/lattice-crypto}
-  \include{sections/ckks-scheme}
-  \include{sections/implementation}
-
-  \section{Live Demo of the WebApp}
-  \begin{frame}{Demo: Secure Handwritten Digit Classification as a Service}
-    \begin{columns}[c]
-      \begin{column}{0.7\linewidth}
-        \begin{figure}[H]
-          \centering
-          \includegraphics[width=0.75\linewidth]{../thesis/figures/frontend.pdf}
-          \vspace{-0.3cm}
-          \caption{\url{https://secure-classification.peter.waldert.at/}.}
-        \end{figure}
-      \end{column}
-      \begin{column}{0.24\linewidth}
-        Scan the QR-Code:
-        \qrcode[nolink,height=3.1cm]{https://secure-classification.peter.waldert.at/}
-      \end{column}
-    \end{columns}
-  \end{frame}
-
+  \include{sections/post-quantum-security}
+  \include{sections/making-it-fast}
   \include{sections/results}
+  \include{sections/conclusion}
 
   \section*{}
-  \begin{frame}{Conclusion}
-    \begin{itemize}
-      \item Schemes like \gls{rsa} become problematic due to \name{Shor}'s Algorithm $\Rightarrow$ Lattice Crypto.
-            \begin{itemize}
-              \item New Cryptosystems constructed based on \name{Regev}'s \gls{lwe}-problem, e.g. \gls{ckks}.
-              \item Encryption is homomorphic with respect to addition (and multiplication).
-              \item The Encoding and Decoding procedures of CKKS allow for \gls{simd} operations needed for efficient computations.
-            \end{itemize}
-      \item Image Classification of the handwritten digits can be done using a neural network.
-            \begin{itemize}
-              \item The required operations can be translated to \gls{he}.
-              \item We looked at different multiplication methods.
-            \end{itemize}
-    \end{itemize}
-  \end{frame}
-
-  %\begin{frame}[c,plain]
   \begin{frame}[c]
     \centering
     \Large Questions?

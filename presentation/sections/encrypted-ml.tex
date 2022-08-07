@@ -1,0 +1,25 @@
+\section{Step 1: Encrypted Machine Learning}
+\begin{frame}{\gls{ppml}}
+  \begin{itemize}
+    \item Machine Learning allows us to solve otherwise difficult problems.
+    \item Development of new applications and solutions 'of numerical nature' in different fields
+          \begin{itemize}
+            \item Example: Health Care with highly sensitive medical data.
+            \item Even more volatile results: disease indicators.
+          \end{itemize}
+    \item $\Rightarrow$ Demand for privacy-preserving solutions in \gls{ml} applications.
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{Feedforward Neural Networks}
+  \begin{figure}[H]
+    \centering
+    \scalebox{0.9}{\inputtikz{figures/neural-network}}
+    \caption[Neural Network illustration resembling the one used in our demonstrator]{
+      The simple neural network used in our demonstrator with $\vec{h} = \cryptop{relu}(M_1 \vec{x} + \vec{b_1})$ and the output $\vec{y} = \cryptop{softmax}(M_2 \vec{h} + \vec{b_2})$.
+    }
+    \label{fig:neural-network}
+  \end{figure}
+  \vspace{6pt}
+  $\Rightarrow$ Need: Addition, Multiplication, Packing, Rotations. Trained in plain.
+\end{frame}

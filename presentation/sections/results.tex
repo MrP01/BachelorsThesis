@@ -1,54 +1,10 @@
-\section{Results: Network Analysis and Performance Benchmarks}
+\section{Step 5: Results and Accuracy}
 \begin{frame}{Chaos everywhere: The Confusion Matrix}
   \centering
-  \scalebox{0.7}{\inputtikz{figures/generated/confusion-matrix}}
-\end{frame}
+  \scalebox{0.64}{\inputtikz{figures/generated/confusion-matrix}}
 
-\begin{frame}{Runtime Benchmarks \& Communication Overhead}
-  In Plain: 1
-  \begin{table}[H]
-    \centering
-    \setlength{\belowcaptionskip}{0pt}
-    \caption[Performance Benchmarks / Communication Overhead]{
-      Performance benchmarks and communication overhead of the classification procedure on an Intel\textregistered \, i7-5600U CPU, including the encoding and decoding steps.
-    }
-    % \captionsetup{margin=10pt}
-    % \caption*{
-    %   $\bm{B_1}$ ... Coefficient Moduli start bits (also equal to the last) \\
-    %   $\bm{B_2}$ ... Coefficient Moduli middle bits, also defines the scale as $2^{B_2}$ \\
-    %   $\bm{N}$ ... Polynomial Modulus Degree, found in the exponent of $p(X) = X^N + 1$ \\
-    %   $\bm{T}$ ... Runtime of encryption + classification + decryption \\
-    %   $\bm{M}$ ... Message Size (Relin Keys + Galois Keys + Request Ciphertext + Response Ciphertext) \\
-    %   $\bm{\Delta}$ ... Mean Max-Relative Error compared to the exact result, i.e. $\bm{\Delta} := \frac{\langle |\bm{y}_{prediction} - \bm{y}_{exact}| \rangle}{\max |\bm{y}_{exact}|}$
-    % }
-    \SetTblrInner{rowsep=1pt}
-    \scalebox{0.8}{
-      \begin{tblr}{
-        colspec={ccrrrr|rrr},
-        row{2,3,4} = {bg=azure9},
-        row{5,6,7} = {bg=violet9},
-        row{8,9,10} = {bg=blue9},
-        row{11,12,13} = {bg=azure9},
-          }
-        \hline
-        \bf Mode & \bf SecLevel & $\bm{B_1}$ & $\bm{B_2}$ & $\bm{N}$ & \bf MatMul & $\bm{T}$ / \si{\second} & $\bm{M}$ / \si{\mebi\byte} & $\bm{\Delta}$ / 1 \\
-        \hline
-        & & & & & Diagonal & 8.39 & 132.72 & 0.0364 \\
-        Release & tc128 & 34 & 25 & 8192 & Hybrid & 1.35 & 132.72 & 0.0362 \\
-        & & & & & BSGS & 1.66 & 132.72 & 0.1433 \\
-        \hline
-        & & & & & Diagonal & 17.24 & 286.51 & 0.0363 \\
-        & tc128 & 60 & 40 & 16384 & Hybrid & 3.05 & 286.51 & 0.0364 \\
-        & & & & & BSGS & 3.66 & 286.51 & 0.1399 \\
-        \hline
-        & & & & & Diagonal & 35.24 & 615.16 & 0.0363 \\
-        & tc256 & 60 & 40 & 32768& Hybrid & 5.99 & 615.16 & 0.0364 \\
-        & & & & & BSGS & 7.34 & 615.16 & 0.1399 \\
-      \end{tblr}
-    }
-    \label{tab:performance-benchmarks}
-  \end{table}
-  In Plain: 784 byte requests; Encrypted: \SI{132}{\mebi\byte} requests.
+  \vspace{-0.3cm}
+  Plain Accuracy: \SI{97.6}{\percent}, Encrypted Accuracy: \SI{97.3}{\percent}.
 \end{frame}
 
 \begin{frame}{Ciphertext Visualisations}
