@@ -213,8 +213,8 @@ The diagram in \cref{fig:bfv-overview} shows how a typical encryption process wo
   $$t \ll q \Longrightarrow \delta\inv = t/q \ll 1$$ should be given while also ensuring that the spread of the distributions $\chi_{key}$, $\chi_{enc}$ and $\chi_{error}$ is not too large so that $\overline{\mu_{1,2}}, \overline{u}$ and $\tilde{\mu}$ do not lead to a large $\epsilon$ distorting our final result.
 \end{proof}
 
-As the public key $\vec{p} = (b, a)$ corresponds to a sample from the RLWE distribution (\cref{corollary:rlwe-dist}), the implied security of the BFV scheme is given by the hardness assumption of LWE (\cref{thm:lwe-hardness}).
-An attacker trying to decrypt a ciphertext $\vec{c}$, given only the public key $\vec{p}$, would thereby need to solve the RLWE search problem (\cref{corollary:search-rlwe}) which is known to be hard \parencite{2010-rlwe-original}.
+As the public key $\vec{p} = (b, a)$ corresponds to a sample from the RLWE distribution (\cref{def:rlwe-dist}), the implied security of the BFV scheme is given by the hardness assumption of LWE (\cref{thm:lwe-hardness}).
+An attacker trying to decrypt a ciphertext $\vec{c}$, given only the public key $\vec{p}$, would thereby need to solve the RLWE search problem (\cref{def:search-rlwe}) which is known to be hard \parencite{2010-rlwe-original}.
 
 \cite{seal-4.0} implements the scheme, enabled using \texttt{seal::scheme\_type::bfv}.
 
@@ -476,7 +476,7 @@ The \cryptop{CKKS.ReLin} operation serves the same purpose as in \gls{bfv}, the 
   We can conclude that encoding \textit{and} encryption in CKKS are indeed homomorphic with respect to addition.
 \end{proof}
 
-As the public key $\vec{p} = (b, a)$ corresponds to a sample from the RLWE distribution (\cref{corollary:rlwe-dist}), the implied security of the CKKS scheme is given by the hardness assumption of LWE (\cref{thm:lwe-hardness}).
-An attacker trying to decrypt a ciphertext $\vec{c}$, given only the public key $\vec{p}$, would thereby need to solve the RLWE search problem (\cref{corollary:search-rlwe}) which is known to be hard \parencite{2010-rlwe-original}.
+As the public key $\vec{p} = (b, a)$ corresponds to a sample from the RLWE distribution (\cref{def:rlwe-dist}), the implied security of the CKKS scheme is given by the hardness assumption of LWE (\cref{thm:lwe-hardness}).
+An attacker trying to decrypt a ciphertext $\vec{c}$, given only the public key $\vec{p}$, would thereby need to solve the RLWE search problem (\cref{def:search-rlwe}) which is known to be hard \parencite{2010-rlwe-original}.
 
 \cite{seal-4.0} implements the scheme, enabled using \texttt{seal::scheme\_type::ckks}.

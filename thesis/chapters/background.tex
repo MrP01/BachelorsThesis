@@ -74,7 +74,7 @@ As a highly relevant structure to cryptography and a great example of a quotient
 
 This ring is of specific importance in discrete mathematics and can be regarded as a formalisation of modular arithmetic, much of which we will require at a later point in this chapter.
 
-As a first step towards the first central result, \cref{corollary:bounded-polynomials-mod-q}, we formally introduce polynomial rings and how to carry out addition and multiplication between them.
+As a first step towards the first central result, \cref{def:bounded-polynomials-mod-q}, we formally introduce polynomial rings and how to carry out addition and multiplication between them.
 
 \begin{definition}{Polynomial Ring over $\Z$}{poly-ring}
   On the set of all complex-valued polynomials with integer coefficients (a function space)
@@ -111,7 +111,7 @@ Polynomials over the integers however, cannot always be factorised further, yiel
 \end{definition}
 
 \subsection{Cyclotomic Polynomials}
-Due to their interesting structure and efficient computability, in the schemes introduced in the following chapter, certain polynomials (\cref{corollary:bounded-polynomials-mod-q}) are chosen as representations of plaintexts and ciphertexts.
+Due to their interesting structure and efficient computability, in the schemes introduced in the following chapter, certain polynomials (\cref{def:bounded-polynomials-mod-q}) are chosen as representations of plaintexts and ciphertexts.
 An important concept is that of cyclotomic ('circle-cutting') polynomials, which we will discuss in a bit more detail here.
 
 An important polynomial is $$p: \C \mapsto \C, \; p(x) = x^n - 1 \,.$$
@@ -172,15 +172,15 @@ Therefore, in the following we will focus on power-of-2 cyclotomic polynomials, 
 
 As promised above, we will require \cref{lemma:integers-modulo-q} for the fundamental structure underlying the \gls{he} schemes described in the next chapter, defining ourselves a ring with coefficients in said quotient ring $\Z/q\Z$.
 
-\begin{corollary}{Polynomial Ring modulo $q$}{bounded-polynomials-mod-q}
+\begin{definition}{Polynomial Ring modulo $q$}{bounded-polynomials-mod-q}
   Further modifying $R = \Z[X] / (X^N+1)$ for $N$ a power of $2$ to only take coefficients mod $q$, we obtain two equivalent definitions for the same ring:
   $$R_q := R/qR = (\Z/q\Z)[X] / (X^N+1)$$
   which contains polynomials with integer coefficients modulo $q$ of degree $N-1$.
   Explicitly stated, the set can be written as:
   $$R/qR = \{p: \C \mapsto \C,\; p(x) = \sum_{k=0}^{N-1} a_k x^k \;|\; a_k \in \Z/q\Z\}$$
-\end{corollary}
+\end{definition}
 
-This bounded polynomial ring is central to understanding objects in the next chapter and \cref{corollary:bounded-polynomials-mod-q} can be regarded as the central result of this section.
+This bounded polynomial ring is central to understanding objects in the next chapter and \cref{def:bounded-polynomials-mod-q} can be regarded as the central result of this section.
 
 \pagebreak
 \section{Lattice Cryptography}
@@ -277,7 +277,7 @@ Often times, public-key schemes (rather slow) are used to exchange keys for subs
 \subsection{Learning with Errors on Rings (RLWE)}
 Similar to \cref{def:lwe-dist}, the Ring-LWE distribution is derived as follows \parencite{2010-rlwe-original}:
 
-\begin{corollary}{RLWE-Distribution $B_{\vec{s}, \chi_{error}}$}{rlwe-dist}
+\begin{definition}{RLWE-Distribution $B_{\vec{s}, \chi_{error}}$}{rlwe-dist}
   Given a quotient \hyperref[def:ring]{ring} $(R/qR, +, \cdot)$, we choose some secret $s \in R/qR$.
   In order to sample a value from the RLWE distribution $B_{s, \chi_{error}}$:
   \begin{itemize}
@@ -286,22 +286,22 @@ Similar to \cref{def:lwe-dist}, the Ring-LWE distribution is derived as follows 
     \item Set $b = s \cdot a + \mu$, with $\cdot$ denoting the ring multiplication operation.
     \item Output the pair $(a, b) \in R/qR \times R/qR$.
   \end{itemize}
-\end{corollary}
+\end{definition}
 
 The search and decision problems can be constructed in the same manner as for \gls{lwe}:
 
-\begin{corollary}{RLWE-Search Problem}{search-rlwe}
+\begin{definition}{RLWE-Search Problem}{search-rlwe}
   Given $m$ independent samples $(a_i, b_i)_{0 < i \leq m}$ from $B_{s, \chi_{error}}$, find the secret $s$.
-\end{corollary}
-\begin{corollary}{RLWE-Decision Problem}{decision-rlwe}
+\end{definition}
+\begin{definition}{RLWE-Decision Problem}{decision-rlwe}
   Given $m$ samples $(a_i, b_i)_{0 < i \leq m}$, distinguish (with non-negligible advantage) whether they were drawn from $B_{s, \chi_{error}}$ or from the uniform distribution $u$ over $R/qR \times R/qR$.
-\end{corollary}
+\end{definition}
 
 The main advantage of RLWE over LWE is that is conceptually similar and yet simple to formalise over an arbitrarily chosen \hyperref[def:ring]{ring} $(R, +, \cdot)$ which allows for a vast amount of applications and interesting constructions.
 
 In \gls{lwe}-based cryptosystems, the public key consists of $m$ LWE-distribution (\cref{def:lwe-dist}) samples of $A_{\vec{s},\chi_{error}}$ hiding the secret $\vec{s}$.
 An attacker would thereby need to solve the LWE-Problem (\cref{def:lwe-search-problem}) in order to retrieve the secret key from the public key, which is highly undesirable for a solid cryptosystem of course, but also hardly feasible with well-chosen parameters, assuming the hardness of the LWE problem (cf. \cref{thm:lwe-hardness}).
-For RLWE, the public key only consists of a single RLWE-distribution sample of $B_{s, \chi_{error}}$ (\cref{corollary:rlwe-dist}) which is usually smaller since it is comprised of only two elements in $R/qR$.
+For RLWE, the public key only consists of a single RLWE-distribution sample of $B_{s, \chi_{error}}$ (\cref{def:rlwe-dist}) which is usually smaller since it is comprised of only two elements in $R/qR$.
 Keys are usually smaller in RLWE, depending on the choices of $p$, $q$, $n$ and $m$.
 
 Due to their similarity, RLWE samples can even be translated into equivalent LWE samples.
@@ -427,7 +427,7 @@ In quantum mechanics, we seek a mathematical description of quantum phenomena, c
 
 The mathematical foundation of quantum mechanics is deeply rooted in linear algebra and functional analysis.
 An important concept is that of function spaces and, especially, Hilbert spaces.
-Function spaces are a widely useful concept, polynomial rings are a great example too (confer \cref{corollary:bounded-polynomials-mod-q}).
+Function spaces are a widely useful concept, polynomial rings are a great example too (confer \cref{def:bounded-polynomials-mod-q}).
 Wave functions $\psi: \R^3 \times \R \mapsto \C$ are usually chosen as elements of the $\mathcal{L}^2$-space, the space of square-integrable\footnote{Mathematicians usually formalise these using \name{Lebesgue}-integrals instead of the commonly used \name{Riemann} formulation of an integral. \name{Lebesgue} integration allows for a much broader class of integrable functions and is usually the preferred method in this context.} functions:
 $$\mathcal{L}^2 := \big\{\psi: \R^3 \times \R \mapsto \C \,\big|\, ||\psi|| < \infty\big\} \quad \text{with} \; ||\psi|| := \int_{\R^3} d^3 r \int_{\R} dt \; \psi^*(\vec{r}, t) \psi(\vec{r}, t)$$
 with $||\psi||$ referred to as the $l_2$-norm of the function $\psi$.
