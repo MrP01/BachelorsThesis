@@ -12,9 +12,8 @@
   \input{../thesis/#1.tex}
 }
 
-% TODO: Galois Rotations
-% TODO: Überleitungen! (zu FHE), etc.
 % TODO: Sprachnachricht nochmal anhören
+% TODO: Das Live-Exportieren der Visualisierungen als PNG habe ich ja auf deinen Wunsch auch noch eingebaut in C++, das werde ich auch zeigen.
 
 \title[Secure Classification as a Service]{
   Secure Classification as a Service \\
@@ -29,7 +28,7 @@
 \instituteurl{iaik.tugraz.at}
 
 \institutelogo{beamerthemetugraz/institute/IAIK}
-% \additionallogo{figures/logo}  % additional institute/department logo (footline; optional)
+% \additionallogo{beamerthemetugraz/institute/ITPCP-rot}
 % \logobar{Supported by: ...}  % sponsors (titlepage; optional)
 
 % Ungefähre Struktur:
@@ -85,13 +84,16 @@
   \begin{frame}{Conclusion}
     \begin{itemize}
       \item Schemes like \gls{rsa} become problematic due to \name{Shor}'s Algorithm $\Rightarrow$ Lattice Crypto.
-      \item New Cryptosystems constructed based on \name{Regev}'s \gls{lwe}-problem, e.g. \gls{ckks}.
-      \item Encryption is homomorphic with respect to addition (and multiplication).
-      \item The Encoding and Decoding procedures of CKKS allow for \gls{simd} operations needed for efficient computations.
+            \begin{itemize}
+              \item New Cryptosystems constructed based on \name{Regev}'s \gls{lwe}-problem, e.g. \gls{ckks}.
+              \item Encryption is homomorphic with respect to addition (and multiplication).
+              \item The Encoding and Decoding procedures of CKKS allow for \gls{simd} operations needed for efficient computations.
+            \end{itemize}
       \item Image Classification of the handwritten digits can be done using a neural network.
-      \item The required operations can be translated to \gls{he}.
-      \item For better performance, improved matrix multiplication methods are utilised.
-      \item Our Demonstrator: \url{https://secure-classification.peter.waldert.at/}.
+            \begin{itemize}
+              \item The required operations can be translated to \gls{he}.
+              \item We looked at different multiplication methods.
+            \end{itemize}
     \end{itemize}
   \end{frame}
 

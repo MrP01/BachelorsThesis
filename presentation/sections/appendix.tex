@@ -1,13 +1,127 @@
 \appendix
 \section{\appendixname}
-\begin{frame}{Details...}
+\begin{frame}{Some more Details...}
   Additional Material omitted in main talk.
 
   \begin{itemize}
-    \item Proof Sketch of $2^k$\th cyclotomic polynomial
     \item Encoding and Decoding transformations
     \item The BabyStep-Giantstep method
     \item Proof of Diagonal, Hybrid method
     \item Shor's Algorithm
   \end{itemize}
+\end{frame}
+
+\begin{frame}{Polynomial Rings}
+  \begin{columns}
+    \begin{column}{0.6\linewidth}
+      \begin{definition}[Cyclotomic Polynomial]
+        Given the $n$\th roots of unity $\{\xi_k\}$, define $\Phi_n \in \Z[X]$ as
+        $$\Phi_n(x) := \prod_{\stackrel{k=1}{\xi_k \mathrm{primitive}}}^{n} (x - \xi_k) \,.$$
+        It is unique for each given $n \in \N$.
+      \end{definition}
+    \end{column}
+    \begin{column}{0.32\linewidth}
+      \begin{figure}
+        \scalebox{0.64}{\hspace{-1.5cm}\inputtikz{figures/nth-roots-of-unity}}
+        \caption{The 5\th roots of unity}
+        \label{fig:nth-roots-of-unity}
+      \end{figure}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}[c]
+  \begin{definition}[Canonical Embedding $\underline{\sigma}$]
+    For a real-valued polynomial $p \in \mathcal{S}$, define the canonical embedding of $\mathcal{S}$ in $\C^N$ as a mapping $\underline{\sigma}: \mathcal{S} \mapsto \C^N$ with $$\underline{\sigma}(p) := \big(p(e^{-2\pi i j / N})\big)_{j \in \Z_d^*}$$ with $\Z_d^* := \{x \in \Z / d\Z \,|\, \gcd(x, d) = 1\}$ the set of all integers smaller than $d$ that do not share a factor $> 1$ with $d$.
+    The image of $\underline{\sigma}$ given a set of inputs $R$ shall be denoted as $\underline{\sigma}(R) \subseteq \C^N$.
+    Let the inverse of $\underline{\sigma}$ be denoted by $\underline{\sigma}\inv: \C^N \mapsto \mathcal{S}$.
+  \end{definition}
+\end{frame}
+
+\begin{frame}[c]
+  \begin{definition}[Discretisation to an element of $\underline{\sigma}(R)$]
+    Using one of several round-off algorithms (cf. \cite{2013-rlwe-toolkit}), given an element of $\mathbb{H}$, define a rounding operation $\underline{\rho}\inv: \mathbb{H} \mapsto \underline{\sigma}(R)$ that maps an $\vec{h} \in \mathbb{H}$ to its closest element in $\underline{\sigma}(R) \subset \mathbb{H}$, also denoted as
+    $$\underline{\rho}\inv(\vec{h}) := \lfloor \vec{h} \rceil_{\underline{\sigma}(R)}\,.$$
+    Further let $\underline{\rho_\delta}\inv(\vec{h}) = \lfloor \delta \cdot \vec{h} \rceil_{\underline{\sigma}(R)}$ denote the same rounding operation but with prior scaling by a scalar factor $\delta$.
+    Note that $\underline{\rho}$ is given directly as the identity operation because all elements of its domain are already elements of its image. Similarly, $\underline{\rho_\delta}(\vec{y}) = \delta\inv \cdot \vec{y}$.
+  \end{definition}
+\end{frame}
+
+\begin{frame}[c]
+  \begin{definition}[Natural Projection $\underline{\pi}$]
+    Let $T$ be a multiplicative subgroup of $\Z_d^*$ with $\Z_d^* / T = \{\pm 1\} = \{1T, -1T\}$, then the natural projection $\underline{\pi}: \mathbb{H} \mapsto \C^{N/2}$ is defined as
+    $$\underline{\pi}\big((z_j)_{j \in \Z_M^*}\big) := (z_j)_{j \in T}$$
+    Let its inverse be denoted by $\underline{\pi}\inv: \C^{N/2} \mapsto \mathbb{H}$ and consequently defined as
+    $$\underline{\pi}\inv\big((z_j)_{j \in T}\big) := \big(\nu(z_j)\big)_{j \in \Z_M^*} \; \mathrm{with} \; \nu(z_j) = \begin{cases}
+        z_j            & \text{if } j \in T \\
+        \overline{z_j} & \text{otherwise}
+      \end{cases}$$
+  \end{definition}
+\end{frame}
+
+\begin{frame}[c]
+  \begin{theorem}[Babystep-Giantstep Method]
+    Given a matrix $M \in \R^{t \times t}$ and a vector $\vec{x} \in \R^t$, with $t = t_1 \cdot t_2$ split into two \gls{bsgs} parameters $t_1, t_2 \in \N$ and
+    $$\diag'_p(M) = \rot_{-\lfloor p/t_1 \rfloor \cdot t_1}(\diag_p(M))\,,$$
+    one can express a matrix-vector multiplication as follows:
+    \begin{equation*}
+      M \vec{x} = \sum_{k=0}^{t_2-1} \rot_{(kt_1)} \bigg(
+      \sum_{j=0}^{t_1-1} \diag'_{(kt_1+j)}(M) \cdot \rot_j(\vec{x})
+      \bigg)
+    \end{equation*}
+    where $\cdot$ denotes an element-wise multiplication of two vectors.
+  \end{theorem}
+\end{frame}
+
+\begin{frame}[c]
+  \begin{proof}[Proof (Diagonal Method)]
+    For all indices $i \in \Z/t\Z$,
+    $$\bigg\{\sum_{j=0}^{t-1} \diag_j(M) \cdot \rot_j(\vec{x})\bigg\}_i
+      = \sum_{j=0}^{t-1} M_{i,(i+j)} x_{i+j}
+      \overset{[k=i+j]}{=} \sum_{k=i}^{t+i-1} M_{ik} x_k
+      = \sum_{k=0}^{t-1} M_{ik} x_k
+      = \{M \vec{x}\}_i \,.$$
+  \end{proof}
+\end{frame}
+
+\begin{frame}[c]
+  \begin{proof}[Proof (Hybrid Method)]
+    For all indices $i \in \Z/s\Z$,
+    $$\{\vec{y}\}_i = \bigg\{\sum_{k=1}^{t / s} \rot_{ks}\bigg(\sum_{j=1}^s \diag_j(M) \cdot \rot_j(\vec{x})\bigg)\bigg\}_i = \sum_{k=1}^{t / s} \sum_{j=1}^{s} M_{i,(i+j) + ks} x_{(i+j) + ks} \,,$$
+    substituting $l = i+j+ks$ and condensing the nested sums into one single summation expression since $\sum_{k=1}^{t / s} \sum_{j=1}^{s} f(j+ks) = \sum_{l=1}^{t} f(l)$, we obtain
+    $$y_i = \sum_{l=1+i}^{t+i} M_{il} x_l = \sum_{l=1}^{t} M_{il} x_l = \{M \vec{x}\}_i \,.$$
+  \end{proof}
+\end{frame}
+
+\begin{frame}[allowframebreaks]{\name{Shor}'s Algorithm}
+  Peter \name{Shor}'s algorithm was published in 1994 \parencite{1997-shors-algorithm} and will be outlined here shortly as it is a core element to security considerations of modern cryptosystems.
+  The core structure of the algorithm is
+  \begin{enumerate}
+    \item guessing some $g \in \N$ that we hope shares a factor with a large $N = p \cdot q$ ($p, q, N \in \N$),
+    \item improving that guess $g$ by a quantum subroutine and
+    \item applying \name{Euclid}'s algorithm to find $p$ and $q$ the factors of $N$.
+  \end{enumerate}
+
+  The core factorisation idea is the following, not specific to quantum computation: We know that for a pair $g, N \in \N$, we can always find some $r \in \N$ such that
+  $$g^r = m N + 1,\, m \in \N\,,$$
+  we are looking for a $g^r$ that is exactly one more than a multiple of $N$.
+  Rearranging,
+  $$g^r - 1 = m N \;\Longleftrightarrow\; (g^\frac{r}{2} + 1)(g^\frac{r}{2} - 1) = m N$$
+  we have found two factors $g^\frac{r}{2} + 1$ and $g^\frac{r}{2} - 1$ (for even $r$) that share a common factor with $N$ and apply Euclid's algorithm to get $p$ and $q$.
+
+  Thereby, we instruct the quantum computer to raise our guess $g$ by all possible powers $\in \N$ up to some boundary in order to obtain
+  $$\ket{1, g^1} + \ket{2, g^2} + \ket{3, g^3}, ...$$
+  which we then take modulo $N$, resulting in a superposition of remainders
+  $$\ket{1, [g^1]_N} + \ket{2, [g^2]_N} + \ket{3, [g^3]_N} + ... \,.$$
+
+  Here is where \name{Shor}'s key idea came in:
+  The remainders in the above superposition expose repetitions at a period of exactly $r$ (which, by our definition fulfils $g^r \equiv 1 \mod N$)
+  $$g^x \equiv g^{x + r} \equiv g^{x + 2r} \equiv ... \equiv g^{x + ar} \mod N$$
+  the remainders are periodic with frequency $\frac{1}{r}$.
+
+  The above can be quickly derived from $g^r = mN + 1$, therefore $$g^{x+r} = g^x g^r = (\tilde{m} N + [g^x]_N) (m N + 1) = (m \tilde{m} N + [g^x]_N m + \tilde{m}) N + [g^x]_N$$ is indeed congruent to $g^x \mod N$.
+
+  From the output of
+  $$\cryptop{QFT}\big(\ket{1, [g^1]_N} + \ket{2, [g^2]_N} + \ket{3, [g^3]_N} + ...\big)$$
+  we obtain the dominant frequency $\frac{1}{r}$ yielding us our desired improved guess \parencite{1997-shors-algorithm}.
 \end{frame}

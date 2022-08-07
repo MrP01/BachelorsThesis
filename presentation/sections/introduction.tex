@@ -1,15 +1,18 @@
 \section{Introduction}
-\begin{frame}{Privacy for Medical Applications}
+\begin{frame}{\gls{ppml}}
   \begin{itemize}
-    \item Development of new applications and solutions 'of numerical nature' in health care, but: highly sensitive medical data.
-    \item For instance, RNA sequences, images of skin, lab data, medical records, etc.
-    \item The results are even more volatile: disease predictions
+    \item Development of new applications and solutions 'of numerical nature' in different fields
+          \begin{itemize}
+            \item Example: Health Care with highly sensitive medical data.
+            \item For instance, RNA sequences, images of skin, lab data, medical records, etc.
+            \item The results are even more volatile: disease indicators.
+          \end{itemize}
     \item $\Rightarrow$ Demand for privacy-preserving solutions in \gls{ml} applications.
-    \item By the way: Post-Quantum Secure Cryptosystems
+    \item By the way: Post-Quantum Secure Cryptosystems!
   \end{itemize}
 \end{frame}
 
-\begin{frame}{Post-Quantum Security}
+\begin{frame}{What about Long-Term Security?}
   \begin{columns}
     \begin{column}{0.6\linewidth}
       Quantum Computers affect Cryprography today:
@@ -30,6 +33,7 @@
       \end{figure}
     \end{column}
   \end{columns}
+  Our Webservice is (from the point of todays knowledge) still secure in the presence of a quantum computer.
 \end{frame}
 
 \begin{frame}{The \gls{rsa} Scheme}
@@ -44,4 +48,5 @@
      & \equiv (m_1 m_2)^r \mod q                \\
      & \equiv \mathcal{E}(m_1 \cdot m_2) \mod q
   \end{align*}
+  $\Rightarrow$ A Group Homomorphism!
 \end{frame}
