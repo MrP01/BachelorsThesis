@@ -62,6 +62,12 @@ nlohmann::json handleEncryptedPredictionRequest(nlohmann::json request) {
   dataStream = std::stringstream(std::string(binary.begin(), binary.end()));
   ciphertext.load(*neuralNet.context, dataStream);
 
+  {
+    std::string filename_base("data/ciphertext-visualisation/");
+    auto visualisation = neuralNet.interpretCiphertextAsPixels(ciphertext);
+    neuralNet.saveXArrayToPNG(filename_base + std::to_string(clock()) + "-ciphertext.png", visualisation);
+  }
+
   seal::Ciphertext result = neuralNet.predictEncrypted(ciphertext, relinKeys, galoisKeys);
 
   std::vector<uint8_t> byte_buffer(static_cast<size_t>(result.save_size()));
