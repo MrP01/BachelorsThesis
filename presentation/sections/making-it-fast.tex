@@ -28,6 +28,8 @@
   \end{figure}
 
   $$\{M \vec{x}\}_i = \sum_{j=1}^{t} M_{ij} x_j \,.$$
+
+  \begin{flushright}\tiny Image adapted from \cite{2020-cryptotree}.\end{flushright}
 \end{frame}
 
 \begin{frame}{Matrix Multiplication: The Diagonal Method}
@@ -40,6 +42,8 @@
   \end{figure}
 
   $$M \vec{x} = \sum_{j=0}^{t-1} \diag_j(M) \cdot \rot_j(\vec{x}) \,.$$
+
+  \begin{flushright}\tiny Image adapted from \cite{2020-cryptotree}.\end{flushright}
 \end{frame}
 
 \begin{frame}{Matrix Multiplication: The Hybrid Method}
@@ -52,6 +56,8 @@
   \end{figure}
 
   $$M \vec{x} = (y_i)_{i \in \Z/s\Z} \;\text{with}\; \vec{y} = \sum_{k=1}^{t / s} \rot_{ks}\bigg(\sum_{j=1}^s \diag_j(M) \cdot \rot_j(\vec{x})\bigg) \,.$$
+
+  \begin{flushright}\tiny Image adapted from \cite{2020-cryptotree}.\end{flushright}
 \end{frame}
 
 \begin{frame}{Polynomial Evaluation}
@@ -75,6 +81,7 @@
     \setlength{\belowcaptionskip}{0pt}
     \caption[Performance Benchmarks / Communication Overhead]{
       Performance benchmarks and communication overhead of the classification procedure on an Intel\textregistered \, i7-5600U CPU, including the encoding and decoding steps.
+      \vspace{-0.2cm}
     }
     % \captionsetup{margin=10pt}
     % \caption*{
