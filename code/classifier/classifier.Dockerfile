@@ -25,7 +25,7 @@ RUN conan profile new default --detect --force \
   && conan profile update settings.compiler.libcxx=libstdc++11 default
 COPY ./classifier/conanfile.txt /classifier/conanfile.txt
 RUN mkdir /classifier/build/
-RUN cd /classifier/build/ && conan install --build=backward-cpp --build=libdwarf --build=libelf ..
+RUN cd /classifier/build/ && conan install --build=lodepng ..
 
 COPY ./classifier/ /classifier/
 RUN cd /classifier/build/ && cmake .. && CMAKE_BUILD_TYPE=RelWithDebInfo cmake --build . -- -j3

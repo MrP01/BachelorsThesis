@@ -99,10 +99,19 @@ void runServer() {
   server.Post("/api/classify/encrypted/", msgpackPOSTRequestHandler(handleEncryptedPredictionRequest));
   server.Get("/api/testdata/", handleGetTestData);
 
-  server.set_exception_handler([](const httplib::Request &req, httplib::Response &res, std::exception &exception) {
-    PLOG(plog::debug) << "Exception caught: " << exception.what();
+  server.set_exception_handler([](const auto &req, auto &res, std::exception_ptr ep) {
+    auto fmt = "<h1>Error 500</h1><p>%s</p>";
+    char buf[BUFSIZ];
+    try {
+      std::rethrow_exception(ep);
+    } catch (std::exception &e) {
+      snprintf(buf, sizeof(buf), fmt, e.what());
+      PLOG(plog::debug) << "Exception caught: " << e.what();
+    } catch (...) { // See the following NOTE
+      snprintf(buf, sizeof(buf), fmt, "Unknown Exception");
+    }
+    res.set_content(buf, "text/html");
     res.status = 500;
-    res.set_content(exception.what(), "text/plain");
   });
   server.set_logger([](const httplib::Request &req, const httplib::Response &res) {
     // prints log after the response was sent
