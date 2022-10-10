@@ -53,7 +53,7 @@ def train(ctx, analyse=False):
 
 @invoke.task()
 def send_test_request(ctx, index=3):
-    """Sends an HTTP test request to localhost:5555"""
+    """Sends an HTTP test request to localhost:8000"""
     x_test = np.load(MNIST / "x-test.npy")
     y_test = np.load(MNIST / "y-test.npy")
     vector = x_test[index].reshape((784,))
