@@ -52,4 +52,5 @@ COPY --from=cpp-build /classifier/build/bin/evaluate /classifier/evaluate
 COPY --from=trainer /classifier/data/models/ /classifier/data/models/
 COPY --from=trainer /classifier/data/mnist/x-test.npy /classifier/data/mnist/x-test.npy
 COPY --from=trainer /classifier/data/mnist/y-test.npy /classifier/data/mnist/y-test.npy
+RUN mkdir /classifier/data/ciphertext-visualisation/
 CMD ["/classifier/classifier"]
