@@ -15,7 +15,7 @@ RUN cd /tmp/ntl/src \
   && make -j4 && make install && ldconfig /
 
 # Maybe we can package SEAL into conan?
-RUN git clone --depth 1 https://github.com/microsoft/SEAL.git /tmp/seal
+RUN git clone -b v4.0.0 --depth 1 https://github.com/microsoft/SEAL.git /tmp/seal
 RUN cd /tmp/seal \
   && cmake -S . -B build -DSEAL_THROW_ON_TRANSPARENT_CIPHERTEXT=OFF \
   && cmake --build build -- -j3 \
