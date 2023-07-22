@@ -1,0 +1,56 @@
+\section{Step 1.5: Nice Maths to Enjoy}
+
+\begin{frame}{Ring Homomorphism}
+  \begin{definition}
+    Given two \hyperref[def:ring]{rings} $(R, +, \cdot)$ and $(S, \oplus, \otimes)$, we call a mapping $\varphi: R \rightarrow S$ a ring homomorphism when it satisfies the following conditions:
+    $$\forall a, b \in R: \varphi(a + b) = \varphi(a) \oplus \varphi(b) \wedge \varphi(a \cdot b) = \varphi(a) \otimes \varphi(b)$$
+  \end{definition}
+\end{frame}
+
+\begin{frame}{The \gls{rsa} Scheme}
+  From the integers $\Z$, define the quotient ring $(\Z/q\Z, +, \cdot)$ for some modulus $q \in \N$.
+
+  With unpadded \glstext{rsa} \parencite{1983-rsa}, $\mathcal{E}: \Z/q\Z \mapsto \Z/q\Z$
+  $$\mathcal{E}(m) := m^r \mod q \quad r, q \in \N$$
+  applied to the messages $m_1, m_2 \in \Z/q\Z$ respectively, the following holds:
+  \begin{align*}
+    \mathcal{E}(m_1) \cdot \mathcal{E}(m_2)
+     & \equiv (m_1)^r (m_2)^r \mod q            \\
+     & \equiv (m_1 m_2)^r \mod q                \\
+     & \equiv \mathcal{E}(m_1 \cdot m_2) \mod q
+  \end{align*}
+  $\Rightarrow$ A Group Homomorphism!
+\end{frame}
+
+\begin{frame}{Some Notation}
+  \begin{itemize}
+    \item $\Z[X] := \big\{p: \C \mapsto \C \,, p(x) = \sum_{k=0}^\infty a_k x^k, a_k \in \Z \;\forall k \geq 0\big\}$
+          \begin{itemize}
+            \item Complex-valued Polynomials with integer coefficients.
+          \end{itemize}
+    \item $\Z_q[X] := (\Z/q\Z)[X] = \Z[X] / q\Z[X]$
+    \item $\Z_q[X] / \Phi_M(X) \underbrace{ = \Z_q[X]/(X^N+1)}_{\text{for } M=2N, \text{ powers of 2}}$ using the $M$\th cyclotomic polynomial $\Phi_M(X)$.
+          \begin{itemize}
+            \item Its elements are polynomials of degree $(N-1)$\footnote{For general $M$, degree $\varphi(M) - 1$} with integer coefficients mod $q$.
+          \end{itemize}
+  \end{itemize}
+\end{frame}
+
+\begin{frame}{Polynomial Rings}
+  \begin{columns}
+    \begin{column}{0.6\linewidth}
+      \begin{definition}[Cyclotomic Polynomial]
+        Given the $n$\th roots of unity $\{\xi_k\}$, define $\Phi_n \in \Z[X]$ as
+        $$\Phi_n(x) := \prod_{\stackrel{k=1}{\xi_k \mathrm{primitive}}}^{n} (x - \xi_k) \,.$$
+        It is unique for each given $n \in \N$.
+      \end{definition}
+    \end{column}
+    \begin{column}{0.32\linewidth}
+      \begin{figure}
+        \scalebox{0.64}{\hspace{-1.5cm}\inputtikz{figures/nth-roots-of-unity}}
+        \caption{The 5\th roots of unity}
+        \label{fig:nth-roots-of-unity}
+      \end{figure}
+    \end{column}
+  \end{columns}
+\end{frame}

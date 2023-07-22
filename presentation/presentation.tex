@@ -1,7 +1,7 @@
 \PassOptionsToPackage{dvispnames, table}{xcolor}
-\documentclass[aspectratio=169, onlytextwidth]{beamer}
+\documentclass[aspectratio=169, onlytextwidth, hyperref={colorlinks=true}]{beamer}
 \usetheme[institute]{tugraz2018}
-\usepackage[beamer]{prettytex/base}
+\usepackage[beamer, collink]{prettytex/base}
 \usepackage{prettytex/math}
 \usepackage{prettytex/gfx}
 \input{customs.tex}
@@ -20,7 +20,7 @@
   }
 }
 \author{Peter Waldert}
-\date{Bachelor Thesis Presentation, 01.08.2022}
+\date{Tins and Talk, 21.07.2023}
 \institute{IAIK}
 \instituteurl{iaik.tugraz.at}
 
@@ -38,11 +38,12 @@
 
   \include{sections/introduction}
   \include{sections/encrypted-ml}
+  \include{sections/nice-maths-to-enjoy}
   \include{sections/lattice-crypto}
   \include{sections/post-quantum-security}
   \include{sections/making-it-fast}
   \include{sections/results}
-  \include{sections/conclusion}
+  % \include{sections/conclusion}
 
   \section*{}
   \begin{frame}[c]

@@ -20,6 +20,26 @@
   \end{columns}
 \end{frame}
 
+\begin{frame}[allowframebreaks]{Problems}
+  \begin{definition}[Shortest Vector Problem (SVP)]
+    Given a lattice $\lat$ constructed from $n$ basis vectors, find the shortest non-zero lattice vector $\vec{x} \in \lat \backslash \{\vec{0}\}$, i.e. find $\vec{x}$ such that $||\vec{x}|| = \lambda_{min}$ \parencite{2016-decade-of-lattice}.
+  \end{definition}
+
+  Based on SVP, one can construct GapSVP, an approximative version with advantages for usage in practical problems.
+
+  \begin{definition}[Decisional Approximate SVP (GapSVP)]
+    Given a lattice $\lat$ and some pre-defined function $\gamma: \N \mapsto \R$ depending on the lattice dimension $n$ (constant for a given $\lat$) with $\gamma(n) \geq 1$, the decisional approximate shortest vector problem is distinguishing between $\lambda_{min} \leq 1$ and $\lambda_{min} > \gamma(n)$.
+    For other cases, it is up to the algorithm what to return.
+  \end{definition}
+
+  \begin{definition}[Short Integer Solution (SIS) Problem]
+    For $m$ given vectors $(\vec{a}_i)_{0 < i \leq m} \in (\Z / q\Z)^n$ that comprise the columns of a matrix
+    $A \in (\Z / q\Z)^{n \times n}$ and an upper bound $\beta$, find
+    a solution vector $\vec{z} \in \Z^n \backslash \{\vec{0}\}$ such that
+    $$A \vec{z} = \vec{0} \quad \mathrm{with} \quad ||\vec{z}|| \leq \beta\,.$$
+  \end{definition}
+\end{frame}
+
 \begin{frame}{The \gls{lwe} Problem}
   \begin{definition}[LWE-Distribution $A_{\vec{s}, \chi_{error}}$]
     Given a prime $q \in \N$ and $n \in \N$, choose a secret $\vec{s} \in (\Z / q \Z)^n$.
@@ -39,6 +59,24 @@
   Lead to the \glstext{fhe} scheme by \name{Gentry} in 2009 \cite{2009-gentry-fhe-original}.
 \end{frame}
 
+\begin{frame}{The \gls{rlwe} Problem}
+  \begin{definition}[RLWE-Distribution $B_{\vec{s}, \chi_{error}}$]
+    Given a quotient ring $(R/qR, +, \cdot)$, choose a secret $s \in R/qR$.
+    Sampling from the RLWE distribution $B_{s, \chi_{error}}$:
+    \begin{itemize}
+      \item Uniformly randomly draw an element $a \in R/qR$
+      \item Sample 'noise' $\mu \in R/qR$ from $\chi_{error}$.
+      \item Set $b = s \cdot a + \mu$, with $\cdot$ denoting the ring multiplication operation.
+      \item Output the pair $(a, b) \in R/qR \times R/qR$.
+    \end{itemize}
+  \end{definition}
+
+  Proven equivalent to LWE.
+
+  Use Search-RLWE to construct a cryptosystem...
+  Idea: Attacker needs to solve \gls{lwe} given the public key to recover the secret $s$.
+\end{frame}
+
 \begin{frame}{What is CKKS?}
   \begin{itemize}
     \item Levelled Homomorphic Encryption Scheme \cite{2017-ckks-original}.
@@ -54,10 +92,10 @@
   \begin{figure}[H]
     \centering
     \scalebox{0.85}{\inputtikz{figures/ckks-schematic}}
-    % \caption[Schematic overview of the CKKS scheme]{
-    %   Schematic overview of CKKS \parencite{2017-ckks-original}, adapted from \cite{2020-cryptotree}.
-    %   A plain vector $\vec{z} \in \C^{N/2}$ is encoded to $m = \cryptop{CKKS.Encode}(\vec{z})$, encrypted to $\vec{c} = \cryptop{CKKS.Encrypt}(\vec{p}, m)$, decrypted and decoded to a new $\tilde{\vec{z}} = \cryptop{CKKS.Decode}(\cryptop{CKKS.Decrypt}(s, \tilde{\vec{c}}))$.
-    % }
+    \caption[Schematic overview of the CKKS scheme]{
+      Schematic overview of CKKS \parencite{2017-ckks-original}, adapted from \cite{2020-cryptotree}.
+      A plain vector $\vec{z} \in \C^{N/2}$ is encoded to $m = \cryptop{CKKS.Encode}(\vec{z})$, encrypted to $\vec{c} = \cryptop{CKKS.Encrypt}(\vec{p}, m)$, decrypted and decoded to a new $\tilde{\vec{z}} = \cryptop{CKKS.Decode}(\cryptop{CKKS.Decrypt}(s, \tilde{\vec{c}}))$.
+    }
     \label{fig:ckks-overview}
   \end{figure}
 \end{frame}

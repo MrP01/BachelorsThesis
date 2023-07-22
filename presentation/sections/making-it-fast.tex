@@ -1,20 +1,4 @@
 \section{Step 4: Can it perform?}
-\begin{frame}{Let's Check: Secure Handwritten Digit Classification as a Service - Demo}
-  \begin{columns}[c]
-    \begin{column}{0.7\linewidth}
-      \begin{figure}[H]
-        \centering
-        \includegraphics[width=0.75\linewidth]{../thesis/figures/frontend.pdf}
-        \vspace{-0.3cm}
-        \caption{\url{https://secure-classification.peter.waldert.at/}.}
-      \end{figure}
-    \end{column}
-    \begin{column}{0.24\linewidth}
-      Scan the QR-Code:
-      \qrcode[nolink,height=3.1cm]{https://secure-classification.peter.waldert.at/}
-    \end{column}
-  \end{columns}
-\end{frame}
 
 \newcommand{\matmulscale}{0.75}
 \newcommand{\matmulhoffset}{-3cm}
@@ -46,6 +30,17 @@
   \begin{flushright}\tiny Image adapted from \cite{2020-cryptotree}.\end{flushright}
 \end{frame}
 
+\begin{frame}[c]
+  \begin{proof}[Proof (Diagonal Method)]
+    For all indices $i \in \Z/t\Z$,
+    $$\bigg\{\sum_{j=0}^{t-1} \diag_j(M) \cdot \rot_j(\vec{x})\bigg\}_i
+      = \sum_{j=0}^{t-1} M_{i,(i+j)} x_{i+j}
+      \overset{[k=i+j]}{=} \sum_{k=i}^{t+i-1} M_{ik} x_k
+      = \sum_{k=0}^{t-1} M_{ik} x_k
+      = \{M \vec{x}\}_i \,.$$
+  \end{proof}
+\end{frame}
+
 \begin{frame}{Matrix Multiplication: The Hybrid Method}
   \begin{figure}[H]
     \centering
@@ -58,6 +53,29 @@
   $$M \vec{x} = (y_i)_{i \in \Z/s\Z} \;\text{with}\; \vec{y} = \sum_{k=1}^{t / s} \rot_{ks}\bigg(\sum_{j=1}^s \diag_j(M) \cdot \rot_j(\vec{x})\bigg) \,.$$
 
   \begin{flushright}\tiny Image adapted from \cite{2020-cryptotree}.\end{flushright}
+\end{frame}
+
+\begin{frame}[c]
+  \begin{proof}[Proof (Hybrid Method)]
+    For all indices $i \in \Z/s\Z$,
+    $$\{\vec{y}\}_i = \bigg\{\sum_{k=1}^{t / s} \rot_{ks}\bigg(\sum_{j=1}^s \diag_j(M) \cdot \rot_j(\vec{x})\bigg)\bigg\}_i = \sum_{k=1}^{t / s} \sum_{j=1}^{s} M_{i,(i+j) + ks} x_{(i+j) + ks} \,,$$
+    substituting $l = i+j+ks$ and condensing the nested sums into one single summation expression since $\sum_{k=1}^{t / s} \sum_{j=1}^{s} f(j+ks) = \sum_{l=1}^{t} f(l)$, we obtain
+    $$y_i = \sum_{l=1+i}^{t+i} M_{il} x_l = \sum_{l=1}^{t} M_{il} x_l = \{M \vec{x}\}_i \,.$$
+  \end{proof}
+\end{frame}
+
+\begin{frame}[c]
+  \begin{theorem}[Babystep-Giantstep Method]
+    Given a matrix $M \in \R^{t \times t}$ and a vector $\vec{x} \in \R^t$, with $t = t_1 \cdot t_2$ split into two \gls{bsgs} parameters $t_1, t_2 \in \N$ and
+    $$\diag'_p(M) = \rot_{-\lfloor p/t_1 \rfloor \cdot t_1}(\diag_p(M))\,,$$
+    one can express a matrix-vector multiplication as follows:
+    \begin{equation*}
+      M \vec{x} = \sum_{k=0}^{t_2-1} \rot_{(kt_1)} \bigg(
+      \sum_{j=0}^{t_1-1} \diag'_{(kt_1+j)}(M) \cdot \rot_j(\vec{x})
+      \bigg)
+    \end{equation*}
+    where $\cdot$ denotes an element-wise multiplication of two vectors.
+  \end{theorem}
 \end{frame}
 
 \begin{frame}{Polynomial Evaluation}
