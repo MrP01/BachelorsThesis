@@ -7,7 +7,7 @@ set(CMAKE_CXX_STANDARD 23)
 # include(${CMAKE_BINARY_DIR}/conanbuildinfo.cmake)
 # conan_basic_setup()
 
-find_package(SEAL 4.0.0 REQUIRED)
+find_package(SEAL 4.1.1 REQUIRED)
 
 list(APPEND CMAKE_PREFIX_PATH "${CMAKE_BINARY_DIR}")
 find_package(httplib REQUIRED)

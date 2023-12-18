@@ -58,10 +58,10 @@ export class ClassificationComponent extends React.Component {
                 prediction: data.prediction,
                 probabilities: data.probabilities,
                 calculating: false,
-              })
+              }),
             )
             .catch((err) => self.setState({ calculating: false })),
-        0
+        0,
       );
     });
   }
@@ -121,77 +121,79 @@ export class ClassificationComponent extends React.Component {
   render() {
     const self = this;
     return (
-      <Row>
+      <div>
         <ProgressBar className={self.state.calculating ? "" : "transparent"} />
-        <Col l={6} m={12} s={12}>
-          <ReactPainter
-            width={280}
-            height={280}
-            initialColor={"cornflowerblue"}
-            initialLineWidth={25}
-            initialLineJoin={"miter"}
-            lineCap={"round"}
-            render={({ triggerSave, canvas, setColor }) => {
-              return (
-                <div>
-                  <div className={"canvas-container center"}>
-                    <img className="background-grid" alt="background grid" />
-                    {canvas}
+        <Row>
+          <Col l={6} m={12} s={12}>
+            <ReactPainter
+              width={280}
+              height={280}
+              initialColor={"cornflowerblue"}
+              initialLineWidth={25}
+              initialLineJoin={"miter"}
+              lineCap={"round"}
+              render={({ triggerSave, canvas, setColor }) => {
+                return (
+                  <div>
+                    <div className={"canvas-container center"}>
+                      <img className="background-grid" alt="background grid" />
+                      {canvas}
+                    </div>
+                    <div className="command-bar">
+                      <Button onClick={self.clear.bind(self)}>Clear</Button>
+                      <Button onClick={self.classify.bind(self)} disabled={self.state.calculating}>
+                        {this.communicator && this.communicator.isSecure() ? "🔒" : ""} Classify
+                      </Button>
+                    </div>
                   </div>
-                  <div className="command-bar">
-                    <Button onClick={self.clear.bind(self)}>Clear</Button>
-                    <Button onClick={self.classify.bind(self)} disabled={self.state.calculating}>
-                      {this.communicator && this.communicator.isSecure() ? "🔒" : ""} Classify
-                    </Button>
-                  </div>
+                );
+              }}
+            />
+            <p className="grey-text">Each grid cell represents one pixel in the 28x28 image.</p>
+          </Col>
+          <Col l={6} m={12} s={12}>
+            <div className="card-panel z-depth-1">
+              <div className="row valign-wrapper">
+                <div className="col s2">
+                  <canvas id="target-28x28" className="center-block" width={28} height={28}></canvas>
                 </div>
-              );
-            }}
-          />
-          <p className="grey-text">Each grid cell represents one pixel in the 28x28 image.</p>
-        </Col>
-        <Col l={6} m={12} s={12}>
-          <div className="card-panel z-depth-1">
-            <div className="row valign-wrapper">
-              <div className="col s2">
-                <canvas id="target-28x28" className="center-block" width={28} height={28}></canvas>
-              </div>
-              <div className="col s10">
-                <span className="black-text">The 28x28 downscaled version will be classified using the</span>
-                <Switch
-                  offLabel="PlainCommunicator"
-                  onLabel="SEALCommunicator"
-                  onChange={self.setCommunicator.bind(self)}
-                />
-                This will take up browser resources for a few seconds.
+                <div className="col s10">
+                  <span className="black-text">The 28x28 downscaled version will be classified using the</span>
+                  <Switch
+                    offLabel="PlainCommunicator"
+                    onLabel="SEALCommunicator"
+                    onChange={self.setCommunicator.bind(self)}
+                  />
+                  This will take up browser resources for a few seconds.
+                </div>
               </div>
             </div>
-          </div>
-          <h3 className="center-align">
-            Prediction: <b>{this.state.prediction}</b>
-          </h3>
-          <h6>Probabilities</h6>
-          <ProbabilityDisplay probabilities={this.state.probabilities} />
-        </Col>
-        {this.state.testImagesAvailable > 0 && (
-          <Col s={12}>
-            <p style={{ marginTop: 0, marginBottom: 4 }} className={"center"}>
-              By clicking on one of the following test images, you can load it to the canvas directly:
-            </p>
-            {this.testImages.map((img, index) => (
-              <DemoImageComponent imageData={img} key={index} onClick={self.loadTestImage.bind(self)} />
-            ))}
-            <button
-              type="button"
-              className="btn-small btn-flat"
-              style={{ marginTop: -20, marginLeft: 8 }}
-              onClick={self.fetchMoreTestImages.bind(self)}
-            >
-              ... more
-            </button>
+            <h3 className="center-align">
+              Prediction: <b>{this.state.prediction}</b>
+            </h3>
+            <h6>Probabilities</h6>
+            <ProbabilityDisplay probabilities={this.state.probabilities} />
           </Col>
-        )}
-      </Row>
+          {this.state.testImagesAvailable > 0 && (
+            <Col s={12}>
+              <p style={{ marginTop: 0, marginBottom: 4 }} className={"center"}>
+                By clicking on one of the following test images, you can load it to the canvas directly:
+              </p>
+              {this.testImages.map((img, index) => (
+                <DemoImageComponent imageData={img} key={index} onClick={self.loadTestImage.bind(self)} />
+              ))}
+              <button
+                type="button"
+                className="btn-small btn-flat"
+                style={{ marginTop: -20, marginLeft: 8 }}
+                onClick={self.fetchMoreTestImages.bind(self)}
+              >
+                ... more
+              </button>
+            </Col>
+          )}
+        </Row>
+      </div>
     );
   }
 }

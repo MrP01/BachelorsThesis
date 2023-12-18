@@ -1,10 +1,12 @@
 import React from "react";
-import "@materializecss/materialize";
+import { M } from "@materializecss/materialize/dist/js/materialize";
 import "@materializecss/materialize/dist/css/materialize.css";
 import { Navbar, Container } from "react-materialize";
 import "./App.css";
 
 import { ClassificationComponent } from "./ClassificationComponent";
+
+window.M = M;
 
 function App() {
   return (
