@@ -8,6 +8,7 @@ thesis/tikz/**/*.dpth
 thesis/tikz/**/*.md5
 presentation/tikz/**/*.dpth
 presentation/tikz/**/*.md5
+feedback*.pdf
 
 *.[oa]
 *~
