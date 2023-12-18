@@ -31,9 +31,9 @@ COPY ./classifier/ /classifier/
 RUN cd /classifier/build/ && cmake .. && CMAKE_BUILD_TYPE=RelWithDebInfo cmake --build . -- -j3
 
 # Part 2: Train Neural Network
-FROM python:3.10 AS trainer
+FROM python:3.11 AS trainer
 WORKDIR /
-RUN pip install --upgrade pip poetry==1.2.0b2
+RUN pip install --upgrade pip poetry
 COPY ./pyproject.toml /pyproject.toml
 COPY ./poetry.lock /poetry.lock
 RUN poetry config virtualenvs.create false && poetry install --no-interaction --only=main

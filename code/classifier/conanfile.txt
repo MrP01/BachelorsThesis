@@ -1,9 +1,9 @@
 [requires]
-xtensor/0.24.2
-nlohmann_json/3.11.2
-cpp-httplib/0.11.2
+xtensor/0.24.7
+nlohmann_json/3.11.3
+cpp-httplib/0.14.2
 plog/1.1.5
 lodepng/cci.20200615
 
 [generators]
-cmake
+CMakeDeps

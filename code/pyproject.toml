@@ -9,21 +9,24 @@ description = "Secure Machine Learning on the Cloud with Homomorphic Encryption,
 authors = ["MrP01 <peter@waldert.at>"]
 
 [tool.nitpick]
-style = ["github://MrP01/lint-me-now/nitpick-base-style.toml", "github://MrP01/lint-me-now/nitpick-python-style.toml"]
+style = [
+  "github://MrP01/lint-me-now/nitpick-base-style.toml",
+  "github://MrP01/lint-me-now/nitpick-python-style.toml",
+]
 
 [tool.poetry.dependencies]
-python = "^3.9, <3.11"
-numpy = "^1.23.3"
-tensorflow = "^2.10.0"
-msgpack = "^1.0.4"
-invoke = "^1.7.3"
+python = "^3.11, <3.12"
+numpy = "^1.26.2"
+tensorflow = "^2.15.0"
+msgpack = "^1.0.7"
+invoke = "^2.2.0"
 
 [tool.poetry.group.dev.dependencies]
-matplotlib = "^3.6.1"
+matplotlib = "^3.8.2"
 tikzplotlib = "^0.10.1"
-black = "^22.10.0"
-pylint = "^2.15.4"
-isort = "^5.10.1"
+black = "^23.12.0"
+pylint = "^3.0.3"
+isort = "^5.13.2"
 
 [tool.black]
 line-length = 120
@@ -48,7 +51,11 @@ indent-after-paren = 4
 
 [tool.pylint."MESSAGES CONTROL"]
 enable = ["useless-suppression"]
-disable = ["unnecessary-lambda-assignment", "invalid-name", "import-outside-toplevel"]
+disable = [
+  "unnecessary-lambda-assignment",
+  "invalid-name",
+  "import-outside-toplevel",
+]
 
 [tool.flakeheaven]
 ignore = "D107,D202,D203,D401,E203,E402,E501,W503"

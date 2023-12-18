@@ -84,11 +84,9 @@ cd ../
 cd classifier/
 pip install conan
 conan profile new default --detect
-conan profile update settings.compiler.libcxx=libstdc++11 default
-mkdir build
+conan install . --output-folder=build --build=missing
 cd build/
-conan install ..
-cmake ..
+cmake .. -DCMAKE_BUILD_TYPE=Release
 cmake --build . -- -j 3
 cd ../
 ./build/bin/evaluate  # either evaluate the network on test data (plain and encrypted), or:

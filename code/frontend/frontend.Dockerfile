@@ -1,4 +1,4 @@
-FROM node:16-alpine AS webpack-built
+FROM node:20-alpine AS webpack-built
 WORKDIR /app
 COPY package.json .
 RUN yarn install --silent
