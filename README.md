@@ -1,6 +1,6 @@
 # Secure Classification as a Service
 
-My bachelor's [thesis](thesis/thesis.pdf) for Physics and ICE (Information and Computer Engineering), submitted in August 2022 to the Technical University of Graz. **Goal**: Classifying MNIST images on the server using homomorphic encryption.
+My bachelor's [thesis](https://raw.githubusercontent.com/MrP01/BachelorsThesis/master/thesis/thesis.pdf) for Physics and ICE (Information and Computer Engineering), submitted in August 2022 to the Technical University of Graz. **Goal**: Classifying MNIST images on the server using homomorphic encryption.
 
 Advisor: Roman Walch of the IAIK.
 
